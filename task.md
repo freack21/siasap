@@ -1,19 +1,18 @@
-# Task Plan: User View (Public AQI & Health History) vs Admin View (Technical Telemetry & QoS)
+# Task Plan: Authentication Flow & Route Protection (Login, Auth Middleware & Logout)
 
-## 1. User View Livewire Components & Logic
-- [x] Create `UserDashboard` component (`app/Livewire/UserDashboard.php` & `resources/views/livewire/user-dashboard.blade.php`) for friendly, non-technical Air Quality Index & Health Advice
-- [x] Create `UserHistory` component (`app/Livewire/UserHistory.php` & `resources/views/livewire/user-history.blade.php`) for searching & filtering Air Quality log history without technical jargon
+## 1. Authentication Component & Login View
+- [ ] Create Livewire Component `Login` (`app/Livewire/Auth/Login.php` & `resources/views/livewire/auth/login.blade.php`) with email/password validation and quick demo login presets (`Admin` & `User`)
+- [ ] Add Logout method in App Layout / Navigation Header
 
-## 2. Navigation & System Seeder Updates
-- [x] Update `SetupRbacSeeder.php` to include User View links (`user.dashboard`, `user.history`) alongside Admin links
-- [x] Update `routes/web.php` to map `/` to `UserDashboard` (default home for public users), `/riwayat` to `UserHistory`, and keep `/admin/telemetry` for technical view!
+## 2. Route Protection & Middleware
+- [ ] Update `routes/web.php` to wrap dashboard and admin routes inside `auth` middleware
+- [ ] Map `/login` to Livewire `Login` component
+- [ ] Add guest redirect handling (redirect unauthenticated users to `/login`)
 
-## 3. UI/UX Enhancements for Public Users
-- [x] Friendly Air Quality Index Badges & Health Advice Cards (Aman/Waspada/Berbahaya)
-- [x] Simple area status grid (Area 1, Area 2, Area 3) with clean visual indicators
-- [x] Interactive History table with search & date filters
+## 3. Navigation Header & Profile Integration
+- [ ] Display real authenticated user data (`auth()->user()`) in Sidebar and Top Navbar
+- [ ] Add functional Logout button with redirect back to `/login`
 
 ## 4. Verification & Git Commit
-- [x] Run `php artisan db:seed --class=SetupRbacSeeder`
-- [x] Run `php artisan test`
-- [x] Execute Git commit
+- [ ] Run `php artisan test` to verify authentication flow & route protection
+- [ ] Execute Git commit

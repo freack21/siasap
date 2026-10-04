@@ -53,7 +53,7 @@
             <div class="flex flex-col h-full">
                 <!-- Sidebar Header & Brand Logo -->
                 <div class="h-16 px-6 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                    <a href="{{ route('telemetry') }}" class="flex items-center gap-3 group">
+                    <a href="{{ route('user.dashboard') }}" class="flex items-center gap-3 group">
                         <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-sky-600 to-indigo-600 flex items-center justify-center text-white shadow-md shadow-sky-500/20 group-hover:scale-105 transition-transform">
                             <x-heroicon-o-signal class="w-5 h-5 stroke-[2.2]" />
                         </div>
@@ -79,15 +79,22 @@
                 </div>
 
                 <!-- User Profile Card Component in Sidebar -->
-                <div class="p-4 mx-3 my-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800/80 flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-sky-600 to-indigo-600 text-white font-black flex items-center justify-center text-sm shadow-md">
-                        AD
+                @auth
+                    @php
+                        $user = auth()->user();
+                        $roleName = $user->roles->first()?->display_name ?? 'Pengguna Sistem';
+                        $initials = strtoupper(substr($user->name, 0, 2));
+                    @endphp
+                    <div class="p-4 mx-3 my-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800/80 flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-sky-600 to-indigo-600 text-white font-black flex items-center justify-center text-sm shadow-md shrink-0">
+                            {{ $initials }}
+                        </div>
+                        <div class="overflow-hidden">
+                            <h4 class="text-xs font-extrabold text-slate-900 dark:text-white truncate">{{ $user->name }}</h4>
+                            <span class="inline-block text-[10px] font-bold text-sky-600 dark:text-sky-400 uppercase tracking-wider truncate">{{ $roleName }}</span>
+                        </div>
                     </div>
-                    <div class="overflow-hidden">
-                        <h4 class="text-xs font-extrabold text-slate-900 dark:text-white truncate">Administrator SIASAP</h4>
-                        <span class="inline-block text-[10px] font-bold text-sky-600 dark:text-sky-400 uppercase tracking-wider">Super Admin</span>
-                    </div>
-                </div>
+                @endauth
 
                 <!-- Dynamic Navigation Menu Items -->
                 <nav class="flex-grow px-3 py-2 space-y-6 overflow-y-auto">
@@ -119,13 +126,24 @@
                     @endforeach
                 </nav>
 
-                <!-- Sidebar Footer Status -->
-                <div class="p-4 border-t border-slate-100 dark:border-slate-800 text-[11px] text-slate-400 flex items-center justify-between bg-slate-50/50 dark:bg-slate-900/50">
-                    <div class="flex items-center gap-2">
-                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                        <span class="font-semibold text-slate-600 dark:text-slate-300">Gateway Active</span>
+                <!-- Sidebar Footer Status & Logout -->
+                <div class="p-3 border-t border-slate-100 dark:border-slate-800 space-y-2 bg-slate-50/50 dark:bg-slate-900/50">
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit" 
+                                class="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-rose-600 dark:text-rose-400 hover:bg-rose-500/10 border border-rose-500/20 transition-all">
+                            <x-heroicon-o-arrow-right-on-rectangle class="w-4 h-4" />
+                            <span>Keluar (Logout)</span>
+                        </button>
+                    </form>
+
+                    <div class="text-[10px] text-slate-400 flex items-center justify-between px-1">
+                        <div class="flex items-center gap-1.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                            <span class="font-semibold text-slate-600 dark:text-slate-300">Gateway Active</span>
+                        </div>
+                        <span class="font-mono">3 Nodes</span>
                     </div>
-                    <span class="font-mono text-[10px]">3 Nodes</span>
                 </div>
             </div>
         </aside>
@@ -186,7 +204,7 @@
                     <strong>SIASAP IoT Dashboard</strong> — Air Quality Sensor Monitoring & QoS Network Benchmarking
                 </div>
                 <div class="font-mono text-[11px]">
-                    SetupRbacSeeder & SystemNavigation Active
+                    Auth Middleware & SetupRbacSeeder Active
                 </div>
             </footer>
         </div>
