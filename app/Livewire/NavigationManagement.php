@@ -9,6 +9,13 @@ use Livewire\Component;
 #[Title('Navigasi Sistem — SIASAP')]
 class NavigationManagement extends Component
 {
+    public function mount()
+    {
+        if (!auth()->user() || !auth()->user()->hasPermission('navigation.manage')) {
+            abort(403, 'Anda tidak memiliki hak akses ke manajemen navigasi.');
+        }
+    }
+
     public function render()
     {
         $navigations = SystemNavigation::orderBy('section')->orderBy('order')->get();

@@ -1,19 +1,13 @@
-# Task Plan: Responsive Login Modal, Custom Scrollbar & Non-Technical Jargon Purge
+# Task Plan: Single-Door Professional Login & Strict RBAC Enforcement
 
-## 1. CSS Custom Scrollbar
-- [ ] Add custom CSS scrollbar rules in `resources/css/app.css` (sleek, 6px width, rounded, theme-adaptive)
+## 1. Professional Single-Door Login Overhaul
+- [ ] Update `app/Livewire/Auth/Login.php` to remove demo presets and implement smart single-door RBAC redirect
+- [ ] Overhaul `resources/views/livewire/auth/login.blade.php`: Remove all demo buttons & password hints, create a ultra-clean professional login interface
 
-## 2. Concise & Responsive Login Page
-- [ ] Overhaul `resources/views/livewire/auth/login.blade.php` to be super compact, 100% responsive on all screen sizes, and purge all technical jargon ("IoT", "QoS", "REST API", "Gateway", etc.)
+## 2. Strict RBAC System Enforcement
+- [ ] Update Layout Sidebar Navigation (`components/layouts/app.blade.php` & `layouts/app.blade.php`) to filter menu items strictly by logged-in user permissions (`$user->hasPermission(...)`)
+- [ ] Add permission authorization checks (`abort(403)`) on all Admin Livewire components (`TelemetryDashboard`, `QosAnalytics`, `RbacManagement`, `NavigationManagement`)
 
-## 3. Strict Non-Technical Language Audit
-- [ ] Audit and remove all technical terms from Login, User Dashboard, User History, Layout Footer, and User Navigations
-- [ ] Keep technical terms strictly for Admin pages (`/admin/telemetry`, `/admin/qos-analytics`)
-
-## 4. Navigation & Seeder Update
-- [ ] Update `SetupRbacSeeder.php` with friendly section titles ("PEMANTAUAN UDARA", "PANEL PENGELOLA", "PENGATURAN")
-- [ ] Run `php artisan db:seed --class=SetupRbacSeeder`
-
-## 5. Verification & Git Commit
-- [ ] Run `php artisan test`
+## 3. Verification & Testing
+- [ ] Run `php artisan test` to verify single-door login, RBAC redirects, and 403 authorization checks
 - [ ] Execute Git commit

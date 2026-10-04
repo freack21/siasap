@@ -93,10 +93,20 @@
                     </div>
                 @endauth
 
-                <!-- Dynamic Navigation Menu Items -->
+                <!-- Dynamic Navigation Menu Items (Strict RBAC Filtered) -->
                 <nav class="flex-grow px-3 py-2 space-y-6 overflow-y-auto">
                     @php
-                        $navSections = \App\Models\SystemNavigation::active()->get()->groupBy('section');
+                        $user = auth()->user();
+                        $navsQuery = \App\Models\SystemNavigation::active()->get();
+                        
+                        $allowedNavs = $navsQuery->filter(function($nav) use ($user) {
+                            if (empty($nav->permission_name)) {
+                                return true;
+                            }
+                            return $user && $user->hasPermission($nav->permission_name);
+                        });
+
+                        $navSections = $allowedNavs->groupBy('section');
                     @endphp
 
                     @foreach ($navSections as $section => $navs)

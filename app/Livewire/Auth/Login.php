@@ -22,7 +22,7 @@ class Login extends Component
     ];
 
     /**
-     * Authenticate user credentials
+     * Authenticate user credentials and redirect based on RBAC permissions
      */
     public function authenticate()
     {
@@ -34,34 +34,15 @@ class Login extends Component
             /** @var User $user */
             $user = Auth::user();
 
-            if ($user->hasRole('admin') || $user->hasRole('researcher')) {
+            // Smart RBAC redirection based on user permissions/roles
+            if ($user->hasPermission('telemetry.view') || $user->hasRole('admin') || $user->hasRole('researcher')) {
                 return redirect()->intended(route('telemetry'));
             }
 
             return redirect()->intended(route('user.dashboard'));
         }
 
-        $this->addError('email', 'Email atau kata sandi yang Anda masukkan tidak cocok.');
-    }
-
-    /**
-     * Quick login helper for demo purposes
-     */
-    public function quickLogin(string $type)
-    {
-        $email = $type === 'admin' ? 'admin@siasap.test' : 'user@siasap.test';
-        $user = User::where('email', $email)->first();
-
-        if ($user) {
-            Auth::login($user, true);
-            session()->regenerate();
-
-            if ($user->hasRole('admin')) {
-                return redirect()->intended(route('telemetry'));
-            }
-
-            return redirect()->intended(route('user.dashboard'));
-        }
+        $this->addError('email', 'Alamat email atau kata sandi yang Anda masukkan tidak cocok.');
     }
 
     public function render()

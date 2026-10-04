@@ -17,6 +17,13 @@ class QosAnalytics extends Component
 
     public ?int $filterSessionId = null;
 
+    public function mount()
+    {
+        if (!auth()->user() || !auth()->user()->hasPermission('qos.view')) {
+            abort(403, 'Anda tidak memiliki hak akses ke modul analisis ini.');
+        }
+    }
+
     /**
      * Start a new testing session
      */

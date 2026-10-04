@@ -13,6 +13,13 @@ class TelemetryDashboard extends Component
     public string $selectedTopology = 'all'; // 'all', 'star', 'mesh'
     public string $selectedNode = 'all';     // 'all', '1', '2', '3'
 
+    public function mount()
+    {
+        if (!auth()->user() || !auth()->user()->hasPermission('telemetry.view')) {
+            abort(403, 'Anda tidak memiliki hak akses ke panel pengelola ini.');
+        }
+    }
+
     /**
      * Poll telemetry every 3 seconds
      */

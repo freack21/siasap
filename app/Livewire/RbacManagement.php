@@ -11,6 +11,13 @@ use Livewire\Component;
 #[Title('Manajemen Pengguna & RBAC — SIASAP')]
 class RbacManagement extends Component
 {
+    public function mount()
+    {
+        if (!auth()->user() || !auth()->user()->hasPermission('users.manage')) {
+            abort(403, 'Anda tidak memiliki hak akses ke manajemen RBAC.');
+        }
+    }
+
     public function render()
     {
         $users = User::with('roles')->get();
