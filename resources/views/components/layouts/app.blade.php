@@ -10,13 +10,17 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
 
-    <!-- Anti-FOUC Dark Mode Initialization Script (Strict Light Mode Default) -->
+    <!-- Anti-FOUC Theme Script: Strict Light Mode Default -->
     <script>
+        if (localStorage.getItem('theme_preference_v3') !== 'true') {
+            localStorage.setItem('color-theme', 'light');
+            localStorage.setItem('theme_preference_v3', 'true');
+        }
+
         if (localStorage.getItem('color-theme') === 'dark') {
             document.documentElement.classList.add('dark');
         } else {
             document.documentElement.classList.remove('dark');
-            localStorage.setItem('color-theme', 'light');
         }
     </script>
 

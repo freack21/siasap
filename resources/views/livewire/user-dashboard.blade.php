@@ -1,7 +1,7 @@
 <div wire:poll.3s="refreshData" class="space-y-8">
 
     <!-- Top Header Greeting -->
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm relative overflow-hidden">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200/90 dark:border-slate-800 shadow-sm relative overflow-hidden">
         <div class="space-y-1 z-10">
             <div class="flex items-center gap-2">
                 <h1 class="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">
@@ -24,38 +24,38 @@
         </a>
     </div>
 
-    <!-- Overall Health & Air Quality Status Hero Card -->
-    <div class="p-6 md:p-8 rounded-3xl bg-gradient-to-br from-sky-600 via-indigo-600 to-sky-700 dark:from-slate-900 dark:via-sky-950 dark:to-slate-900 text-white shadow-xl shadow-sky-500/20 space-y-6 relative overflow-hidden">
-        <div class="absolute right-0 top-0 w-96 h-96 bg-white/10 dark:bg-sky-500/10 rounded-full blur-3xl pointer-events-none"></div>
+    <!-- Overall Health & Air Quality Status Hero Card (Light White Theme Default) -->
+    <div class="p-6 md:p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 text-slate-900 dark:text-white shadow-md shadow-slate-200/60 space-y-6 relative overflow-hidden">
+        <div class="absolute right-0 top-0 w-96 h-96 bg-sky-500/5 dark:bg-sky-500/10 rounded-full blur-3xl pointer-events-none"></div>
 
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
             <div class="space-y-3">
-                <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-white/10 text-slate-200 border border-white/10">
+                <span class="px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wider bg-sky-500/10 text-sky-700 dark:bg-white/10 dark:text-slate-200 border border-sky-500/20 dark:border-white/10">
                     Status Lingkungan Saat Ini
                 </span>
                 <div class="flex items-center gap-3">
-                    <h2 class="text-3xl md:text-4xl font-black tracking-tight">
+                    <h2 class="text-3xl md:text-4xl font-black tracking-tight text-slate-900 dark:text-white">
                         {{ $worstStatus }}
                     </h2>
-                    <span class="text-xs text-slate-300 font-medium bg-white/10 px-3 py-1 rounded-lg">
+                    <span class="text-xs text-slate-600 dark:text-slate-300 font-bold bg-slate-100 dark:bg-white/10 px-3 py-1 rounded-lg border border-slate-200 dark:border-transparent">
                         Indeks: <strong>{{ $maxKuOverall }} PPM</strong>
                     </span>
                 </div>
             </div>
 
             <!-- Health Icon -->
-            <div class="w-16 h-16 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center text-white shrink-0 shadow-inner">
+            <div class="w-16 h-16 rounded-2xl bg-sky-50 dark:bg-white/10 border border-sky-100 dark:border-white/20 flex items-center justify-center text-sky-600 dark:text-white shrink-0 shadow-inner">
                 <x-dynamic-component :component="$healthAdvice['icon']" class="w-8 h-8" />
             </div>
         </div>
 
         <!-- Health Recommendation Alert Box -->
-        <div class="p-4 rounded-2xl bg-white/10 border border-white/10 space-y-1 relative z-10">
-            <h3 class="font-bold text-sm text-sky-300 flex items-center gap-2">
-                <x-heroicon-o-heart class="w-4 h-4 text-rose-400" />
+        <div class="p-4 rounded-2xl bg-sky-50/80 dark:bg-white/10 border border-sky-100 dark:border-white/10 space-y-1 relative z-10">
+            <h3 class="font-bold text-sm text-sky-900 dark:text-sky-300 flex items-center gap-2">
+                <x-heroicon-o-heart class="w-4 h-4 text-rose-500" />
                 <span>Rekomendasi Kesehatan: {{ $healthAdvice['title'] }}</span>
             </h3>
-            <p class="text-xs text-slate-200 leading-relaxed">
+            <p class="text-xs text-slate-700 dark:text-slate-200 leading-relaxed font-medium">
                 {{ $healthAdvice['desc'] }}
             </p>
         </div>
@@ -77,7 +77,7 @@
                     $isOnline = $area['is_online'];
                 @endphp
 
-                <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm p-6 space-y-5 hover:border-slate-300 dark:hover:border-slate-700 transition-all flex flex-col justify-between">
+                <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/90 dark:border-slate-800 shadow-sm p-6 space-y-5 hover:border-slate-300 dark:hover:border-slate-700 transition-all flex flex-col justify-between">
                     
                     <div class="space-y-4">
                         <!-- Area Name & Status -->
@@ -87,12 +87,12 @@
                                 <h3 class="font-extrabold text-slate-900 dark:text-white text-base mt-0.5">{{ $area['name'] }}</h3>
                             </div>
                             @if ($isOnline)
-                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-600 dark:bg-emerald-400/15 dark:text-emerald-400 border border-emerald-500/30 flex items-center gap-1">
+                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-600 dark:bg-emerald-400/15 dark:text-emerald-400 border border-emerald-500/30 flex items-center gap-1">
                                     <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                                     Aktif
                                 </span>
                             @else
-                                <span class="px-2 py-0.5 rounded-full text-[10px] font-medium bg-slate-100 dark:bg-slate-800 text-slate-400 border border-slate-200 dark:border-slate-700">
+                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-medium bg-slate-100 dark:bg-slate-800 text-slate-400 border border-slate-200 dark:border-slate-700">
                                     Offline
                                 </span>
                             @endif
@@ -129,7 +129,7 @@
     </div>
 
     <!-- Friendly Air Quality Level Guide Section -->
-    <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm p-6 space-y-4">
+    <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/90 dark:border-slate-800 shadow-sm p-6 space-y-4">
         <h2 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
             <x-heroicon-o-information-circle class="w-5 h-5 text-indigo-500" />
             <span>Panduan Kategori Kualitas Udara Lingkungan</span>
