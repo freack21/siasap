@@ -22,6 +22,43 @@
     }
 }
 
+/* Custom Ultra-Sleek Scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(148, 163, 184, 0.4);
+    border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(100, 116, 139, 0.7);
+}
+
+.dark ::-webkit-scrollbar-thumb {
+    background: rgba(51, 65, 85, 0.6);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+    background: rgba(71, 85, 105, 0.9);
+}
+
+/* Firefox scrollbar */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(148, 163, 184, 0.4) transparent;
+}
+
+.dark * {
+    scrollbar-color: rgba(51, 65, 85, 0.6) transparent;
+}
+
 /* Glassmorphism & custom utility classes */
 .glass-panel {
     background: rgba(255, 255, 255, 0.85);

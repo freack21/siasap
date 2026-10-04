@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $title ?? 'SIASAP — Dashboard Pemantauan IoT & Benchmark QoS' }}</title>
+    <title>{{ $title ?? 'SIASAP — Pemantauan Kualitas Udara Lingkungan' }}</title>
 
     <!-- Plus Jakarta Sans Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -55,19 +55,16 @@
                 <div class="h-16 px-6 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
                     <a href="{{ route('user.dashboard') }}" class="flex items-center gap-3 group">
                         <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-sky-600 to-indigo-600 flex items-center justify-center text-white shadow-md shadow-sky-500/20 group-hover:scale-105 transition-transform">
-                            <x-heroicon-o-signal class="w-5 h-5 stroke-[2.2]" />
+                            <x-heroicon-o-sparkles class="w-5 h-5 stroke-[2.2]" />
                         </div>
                         <div>
                             <div class="flex items-center gap-1.5">
                                 <span class="font-extrabold text-lg tracking-tight bg-gradient-to-r from-slate-900 via-sky-800 to-indigo-900 dark:from-white dark:via-sky-300 dark:to-indigo-300 bg-clip-text text-transparent">
                                     SIASAP
                                 </span>
-                                <span class="px-1.5 py-0.5 text-[9px] font-extrabold uppercase rounded bg-sky-500/10 text-sky-600 dark:bg-sky-400/10 dark:text-sky-400 border border-sky-500/20">
-                                    v2.0
-                                </span>
                             </div>
-                            <p class="text-[10px] text-slate-400 font-semibold tracking-wider uppercase">
-                                IoT & QoS Benchmark
+                            <p class="text-[10px] text-slate-400 font-bold tracking-wider uppercase">
+                                Pemantauan Udara
                             </p>
                         </div>
                     </a>
@@ -140,9 +137,8 @@
                     <div class="text-[10px] text-slate-400 flex items-center justify-between px-1">
                         <div class="flex items-center gap-1.5">
                             <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                            <span class="font-semibold text-slate-600 dark:text-slate-300">Gateway Active</span>
+                            <span class="font-semibold text-slate-600 dark:text-slate-300">Sistem Berjalan Aktif</span>
                         </div>
-                        <span class="font-mono">3 Nodes</span>
                     </div>
                 </div>
             </div>
@@ -165,17 +161,18 @@
                     <div class="flex items-center gap-2 text-xs font-semibold text-slate-500 dark:text-slate-400">
                         <span>SIASAP</span>
                         <x-heroicon-o-chevron-right class="w-3.5 h-3.5 text-slate-300" />
-                        <span class="text-slate-900 dark:text-white font-bold">{{ $title ?? 'Dashboard Monitoring' }}</span>
+                        <span class="text-slate-900 dark:text-white font-bold">{{ $title ?? 'Pemantauan Kualitas Udara' }}</span>
                     </div>
                 </div>
 
-                <!-- Right Action Bar: Theme Switcher & Quick Status -->
+                <!-- Right Action Bar: Theme Switcher -->
                 <div class="flex items-center gap-3">
-                    <!-- Live Rest API Ingestion Pill -->
-                    <div class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:bg-emerald-400/10 dark:text-emerald-400 border border-emerald-500/20 text-xs font-bold">
-                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                        <span>REST API Ready (`/api/telemetry`)</span>
-                    </div>
+                    @if(request()->is('admin*'))
+                        <div class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:bg-emerald-400/10 dark:text-emerald-400 border border-emerald-500/20 text-xs font-bold">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                            <span>REST API Ingestion (`/api/telemetry`)</span>
+                        </div>
+                    @endif
 
                     <!-- Theme Switcher Toggle (Light default / Dark mode) -->
                     <button id="theme-toggle" type="button" 
@@ -201,10 +198,10 @@
             <!-- Footer -->
             <footer class="mt-auto border-t border-slate-200/80 dark:border-slate-800 py-4 px-6 text-xs text-slate-500 dark:text-slate-400 bg-white/50 dark:bg-slate-900/50 flex flex-col sm:flex-row items-center justify-between gap-2">
                 <div>
-                    <strong>SIASAP IoT Dashboard</strong> — Air Quality Sensor Monitoring & QoS Network Benchmarking
+                    <strong>SIASAP</strong> — Sistem Pemantauan Kualitas Udara Lingkungan
                 </div>
-                <div class="font-mono text-[11px]">
-                    Auth Middleware & SetupRbacSeeder Active
+                <div class="font-medium text-[11px]">
+                    Sistem Pemantauan Aktif
                 </div>
             </footer>
         </div>

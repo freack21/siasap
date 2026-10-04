@@ -18,30 +18,30 @@ class SetupRbacSeeder extends Seeder
     {
         // 1. Create Roles
         $adminRole = Role::firstOrCreate(['name' => 'admin'], [
-            'display_name' => 'Super Administrator',
-            'description' => 'Akses penuh ke seluruh sistem telemetri, QoS, dan manajemen pengguna.',
+            'display_name' => 'Pengelola Sistem',
+            'description' => 'Akses penuh ke seluruh sistem pemantauan, analisis teknis, dan manajemen pengguna.',
         ]);
 
         $researcherRole = Role::firstOrCreate(['name' => 'researcher'], [
-            'display_name' => 'Laboran / Peneliti QoS',
-            'description' => 'Akses monitoring telemetri teknis dan manajemen sesi eksperimen QoS topologi.',
+            'display_name' => 'Peneliti / Laboran',
+            'description' => 'Akses monitoring teknis dan manajemen sesi pengujian jaringan.',
         ]);
 
         $userRole = Role::firstOrCreate(['name' => 'user'], [
-            'display_name' => 'Pengguna Umum / Publik',
-            'description' => 'Akses tampilan kualitas udara awam yang ramah pengguna & riwayat data.',
+            'display_name' => 'Pengguna Umum',
+            'description' => 'Akses tampilan kualitas udara yang ramah pengguna & riwayat data.',
         ]);
 
         // 2. Create Permissions
         $permissions = [
-            ['name' => 'user.view', 'display_name' => 'Lihat Dashboard Udara Publik', 'group' => 'Tampilan Publik'],
-            ['name' => 'user.history', 'display_name' => 'Lihat Riwayat Udara Publik', 'group' => 'Tampilan Publik'],
-            ['name' => 'telemetry.view', 'display_name' => 'Lihat Telemetri Teknis (Node/Sinyal)', 'group' => 'Panel Admin & Teknis'],
-            ['name' => 'telemetry.simulate', 'display_name' => 'Jalankan Simulasi Transmisi ESP32', 'group' => 'Panel Admin & Teknis'],
-            ['name' => 'qos.view', 'display_name' => 'Lihat Analytics & Benchmark QoS', 'group' => 'Panel Admin & Teknis'],
-            ['name' => 'session.manage', 'display_name' => 'Mulai & Kelola Sesi Pengujian Topologi', 'group' => 'Panel Admin & Teknis'],
-            ['name' => 'users.manage', 'display_name' => 'Kelola Pengguna & Hak Akses (RBAC)', 'group' => 'Administrator'],
-            ['name' => 'navigation.manage', 'display_name' => 'Kelola Navigasi Sistem', 'group' => 'Administrator'],
+            ['name' => 'user.view', 'display_name' => 'Lihat Pemantauan Udara', 'group' => 'Pemantauan Utama'],
+            ['name' => 'user.history', 'display_name' => 'Lihat Riwayat Udara', 'group' => 'Pemantauan Utama'],
+            ['name' => 'telemetry.view', 'display_name' => 'Lihat Telemetri Teknis', 'group' => 'Panel Pengelola'],
+            ['name' => 'telemetry.simulate', 'display_name' => 'Jalankan Simulasi Transmisi', 'group' => 'Panel Pengelola'],
+            ['name' => 'qos.view', 'display_name' => 'Lihat Analisis Topologi', 'group' => 'Panel Pengelola'],
+            ['name' => 'session.manage', 'display_name' => 'Mulai & Kelola Sesi Pengujian', 'group' => 'Panel Pengelola'],
+            ['name' => 'users.manage', 'display_name' => 'Kelola Pengguna & Hak Akses', 'group' => 'Pengaturan'],
+            ['name' => 'navigation.manage', 'display_name' => 'Kelola Navigasi Sistem', 'group' => 'Pengaturan'],
         ];
 
         $permModels = [];
@@ -68,7 +68,7 @@ class SetupRbacSeeder extends Seeder
         $adminUser = User::firstOrCreate(
             ['email' => 'admin@siasap.test'],
             [
-                'name' => 'Administrator SIASAP',
+                'name' => 'Pengelola SIASAP',
                 'password' => Hash::make('password'),
             ]
         );
@@ -77,7 +77,7 @@ class SetupRbacSeeder extends Seeder
         $publicUser = User::firstOrCreate(
             ['email' => 'user@siasap.test'],
             [
-                'name' => 'Pengguna Umum SIASAP',
+                'name' => 'Pengguna Umum',
                 'password' => Hash::make('password'),
             ]
         );
@@ -85,13 +85,13 @@ class SetupRbacSeeder extends Seeder
 
         // 5. Create System Navigations
         $navigations = [
-            // Section: Tampilan Publik / User
+            // Section: Pemantauan Udara
             [
-                'title' => 'Kualitas Udara (User)',
+                'title' => 'Kualitas Udara',
                 'route_name' => 'user.dashboard',
                 'icon' => 'heroicon-o-sparkles',
                 'permission_name' => 'user.view',
-                'section' => 'TAMPILAN PUBLIK (USER)',
+                'section' => 'PEMANTAUAN UDARA',
                 'order' => 1,
             ],
             [
@@ -99,17 +99,17 @@ class SetupRbacSeeder extends Seeder
                 'route_name' => 'user.history',
                 'icon' => 'heroicon-o-clock',
                 'permission_name' => 'user.history',
-                'section' => 'TAMPILAN PUBLIK (USER)',
+                'section' => 'PEMANTAUAN UDARA',
                 'order' => 2,
             ],
 
-            // Section: Panel Admin & Teknis
+            // Section: Panel Pengelola
             [
-                'title' => 'Telemetri Teknis (Admin)',
+                'title' => 'Telemetri Teknis',
                 'route_name' => 'telemetry',
                 'icon' => 'heroicon-o-cpu-chip',
                 'permission_name' => 'telemetry.view',
-                'section' => 'PANEL ADMIN & LABORATORIUM',
+                'section' => 'PANEL PENGELOLA',
                 'order' => 3,
             ],
             [
@@ -117,13 +117,13 @@ class SetupRbacSeeder extends Seeder
                 'route_name' => 'qos-analytics',
                 'icon' => 'heroicon-o-chart-bar-square',
                 'permission_name' => 'qos.view',
-                'section' => 'PANEL ADMIN & LABORATORIUM',
+                'section' => 'PANEL PENGELOLA',
                 'order' => 4,
             ],
 
-            // Section: Administrator & RBAC
+            // Section: Pengaturan Hak Akses
             [
-                'title' => 'Pengguna & RBAC',
+                'title' => 'Pengguna & Hak Akses',
                 'route_name' => 'rbac-management',
                 'icon' => 'heroicon-o-shield-check',
                 'permission_name' => 'users.manage',
