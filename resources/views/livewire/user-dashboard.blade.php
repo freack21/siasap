@@ -25,8 +25,8 @@
     </div>
 
     <!-- Overall Health & Air Quality Status Hero Card -->
-    <div class="p-6 md:p-8 rounded-3xl bg-gradient-to-r from-slate-900 via-sky-950 to-slate-900 text-white shadow-xl space-y-6 relative overflow-hidden">
-        <div class="absolute right-0 top-0 w-96 h-96 bg-sky-500/10 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="p-6 md:p-8 rounded-3xl bg-gradient-to-br from-sky-600 via-indigo-600 to-sky-700 dark:from-slate-900 dark:via-sky-950 dark:to-slate-900 text-white shadow-xl shadow-sky-500/20 space-y-6 relative overflow-hidden">
+        <div class="absolute right-0 top-0 w-96 h-96 bg-white/10 dark:bg-sky-500/10 rounded-full blur-3xl pointer-events-none"></div>
 
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
             <div class="space-y-3">

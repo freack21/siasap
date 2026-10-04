@@ -246,7 +246,7 @@
     </div>
 
     <!-- Kesimpulan Analitis Penelitian -->
-    <div class="p-6 rounded-2xl bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white shadow-xl space-y-4">
+    <div class="p-6 rounded-2xl bg-gradient-to-br from-indigo-700 via-slate-800 to-sky-800 dark:from-slate-900 dark:via-indigo-950 dark:to-slate-900 text-white shadow-xl shadow-indigo-500/20 space-y-4">
         <div class="flex items-center gap-3">
             <div class="w-10 h-10 rounded-xl bg-indigo-500/20 text-indigo-300 flex items-center justify-center">
                 <x-heroicon-o-light-bulb class="w-6 h-6" />
