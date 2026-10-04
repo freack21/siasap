@@ -1,0 +1,117 @@
+Berikut adalah **Implementation Plan** komprehensif yang dirancang secara terstruktur dan strategis untuk mengakomodasi seluruh alur pengumpulan data sensor, visualisasi _real-time_, hingga komparasi performa jaringan tanpa celah fungsional.
+
+---
+
+## 1. Visi, Ruang Lingkup & Tujuan Sistem
+
+Sistem ini dibangun untuk menjadi platform terpadu pemantauan lingkungan berbasis IoT dan evaluasi keandalan jaringan nirkabel.
+
+- **Akuisisi Data Multi-Sensor:** Mengumpulkan pembacaan 4 parameter gas ($\text{CO}_2$, $\text{NH}_3$, $\text{CO}$, dan $\text{H}_2$) serta metrik sinyal dari 3 node ESP32.
+
+- **Kategorisasi Otomatis:** Mengklasifikasikan tingkat bahaya kualitas udara secara _real-time_ berdasarkan konsentrasi gas tertinggi ($KU = \max$).
+
+- **Visualisasi Telemetri:** Menyajikan dashboard reaktif tanpa _page refresh_ (Livewire + Tailwind CSS) untuk memantau status aktif setiap node.
+- **Benchmarking Jaringan (QoS):** Menyediakan modul analitik khusus untuk membandingkan performa Topologi Star vs Topologi Mesh secara ilmiah berbasis data empiris.
+
+---
+
+## 2. Peta Arsitektur Solusi
+
+Alur data dirancang dalam tiga lapisan terisolasi yang saling terhubung:
+
+1. **Edge Sensing Layer (ESP32):**
+
+- Tiga perangkat node menghitung PPM gas, mencatat nomor urut paket data (_sequence number_), kekuatan sinyal (RSSI), dan jumlah lompatan (_hop count_).
+- Beroperasi dalam dua mode pengujian terpisah: **Star Mode** (langsung ke gateway) dan **Mesh Mode** (estafet antar node).
+
+2. **Ingestion & Processing Layer (Laravel Backend):**
+
+- Endpoint REST API yang ringan, cepat, dan aman untuk menerima ledakan data berkala dari ketiga node secara simultan.
+- Modul validasi data dan kalkulator status kualitas udara otomatis sebelum disimpan ke database relasional.
+
+3. **Interactive Presentation Layer (Livewire & Tailwind CSS):**
+
+- Dashboard reaktif dengan mekanisme _polling_ otomatis di latar belakang.
+- Tampilan modular yang memisahkan antara **Monitoring Operasional Harian** dan **Laboratorium Uji Topologi**.
+
+---
+
+## 3. Rencana Modul Aplikasi
+
+```
+                   +----------------------------------+
+                   |       Aplikasi Pemantauan        |
+                   +-----------------+----------------+
+                                     |
+         +---------------------------+---------------------------+
+         |                                                       |
++--------v--------+                                     +--------v--------+
+|  Modul 1:       |                                     |  Modul 2:       |
+|  Visualisasi    |                                     |  Pengujian      |
+|  Telemetri      |                                     |  Topologi       |
++--------+--------+                                     +--------+--------+
+         |                                                       |
+         |-- Ringkasan Node (Status & Gas)                       |-- Matriks QoS (PDR, Loss, RSSI)
+         |-- Live Feed Log Telemetri                             |-- Komparasi Head-to-Head Topologi
+         |-- Indikator Visual Kualitas Udara                     |-- Manajemen Sesi Pengujian (Reset/Isolasi)
+
+```
+
+### Modul 1: Visualisasi Data Sensor (Monitoring Operasional)
+
+Fokus pada keterbacaan kondisi lingkungan secara instan oleh pengguna.
+
+- **Node Status Grid:** Kartu ringkasan untuk Node 1, Node 2, dan Node 3 yang menampilkan status koneksi (online/offline), nilai 4 gas, dan kekuatan sinyal terakhir.
+- **Smart Air Quality Badges:** Penanda visual dinamis dengan kode warna ramah mata (Hijau = Baik, Kuning = Sedang, Oranye = Tidak Sehat, Merah = Berbahaya) yang langsung mencerminkan formula $KU$.
+
+- **Real-time Feed Log:** Tabel riwayat paket masuk yang terbarui otomatis tanpa mengganggu interaksi pengguna di halaman.
+- **Topology Context Filter:** Kemampuan memfilter tampilan telemetri berdasarkan mode pengujian yang sedang aktif.
+
+### Modul 2: Modul Pengujian & Analisis Topologi Jaringan (Benchmark QoS)
+
+Fokus pada pembuktian performa arsitektur jaringan Star vs Mesh.
+
+- **Manajemen Sesi Uji Coba:** Fitur untuk memulai sesi pengujian baru (reset data uji) agar metrik pengujian skenario tertentu tidak tercampur dengan skenario sebelumnya.
+- **Kalkulator QoS Otomatis:**
+- **Packet Delivery Ratio (PDR):** Menghitung rasio paket yang sukses tiba di database dibandingkan nomor urut paket tertinggi yang dipancarkan node.
+- **Packet Loss Rate:** Persentase paket yang hilang di perjalanan karena interferensi jarak atau _blind spot_.
+- **Hop Traversal Index:** Memetakan efisiensi rute multi-hop pada skenario Mesh dibandingkan transmisi langsung Star.
+- **Signal Degradation Profile:** Rata-rata RSSI untuk mengukur stabilitas fisik tautan nirkabel.
+
+- **Head-to-Head Comparative Board:** Panel komparasi langsung berdampingan (_side-by-side_) yang menyimpulkan kelebihan dan kelemahan masing-masing topologi secara transparan.
+
+---
+
+## 4. Tahapan Eksekusi Proyek (Implementation Phases)
+
+| Fase                             | Fokus Utama                         | Luaran / Deliverables                                                                                                |
+| -------------------------------- | ----------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| **Fase 1: Fondasi & Basis Data** | Penataan skema data dan persistensi | Struktur tabel yang menampung identitas topologi, metrik paket, 4 gas, status kualitas udara, dan timestamp presisi. |
+
+|
+| **Fase 2: Gateway Penerima (API)** | Penerimaan transmisi dari ESP32 | Jalur masuk data terpusat yang mampu menangani pengiriman data simultan dari 3 node dengan verifikasi format otomatis. |
+| **Fase 3: Antarmuka Telemetri** | Visualisasi data lingkungan | Halaman Livewire interaktif berbasis Tailwind CSS dengan update _real-time_ untuk memantau fluktuasi gas dan status node. |
+| **Fase 4: Mesin Analitik Topologi** | Pengolahan QoS dan komparasi | Dashboard statistik yang mengagregasikan PDR, RSSI, dan hop count secara otomatis ke dalam format tabel dan kartu kesimpulan. |
+| **Fase 5: Validasi & Pengujian Lapangan** | Simulasi skenario fisik | Pengujian skenario jarak, halangan dinding (_blind spot_), dan skenario _node failure_ untuk mengumpulkan data riil bagi kedua topologi. |
+
+---
+
+## 5. Rencana Validasi Skenario Pengujian
+
+Untuk memastikan aplikasi mampu mendemonstrasikan keunggulan masing-masing topologi secara ilmiah:
+
+1. **Skenario Jarak Dekat (Kondisi Ideal):**
+
+- Menguji latensi dan PDR ketika ketiga node berada di dekat router/server.
+- _Ekspektasi sistem:_ Topologi Star unggul dalam kecepatan pengiriman langsung tanpa jeda relay.
+
+2. **Skenario _Blind Spot_ / Terhalang Dinding (Ekstensi Jangkauan):**
+
+- Node 3 diletakkan di luar jangkauan sinyal langsung router, dengan Node 2 berada di tengah sebagai jembatan.
+- _Ekspektasi sistem:_ Modul analisis mencatat PDR Star pada Node 3 jatuh drastis (atau 0%), sementara pada Mesh nilai PDR tetap tinggi dengan kenaikan _hop count_.
+
+3. **Skenario Kegagalan Titik Pusat (_Fault Tolerance_):**
+
+- Mengamati perilaku sistem saat router dimatikan atau salah satu node perantara dinonaktifkan untuk mengukur ketahanan infrastruktur.
+
+Rencana implementasi ini memastikan sistem tidak hanya berfungsi sebagai penampil angka sensor, tetapi juga menjadi instrumen riset yang valid dan mudah dioperasikan.
