@@ -1,26 +1,19 @@
-# Task Plan: Upgrade SIASAP into Premium Sidebar Dashboard with RBAC & Blade Icons
+# Task Plan: User View (Public AQI & Health History) vs Admin View (Technical Telemetry & QoS)
 
-## 1. Package & Icon Installation
-- [ ] Install `blade-ui-kit/blade-heroicons` via Composer for comprehensive Blade Icon provider
-- [ ] Configure Plus Jakarta Sans & Tailwind v4 Sidebar layout CSS
+## 1. User View Livewire Components & Logic
+- [ ] Create `UserDashboard` component (`app/Livewire/UserDashboard.php` & `resources/views/livewire/user-dashboard.blade.php`) for friendly, non-technical Air Quality Index & Health Advice
+- [ ] Create `UserHistory` component (`app/Livewire/UserHistory.php` & `resources/views/livewire/user-history.blade.php`) for searching & filtering Air Quality log history without technical jargon
 
-## 2. RBAC & System Navigation System
-- [ ] Migration for RBAC (`roles`, `permissions`, `role_user`, `permission_role`) and `system_navigations`
-- [ ] Models: `Role`, `Permission`, `SystemNavigation`
-- [ ] Update `User` model with RBAC relationships & helper methods (`hasRole`, `hasPermission`)
-- [ ] Seeder: `SetupRbacSeeder` (Seeds Roles, Permissions, Admin User `admin@siasap.test`, and System Navigation links)
+## 2. Navigation & System Seeder Updates
+- [ ] Update `SetupRbacSeeder.php` to include User View links (`user.dashboard`, `user.history`) alongside Admin links
+- [ ] Update `routes/web.php` to map `/` to `UserDashboard` (default home for public users), `/riwayat` to `UserHistory`, and keep `/admin/telemetry` for technical view!
 
-## 3. Premium Responsive Sidebar Layout & UI Overhaul
-- [ ] Create Master Layout with Collapsible/Mobile Drawer Sidebar: `resources/views/components/layouts/app.blade.php` & `resources/views/layouts/app.blade.php`
-- [ ] Add Sidebar Navigation Component featuring dynamic System Navigation items & icons
-- [ ] Add Top Header Bar with Breadcrumb, Theme Switcher (Light default), User Dropdown, Live Status Pill
+## 3. UI/UX Enhancements for Public Users
+- [ ] Friendly Air Quality Index Badges & Health Advice Cards (Aman/Waspada/Berbahaya)
+- [ ] Simple area status grid (Area 1, Area 2, Area 3) with clean visual indicators
+- [ ] Interactive History table with search & date filters
 
-## 4. Livewire Components Overhaul & New Views
-- [ ] Update `TelemetryDashboard` to fit the new Admin Dashboard grid layout
-- [ ] Update `QosAnalytics` for QoS Benchmarking view with sidebar alignment
-- [ ] Create `UserManagement` or `NavigationManagement` Livewire components if needed
-
-## 5. Verification & Git Commit
+## 4. Verification & Git Commit
 - [ ] Run `php artisan db:seed --class=SetupRbacSeeder`
-- [ ] Run automated tests (`php artisan test`)
-- [ ] Execute Git commit for all updated code
+- [ ] Run `php artisan test`
+- [ ] Execute Git commit

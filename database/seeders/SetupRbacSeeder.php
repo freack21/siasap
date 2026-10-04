@@ -24,22 +24,24 @@ class SetupRbacSeeder extends Seeder
 
         $researcherRole = Role::firstOrCreate(['name' => 'researcher'], [
             'display_name' => 'Laboran / Peneliti QoS',
-            'description' => 'Akses monitoring telemetri dan manajemen sesi eksperimen QoS topologi.',
+            'description' => 'Akses monitoring telemetri teknis dan manajemen sesi eksperimen QoS topologi.',
         ]);
 
-        $operatorRole = Role::firstOrCreate(['name' => 'operator'], [
-            'display_name' => 'Operator Sensor',
-            'description' => 'Akses baca monitoring status node sensor real-time.',
+        $userRole = Role::firstOrCreate(['name' => 'user'], [
+            'display_name' => 'Pengguna Umum / Publik',
+            'description' => 'Akses tampilan kualitas udara awam yang ramah pengguna & riwayat data.',
         ]);
 
         // 2. Create Permissions
         $permissions = [
-            ['name' => 'telemetry.view', 'display_name' => 'Lihat Dashboard Telemetri Sensor', 'group' => 'Telemetry'],
-            ['name' => 'telemetry.simulate', 'display_name' => 'Jalankan Simulasi Transmisi ESP32', 'group' => 'Telemetry'],
-            ['name' => 'qos.view', 'display_name' => 'Lihat Analytics & Benchmark QoS', 'group' => 'QoS Benchmarking'],
-            ['name' => 'session.manage', 'display_name' => 'Mulai & Kelola Sesi Pengujian Topologi', 'group' => 'QoS Benchmarking'],
-            ['name' => 'users.manage', 'display_name' => 'Kelola Pengguna & Hak Akses (RBAC)', 'group' => 'Administration'],
-            ['name' => 'navigation.manage', 'display_name' => 'Kelola Navigasi Sistem', 'group' => 'Administration'],
+            ['name' => 'user.view', 'display_name' => 'Lihat Dashboard Udara Publik', 'group' => 'Tampilan Publik'],
+            ['name' => 'user.history', 'display_name' => 'Lihat Riwayat Udara Publik', 'group' => 'Tampilan Publik'],
+            ['name' => 'telemetry.view', 'display_name' => 'Lihat Telemetri Teknis (Node/Sinyal)', 'group' => 'Panel Admin & Teknis'],
+            ['name' => 'telemetry.simulate', 'display_name' => 'Jalankan Simulasi Transmisi ESP32', 'group' => 'Panel Admin & Teknis'],
+            ['name' => 'qos.view', 'display_name' => 'Lihat Analytics & Benchmark QoS', 'group' => 'Panel Admin & Teknis'],
+            ['name' => 'session.manage', 'display_name' => 'Mulai & Kelola Sesi Pengujian Topologi', 'group' => 'Panel Admin & Teknis'],
+            ['name' => 'users.manage', 'display_name' => 'Kelola Pengguna & Hak Akses (RBAC)', 'group' => 'Administrator'],
+            ['name' => 'navigation.manage', 'display_name' => 'Kelola Navigasi Sistem', 'group' => 'Administrator'],
         ];
 
         $permModels = [];
@@ -50,16 +52,19 @@ class SetupRbacSeeder extends Seeder
         // 3. Assign Permissions to Roles
         $adminRole->permissions()->sync(collect($permModels)->pluck('id'));
         $researcherRole->permissions()->sync([
+            $permModels['user.view']->id,
+            $permModels['user.history']->id,
             $permModels['telemetry.view']->id,
             $permModels['telemetry.simulate']->id,
             $permModels['qos.view']->id,
             $permModels['session.manage']->id,
         ]);
-        $operatorRole->permissions()->sync([
-            $permModels['telemetry.view']->id,
+        $userRole->permissions()->sync([
+            $permModels['user.view']->id,
+            $permModels['user.history']->id,
         ]);
 
-        // 4. Create Default Admin User
+        // 4. Create Default Admin & User Accounts
         $adminUser = User::firstOrCreate(
             ['email' => 'admin@siasap.test'],
             [
@@ -69,58 +74,76 @@ class SetupRbacSeeder extends Seeder
         );
         $adminUser->roles()->sync([$adminRole->id]);
 
+        $publicUser = User::firstOrCreate(
+            ['email' => 'user@siasap.test'],
+            [
+                'name' => 'Pengguna Umum SIASAP',
+                'password' => Hash::make('password'),
+            ]
+        );
+        $publicUser->roles()->sync([$userRole->id]);
+
         // 5. Create System Navigations
         $navigations = [
-            // Section: Main Monitoring
+            // Section: Tampilan Publik / User
             [
-                'title' => 'Dashboard Telemetri',
+                'title' => 'Kualitas Udara (User)',
+                'route_name' => 'user.dashboard',
+                'icon' => 'heroicon-o-sparkles',
+                'permission_name' => 'user.view',
+                'section' => 'TAMPILAN PUBLIK (USER)',
+                'order' => 1,
+            ],
+            [
+                'title' => 'Riwayat Kualitas Udara',
+                'route_name' => 'user.history',
+                'icon' => 'heroicon-o-clock',
+                'permission_name' => 'user.history',
+                'section' => 'TAMPILAN PUBLIK (USER)',
+                'order' => 2,
+            ],
+
+            // Section: Panel Admin & Teknis
+            [
+                'title' => 'Telemetri Teknis (Admin)',
                 'route_name' => 'telemetry',
                 'icon' => 'heroicon-o-cpu-chip',
                 'permission_name' => 'telemetry.view',
-                'section' => 'MONITORING UTAMA',
-                'order' => 1,
+                'section' => 'PANEL ADMIN & LABORATORIUM',
+                'order' => 3,
             ],
             [
                 'title' => 'Benchmark QoS Topologi',
                 'route_name' => 'qos-analytics',
                 'icon' => 'heroicon-o-chart-bar-square',
                 'permission_name' => 'qos.view',
-                'section' => 'MONITORING UTAMA',
-                'order' => 2,
+                'section' => 'PANEL ADMIN & LABORATORIUM',
+                'order' => 4,
             ],
-            // Section: Lab & Sesi
-            [
-                'title' => 'Sesi Uji Topologi',
-                'route_name' => 'sessions-management',
-                'icon' => 'heroicon-o-beaker',
-                'permission_name' => 'session.manage',
-                'section' => 'LABORATORIUM',
-                'order' => 3,
-            ],
-            // Section: Administrator & Access
+
+            // Section: Administrator & RBAC
             [
                 'title' => 'Pengguna & RBAC',
                 'route_name' => 'rbac-management',
                 'icon' => 'heroicon-o-shield-check',
                 'permission_name' => 'users.manage',
-                'section' => 'PENGATURAN AKSES',
-                'order' => 4,
+                'section' => 'PENGATURAN HAK AKSES',
+                'order' => 5,
             ],
             [
                 'title' => 'Navigasi Sistem',
                 'route_name' => 'navigation-management',
                 'icon' => 'heroicon-o-bars-3-center-left',
                 'permission_name' => 'navigation.manage',
-                'section' => 'PENGATURAN AKSES',
-                'order' => 5,
+                'section' => 'PENGATURAN HAK AKSES',
+                'order' => 6,
             ],
         ];
 
+        SystemNavigation::truncate();
+
         foreach ($navigations as $nav) {
-            SystemNavigation::updateOrCreate(
-                ['title' => $nav['title']],
-                $nav
-            );
+            SystemNavigation::create($nav);
         }
     }
 }
