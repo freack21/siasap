@@ -20,9 +20,7 @@
             @if ($activeSession)
                 <button wire:click="stopActiveSession" 
                         class="px-4 py-2 bg-rose-500/10 hover:bg-rose-500/20 text-rose-600 dark:text-rose-400 border border-rose-500/20 rounded-xl text-xs font-bold transition-all flex items-center gap-2">
-                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 7.5A2.25 2.25 0 017.5 5.25h9a2.25 2.25 0 012.25 2.25v9a2.25 2.25 0 01-2.25 2.25h-9a2.25 2.25 0 01-2.25-2.25v-9z" />
-                    </svg>
+                    <x-heroicon-o-stop class="w-4 h-4" />
                     <span>Hentikan Sesi Aktif ({{ $activeSession->name }})</span>
                 </button>
             @endif
@@ -30,12 +28,8 @@
             <button wire:click="populateResearchBenchmarkData" 
                     wire:loading.attr="disabled"
                     class="px-4 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-bold transition-all flex items-center gap-2">
-                <svg wire:loading.remove wire:target="populateResearchBenchmarkData" class="w-4 h-4 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m3.75 9v6m3-3H9m1.5-12H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
-                </svg>
-                <svg wire:loading wire:target="populateResearchBenchmarkData" class="w-4 h-4 animate-spin text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
-                </svg>
+                <x-heroicon-o-document-chart-bar wire:loading.remove wire:target="populateResearchBenchmarkData" class="w-4 h-4 text-amber-500" />
+                <x-heroicon-o-arrow-path wire:loading wire:target="populateResearchBenchmarkData" class="w-4 h-4 animate-spin text-amber-500" />
                 <span>Generate Dataset Uji Skenario</span>
             </button>
         </div>
@@ -44,9 +38,7 @@
     <!-- Flash Alert Notification -->
     @if (session()->has('message'))
         <div class="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-700 dark:text-emerald-300 text-xs font-semibold flex items-center gap-2">
-            <svg class="w-5 h-5 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
+            <x-heroicon-o-check-circle class="w-5 h-5 text-emerald-500" />
             <span>{{ session('message') }}</span>
         </div>
     @endif
@@ -56,9 +48,7 @@
         <div class="p-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between cursor-pointer" @click="openForm = !openForm">
             <div class="flex items-center gap-3">
                 <div class="w-8 h-8 rounded-lg bg-sky-500/10 text-sky-600 dark:bg-sky-400/10 dark:text-sky-400 flex items-center justify-center">
-                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                    </svg>
+                    <x-heroicon-o-plus class="w-5 h-5" />
                 </div>
                 <div>
                     <h2 class="font-bold text-slate-900 dark:text-white text-sm">Manajemen Sesi Uji Coba Baru</h2>
@@ -66,9 +56,7 @@
                 </div>
             </div>
             <button type="button" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
-                <svg class="w-5 h-5 transition-transform" :class="openForm ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                </svg>
+                <x-heroicon-o-chevron-down class="w-5 h-5 transition-transform" ::class="openForm ? 'rotate-180' : ''" />
             </button>
         </div>
 
@@ -108,9 +96,7 @@
     <div>
         <div class="flex items-center justify-between mb-4">
             <h2 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                <svg class="w-5 h-5 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 14.25m6 0l2.25-2.25m-2.25 2.25l2.25 2.25m-2.25-2.25l-2.25 2.25m2.25-2.25l-2.25-2.25M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z" />
-                </svg>
+                <x-heroicon-o-scale class="w-5 h-5 text-indigo-500" />
                 <span>Side-by-Side Head-to-Head QoS Board</span>
             </h2>
         </div>
@@ -121,7 +107,7 @@
             <div class="bg-white dark:bg-slate-900 rounded-2xl border-2 border-sky-500/30 shadow-md overflow-hidden relative">
                 <div class="p-6 bg-gradient-to-r from-sky-500/10 via-sky-500/5 to-transparent border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
                     <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-xl bg-sky-500 text-white font-black flex items-center justify-center shadow-md shadow-sky-500/30">
+                        <div class="w-10 h-10 rounded-xl bg-sky-500 text-white font-black flex items-center justify-center shadow-md shadow-sky-500/30 text-lg">
                             ★
                         </div>
                         <div>
@@ -190,7 +176,7 @@
             <div class="bg-white dark:bg-slate-900 rounded-2xl border-2 border-indigo-500/30 shadow-md overflow-hidden relative">
                 <div class="p-6 bg-gradient-to-r from-indigo-500/10 via-indigo-500/5 to-transparent border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
                     <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-xl bg-indigo-600 text-white font-black flex items-center justify-center shadow-md shadow-indigo-500/30">
+                        <div class="w-10 h-10 rounded-xl bg-indigo-600 text-white font-black flex items-center justify-center shadow-md shadow-indigo-500/30 text-lg">
                             🕸
                         </div>
                         <div>
@@ -263,9 +249,7 @@
     <div class="p-6 rounded-2xl bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white shadow-xl space-y-4">
         <div class="flex items-center gap-3">
             <div class="w-10 h-10 rounded-xl bg-indigo-500/20 text-indigo-300 flex items-center justify-center">
-                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 001.5-.189m-1.5.189a6.01 6.01 0 01-1.5-.189m3.75 2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 017.5 10.875v-1.5a3.375 3.375 0 00-3.375-3.375H2.25m19.5 0h-1.5c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125h1.5m-19.5 0h1.5c.621 0 1.125.504 1.125 1.125v1.5c0 .621-.504 1.125-1.125 1.125h-1.5" />
-                </svg>
+                <x-heroicon-o-light-bulb class="w-6 h-6" />
             </div>
             <div>
                 <h3 class="text-lg font-bold">Ringkasan & Kesimpulan Analitis Topologi</h3>

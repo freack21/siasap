@@ -23,9 +23,7 @@
         <div class="flex flex-wrap items-center gap-3 relative z-10">
             @if ($activeSession)
                 <div class="px-3.5 py-2 rounded-xl bg-indigo-500/10 dark:bg-indigo-400/10 border border-indigo-500/20 text-indigo-700 dark:text-indigo-300 text-xs font-semibold flex items-center gap-2">
-                    <svg class="w-4 h-4 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                    </svg>
+                    <x-heroicon-o-bolt class="w-4 h-4 text-indigo-500" />
                     <span>Sesi Uji: <strong>{{ $activeSession->name }}</strong> ({{ strtoupper($activeSession->topology_type) }})</span>
                 </div>
             @else
@@ -38,12 +36,8 @@
             <button wire:click="generateSimulatedData" 
                     wire:loading.attr="disabled"
                     class="px-4 py-2 bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-500 hover:to-indigo-500 text-white rounded-xl text-xs font-bold shadow-md shadow-sky-500/20 active:scale-95 transition-all flex items-center gap-2">
-                <svg wire:loading.remove wire:target="generateSimulatedData" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 010 1.972l-11.54 6.347a1.125 1.125 0 01-1.667-.986V5.653z" />
-                </svg>
-                <svg wire:loading wire:target="generateSimulatedData" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
-                </svg>
+                <x-heroicon-o-play wire:loading.remove wire:target="generateSimulatedData" class="w-4 h-4" />
+                <x-heroicon-o-arrow-path wire:loading wire:target="generateSimulatedData" class="w-4 h-4 animate-spin" />
                 <span>Simulasi Transmisi ESP32</span>
             </button>
         </div>
@@ -61,9 +55,7 @@
                 </div>
             </div>
             <div class="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-600 dark:bg-emerald-400/10 dark:text-emerald-400 flex items-center justify-center">
-                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M15.75 3v1.5m0 15V21" />
-                </svg>
+                <x-heroicon-o-cpu-chip class="w-6 h-6" />
             </div>
         </div>
 
@@ -77,9 +69,7 @@
                 </div>
             </div>
             <div class="w-12 h-12 rounded-xl bg-sky-500/10 text-sky-600 dark:bg-sky-400/10 dark:text-sky-400 flex items-center justify-center">
-                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 005.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941" />
-                </svg>
+                <x-heroicon-o-chart-bar class="w-6 h-6" />
             </div>
         </div>
 
@@ -92,9 +82,7 @@
                 </div>
             </div>
             <div class="w-12 h-12 rounded-xl bg-indigo-500/10 text-indigo-600 dark:bg-indigo-400/10 dark:text-indigo-400 flex items-center justify-center">
-                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 5.625c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" />
-                </svg>
+                <x-heroicon-o-arrow-down-tray class="w-6 h-6" />
             </div>
         </div>
 
@@ -111,9 +99,7 @@
                 </div>
             </div>
             <div class="w-12 h-12 rounded-xl bg-purple-500/10 text-purple-600 dark:bg-purple-400/10 dark:text-purple-400 flex items-center justify-center">
-                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
-                </svg>
+                <x-heroicon-o-arrows-right-left class="w-6 h-6" />
             </div>
         </div>
     </div>
@@ -122,9 +108,7 @@
     <div>
         <div class="flex items-center justify-between mb-4">
             <h2 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                <svg class="w-5 h-5 text-sky-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v1.244m0 0a6.002 6.002 0 00-4.72 4.72M9.75 4.348V5.5m0 0a4.5 4.5 0 00-3.256 3.256M9.75 5.5v1.244M12 21v-3.25m0 0a6 6 0 005.657-5.657M12 17.75v-1.244m0 0a4.5 4.5 0 003.256-3.256M12 16.506V15.26" />
-                </svg>
+                <x-heroicon-o-radio class="w-5 h-5 text-sky-500" />
                 <span>Status Node Sensor ESP32</span>
             </h2>
         </div>
@@ -236,9 +220,7 @@
                     @if ($latest)
                         <div class="px-5 py-3 bg-slate-50/80 dark:bg-slate-900/80 border-t border-slate-100 dark:border-slate-800 text-xs text-slate-500 dark:text-slate-400 flex items-center justify-between">
                             <div class="flex items-center gap-1.5">
-                                <svg class="w-4 h-4 text-sky-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.286 16.286a6 6 0 018.428 0m-11.25-3a10.5 10.5 0 0114.072 0m-16.892-3a15 15 0 0119.712 0M12 20h.008v.008H12V20z" />
-                                </svg>
+                                <x-heroicon-o-signal class="w-4 h-4 text-sky-500" />
                                 <span>RSSI: <strong class="text-slate-700 dark:text-slate-200">{{ $latest->rssi }} dBm</strong></span>
                             </div>
                             <div class="flex items-center gap-3">
@@ -262,9 +244,7 @@
         <div class="p-6 border-b border-slate-100 dark:border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
                 <h2 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                    <svg class="w-5 h-5 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M3.75 4.5h16.5m-16.5 3.75h16.5" />
-                    </svg>
+                    <x-heroicon-o-queue-list class="w-5 h-5 text-indigo-500" />
                     <span>Live Telemetry Packet Log</span>
                 </h2>
                 <p class="text-xs text-slate-500 dark:text-slate-400">Riwayat pengiriman data sensor berkala dari seluruh node.</p>
@@ -303,14 +283,14 @@
             <table class="w-full text-left border-collapse">
                 <thead>
                     <tr class="bg-slate-50/70 dark:bg-slate-800/40 text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 border-b border-slate-100 dark:border-slate-800">
-                        <th class="py-3 px-6">Waktu Transmisi</th>
-                        <th class="py-3 px-4">Node</th>
-                        <th class="py-3 px-4">Topologi</th>
-                        <th class="py-3 px-4">Gas Readings ($\text{CO}_2, \text{NH}_3, \text{CO}, \text{H}_2$)</th>
-                        <th class="py-3 px-4 text-center">Status KU</th>
-                        <th class="py-3 px-4 text-right">RSSI</th>
-                        <th class="py-3 px-4 text-right">Seq #</th>
-                        <th class="py-3 px-6 text-center">Hop</th>
+                        <th class="py-3.5 px-6">Waktu Transmisi</th>
+                        <th class="py-3.5 px-4">Node</th>
+                        <th class="py-3.5 px-4">Topologi</th>
+                        <th class="py-3.5 px-4">Gas Readings ($\text{CO}_2, \text{NH}_3, \text{CO}, \text{H}_2$)</th>
+                        <th class="py-3.5 px-4 text-center">Status KU</th>
+                        <th class="py-3.5 px-4 text-right">RSSI</th>
+                        <th class="py-3.5 px-4 text-right">Seq #</th>
+                        <th class="py-3.5 px-6 text-center">Hop</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100 dark:divide-slate-800/60 text-xs">

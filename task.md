@@ -1,27 +1,26 @@
-# Task Implementation Plan: SIASAP (IoT Sensor & QoS Topology Analytics)
+# Task Plan: Upgrade SIASAP into Premium Sidebar Dashboard with RBAC & Blade Icons
 
-## 1. Setup & Environment
-- [x] Install Livewire via Composer (`composer require livewire/livewire`)
-- [x] Configure `Plus Jakarta Sans` font & Dark/Light mode theme system in CSS & Blade Layout
+## 1. Package & Icon Installation
+- [ ] Install `blade-ui-kit/blade-heroicons` via Composer for comprehensive Blade Icon provider
+- [ ] Configure Plus Jakarta Sans & Tailwind v4 Sidebar layout CSS
 
-## 2. Database & Models
-- [x] Migration `create_testing_sessions_table`
-- [x] Migration `create_sensor_logs_table`
-- [x] Model `TestingSession` with relationships & helper methods
-- [x] Model `SensorLog` with AQI ($KU = \max$) calculation logic & attributes
+## 2. RBAC & System Navigation System
+- [ ] Migration for RBAC (`roles`, `permissions`, `role_user`, `permission_role`) and `system_navigations`
+- [ ] Models: `Role`, `Permission`, `SystemNavigation`
+- [ ] Update `User` model with RBAC relationships & helper methods (`hasRole`, `hasPermission`)
+- [ ] Seeder: `SetupRbacSeeder` (Seeds Roles, Permissions, Admin User `admin@siasap.test`, and System Navigation links)
 
-## 3. Backend Logic & Ingestion REST API
-- [x] Controller `TelemetryApiController` for ESP32 ingestion endpoint (`POST /api/telemetry`)
-- [x] API routes in `routes/api.php` or `routes/web.php`
-- [x] Sensor Data Generator (Service / Seeder) for quick simulation & benchmarking demo
+## 3. Premium Responsive Sidebar Layout & UI Overhaul
+- [ ] Create Master Layout with Collapsible/Mobile Drawer Sidebar: `resources/views/components/layouts/app.blade.php` & `resources/views/layouts/app.blade.php`
+- [ ] Add Sidebar Navigation Component featuring dynamic System Navigation items & icons
+- [ ] Add Top Header Bar with Breadcrumb, Theme Switcher (Light default), User Dropdown, Live Status Pill
 
-## 4. Frontend & Livewire Components
-- [x] Master Blade Layout `resources/views/components/layouts/app.blade.php` with Font Plus Jakarta Sans, Theme Switcher (Dark/Light), Navigation Header
-- [x] Livewire Component `TelemetryDashboard` (Node Grid, Badges, Real-time Feed with `wire:poll`)
-- [x] Livewire Component `QosAnalytics` (Testing Session Controller, QoS Calculator [PDR, Loss, Hop, RSSI], Head-to-Head Comparative Board)
-- [x] Web Routes configuration (`/` for Telemetry, `/analytics` for QoS Benchmarking)
+## 4. Livewire Components Overhaul & New Views
+- [ ] Update `TelemetryDashboard` to fit the new Admin Dashboard grid layout
+- [ ] Update `QosAnalytics` for QoS Benchmarking view with sidebar alignment
+- [ ] Create `UserManagement` or `NavigationManagement` Livewire components if needed
 
 ## 5. Verification & Git Commit
-- [x] Test Database migration & Tinker script test
-- [x] Verify Livewire components & API Ingestion
-- [x] Commit code to Git repository
+- [ ] Run `php artisan db:seed --class=SetupRbacSeeder`
+- [ ] Run automated tests (`php artisan test`)
+- [ ] Execute Git commit for all updated code

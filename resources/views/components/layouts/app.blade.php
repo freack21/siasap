@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $title ?? 'SIASAP — Pemantauan IoT & Benchmark Topologi' }}</title>
+    <title>{{ $title ?? 'SIASAP — Dashboard Pemantauan IoT & Benchmark QoS' }}</title>
 
     <!-- Plus Jakarta Sans Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -24,61 +24,140 @@
     @endif
     @livewireStyles
 </head>
-<body class="h-full bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 flex flex-col font-sans antialiased selection:bg-sky-500 selection:text-white transition-colors duration-200">
-    
-    <!-- Top Glassmorphism Navigation Bar -->
-    <header class="sticky top-0 z-50 glass-panel border-b border-slate-200/80 dark:border-slate-800/80 transition-colors">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-16 gap-4">
-                
-                <!-- Logo & Brand Title -->
-                <div class="flex items-center gap-3">
+<body class="h-full bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 font-sans antialiased transition-colors duration-200"
+      x-data="{ sidebarOpen: false }">
+
+    <div class="min-h-full flex flex-col lg:flex-row">
+        
+        <!-- Mobile Sidebar Overlay Backdrop -->
+        <div x-show="sidebarOpen" 
+             x-transition:enter="transition-opacity ease-linear duration-300"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="transition-opacity ease-linear duration-300"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             @click="sidebarOpen = false"
+             class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-40 lg:hidden">
+        </div>
+
+        <!-- Collapsible Sidebar -->
+        <aside class="fixed inset-y-0 left-0 z-50 w-72 bg-white dark:bg-slate-900 border-r border-slate-200/80 dark:border-slate-800 flex flex-col justify-between transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:w-64 shrink-0 shadow-sm"
+               :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'">
+            
+            <div class="flex flex-col h-full">
+                <!-- Sidebar Header & Brand Logo -->
+                <div class="h-16 px-6 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
                     <a href="{{ route('telemetry') }}" class="flex items-center gap-3 group">
-                        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-600 to-indigo-600 flex items-center justify-center text-white shadow-md shadow-sky-500/20 group-hover:scale-105 transition-transform duration-200">
-                            <svg class="w-5 h-5 stroke-[2.2]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M9.348 14.651a3.75 3.75 0 010-5.303m5.304 0a3.75 3.75 0 010 5.303m-7.425 2.122a6.75 6.75 0 010-9.546m9.546 0a6.75 6.75 0 010 9.546M5.106 18.894c-3.808-3.807-3.808-9.98 0-13.788m13.788 0c3.808 3.807 3.808 9.98 0 13.788M12 12h.008v.008H12V12z" />
-                            </svg>
+                        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-sky-600 to-indigo-600 flex items-center justify-center text-white shadow-md shadow-sky-500/20 group-hover:scale-105 transition-transform">
+                            <x-heroicon-o-signal class="w-5 h-5 stroke-[2.2]" />
                         </div>
                         <div>
-                            <div class="flex items-center gap-2">
+                            <div class="flex items-center gap-1.5">
                                 <span class="font-extrabold text-lg tracking-tight bg-gradient-to-r from-slate-900 via-sky-800 to-indigo-900 dark:from-white dark:via-sky-300 dark:to-indigo-300 bg-clip-text text-transparent">
                                     SIASAP
                                 </span>
-                                <span class="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-full bg-sky-500/10 text-sky-600 dark:bg-sky-400/10 dark:text-sky-400 border border-sky-500/20">
-                                    IoT & QoS Lab
+                                <span class="px-1.5 py-0.5 text-[9px] font-extrabold uppercase rounded bg-sky-500/10 text-sky-600 dark:bg-sky-400/10 dark:text-sky-400 border border-sky-500/20">
+                                    v2.0
                                 </span>
                             </div>
-                            <p class="text-xs text-slate-500 dark:text-slate-400 font-medium hidden sm:block">
-                                System Air Quality & Network Benchmark
+                            <p class="text-[10px] text-slate-400 font-semibold tracking-wider uppercase">
+                                IoT & QoS Benchmark
                             </p>
                         </div>
                     </a>
+
+                    <!-- Close Button for Mobile Drawer -->
+                    <button @click="sidebarOpen = false" class="lg:hidden text-slate-400 hover:text-slate-600">
+                        <x-heroicon-o-x-mark class="w-6 h-6" />
+                    </button>
                 </div>
 
-                <!-- Navigation Tabs -->
-                <nav class="flex items-center gap-1 sm:gap-2">
-                    <a href="{{ route('telemetry') }}" 
-                       class="px-3.5 py-2 rounded-lg text-sm font-semibold transition-all flex items-center gap-2 {{ request()->routeIs('telemetry') ? 'bg-sky-500/10 text-sky-700 dark:bg-sky-400/15 dark:text-sky-300 border border-sky-500/20' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/50 dark:hover:bg-slate-800/50' }}">
-                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3m0 0l.5 1.5m-17-1.5l-.5 1.5M9 11.25v1.5M12 9v3.75M15 6v6.75" />
-                        </svg>
-                        <span>Monitoring Live</span>
-                    </a>
+                <!-- User Profile Card Component in Sidebar -->
+                <div class="p-4 mx-3 my-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800/80 flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-sky-600 to-indigo-600 text-white font-black flex items-center justify-center text-sm shadow-md">
+                        AD
+                    </div>
+                    <div class="overflow-hidden">
+                        <h4 class="text-xs font-extrabold text-slate-900 dark:text-white truncate">Administrator SIASAP</h4>
+                        <span class="inline-block text-[10px] font-bold text-sky-600 dark:text-sky-400 uppercase tracking-wider">Super Admin</span>
+                    </div>
+                </div>
 
-                    <a href="{{ route('qos-analytics') }}" 
-                       class="px-3.5 py-2 rounded-lg text-sm font-semibold transition-all flex items-center gap-2 {{ request()->routeIs('qos-analytics') ? 'bg-indigo-500/10 text-indigo-700 dark:bg-indigo-400/15 dark:text-indigo-300 border border-indigo-500/20' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/50 dark:hover:bg-slate-800/50' }}">
-                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
-                        </svg>
-                        <span>Benchmark QoS</span>
-                    </a>
+                <!-- Dynamic Navigation Menu Items -->
+                <nav class="flex-grow px-3 py-2 space-y-6 overflow-y-auto">
+                    @php
+                        $navSections = \App\Models\SystemNavigation::active()->get()->groupBy('section');
+                    @endphp
+
+                    @foreach ($navSections as $section => $navs)
+                        <div class="space-y-1">
+                            <span class="px-3 text-[10px] font-extrabold tracking-wider uppercase text-slate-400 dark:text-slate-500">
+                                {{ $section }}
+                            </span>
+                            <div class="mt-1 space-y-0.5">
+                                @foreach ($navs as $nav)
+                                    @php
+                                        $isActive = $nav->route_name && request()->routeIs($nav->route_name);
+                                        $url = $nav->route_name ? route($nav->route_name) : ($nav->url ?? '#');
+                                    @endphp
+                                    <a href="{{ $url }}" 
+                                       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all group {{ $isActive ? 'bg-sky-500/10 text-sky-700 dark:bg-sky-400/15 dark:text-sky-300 font-bold border-l-4 border-sky-500 shadow-sm' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60' }}">
+                                        
+                                        <x-dynamic-component :component="$nav->icon" class="w-4 h-4 shrink-0 transition-transform group-hover:scale-110 {{ $isActive ? 'text-sky-600 dark:text-sky-400' : 'text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-200' }}" />
+                                        
+                                        <span class="truncate">{{ $nav->title }}</span>
+                                    </a>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endforeach
                 </nav>
 
-                <!-- Actions: Theme Switcher Toggle -->
-                <div class="flex items-center gap-2">
+                <!-- Sidebar Footer Status -->
+                <div class="p-4 border-t border-slate-100 dark:border-slate-800 text-[11px] text-slate-400 flex items-center justify-between bg-slate-50/50 dark:bg-slate-900/50">
+                    <div class="flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                        <span class="font-semibold text-slate-600 dark:text-slate-300">Gateway Active</span>
+                    </div>
+                    <span class="font-mono text-[10px]">3 Nodes</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+            
+            <!-- Top Navbar Header Bar -->
+            <header class="sticky top-0 z-30 h-16 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800 px-4 sm:px-6 flex items-center justify-between gap-4">
+                
+                <div class="flex items-center gap-3">
+                    <!-- Mobile Hamburger Menu Button -->
+                    <button @click="sidebarOpen = !sidebarOpen" 
+                            class="lg:hidden p-2 rounded-xl text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 focus:outline-none">
+                        <x-heroicon-o-bars-3 class="w-6 h-6" />
+                    </button>
+
+                    <!-- Breadcrumbs / Page Title Indicator -->
+                    <div class="flex items-center gap-2 text-xs font-semibold text-slate-500 dark:text-slate-400">
+                        <span>SIASAP</span>
+                        <x-heroicon-o-chevron-right class="w-3.5 h-3.5 text-slate-300" />
+                        <span class="text-slate-900 dark:text-white font-bold">{{ $title ?? 'Dashboard Monitoring' }}</span>
+                    </div>
+                </div>
+
+                <!-- Right Action Bar: Theme Switcher & Quick Status -->
+                <div class="flex items-center gap-3">
+                    <!-- Live Rest API Ingestion Pill -->
+                    <div class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:bg-emerald-400/10 dark:text-emerald-400 border border-emerald-500/20 text-xs font-bold">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                        <span>REST API Ready (`/api/telemetry`)</span>
+                    </div>
+
+                    <!-- Theme Switcher Toggle (Light default / Dark mode) -->
                     <button id="theme-toggle" type="button" 
-                            class="p-2.5 rounded-xl text-slate-500 dark:text-slate-400 hover:bg-slate-200/70 dark:hover:bg-slate-800/80 focus:outline-none focus:ring-2 focus:ring-sky-500/50 transition-all border border-slate-200/80 dark:border-slate-800/80"
-                            title="Beralih Tema Terang/Gelap">
+                            class="p-2 rounded-xl text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 focus:outline-none transition-all border border-slate-200/80 dark:border-slate-800"
+                            title="Beralih Tema Terang / Gelap">
                         <!-- Sun Icon (shown in dark mode) -->
                         <svg id="theme-toggle-light-icon" class="hidden w-5 h-5 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m0 13.5V21m8.966-8.966h-2.25M4.5 12H2.25m15.364-6.364l-1.591 1.591M6.758 17.242l-1.591 1.591m12.728 0l-1.591-1.591M6.758 6.758L5.167 5.167M12 7.5a4.5 4.5 0 100 9 4.5 4.5 0 000-9z" />
@@ -89,27 +168,24 @@
                         </svg>
                     </button>
                 </div>
-            </div>
-        </div>
-    </header>
+            </header>
 
-    <!-- Main Page Content -->
-    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {{ $slot }}
-    </main>
+            <!-- Main Page View Slot -->
+            <main class="flex-grow p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto space-y-6">
+                {{ $slot }}
+            </main>
 
-    <!-- Footer -->
-    <footer class="mt-auto border-t border-slate-200/80 dark:border-slate-800/80 py-6 text-xs text-slate-500 dark:text-slate-400 bg-white/50 dark:bg-slate-900/50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div class="flex items-center gap-2">
-                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                <span>SIASAP IoT Gateway & Realtime Telemetry Platform</span>
-            </div>
-            <div>
-                Built for Multi-Sensor Gas Monitoring ($\text{CO}_2, \text{NH}_3, \text{CO}, \text{H}_2$) & QoS Benchmarking
-            </div>
+            <!-- Footer -->
+            <footer class="mt-auto border-t border-slate-200/80 dark:border-slate-800 py-4 px-6 text-xs text-slate-500 dark:text-slate-400 bg-white/50 dark:bg-slate-900/50 flex flex-col sm:flex-row items-center justify-between gap-2">
+                <div>
+                    <strong>SIASAP IoT Dashboard</strong> — Air Quality Sensor Monitoring & QoS Network Benchmarking
+                </div>
+                <div class="font-mono text-[11px]">
+                    SetupRbacSeeder & SystemNavigation Active
+                </div>
+            </footer>
         </div>
-    </footer>
+    </div>
 
     @livewireScripts
 
