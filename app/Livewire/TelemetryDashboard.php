@@ -98,22 +98,24 @@ class TelemetryDashboard extends Component
     {
         $activeSession = TestingSession::active()->latest()->first();
 
-        // 3 Nodes Summary Cards
+        // Dynamic Nodes Summary Cards
+        $nodesList = \App\Models\Node::with('room')->get();
         $nodesData = [];
-        for ($i = 1; $i <= 3; $i++) {
-            $latest = SensorLog::where('node_id', $i)->latest()->first();
+        foreach ($nodesList as $node) {
+            $latest = SensorLog::where('node_id', $node->id)->latest()->first();
             $isOnline = $latest && $latest->created_at->diffInSeconds(now()) <= 30;
 
-            $nodesData[$i] = [
-                'node_id' => $i,
-                'name' => "Node Sensor #{$i}",
+            $nodesData[$node->id] = [
+                'node_id' => $node->id,
+                'name' => $node->name,
+                'room_name' => $node->room?->name ?? 'Tanpa Ruangan',
                 'latest' => $latest,
                 'is_online' => $isOnline,
             ];
         }
 
         // Query Logs with Filters
-        $logsQuery = SensorLog::query()->latest();
+        $logsQuery = SensorLog::with(['node.room'])->latest();
 
         if ($this->selectedTopology !== 'all') {
             $logsQuery->where('topology_type', $this->selectedTopology);

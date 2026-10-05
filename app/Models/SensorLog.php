@@ -40,6 +40,11 @@ class SensorLog extends Model
         return $this->belongsTo(TestingSession::class);
     }
 
+    public function node()
+    {
+        return $this->belongsTo(Node::class, 'node_id', 'id');
+    }
+
     /**
      * Calculate Air Quality Value (KU) as max of 4 gas parameters
      */

@@ -129,14 +129,20 @@
                                 N{{ $nodeId }}
                             </div>
                             <div>
-                                <h3 class="font-bold text-slate-900 dark:text-white text-sm">Node Sensor #{{ $nodeId }}</h3>
-                                <span class="text-xs text-slate-500 dark:text-slate-400">
-                                    @if ($latest)
-                                        Update: {{ $latest->created_at->diffForHumans() }}
-                                    @else
-                                        Belum Ada Data
-                                    @endif
-                                </span>
+                                <h3 class="font-bold text-slate-900 dark:text-white text-sm">{{ $node['name'] }}</h3>
+                                <div class="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1.5 mt-0.5">
+                                    <span class="px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 font-bold border border-indigo-500/20 text-[10px]">
+                                        {{ $node['room_name'] }}
+                                    </span>
+                                    <span>•</span>
+                                    <span>
+                                        @if ($latest)
+                                            {{ $latest->created_at->diffForHumans() }}
+                                        @else
+                                            Belum Ada Data
+                                        @endif
+                                    </span>
+                                </div>
                             </div>
                         </div>
 

@@ -33,13 +33,9 @@ class UserHistory extends Component
 
     public function render()
     {
-        $areaNames = [
-            1 => 'Area Ruang Utama & Lobby',
-            2 => 'Area Halaman Terbuka',
-            3 => 'Area Laboratorium / Produksi',
-        ];
+        $nodes = \App\Models\Node::with('room')->get();
 
-        $query = SensorLog::query()->latest();
+        $query = SensorLog::with(['node.room'])->latest();
 
         if ($this->selectedArea !== 'all') {
             $query->where('node_id', (int) $this->selectedArea);
@@ -57,7 +53,7 @@ class UserHistory extends Component
 
         return view('livewire.user-history', [
             'logs' => $logs,
-            'areaNames' => $areaNames,
+            'nodes' => $nodes,
         ]);
     }
 }

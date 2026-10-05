@@ -1,13 +1,28 @@
-# Task Plan: Single-Door Professional Login & Strict RBAC Enforcement
+# Task: Implement Master Ruangan & Node Perangkat Management (Normalized DB + Admin CRUD + Dynamic Dashboard)
 
-## 1. Professional Single-Door Login Overhaul
-- [ ] Update `app/Livewire/Auth/Login.php` to remove demo presets and implement smart single-door RBAC redirect
-- [ ] Overhaul `resources/views/livewire/auth/login.blade.php`: Remove all demo buttons & password hints, create a ultra-clean professional login interface
+## Status: COMPLETED
 
-## 2. Strict RBAC System Enforcement
-- [ ] Update Layout Sidebar Navigation (`components/layouts/app.blade.php` & `layouts/app.blade.php`) to filter menu items strictly by logged-in user permissions (`$user->hasPermission(...)`)
-- [ ] Add permission authorization checks (`abort(403)`) on all Admin Livewire components (`TelemetryDashboard`, `QosAnalytics`, `RbacManagement`, `NavigationManagement`)
+### Phase 1: Database Architecture & Models
+- [x] Create migration `2026_10_05_000005_create_rooms_and_nodes_tables.php` for normalized `rooms` and `nodes` tables
+- [x] Create Model `app/Models/Room.php` (Room hasMany Nodes)
+- [x] Create Model `app/Models/Node.php` (Node belongsTo Room, hasMany SensorLogs)
+- [x] Update `app/Models/SensorLog.php` (SensorLog belongsTo Node)
 
-## 3. Verification & Testing
-- [ ] Run `php artisan test` to verify single-door login, RBAC redirects, and 403 authorization checks
-- [ ] Execute Git commit
+### Phase 2: RBAC Seeder & Default Data
+- [x] Update `SetupRbacSeeder.php` to include `rooms.manage` permission and system navigation item `Master Ruangan & Node`
+- [x] Seed default 3 Rooms (`Ruang Tamu`, `Kamar`, `Dapur`) and 3 Nodes in `SetupRbacSeeder`
+- [x] Re-run `php artisan db:seed --class=SetupRbacSeeder`
+
+### Phase 3: Admin Livewire Component & UI (Master Ruangan & Node)
+- [x] Create Livewire component `app/Livewire/RoomManagement.php` (CRUD for Rooms & Nodes with validation, RBAC checks)
+- [x] Create Livewire view `resources/views/livewire/room-management.blade.php` (Professional Tailwind UI with modals/forms for managing rooms & assigning nodes)
+- [x] Register route `/admin/rooms` in `routes/web.php`
+
+### Phase 4: Dynamic Integration in User & Admin Views
+- [x] Update `UserDashboard.php` & `user-dashboard.blade.php` to fetch room/node names dynamically from DB
+- [x] Update `UserHistory.php` & `user-history.blade.php` to display dynamic room/node names
+- [x] Update `TelemetryDashboard.php` & `telemetry-dashboard.blade.php` to display dynamic room/node names
+
+### Phase 5: Verification & Tests
+- [x] Run `php artisan test` to verify all automated feature tests pass (10/10 tests passed)
+- [x] Perform git commit

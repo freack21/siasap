@@ -19,18 +19,14 @@ class UserDashboard extends Component
 
     public function render()
     {
-        $areaNames = [
-            1 => 'Area Ruang Utama & Lobby',
-            2 => 'Area Halaman Terbuka',
-            3 => 'Area Laboratorium / Produksi',
-        ];
+        $nodes = \App\Models\Node::with('room')->where('is_active', true)->get();
 
         $areasData = [];
         $maxKuOverall = 0;
         $worstStatus = 'Baik';
 
-        for ($i = 1; $i <= 3; $i++) {
-            $latest = SensorLog::where('node_id', $i)->latest()->first();
+        foreach ($nodes as $node) {
+            $latest = SensorLog::where('node_id', $node->id)->latest()->first();
             $isOnline = $latest && $latest->created_at->diffInSeconds(now()) <= 30;
 
             if ($latest && $latest->ku_value > $maxKuOverall) {
@@ -38,9 +34,13 @@ class UserDashboard extends Component
                 $worstStatus = $latest->ku_status;
             }
 
-            $areasData[$i] = [
-                'area_id' => $i,
-                'name' => $areaNames[$i] ?? "Area Sensor #{$i}",
+            $areaName = $node->room ? $node->room->name : $node->name;
+
+            $areasData[$node->id] = [
+                'area_id' => $node->id,
+                'name' => $areaName,
+                'node_name' => $node->name,
+                'room_code' => $node->room?->code,
                 'latest' => $latest,
                 'is_online' => $isOnline,
             ];

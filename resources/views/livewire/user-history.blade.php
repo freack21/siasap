@@ -40,10 +40,10 @@
                 <!-- Filter Area -->
                 <div class="space-y-1">
                     <select wire:model.live="selectedArea" class="px-3 py-2 bg-slate-100 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 font-semibold focus:outline-none">
-                        <option value="all">Semua Lokasi Area</option>
-                        <option value="1">Lobby & Ruang Utama</option>
-                        <option value="2">Halaman Terbuka</option>
-                        <option value="3">Laboratorium / Produksi</option>
+                        <option value="all">Semua Lokasi Ruangan</option>
+                        @foreach ($nodes as $node)
+                            <option value="{{ $node->id }}">{{ $node->room ? $node->room->name : $node->name }}</option>
+                        @endforeach
                     </select>
                 </div>
 
@@ -81,7 +81,7 @@
                     @forelse ($logs as $log)
                         @php 
                             $badge = $log->status_badge;
-                            $areaName = $areaNames[$log->node_id] ?? "Area Sensor #{$log->node_id}";
+                            $areaName = $log->node?->room?->name ?? ($log->node?->name ?? "Area Sensor #{$log->node_id}");
                         @endphp
                         <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors">
                             <td class="py-4 px-6 font-semibold text-slate-900 dark:text-white">

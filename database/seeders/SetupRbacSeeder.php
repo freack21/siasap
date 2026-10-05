@@ -40,6 +40,7 @@ class SetupRbacSeeder extends Seeder
             ['name' => 'telemetry.simulate', 'display_name' => 'Jalankan Simulasi Transmisi', 'group' => 'Panel Pengelola'],
             ['name' => 'qos.view', 'display_name' => 'Lihat Analisis Topologi', 'group' => 'Panel Pengelola'],
             ['name' => 'session.manage', 'display_name' => 'Mulai & Kelola Sesi Pengujian', 'group' => 'Panel Pengelola'],
+            ['name' => 'rooms.manage', 'display_name' => 'Kelola Master Ruangan & Node', 'group' => 'Panel Pengelola'],
             ['name' => 'users.manage', 'display_name' => 'Kelola Pengguna & Hak Akses', 'group' => 'Pengaturan'],
             ['name' => 'navigation.manage', 'display_name' => 'Kelola Navigasi Sistem', 'group' => 'Pengaturan'],
         ];
@@ -58,6 +59,7 @@ class SetupRbacSeeder extends Seeder
             $permModels['telemetry.simulate']->id,
             $permModels['qos.view']->id,
             $permModels['session.manage']->id,
+            $permModels['rooms.manage']->id,
         ]);
         $userRole->permissions()->sync([
             $permModels['user.view']->id,
@@ -83,7 +85,65 @@ class SetupRbacSeeder extends Seeder
         );
         $publicUser->roles()->sync([$userRole->id]);
 
-        // 5. Create System Navigations
+        // 5. Seed 3 Default Rooms & 3 Nodes
+        $roomTamu = \App\Models\Room::firstOrCreate(
+            ['code' => 'ROOM-TAMU'],
+            [
+                'name' => 'Ruang Tamu',
+                'description' => 'Area ruang tamu utama untuk menyambut pengunjung.',
+            ]
+        );
+
+        $roomKamar = \App\Models\Room::firstOrCreate(
+            ['code' => 'ROOM-KAMAR'],
+            [
+                'name' => 'Kamar',
+                'description' => 'Area kamar tidur.',
+            ]
+        );
+
+        $roomDapur = \App\Models\Room::firstOrCreate(
+            ['code' => 'ROOM-DAPUR'],
+            [
+                'name' => 'Dapur',
+                'description' => 'Area dapur tempat memasak dan pengolahan makanan.',
+            ]
+        );
+
+        \App\Models\Node::firstOrCreate(
+            ['id' => 1],
+            [
+                'room_id' => $roomTamu->id,
+                'name' => 'Node Sensor 1 - Ruang Tamu',
+                'code' => 'NODE-01',
+                'description' => 'Node sensor utama di area Ruang Tamu.',
+                'is_active' => true,
+            ]
+        );
+
+        \App\Models\Node::firstOrCreate(
+            ['id' => 2],
+            [
+                'room_id' => $roomKamar->id,
+                'name' => 'Node Sensor 2 - Kamar',
+                'code' => 'NODE-02',
+                'description' => 'Node sensor di area Kamar.',
+                'is_active' => true,
+            ]
+        );
+
+        \App\Models\Node::firstOrCreate(
+            ['id' => 3],
+            [
+                'room_id' => $roomDapur->id,
+                'name' => 'Node Sensor 3 - Dapur',
+                'code' => 'NODE-03',
+                'description' => 'Node sensor di area Dapur.',
+                'is_active' => true,
+            ]
+        );
+
+        // 6. Create System Navigations
         $navigations = [
             // Section: Pemantauan Udara
             [
@@ -120,6 +180,14 @@ class SetupRbacSeeder extends Seeder
                 'section' => 'PANEL PENGELOLA',
                 'order' => 4,
             ],
+            [
+                'title' => 'Master Ruangan & Node',
+                'route_name' => 'room-management',
+                'icon' => 'heroicon-o-building-office-2',
+                'permission_name' => 'rooms.manage',
+                'section' => 'PANEL PENGELOLA',
+                'order' => 5,
+            ],
 
             // Section: Pengaturan Hak Akses
             [
@@ -128,7 +196,7 @@ class SetupRbacSeeder extends Seeder
                 'icon' => 'heroicon-o-shield-check',
                 'permission_name' => 'users.manage',
                 'section' => 'PENGATURAN HAK AKSES',
-                'order' => 5,
+                'order' => 6,
             ],
             [
                 'title' => 'Navigasi Sistem',
@@ -136,7 +204,7 @@ class SetupRbacSeeder extends Seeder
                 'icon' => 'heroicon-o-bars-3-center-left',
                 'permission_name' => 'navigation.manage',
                 'section' => 'PENGATURAN HAK AKSES',
-                'order' => 6,
+                'order' => 7,
             ],
         ];
 
@@ -146,7 +214,7 @@ class SetupRbacSeeder extends Seeder
             SystemNavigation::create($nav);
         }
 
-        // 6. Generate Initial Telemetry Sensor Logs for 3 Nodes (CO2, NH3, CO, H2)
+        // 7. Generate Initial Telemetry Sensor Logs for 3 Nodes (CO2, NH3, CO, H2)
         if (\App\Models\SensorLog::count() === 0) {
             foreach ([1, 2, 3] as $nodeId) {
                 $co2 = match ($nodeId) { 1 => 25.5, 2 => 18.0, 3 => 42.0 };
