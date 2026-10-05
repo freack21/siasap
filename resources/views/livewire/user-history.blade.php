@@ -73,6 +73,7 @@
                         <th class="py-3.5 px-6">Waktu & Tanggal</th>
                         <th class="py-3.5 px-4">Lokasi Area</th>
                         <th class="py-3.5 px-4 text-center">Kategori Udara</th>
+                        <th class="py-3.5 px-4 text-center">Rincian Gas (PPM)</th>
                         <th class="py-3.5 px-6">Catatan Kesehatan / Rekomendasi</th>
                     </tr>
                 </thead>
@@ -95,6 +96,17 @@
                                     {{ $log->ku_status }} ({{ $log->ku_value }} PPM)
                                 </span>
                             </td>
+                            <td class="py-4 px-4 text-center">
+                                <div class="inline-flex items-center gap-2 text-[11px] font-medium bg-slate-50 dark:bg-slate-800/60 px-3 py-1.5 rounded-xl border border-slate-200/80 dark:border-slate-700">
+                                    <span><strong class="text-slate-700 dark:text-slate-300">CO₂:</strong> {{ $log->co2 }}</span>
+                                    <span class="text-slate-300 dark:text-slate-600">•</span>
+                                    <span><strong class="text-slate-700 dark:text-slate-300">NH₃:</strong> {{ $log->nh3 }}</span>
+                                    <span class="text-slate-300 dark:text-slate-600">•</span>
+                                    <span><strong class="text-slate-700 dark:text-slate-300">CO:</strong> {{ $log->co }}</span>
+                                    <span class="text-slate-300 dark:text-slate-600">•</span>
+                                    <span><strong class="text-slate-700 dark:text-slate-300">H₂:</strong> {{ $log->h2 }}</span>
+                                </div>
+                            </td>
                             <td class="py-4 px-6 text-slate-600 dark:text-slate-300">
                                 @if ($log->ku_status === 'Baik')
                                     <span class="text-emerald-600 dark:text-emerald-400 font-semibold">✓ Udara Segar & Safe! Ideal untuk aktivitas luar.</span>
@@ -109,7 +121,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="4" class="py-12 text-center text-slate-400">
+                            <td colspan="5" class="py-12 text-center text-slate-400">
                                 Tidak ada data riwayat kualitas udara yang sesuai dengan filter pencarian.
                             </td>
                         </tr>

@@ -145,5 +145,32 @@ class SetupRbacSeeder extends Seeder
         foreach ($navigations as $nav) {
             SystemNavigation::create($nav);
         }
+
+        // 6. Generate Initial Telemetry Sensor Logs for 3 Nodes (CO2, NH3, CO, H2)
+        if (\App\Models\SensorLog::count() === 0) {
+            foreach ([1, 2, 3] as $nodeId) {
+                $co2 = match ($nodeId) { 1 => 25.5, 2 => 18.0, 3 => 42.0 };
+                $nh3 = match ($nodeId) { 1 => 12.0, 2 => 8.5, 3 => 24.0 };
+                $co  = match ($nodeId) { 1 => 5.0,  2 => 3.2, 3 => 15.0 };
+                $h2  = match ($nodeId) { 1 => 2.5,  2 => 1.8, 3 => 7.5 };
+
+                $kuValue = \App\Models\SensorLog::computeKuValue($co2, $nh3, $co, $h2);
+                $kuStatus = \App\Models\SensorLog::computeKuStatus($kuValue);
+
+                \App\Models\SensorLog::create([
+                    'node_id' => $nodeId,
+                    'co2' => $co2,
+                    'nh3' => $nh3,
+                    'co' => $co,
+                    'h2' => $h2,
+                    'ku_value' => $kuValue,
+                    'ku_status' => $kuStatus,
+                    'rssi' => -55 - ($nodeId * 10),
+                    'seq_number' => 1,
+                    'hop_count' => ($nodeId === 3 ? 1 : 1),
+                    'topology_type' => 'star',
+                ]);
+            }
+        }
     }
 }

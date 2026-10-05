@@ -108,6 +108,29 @@
                                     <span class="text-sm font-bold opacity-90">{{ $latest->ku_value }} PPM</span>
                                 </div>
                             </div>
+
+                            <!-- 4 Gas Parameters Grid (CO2, NH3, CO, H2) -->
+                            <div class="space-y-1.5 pt-1">
+                                <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Konsentrasi Gas Terdeteksi (PPM)</span>
+                                <div class="grid grid-cols-2 gap-2 text-xs">
+                                    <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800/80 flex items-center justify-between">
+                                        <span class="text-slate-500 dark:text-slate-400 font-bold text-[11px]">CO₂</span>
+                                        <span class="font-black text-slate-800 dark:text-slate-200">{{ $latest->co2 }} <span class="text-[9px] font-normal text-slate-400">PPM</span></span>
+                                    </div>
+                                    <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800/80 flex items-center justify-between">
+                                        <span class="text-slate-500 dark:text-slate-400 font-bold text-[11px]">NH₃</span>
+                                        <span class="font-black text-slate-800 dark:text-slate-200">{{ $latest->nh3 }} <span class="text-[9px] font-normal text-slate-400">PPM</span></span>
+                                    </div>
+                                    <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800/80 flex items-center justify-between">
+                                        <span class="text-slate-500 dark:text-slate-400 font-bold text-[11px]">CO</span>
+                                        <span class="font-black text-slate-800 dark:text-slate-200">{{ $latest->co }} <span class="text-[9px] font-normal text-slate-400">PPM</span></span>
+                                    </div>
+                                    <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800/80 flex items-center justify-between">
+                                        <span class="text-slate-500 dark:text-slate-400 font-bold text-[11px]">H₂</span>
+                                        <span class="font-black text-slate-800 dark:text-slate-200">{{ $latest->h2 }} <span class="text-[9px] font-normal text-slate-400">PPM</span></span>
+                                    </div>
+                                </div>
+                            </div>
                         @else
                             <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40 text-center text-slate-400 text-xs">
                                 Belum ada data kualitas udara terrekam.
@@ -129,11 +152,14 @@
     </div>
 
     <!-- Friendly Air Quality Level Guide Section -->
-    <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/90 dark:border-slate-800 shadow-sm p-6 space-y-4">
-        <h2 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
-            <x-heroicon-o-information-circle class="w-5 h-5 text-indigo-500" />
-            <span>Panduan Kategori Kualitas Udara Lingkungan</span>
-        </h2>
+    <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/90 dark:border-slate-800 shadow-sm p-6 space-y-5">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-2">
+            <h2 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                <x-heroicon-o-information-circle class="w-5 h-5 text-indigo-500" />
+                <span>Panduan Kategori & 4 Indikator Parameter Gas Udara</span>
+            </h2>
+            <span class="text-xs text-slate-400">Satuan pengisian: PPM (Parts Per Million)</span>
+        </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
             <div class="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 space-y-1">
@@ -154,6 +180,29 @@
             <div class="p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 space-y-1">
                 <span class="font-black text-rose-700 dark:text-rose-400 text-sm">4. Berbahaya (> 300 PPM)</span>
                 <p class="text-slate-600 dark:text-slate-300">Tingkat polutan tinggi! Disarankan evakuasi dan penggunaan masker khusus.</p>
+            </div>
+        </div>
+
+        <!-- 4 Gas Parameters Info Cards -->
+        <div class="pt-2 border-t border-slate-100 dark:border-slate-800">
+            <h3 class="text-xs font-extrabold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-3">4 Jenis Gas yang Dipantau Oleh Perangkat Sensor:</h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+                <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800 space-y-0.5">
+                    <span class="font-black text-slate-900 dark:text-white">CO₂ (Karbon Dioksida)</span>
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400">Gas hasil respirasi & pembakaran.</p>
+                </div>
+                <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800 space-y-0.5">
+                    <span class="font-black text-slate-900 dark:text-white">NH₃ (Amonia)</span>
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400">Gas berbau tajam hasil limbah/kimia.</p>
+                </div>
+                <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800 space-y-0.5">
+                    <span class="font-black text-slate-900 dark:text-white">CO (Karbon Monoksida)</span>
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400">Gas berbahaya hasil asap/kendaraan.</p>
+                </div>
+                <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800 space-y-0.5">
+                    <span class="font-black text-slate-900 dark:text-white">H₂ (Hidrogen)</span>
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400">Gas mudah terbakar dalam udara.</p>
+                </div>
             </div>
         </div>
     </div>
