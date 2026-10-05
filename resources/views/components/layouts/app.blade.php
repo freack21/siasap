@@ -204,16 +204,6 @@
             <main class="flex-grow p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto space-y-6">
                 {{ $slot }}
             </main>
-
-            <!-- Footer -->
-            <footer class="mt-auto border-t border-slate-200/80 dark:border-slate-800 py-4 px-6 text-xs text-slate-500 dark:text-slate-400 bg-white/50 dark:bg-slate-900/50 flex flex-col sm:flex-row items-center justify-between gap-2">
-                <div>
-                    <strong>SIASAP</strong> — Sistem Pemantauan Kualitas Udara Lingkungan
-                </div>
-                <div class="font-medium text-[11px]">
-                    Sistem Pemantauan Aktif
-                </div>
-            </footer>
         </div>
     </div>
 
