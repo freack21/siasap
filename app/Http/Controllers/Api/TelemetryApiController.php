@@ -16,6 +16,14 @@ class TelemetryApiController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
+        // Support fallback from 'node' parameter (e.g. "NODE_1" or 1) to 'node_id'
+        if ($request->has('node') && !$request->has('node_id')) {
+            $parsedNode = (int) filter_var($request->input('node'), FILTER_SANITIZE_NUMBER_INT);
+            if ($parsedNode > 0) {
+                $request->merge(['node_id' => $parsedNode]);
+            }
+        }
+
         $validator = Validator::make($request->all(), [
             'node_id' => 'required|integer|in:1,2,3',
             'co2' => 'required|numeric|min:0',
