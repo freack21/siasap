@@ -1,4 +1,4 @@
-<div class="space-y-8">
+<div wire:poll.3s="refreshHistory" class="space-y-8">
 
     <!-- Header & Action Toolbar -->
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm">
@@ -9,6 +9,10 @@
                 </h1>
                 <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-sky-500/10 text-sky-600 dark:bg-sky-400/10 dark:text-sky-400 border border-sky-500/20">
                     Catatan Histori
+                </span>
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-600 dark:bg-emerald-400/10 dark:text-emerald-400 border border-emerald-500/20">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                    Live Sync (3s)
                 </span>
             </div>
             <p class="text-sm text-slate-500 dark:text-slate-400">

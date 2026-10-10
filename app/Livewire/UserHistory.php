@@ -31,6 +31,14 @@ class UserHistory extends Component
         $this->resetPage();
     }
 
+    /**
+     * Poll history data every 3 seconds for real-time updates
+     */
+    public function refreshHistory()
+    {
+        // Auto refreshed by Livewire poll
+    }
+
     public function render()
     {
         $nodes = \App\Models\Node::with('room')->get();

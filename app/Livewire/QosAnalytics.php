@@ -25,6 +25,14 @@ class QosAnalytics extends Component
     }
 
     /**
+     * Poll QoS analytics data every 3 seconds for real-time benchmark updates
+     */
+    public function refreshAnalytics()
+    {
+        // Auto refreshed by Livewire poll
+    }
+
+    /**
      * Start a new testing session
      */
     public function startSession()

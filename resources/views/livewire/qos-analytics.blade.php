@@ -1,4 +1,4 @@
-<div class="space-y-8">
+<div wire:poll.3s="refreshAnalytics" class="space-y-8">
 
     <!-- Header & Action Toolbar -->
     <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm">
@@ -9,6 +9,10 @@
                 </h1>
                 <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-indigo-500/10 text-indigo-600 dark:bg-indigo-400/10 dark:text-indigo-400 border border-indigo-500/20">
                     Star vs Mesh
+                </span>
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-600 dark:bg-emerald-400/10 dark:text-emerald-400 border border-emerald-500/20">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                    Live Sync (3s)
                 </span>
             </div>
             <p class="text-sm text-slate-500 dark:text-slate-400">
@@ -44,7 +48,7 @@
     @endif
 
     <!-- Start New Session Form Card -->
-    <div x-data="{ openForm: false }" class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm overflow-hidden">
+    <div wire:ignore.self x-data="{ openForm: false }" class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm overflow-hidden">
         <div class="p-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between cursor-pointer" @click="openForm = !openForm">
             <div class="flex items-center gap-3">
                 <div class="w-8 h-8 rounded-lg bg-sky-500/10 text-sky-600 dark:bg-sky-400/10 dark:text-sky-400 flex items-center justify-center">
@@ -94,11 +98,21 @@
 
     <!-- Head-to-Head QoS Comparative Board -->
     <div>
-        <div class="flex items-center justify-between mb-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
             <h2 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
                 <x-heroicon-o-scale class="w-5 h-5 text-indigo-500" />
                 <span>Side-by-Side Head-to-Head QoS Board</span>
             </h2>
+
+            <div class="flex items-center gap-2 text-xs">
+                <span class="text-slate-500 dark:text-slate-400 font-medium">Filter Sesi:</span>
+                <select wire:model.live="filterSessionId" class="px-3 py-1.5 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 font-semibold focus:outline-none">
+                    <option value="">Semua Sesi Pengujian</option>
+                    @foreach ($sessionsList as $sess)
+                        <option value="{{ $sess->id }}">{{ $sess->name }} ({{ strtoupper($sess->topology_type) }})</option>
+                    @endforeach
+                </select>
+            </div>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
