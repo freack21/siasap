@@ -23,15 +23,19 @@ class UserDashboard extends Component
 
         $areasData = [];
         $maxKuOverall = 0;
-        $worstStatus = 'Baik';
+        $worstStatus = 'Menunggu Data';
+        $hasData = false;
 
         foreach ($nodes as $node) {
             $latest = SensorLog::where('node_id', $node->id)->latest()->first();
             $isOnline = $latest && $latest->created_at->diffInSeconds(now()) <= 30;
 
-            if ($latest && $latest->ku_value > $maxKuOverall) {
-                $maxKuOverall = $latest->ku_value;
-                $worstStatus = $latest->ku_status;
+            if ($latest) {
+                $hasData = true;
+                if ($latest->ku_value > $maxKuOverall) {
+                    $maxKuOverall = $latest->ku_value;
+                    $worstStatus = $latest->ku_status;
+                }
             }
 
             $areaName = $node->room ? $node->room->name : $node->name;
@@ -46,8 +50,19 @@ class UserDashboard extends Component
             ];
         }
 
+        if (!$hasData) {
+            $worstStatus = 'Menunggu Data';
+        }
+
         // Health Advice based on worst status
         $healthAdvice = match ($worstStatus) {
+            'Menunggu Data' => [
+                'title' => 'Menunggu Transmisi Sensor ESP32',
+                'desc' => 'Belum ada data sensor terkirim. Hubungkan dan nyalakan perangkat ESP32 ke jaringan untuk memulai pencatatan kualitas udara.',
+                'color' => 'sky',
+                'badge' => 'bg-sky-500/10 text-sky-600 dark:text-sky-400 border-sky-500/20',
+                'icon' => 'heroicon-o-signal',
+            ],
             'Baik' => [
                 'title' => 'Udara Sangat Bersih & Segar!',
                 'desc' => 'Kondisi lingkungan ideal. Aman untuk semua aktivitas luar ruangan maupun dalam ruangan.',
