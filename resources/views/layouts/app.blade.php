@@ -32,7 +32,7 @@
 <body class="h-full bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 font-sans antialiased transition-colors duration-200"
       x-data="{ sidebarOpen: false }">
 
-    <div class="min-h-full flex flex-col lg:flex-row">
+    <div class="min-h-screen flex flex-col lg:flex-row">
         
         <!-- Mobile Sidebar Overlay Backdrop -->
         <div x-show="sidebarOpen" 
@@ -46,13 +46,13 @@
              class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-40 lg:hidden">
         </div>
 
-        <!-- Collapsible Sidebar -->
-        <aside class="fixed inset-y-0 left-0 z-50 w-72 bg-white dark:bg-slate-900 border-r border-slate-200/80 dark:border-slate-800 flex flex-col justify-between transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:w-64 shrink-0 shadow-sm"
+        <!-- Collapsible Sticky Sidebar (100% Viewport Height) -->
+        <aside class="fixed inset-y-0 left-0 z-50 w-72 bg-white dark:bg-slate-900 border-r border-slate-200/80 dark:border-slate-800 flex flex-col transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:sticky lg:top-0 lg:h-screen lg:w-64 shrink-0 shadow-sm"
                :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'">
             
-            <div class="flex flex-col h-full">
+            <div class="flex flex-col h-full overflow-hidden">
                 <!-- Sidebar Header & Brand Logo -->
-                <div class="h-16 px-6 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                <div class="h-16 px-6 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between shrink-0">
                     <a href="{{ route('user.dashboard') }}" class="flex items-center gap-3 group">
                         <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-sky-600 to-indigo-600 flex items-center justify-center text-white shadow-md shadow-sky-500/20 group-hover:scale-105 transition-transform">
                             <x-heroicon-o-sparkles class="w-5 h-5 stroke-[2.2]" />
@@ -82,8 +82,8 @@
                         $roleName = $user->roles->first()?->display_name ?? 'Pengguna Sistem';
                         $initials = strtoupper(substr($user->name, 0, 2));
                     @endphp
-                    <div class="p-4 mx-3 my-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800/80 flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-sky-600 to-indigo-600 text-white font-black flex items-center justify-center text-sm shadow-md shrink-0">
+                    <div class="p-3 mx-3 my-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800/80 flex items-center gap-3 shrink-0">
+                        <div class="w-9 h-9 rounded-full bg-gradient-to-tr from-sky-600 to-indigo-600 text-white font-black flex items-center justify-center text-xs shadow-md shrink-0">
                             {{ $initials }}
                         </div>
                         <div class="overflow-hidden">
@@ -94,7 +94,7 @@
                 @endauth
 
                 <!-- Dynamic Navigation Menu Items (Strict RBAC Filtered) -->
-                <nav class="flex-grow px-3 py-2 space-y-6 overflow-y-auto">
+                <nav class="flex-1 px-3 py-2 space-y-5 overflow-y-auto custom-scrollbar">
                     @php
                         $user = auth()->user();
                         $navsQuery = \App\Models\SystemNavigation::active()->get();
@@ -133,8 +133,8 @@
                     @endforeach
                 </nav>
 
-                <!-- Sidebar Footer Status & Logout -->
-                <div class="p-3 border-t border-slate-100 dark:border-slate-800 space-y-2 bg-slate-50/50 dark:bg-slate-900/50">
+                <!-- Sidebar Footer Status & Logout (Pinned to Bottom of Viewport) -->
+                <div class="p-3 border-t border-slate-100 dark:border-slate-800 space-y-2 bg-slate-50/50 dark:bg-slate-900/50 shrink-0 mt-auto">
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
                         <button type="submit" 
@@ -155,10 +155,10 @@
         </aside>
 
         <!-- Main Content Area -->
-        <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+        <div class="flex-1 flex flex-col min-w-0">
             
             <!-- Top Navbar Header Bar -->
-            <header class="sticky top-0 z-30 h-16 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800 px-4 sm:px-6 flex items-center justify-between gap-4">
+            <header class="sticky top-0 z-30 h-16 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800 px-4 sm:px-6 flex items-center justify-between gap-4 shrink-0">
                 
                 <div class="flex items-center gap-3">
                     <!-- Mobile Hamburger Menu Button -->
