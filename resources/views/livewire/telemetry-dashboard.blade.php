@@ -15,7 +15,7 @@
                 </span>
             </div>
             <p class="text-sm text-slate-500 dark:text-slate-400">
-                Pemantauan kualitas udara multi-sensor ($\text{CO}_2, \text{NH}_3, \text{CO}, \text{H}_2$) dan telemetri sinyal ESP32.
+                Pemantauan kualitas udara multi-sensor (CO₂, NH₃, CO, H₂) dan telemetri sinyal ESP32.
             </p>
         </div>
 
@@ -185,7 +185,7 @@
                             <div class="grid grid-cols-2 gap-3">
                                 <!-- CO2 -->
                                 <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800">
-                                    <span class="text-xs text-slate-500 dark:text-slate-400 font-medium">Gas $\text{CO}_2$</span>
+                                    <span class="text-xs text-slate-500 dark:text-slate-400 font-semibold">Gas CO₂</span>
                                     <div class="text-base font-bold text-slate-900 dark:text-white mt-0.5">
                                         {{ $latest->co2 }} <span class="text-[10px] text-slate-400 font-normal">PPM</span>
                                     </div>
@@ -193,7 +193,7 @@
 
                                 <!-- NH3 -->
                                 <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800">
-                                    <span class="text-xs text-slate-500 dark:text-slate-400 font-medium">Gas $\text{NH}_3$</span>
+                                    <span class="text-xs text-slate-500 dark:text-slate-400 font-semibold">Gas NH₃</span>
                                     <div class="text-base font-bold text-slate-900 dark:text-white mt-0.5">
                                         {{ $latest->nh3 }} <span class="text-[10px] text-slate-400 font-normal">PPM</span>
                                     </div>
@@ -201,7 +201,7 @@
 
                                 <!-- CO -->
                                 <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800">
-                                    <span class="text-xs text-slate-500 dark:text-slate-400 font-medium">Gas $\text{CO}$</span>
+                                    <span class="text-xs text-slate-500 dark:text-slate-400 font-semibold">Gas CO</span>
                                     <div class="text-base font-bold text-slate-900 dark:text-white mt-0.5">
                                         {{ $latest->co }} <span class="text-[10px] text-slate-400 font-normal">PPM</span>
                                     </div>
@@ -209,7 +209,7 @@
 
                                 <!-- H2 -->
                                 <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800">
-                                    <span class="text-xs text-slate-500 dark:text-slate-400 font-medium">Gas $\text{H}_2$</span>
+                                    <span class="text-xs text-slate-500 dark:text-slate-400 font-semibold">Gas H₂</span>
                                     <div class="text-base font-bold text-slate-900 dark:text-white mt-0.5">
                                         {{ $latest->h2 }} <span class="text-[10px] text-slate-400 font-normal">PPM</span>
                                     </div>
@@ -292,7 +292,7 @@
                         <th class="py-3.5 px-6">Waktu Transmisi</th>
                         <th class="py-3.5 px-4">Node</th>
                         <th class="py-3.5 px-4">Topologi</th>
-                        <th class="py-3.5 px-4">Gas Readings ($\text{CO}_2, \text{NH}_3, \text{CO}, \text{H}_2$)</th>
+                        <th class="py-3.5 px-4">Gas Readings (CO₂, NH₃, CO, H₂)</th>
                         <th class="py-3.5 px-4 text-center">Status KU</th>
                         <th class="py-3.5 px-4 text-right">RSSI</th>
                         <th class="py-3.5 px-4 text-right">Seq #</th>
@@ -316,11 +316,11 @@
                                 </span>
                             </td>
                             <td class="py-3.5 px-4">
-                                <div class="flex items-center gap-3 font-mono">
-                                    <span>$\text{CO}_2$: <strong class="text-slate-800 dark:text-slate-200">{{ $log->co2 }}</strong></span>
-                                    <span>$\text{NH}_3$: <strong class="text-slate-800 dark:text-slate-200">{{ $log->nh3 }}</strong></span>
-                                    <span>$\text{CO}$: <strong class="text-slate-800 dark:text-slate-200">{{ $log->co }}</strong></span>
-                                    <span>$\text{H}_2$: <strong class="text-slate-800 dark:text-slate-200">{{ $log->h2 }}</strong></span>
+                                <div class="flex items-center gap-3 font-mono text-xs">
+                                    <span>CO₂: <strong class="text-slate-800 dark:text-slate-200">{{ $log->co2 }}</strong></span>
+                                    <span>NH₃: <strong class="text-slate-800 dark:text-slate-200">{{ $log->nh3 }}</strong></span>
+                                    <span>CO: <strong class="text-slate-800 dark:text-slate-200">{{ $log->co }}</strong></span>
+                                    <span>H₂: <strong class="text-slate-800 dark:text-slate-200">{{ $log->h2 }}</strong></span>
                                 </div>
                             </td>
                             <td class="py-3.5 px-4 text-center">
