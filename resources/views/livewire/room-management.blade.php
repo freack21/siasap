@@ -1,16 +1,16 @@
 <div class="space-y-6">
-    <x-ui.page-header title="Ruangan & Perangkat"
+    <x-ui.page-header icon="tabler-building-community" title="Ruangan & Perangkat"
                       description="Kelola daftar ruangan yang dipantau beserta node sensor IoT yang terpasang di setiap ruangan.">
         <x-slot:eyebrow>Data Master</x-slot:eyebrow>
         <x-slot:actions>
             @if ($activeTab === 'rooms')
                 <button type="button" wire:click="openCreateRoomModal" class="btn btn-primary">
-                    <x-heroicon-o-plus class="size-4" />
+                    <x-tabler-plus class="size-4" />
                     Tambah Ruangan
                 </button>
             @else
                 <button type="button" wire:click="openCreateNodeModal" class="btn btn-primary">
-                    <x-heroicon-o-plus class="size-4" />
+                    <x-tabler-plus class="size-4" />
                     Tambah Node
                 </button>
             @endif
@@ -27,7 +27,7 @@
                     'bg-slate-900 text-white' => $activeTab === 'rooms',
                     'text-slate-600 hover:text-slate-900' => $activeTab !== 'rooms',
                 ])>
-            <x-heroicon-o-building-office-2 class="size-4" />
+            <x-tabler-door class="size-4" />
             Ruangan
             <span class="num text-xs opacity-70">{{ $rooms->count() }}</span>
         </button>
@@ -37,7 +37,7 @@
                     'bg-slate-900 text-white' => $activeTab === 'nodes',
                     'text-slate-600 hover:text-slate-900' => $activeTab !== 'nodes',
                 ])>
-            <x-heroicon-o-cpu-chip class="size-4" />
+            <x-tabler-cpu class="size-4" />
             Perangkat Node
             <span class="num text-xs opacity-70">{{ $nodes->count() }}</span>
         </button>
@@ -48,9 +48,9 @@
             @if ($rooms->isEmpty())
                 <x-ui.empty-state title="Belum ada ruangan"
                                   description="Tambahkan ruangan pertama agar node sensor dapat ditempatkan dan datanya dipantau."
-                                  icon="heroicon-o-building-office-2">
+                                  icon="tabler-door">
                     <button type="button" wire:click="openCreateRoomModal" class="btn btn-secondary btn-sm">
-                        <x-heroicon-o-plus class="size-4" /> Tambah Ruangan
+                        <x-tabler-plus class="size-4" /> Tambah Ruangan
                     </button>
                 </x-ui.empty-state>
             @else
@@ -85,12 +85,12 @@
                                     </td>
                                     <td class="text-right whitespace-nowrap">
                                         <button type="button" wire:click="editRoom({{ $room->id }})" class="btn btn-ghost btn-sm" title="Ubah ruangan" aria-label="Ubah {{ $room->name }}">
-                                            <x-heroicon-o-pencil-square class="size-4" />
+                                            <x-tabler-pencil class="size-4" />
                                         </button>
                                         <button type="button" wire:click="deleteRoom({{ $room->id }})"
                                                 wire:confirm="Hapus ruangan &quot;{{ $room->name }}&quot;? Node di ruangan ini akan menjadi tanpa ruangan."
                                                 class="btn btn-ghost btn-sm hover:bg-rose-50 hover:text-rose-600" title="Hapus ruangan" aria-label="Hapus {{ $room->name }}">
-                                            <x-heroicon-o-trash class="size-4" />
+                                            <x-tabler-trash class="size-4" />
                                         </button>
                                     </td>
                                 </tr>
@@ -105,9 +105,9 @@
             @if ($nodes->isEmpty())
                 <x-ui.empty-state title="Belum ada node sensor"
                                   description="Daftarkan node sensor dengan kode yang sama seperti yang dikirim perangkat IoT."
-                                  icon="heroicon-o-cpu-chip">
+                                  icon="tabler-cpu">
                     <button type="button" wire:click="openCreateNodeModal" class="btn btn-secondary btn-sm">
-                        <x-heroicon-o-plus class="size-4" /> Tambah Node
+                        <x-tabler-plus class="size-4" /> Tambah Node
                     </button>
                 </x-ui.empty-state>
             @else
@@ -141,23 +141,23 @@
                                     </td>
                                     <td>
                                         @if ($node->is_active)
-                                            <span class="inline-flex items-center gap-1.5 rounded-full bg-accent-50 px-2 py-0.5 text-xs font-medium text-accent-700 ring-1 ring-inset ring-accent-100">
-                                                <span class="size-1.5 rounded-full bg-accent-500"></span> Aktif
+                                            <span class="inline-flex items-center gap-1 rounded-full bg-accent-50 px-2 py-0.5 text-xs font-medium text-accent-700 ring-1 ring-inset ring-accent-100">
+                                                <x-tabler-circle-check class="size-3.5" /> Aktif
                                             </span>
                                         @else
-                                            <span class="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-500 ring-1 ring-inset ring-slate-200">
-                                                <span class="size-1.5 rounded-full bg-slate-400"></span> Nonaktif
+                                            <span class="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-500 ring-1 ring-inset ring-slate-200">
+                                                <x-tabler-circle-off class="size-3.5" /> Nonaktif
                                             </span>
                                         @endif
                                     </td>
                                     <td class="text-right whitespace-nowrap">
                                         <button type="button" wire:click="editNode({{ $node->id }})" class="btn btn-ghost btn-sm" title="Ubah node" aria-label="Ubah {{ $node->name }}">
-                                            <x-heroicon-o-pencil-square class="size-4" />
+                                            <x-tabler-pencil class="size-4" />
                                         </button>
                                         <button type="button" wire:click="deleteNode({{ $node->id }})"
                                                 wire:confirm="Hapus node &quot;{{ $node->name }}&quot;? Data pembacaan yang sudah tersimpan tetap ada."
                                                 class="btn btn-ghost btn-sm hover:bg-rose-50 hover:text-rose-600" title="Hapus node" aria-label="Hapus {{ $node->name }}">
-                                            <x-heroicon-o-trash class="size-4" />
+                                            <x-tabler-trash class="size-4" />
                                         </button>
                                     </td>
                                 </tr>
@@ -177,9 +177,14 @@
             <div class="absolute inset-0" wire:click="closeRoomModal"></div>
             <form wire:submit="saveRoom" class="card relative w-full max-w-md">
                 <div class="card-header">
-                    <h2 id="room-modal-title" class="card-title">{{ $editingRoomId ? 'Ubah Ruangan' : 'Tambah Ruangan' }}</h2>
+                    <div class="flex min-w-0 items-center gap-3">
+                        <span class="icon-chip icon-chip-sm">
+                            <x-tabler-door class="size-4" />
+                        </span>
+                        <h2 id="room-modal-title" class="card-title">{{ $editingRoomId ? 'Ubah Ruangan' : 'Tambah Ruangan' }}</h2>
+                    </div>
                     <button type="button" wire:click="closeRoomModal" class="btn btn-ghost btn-sm" aria-label="Tutup">
-                        <x-heroicon-o-x-mark class="size-4" />
+                        <x-tabler-x class="size-4" />
                     </button>
                 </div>
 
@@ -202,8 +207,12 @@
                 </div>
 
                 <div class="flex justify-end gap-2 border-t border-slate-100 px-5 py-4 sm:px-6">
-                    <button type="button" wire:click="closeRoomModal" class="btn btn-secondary">Batal</button>
+                    <button type="button" wire:click="closeRoomModal" class="btn btn-secondary">
+                        <x-tabler-x class="size-4" />
+                        Batal
+                    </button>
                     <button type="submit" class="btn btn-primary" wire:loading.attr="disabled" wire:target="saveRoom">
+                        <x-tabler-device-floppy class="size-4" />
                         {{ $editingRoomId ? 'Simpan Perubahan' : 'Simpan Ruangan' }}
                     </button>
                 </div>
@@ -219,9 +228,14 @@
             <div class="absolute inset-0" wire:click="closeNodeModal"></div>
             <form wire:submit="saveNode" class="card relative w-full max-w-md">
                 <div class="card-header">
-                    <h2 id="node-modal-title" class="card-title">{{ $editingNodeId ? 'Ubah Node Sensor' : 'Tambah Node Sensor' }}</h2>
+                    <div class="flex min-w-0 items-center gap-3">
+                        <span class="icon-chip icon-chip-sm">
+                            <x-tabler-cpu class="size-4" />
+                        </span>
+                        <h2 id="node-modal-title" class="card-title">{{ $editingNodeId ? 'Ubah Node Sensor' : 'Tambah Node Sensor' }}</h2>
+                    </div>
                     <button type="button" wire:click="closeNodeModal" class="btn btn-ghost btn-sm" aria-label="Tutup">
-                        <x-heroicon-o-x-mark class="size-4" />
+                        <x-tabler-x class="size-4" />
                     </button>
                 </div>
 
@@ -259,8 +273,12 @@
                 </div>
 
                 <div class="flex justify-end gap-2 border-t border-slate-100 px-5 py-4 sm:px-6">
-                    <button type="button" wire:click="closeNodeModal" class="btn btn-secondary">Batal</button>
+                    <button type="button" wire:click="closeNodeModal" class="btn btn-secondary">
+                        <x-tabler-x class="size-4" />
+                        Batal
+                    </button>
                     <button type="submit" class="btn btn-primary" wire:loading.attr="disabled" wire:target="saveNode">
+                        <x-tabler-device-floppy class="size-4" />
                         {{ $editingNodeId ? 'Simpan Perubahan' : 'Simpan Node' }}
                     </button>
                 </div>

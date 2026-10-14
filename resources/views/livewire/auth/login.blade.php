@@ -12,14 +12,30 @@
         <form wire:submit="authenticate" class="space-y-4">
             <div>
                 <label for="email" class="label">Email</label>
-                <input id="email" type="email" wire:model="email" class="input" placeholder="nama@domain.com" autocomplete="email" autofocus required>
-                @error('email') <p class="mt-1 text-xs text-rose-600">{{ $message }}</p> @enderror
+                <div class="relative">
+                    <x-tabler-mail class="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-slate-400" />
+                    <input id="email" type="email" wire:model="email" class="input pl-10" placeholder="nama@domain.com" autocomplete="email" autofocus required>
+                </div>
+                @error('email')
+                    <p class="mt-1 flex items-center gap-1 text-xs text-rose-600">
+                        <x-tabler-alert-circle class="size-3.5 shrink-0" />
+                        {{ $message }}
+                    </p>
+                @enderror
             </div>
 
             <div>
                 <label for="password" class="label">Kata sandi</label>
-                <input id="password" type="password" wire:model="password" class="input" autocomplete="current-password" required>
-                @error('password') <p class="mt-1 text-xs text-rose-600">{{ $message }}</p> @enderror
+                <div class="relative">
+                    <x-tabler-lock class="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-slate-400" />
+                    <input id="password" type="password" wire:model="password" class="input pl-10" autocomplete="current-password" required>
+                </div>
+                @error('password')
+                    <p class="mt-1 flex items-center gap-1 text-xs text-rose-600">
+                        <x-tabler-alert-circle class="size-3.5 shrink-0" />
+                        {{ $message }}
+                    </p>
+                @enderror
             </div>
 
             <label class="flex items-center gap-2 text-sm text-slate-600">
@@ -28,13 +44,19 @@
             </label>
 
             <button type="submit" class="btn btn-primary w-full" wire:loading.attr="disabled" wire:target="authenticate">
-                <span wire:loading.remove wire:target="authenticate">Masuk</span>
+                <span wire:loading.remove wire:target="authenticate" class="inline-flex items-center gap-2">
+                    <x-tabler-login-2 class="size-4" />
+                    Masuk
+                </span>
                 <span wire:loading wire:target="authenticate">Memproses…</span>
             </button>
         </form>
     </div>
 
     <p class="text-center">
-        <a href="{{ route('home') }}" class="text-sm font-medium text-slate-500 hover:text-slate-900">← Kembali ke halaman utama</a>
+        <a href="{{ route('home') }}" class="inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 hover:text-slate-900">
+            <x-tabler-arrow-left class="size-4" />
+            Kembali ke halaman utama
+        </a>
     </p>
 </div>
