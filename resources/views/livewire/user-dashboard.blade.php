@@ -1,213 +1,138 @@
-<div wire:poll.3s="refreshData" class="space-y-8">
+<div wire:poll.5s class="space-y-8">
+    @if ($cards->isEmpty())
+        <x-ui.page-header title="Kualitas udara ruangan saat ini"
+                          description="Pantau kondisi udara di setiap ruangan secara langsung dari sensor." />
 
-    <!-- Top Header Greeting -->
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200/90 dark:border-slate-800 shadow-sm relative overflow-hidden">
-        <div class="space-y-1 z-10">
-            <div class="flex items-center gap-2">
-                <h1 class="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">
-                    Pemantauan Kualitas Udara Lingkungan
-                </h1>
-                <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600 dark:bg-emerald-400/10 dark:text-emerald-400 border border-emerald-500/20 flex items-center gap-1.5">
-                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                    Update Real-time
-                </span>
-            </div>
-            <p class="text-sm text-slate-500 dark:text-slate-400">
-                Informasi kondisi udara lingkungan sekitar untuk keamanan dan kenyamanan aktivitas Anda.
-            </p>
+        <div class="card">
+            <x-ui.empty-state icon="heroicon-o-signal-slash"
+                              title="Belum ada ruangan yang dipantau"
+                              description="Perangkat sensor belum dipasang atau belum diaktifkan oleh pengelola. Halaman ini akan terisi otomatis setelah sensor mulai mengirim data." >
+                <a href="{{ route('guide') }}" wire:navigate class="btn btn-secondary btn-sm">
+                    <x-heroicon-o-book-open class="size-4" /> Pelajari kategori kualitas udara
+                </a>
+            </x-ui.empty-state>
         </div>
+    @else
+        {{-- Ringkasan keseluruhan --}}
+        <section class="card card-body">
+            <div class="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+                <div class="min-w-0 space-y-3">
+                    <p class="eyebrow">Beranda</p>
+                    <h1 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">Kualitas udara ruangan saat ini</h1>
+                    <div class="flex flex-wrap items-center gap-3">
+                        <x-ui.ku-badge :status="$overallStatus" size="lg" />
+                        @if ($worstRoom && $cards->count() > 1)
+                            <span class="text-sm text-slate-500">Kondisi terburuk di <span class="font-medium text-slate-700">{{ $worstRoom->name }}</span></span>
+                        @endif
+                    </div>
+                    <p class="max-w-xl text-sm text-slate-600">{{ $overallCategory['advice'] }}</p>
+                </div>
 
-        <a href="{{ route('history') }}" 
-           class="px-4 py-2.5 bg-sky-600 hover:bg-sky-500 text-white rounded-xl text-xs font-bold shadow-md shadow-sky-500/20 transition-all flex items-center gap-2 self-start md:self-auto z-10">
-            <x-heroicon-o-clock class="w-4 h-4" />
-            <span>Lihat Riwayat Kualitas Udara</span>
-        </a>
-    </div>
+                <dl class="grid shrink-0 grid-cols-3 gap-4 border-t border-slate-100 pt-5 sm:gap-8 lg:border-t-0 lg:border-l lg:pt-0 lg:pl-8">
+                    <div>
+                        <dt class="text-xs text-slate-500">Ruangan</dt>
+                        <dd class="num mt-1 text-xl font-bold text-slate-900">{{ $cards->count() }}</dd>
+                    </div>
+                    <div>
+                        <dt class="text-xs text-slate-500">Sensor aktif</dt>
+                        <dd class="num mt-1 text-xl font-bold text-slate-900">
+                            {{ $devicesOnline }}<span class="text-sm font-medium text-slate-400">/{{ $devicesTotal }}</span>
+                        </dd>
+                    </div>
+                    <div>
+                        <dt class="text-xs text-slate-500">Diperbarui</dt>
+                        <dd class="mt-1 text-sm font-semibold text-slate-900">
+                            {{ $lastUpdate ? $lastUpdate->locale('id')->diffForHumans() : 'Belum ada' }}
+                        </dd>
+                    </div>
+                </dl>
+            </div>
+        </section>
 
-    <!-- Overall Health & Air Quality Status Hero Card (Light White Theme Default) -->
-    <div class="p-6 md:p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 text-slate-900 dark:text-white shadow-md shadow-slate-200/60 space-y-6 relative overflow-hidden">
-        <div class="absolute right-0 top-0 w-96 h-96 bg-sky-500/5 dark:bg-sky-500/10 rounded-full blur-3xl pointer-events-none"></div>
-
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
-            <div class="space-y-3">
-                <span class="px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wider bg-sky-500/10 text-sky-700 dark:bg-white/10 dark:text-slate-200 border border-sky-500/20 dark:border-white/10">
-                    Status Lingkungan Saat Ini
-                </span>
-                <div class="flex items-center gap-3">
-                    <h2 class="text-3xl md:text-4xl font-black tracking-tight text-slate-900 dark:text-white">
-                        {{ $worstStatus }}
-                    </h2>
-                    <span class="text-xs text-slate-600 dark:text-slate-300 font-bold bg-slate-100 dark:bg-white/10 px-3 py-1 rounded-lg border border-slate-200 dark:border-transparent">
-                        Indeks KU: <strong>{{ $maxKuOverall }}</strong>
-                    </span>
+        {{-- Kartu ruangan --}}
+        <section class="space-y-4">
+            <div class="flex items-end justify-between gap-3">
+                <div>
+                    <h2 class="text-base font-semibold text-slate-900">Kondisi per ruangan</h2>
+                    <p class="mt-0.5 text-sm text-slate-500">Pilih ruangan untuk melihat grafik dan rincian pembacaan.</p>
                 </div>
             </div>
 
-            <!-- Health Icon -->
-            <div class="w-16 h-16 rounded-2xl bg-sky-50 dark:bg-white/10 border border-sky-100 dark:border-white/20 flex items-center justify-center text-sky-600 dark:text-white shrink-0 shadow-inner">
-                <x-dynamic-component :component="$healthAdvice['icon']" class="w-8 h-8" />
-            </div>
-        </div>
-
-        <!-- Health Recommendation Alert Box -->
-        <div class="p-4 rounded-2xl bg-sky-50/80 dark:bg-white/10 border border-sky-100 dark:border-white/10 space-y-1 relative z-10">
-            <h3 class="font-bold text-sm text-sky-900 dark:text-sky-300 flex items-center gap-2">
-                <x-heroicon-o-heart class="w-4 h-4 text-rose-500" />
-                <span>Rekomendasi Kesehatan: {{ $healthAdvice['title'] }}</span>
-            </h3>
-            <p class="text-xs text-slate-700 dark:text-slate-200 leading-relaxed font-medium">
-                {{ $healthAdvice['desc'] }}
-            </p>
-        </div>
-    </div>
-
-    <!-- Area Status Grid (3 Simple Area Cards) -->
-    <div class="space-y-4">
-        <div class="flex items-center justify-between">
-            <h2 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                <x-heroicon-o-building-office-2 class="w-5 h-5 text-sky-500" />
-                <span>Kondisi Udara Per Lokasi Area</span>
-            </h2>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            @foreach ($areasData as $areaId => $area)
-                @php
-                    $latest = $area['latest'];
-                    $isOnline = $area['is_online'];
-                @endphp
-
-                <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/90 dark:border-slate-800 shadow-sm p-6 space-y-5 hover:border-slate-300 dark:hover:border-slate-700 transition-all flex flex-col justify-between">
-                    
-                    <div class="space-y-4">
-                        <!-- Area Name & Status -->
-                        <div class="flex items-start justify-between gap-2">
-                            <div>
-                                <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Lokasi Sensor #{{ $areaId }}</span>
-                                <h3 class="font-extrabold text-slate-900 dark:text-white text-base mt-0.5">{{ $area['name'] }}</h3>
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                @foreach ($cards as $card)
+                    @php($log = $card['log'])
+                    <a href="{{ route('rooms.show', $card['room']) }}" wire:navigate wire:key="room-{{ $card['room']->id }}"
+                       class="card group flex flex-col p-5 transition hover:border-slate-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500">
+                        <div class="flex items-start justify-between gap-3">
+                            <div class="min-w-0">
+                                <h3 class="truncate text-sm font-semibold text-slate-900 group-hover:text-accent-700">{{ $card['room']->name }}</h3>
+                                <p class="mt-1 flex items-center gap-1.5 text-xs {{ $card['online'] ? 'text-slate-500' : 'text-slate-400' }}">
+                                    <span class="size-1.5 rounded-full {{ $card['online'] ? 'bg-accent-500' : 'bg-slate-300' }}"></span>
+                                    {{ $card['online'] ? 'Sensor terhubung' : 'Sensor terputus' }}
+                                </p>
                             </div>
-                            @if ($isOnline)
-                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-600 dark:bg-emerald-400/15 dark:text-emerald-400 border border-emerald-500/30 flex items-center gap-1">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                                    Aktif
-                                </span>
-                            @else
-                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-medium bg-slate-100 dark:bg-slate-800 text-slate-400 border border-slate-200 dark:border-slate-700">
-                                    Offline
-                                </span>
-                            @endif
+                            <x-ui.ku-badge :status="$log?->ku_status" size="sm" />
                         </div>
 
-                        <!-- Big Air Quality Badge for this Area -->
-                        @if ($latest)
-                            @php $badge = $latest->status_badge; @endphp
-                            <div class="p-4 rounded-2xl border {{ $badge['bg'] }} space-y-1">
-                                <span class="text-[10px] font-bold uppercase tracking-wider opacity-75">Tingkat Kebersihan Udara</span>
-                                <div class="text-xl font-black flex items-center justify-between">
-                                    <span>{{ $latest->ku_status }}</span>
-                                    <span class="text-sm font-bold opacity-90">Indeks KU {{ $latest->ku_value }}</span>
+                        @if ($log)
+                            <div class="mt-5 flex items-end justify-between gap-3">
+                                <div>
+                                    <p class="text-xs text-slate-500">Indeks KU</p>
+                                    <p class="num text-4xl font-bold tracking-tight text-slate-900">{{ number_format($log->ku_value, 0) }}</p>
                                 </div>
-                                @if ($latest->ku_dominant)
-                                    <span class="text-[10px] font-semibold opacity-75">Parameter dominan: {{ ['co2' => 'CO₂', 'nh3' => 'NH₃', 'co' => 'CO', 'h2' => 'H₂'][$latest->ku_dominant] ?? strtoupper($latest->ku_dominant) }}</span>
+                                @if ($card['dominant'])
+                                    <p class="text-right text-xs text-slate-500">
+                                        Penyebab utama<br>
+                                        <span class="text-sm font-semibold text-slate-800">{{ $gases[$card['dominant']]['symbol'] ?? strtoupper($card['dominant']) }}</span>
+                                    </p>
                                 @endif
                             </div>
 
-                            <!-- 4 Gas Parameters Grid (CO2, NH3, CO, H2) -->
-                            <div class="space-y-1.5 pt-1">
-                                <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Konsentrasi Gas Terdeteksi (PPM)</span>
-                                <div class="grid grid-cols-2 gap-2 text-xs">
-                                    <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800/80 flex items-center justify-between">
-                                        <span class="text-slate-500 dark:text-slate-400 font-bold text-[11px]">CO₂</span>
-                                        <span class="font-black text-slate-800 dark:text-slate-200">{{ $latest->co2 }} <span class="text-[9px] font-normal text-slate-400">PPM</span></span>
+                            <dl class="mt-4 grid grid-cols-2 gap-2">
+                                @foreach ($gases as $key => $gas)
+                                    <div class="rounded-xl bg-slate-50 px-3 py-2">
+                                        <dt class="text-[11px] font-medium text-slate-500">{{ $gas['symbol'] }}</dt>
+                                        <dd class="num text-sm font-semibold text-slate-800">
+                                            {{ number_format($log->{$key}, 1, ',', '.') }}<span class="ml-0.5 text-[11px] font-normal text-slate-400">ppm</span>
+                                        </dd>
                                     </div>
-                                    <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800/80 flex items-center justify-between">
-                                        <span class="text-slate-500 dark:text-slate-400 font-bold text-[11px]">NH₃</span>
-                                        <span class="font-black text-slate-800 dark:text-slate-200">{{ $latest->nh3 }} <span class="text-[9px] font-normal text-slate-400">PPM</span></span>
-                                    </div>
-                                    <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800/80 flex items-center justify-between">
-                                        <span class="text-slate-500 dark:text-slate-400 font-bold text-[11px]">CO</span>
-                                        <span class="font-black text-slate-800 dark:text-slate-200">{{ $latest->co }} <span class="text-[9px] font-normal text-slate-400">PPM</span></span>
-                                    </div>
-                                    <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800/80 flex items-center justify-between">
-                                        <span class="text-slate-500 dark:text-slate-400 font-bold text-[11px]">H₂</span>
-                                        <span class="font-black text-slate-800 dark:text-slate-200">{{ $latest->h2 }} <span class="text-[9px] font-normal text-slate-400">PPM</span></span>
-                                    </div>
-                                </div>
-                            </div>
+                                @endforeach
+                            </dl>
+
+                            <p class="mt-4 flex items-center gap-1.5 text-xs text-slate-400">
+                                <x-heroicon-o-clock class="size-3.5" />
+                                Diperbarui {{ $card['updated_at']->locale('id')->diffForHumans() }}
+                            </p>
                         @else
-                            <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40 text-center text-slate-400 text-xs">
-                                Belum ada data kualitas udara terrekam.
+                            <div class="mt-5 flex flex-1 flex-col items-center justify-center rounded-xl bg-slate-50 px-4 py-8 text-center">
+                                <x-heroicon-o-signal-slash class="size-5 text-slate-400" />
+                                <p class="mt-2 text-sm font-medium text-slate-700">Belum ada data</p>
+                                <p class="mt-0.5 text-xs text-slate-500">Sensor di ruangan ini belum mengirim pembacaan.</p>
                             </div>
                         @endif
-                    </div>
+                    </a>
+                @endforeach
+            </div>
+        </section>
+    @endif
 
-                    <!-- Simplified Footer -->
-                    @if ($latest)
-                        <div class="pt-4 border-t border-slate-100 dark:border-slate-800/80 text-xs text-slate-500 dark:text-slate-400 flex items-center justify-between">
-                            <span class="text-[11px]">Diperbarui: {{ $latest->created_at->diffForHumans() }}</span>
-                            <span class="font-bold text-sky-600 dark:text-sky-400 text-[11px]">Kondisi Terpantau</span>
+    {{-- Legenda kategori --}}
+    <section class="card card-body">
+        <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div class="grid flex-1 grid-cols-2 gap-3 sm:grid-cols-4">
+                @foreach ($categories as $category)
+                    <div class="flex items-center gap-2.5">
+                        <span class="size-2.5 shrink-0 rounded-full {{ $category['dot'] }}"></span>
+                        <div class="leading-tight">
+                            <p class="text-xs font-semibold text-slate-800">{{ $category['label'] }}</p>
+                            <p class="num text-[11px] text-slate-500">{{ $category['range'] }}</p>
                         </div>
-                    @endif
-
-                </div>
-            @endforeach
+                    </div>
+                @endforeach
+            </div>
+            <a href="{{ route('guide') }}" wire:navigate class="btn btn-ghost btn-sm self-start md:self-auto">
+                Arti setiap kategori <x-heroicon-o-arrow-right class="size-3.5" />
+            </a>
         </div>
-    </div>
-
-    <!-- Friendly Air Quality Level Guide Section -->
-    <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/90 dark:border-slate-800 shadow-sm p-6 space-y-5">
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-2">
-            <h2 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                <x-heroicon-o-information-circle class="w-5 h-5 text-indigo-500" />
-                <span>Panduan Kategori & 4 Indikator Parameter Gas Udara</span>
-            </h2>
-            <span class="text-xs text-slate-400">Indeks KU tanpa satuan (0–500); konsentrasi gas dalam PPM</span>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
-            <div class="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 space-y-1">
-                <span class="font-black text-emerald-700 dark:text-emerald-400 text-sm">1. Baik (Indeks 0 - 50)</span>
-                <p class="text-slate-600 dark:text-slate-300">Udara sangat bersih dan tidak menimbulkan dampak kesehatan sama sekali.</p>
-            </div>
-
-            <div class="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 space-y-1">
-                <span class="font-black text-amber-700 dark:text-amber-400 text-sm">2. Sedang (Indeks 51 - 150)</span>
-                <p class="text-slate-600 dark:text-slate-300">Kualitas udara masih dapat diterima oleh manusia pada umumnya.</p>
-            </div>
-
-            <div class="p-4 rounded-xl bg-orange-500/10 border border-orange-500/20 space-y-1">
-                <span class="font-black text-orange-700 dark:text-orange-400 text-sm">3. Tidak Sehat (Indeks 151 - 300)</span>
-                <p class="text-slate-600 dark:text-slate-300">Dapat memicu gangguan pada mata, tenggorokan, dan kelompok sensitif.</p>
-            </div>
-
-            <div class="p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 space-y-1">
-                <span class="font-black text-rose-700 dark:text-rose-400 text-sm">4. Berbahaya (Indeks > 300)</span>
-                <p class="text-slate-600 dark:text-slate-300">Tingkat polutan tinggi! Disarankan evakuasi dan penggunaan masker khusus.</p>
-            </div>
-        </div>
-
-        <!-- 4 Gas Parameters Info Cards -->
-        <div class="pt-2 border-t border-slate-100 dark:border-slate-800">
-            <h3 class="text-xs font-extrabold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-3">4 Jenis Gas yang Dipantau Oleh Perangkat Sensor:</h3>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
-                <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800 space-y-0.5">
-                    <span class="font-black text-slate-900 dark:text-white">CO₂ (Karbon Dioksida)</span>
-                    <p class="text-[11px] text-slate-500 dark:text-slate-400">Gas hasil respirasi & pembakaran.</p>
-                </div>
-                <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800 space-y-0.5">
-                    <span class="font-black text-slate-900 dark:text-white">NH₃ (Amonia)</span>
-                    <p class="text-[11px] text-slate-500 dark:text-slate-400">Gas berbau tajam hasil limbah/kimia.</p>
-                </div>
-                <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800 space-y-0.5">
-                    <span class="font-black text-slate-900 dark:text-white">CO (Karbon Monoksida)</span>
-                    <p class="text-[11px] text-slate-500 dark:text-slate-400">Gas berbahaya hasil asap/kendaraan.</p>
-                </div>
-                <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800 space-y-0.5">
-                    <span class="font-black text-slate-900 dark:text-white">H₂ (Hidrogen)</span>
-                    <p class="text-[11px] text-slate-500 dark:text-slate-400">Gas mudah terbakar dalam udara.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
+    </section>
 </div>

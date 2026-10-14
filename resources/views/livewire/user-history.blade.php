@@ -1,146 +1,171 @@
-<div wire:poll.3s="refreshHistory" class="space-y-8">
+<div class="space-y-6">
+    <x-ui.page-header
+        title="Riwayat Kualitas Udara"
+        description="Catatan hasil pengukuran sensor di setiap ruangan. Gunakan filter untuk melihat ruangan, kategori, atau tanggal tertentu.">
+        <x-slot:eyebrow>Riwayat</x-slot:eyebrow>
+        <x-slot:actions>
+            <button type="button" wire:click="downloadCsv" wire:loading.attr="disabled" wire:target="downloadCsv" class="btn btn-secondary">
+                <x-heroicon-o-arrow-down-tray class="size-4" />
+                <span wire:loading.remove wire:target="downloadCsv">Unduh CSV</span>
+                <span wire:loading wire:target="downloadCsv">Menyiapkan…</span>
+            </button>
+        </x-slot:actions>
+    </x-ui.page-header>
 
-    <!-- Header & Action Toolbar -->
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm">
-        <div class="space-y-1">
-            <div class="flex items-center gap-2">
-                <h1 class="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">
-                    Riwayat Kualitas Udara
-                </h1>
-                <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-sky-500/10 text-sky-600 dark:bg-sky-400/10 dark:text-sky-400 border border-sky-500/20">
-                    Catatan Histori
-                </span>
-                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-600 dark:bg-emerald-400/10 dark:text-emerald-400 border border-emerald-500/20">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                    Live Sync (3s)
-                </span>
-            </div>
-            <p class="text-sm text-slate-500 dark:text-slate-400">
-                Laporan dan rekam pencatatan kondisi kualitas udara lingkungan berdasarkan lokasi dan waktu.
-            </p>
-        </div>
-
-        <a href="{{ route('home') }}" 
-           class="px-4 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-bold transition-all flex items-center gap-2 self-start md:self-auto">
-            <x-heroicon-o-arrow-left class="w-4 h-4" />
-            <span>Kembali ke Dashboard Utama</span>
-        </a>
-    </div>
-
-    <!-- User History Card Table -->
-    <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm overflow-hidden space-y-4">
-        
-        <!-- Search & Filter Controls -->
-        <div class="p-6 border-b border-slate-100 dark:border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
+    {{-- Filter --}}
+    <section class="card card-body">
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-[1fr_1fr_1fr_1fr_auto] lg:items-end">
             <div>
-                <h2 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                    <x-heroicon-o-clock class="w-5 h-5 text-sky-500" />
-                    <span>Daftar Rekam Kualitas Udara</span>
-                </h2>
+                <label for="filter-room" class="label">Ruangan</label>
+                <select id="filter-room" wire:model.live="room" class="input">
+                    <option value="">Semua ruangan</option>
+                    @foreach ($rooms as $r)
+                        <option value="{{ $r->id }}">{{ $r->name }}</option>
+                    @endforeach
+                </select>
             </div>
-
-            <!-- Filters Grid -->
-            <div class="flex flex-wrap items-center gap-3 text-xs">
-                <!-- Filter Area -->
-                <div class="space-y-1">
-                    <select wire:model.live="selectedArea" class="px-3 py-2 bg-slate-100 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 font-semibold focus:outline-none">
-                        <option value="all">Semua Lokasi Ruangan</option>
-                        @foreach ($nodes as $node)
-                            <option value="{{ $node->id }}">{{ $node->room ? $node->room->name : $node->name }}</option>
-                        @endforeach
-                    </select>
-                </div>
-
-                <!-- Filter Status -->
-                <div class="space-y-1">
-                    <select wire:model.live="selectedStatus" class="px-3 py-2 bg-slate-100 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 font-semibold focus:outline-none">
-                        <option value="all">Semua Status Kualitas</option>
-                        <option value="Baik">Baik</option>
-                        <option value="Sedang">Sedang</option>
-                        <option value="Tidak Sehat">Tidak Sehat</option>
-                        <option value="Berbahaya">Berbahaya</option>
-                    </select>
-                </div>
-
-                <!-- Filter Tanggal -->
-                <div class="space-y-1">
-                    <input type="date" wire:model.live="searchDate" class="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 font-semibold focus:outline-none">
-                </div>
+            <div>
+                <label for="filter-category" class="label">Kategori</label>
+                <select id="filter-category" wire:model.live="category" class="input">
+                    <option value="">Semua kategori</option>
+                    @foreach ($categories as $key => $cat)
+                        <option value="{{ $key }}">{{ $cat['label'] }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div>
+                <label for="filter-from" class="label">Tanggal dari</label>
+                <input id="filter-from" type="date" wire:model.live="from" @if ($to) max="{{ $to }}" @endif class="input">
+            </div>
+            <div>
+                <label for="filter-to" class="label">Tanggal sampai</label>
+                <input id="filter-to" type="date" wire:model.live="to" @if ($from) min="{{ $from }}" @endif class="input">
+            </div>
+            <div class="sm:col-span-2 lg:col-span-1">
+                <button type="button" wire:click="resetFilters" class="btn btn-ghost w-full lg:w-auto" @disabled(! $this->hasFilters())>
+                    <x-heroicon-o-arrow-path class="size-4" /> Reset filter
+                </button>
             </div>
         </div>
+    </section>
 
-        <!-- Non-Technical User Friendly Table -->
-        <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse">
-                <thead>
-                    <tr class="bg-slate-50/70 dark:bg-slate-800/40 text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 border-b border-slate-100 dark:border-slate-800">
-                        <th class="py-3.5 px-6">Waktu & Tanggal</th>
-                        <th class="py-3.5 px-4">Lokasi Area</th>
-                        <th class="py-3.5 px-4 text-center">Kategori Udara</th>
-                        <th class="py-3.5 px-4 text-center">Rincian Gas (PPM)</th>
-                        <th class="py-3.5 px-6">Catatan Kesehatan / Rekomendasi</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-slate-100 dark:divide-slate-800/60 text-xs">
-                    @forelse ($logs as $log)
-                        @php 
-                            $badge = $log->status_badge;
-                            $areaName = $log->node?->room?->name ?? ($log->node?->name ?? "Area Sensor #{$log->node_id}");
-                        @endphp
-                        <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors">
-                            <td class="py-4 px-6 font-semibold text-slate-900 dark:text-white">
-                                {{ $log->created_at->format('d M Y, H:i') }} WIB
-                            </td>
-                            <td class="py-4 px-4 font-bold text-slate-700 dark:text-slate-200">
-                                {{ $areaName }}
-                            </td>
-                            <td class="py-4 px-4 text-center">
-                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full font-extrabold text-xs border {{ $badge['bg'] }}">
-                                    <span class="w-2 h-2 rounded-full {{ $badge['dot'] }}"></span>
-                                    {{ $log->ku_status }} (Indeks {{ $log->ku_value }})
-                                </span>
-                                @if ($log->ku_dominant)
-                                    <span class="block mt-1 text-[10px] text-slate-400">Parameter dominan: {{ ['co2' => 'CO₂', 'nh3' => 'NH₃', 'co' => 'CO', 'h2' => 'H₂'][$log->ku_dominant] ?? strtoupper($log->ku_dominant) }}</span>
-                                @endif
-                            </td>
-                            <td class="py-4 px-4 text-center">
-                                <div class="inline-flex items-center gap-2 text-[11px] font-medium bg-slate-50 dark:bg-slate-800/60 px-3 py-1.5 rounded-xl border border-slate-200/80 dark:border-slate-700">
-                                    <span><strong class="text-slate-700 dark:text-slate-300">CO₂:</strong> {{ $log->co2 }}</span>
-                                    <span class="text-slate-300 dark:text-slate-600">•</span>
-                                    <span><strong class="text-slate-700 dark:text-slate-300">NH₃:</strong> {{ $log->nh3 }}</span>
-                                    <span class="text-slate-300 dark:text-slate-600">•</span>
-                                    <span><strong class="text-slate-700 dark:text-slate-300">CO:</strong> {{ $log->co }}</span>
-                                    <span class="text-slate-300 dark:text-slate-600">•</span>
-                                    <span><strong class="text-slate-700 dark:text-slate-300">H₂:</strong> {{ $log->h2 }}</span>
-                                </div>
-                            </td>
-                            <td class="py-4 px-6 text-slate-600 dark:text-slate-300">
-                                @if ($log->ku_status === 'Baik')
-                                    <span class="text-emerald-600 dark:text-emerald-400 font-semibold">✓ Udara Segar & Safe! Ideal untuk aktivitas luar.</span>
-                                @elseif ($log->ku_status === 'Sedang')
-                                    <span class="text-amber-600 dark:text-amber-400 font-medium">! Kualitas cukup baik. Kelompok sensitif disarankan waspada.</span>
-                                @elseif ($log->ku_status === 'Tidak Sehat')
-                                    <span class="text-orange-600 dark:text-orange-400 font-bold">⚠ Waspada! Disarankan memakai masker di lokasi ini.</span>
-                                @else
-                                    <span class="text-rose-600 dark:text-rose-400 font-extrabold">🚨 PERINGATAN BAHAYA! Gunakan masker N95 & hindari lokasi.</span>
-                                @endif
-                            </td>
-                        </tr>
-                    @empty
+    {{-- Ringkasan --}}
+    <x-ui.card title="Ringkasan" description="Periode: {{ $period }}">
+        <div class="grid grid-cols-1 gap-6 md:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)]">
+            <dl class="grid grid-cols-3 gap-4">
+                <div>
+                    <dt class="text-xs font-medium text-slate-500">Jumlah data</dt>
+                    <dd class="mt-1 text-2xl font-bold tracking-tight text-slate-900 num">{{ number_format($summary['count'], 0, ',', '.') }}</dd>
+                </div>
+                <div>
+                    <dt class="text-xs font-medium text-slate-500">Rata-rata Indeks KU</dt>
+                    <dd class="mt-1 text-2xl font-bold tracking-tight text-slate-900 num">
+                        {{ $summary['average'] !== null ? number_format($summary['average'], 0, ',', '.') : '—' }}
+                    </dd>
+                </div>
+                <div>
+                    <dt class="text-xs font-medium text-slate-500">Kondisi terburuk</dt>
+                    <dd class="mt-2">
+                        @if ($summary['worst'])
+                            <x-ui.ku-badge :status="$summary['worst']" />
+                        @else
+                            <span class="text-2xl font-bold text-slate-900">—</span>
+                        @endif
+                    </dd>
+                </div>
+            </dl>
+
+            <div>
+                <p class="text-xs font-medium text-slate-500">Sebaran kategori</p>
+                <div class="mt-2.5 flex h-2 w-full overflow-hidden rounded-full bg-slate-100" role="img" aria-label="Sebaran kategori kualitas udara">
+                    @foreach ($summary['distribution'] as $status => $row)
+                        @if ($row['count'] > 0)
+                            <span class="h-full" style="width: {{ $row['percent'] }}%; background-color: {{ $categories[$status]['color'] }}" title="{{ $status }}: {{ $row['percent'] }}%"></span>
+                        @endif
+                    @endforeach
+                </div>
+                <ul class="mt-3 grid grid-cols-2 gap-x-4 gap-y-2 sm:grid-cols-4">
+                    @foreach ($summary['distribution'] as $status => $row)
+                        <li class="text-xs">
+                            <span class="flex items-center gap-1.5 text-slate-500">
+                                <span class="size-2 rounded-full" style="background-color: {{ $categories[$status]['color'] }}"></span>
+                                {{ $categories[$status]['label'] }}
+                            </span>
+                            <span class="mt-0.5 block font-semibold text-slate-900 num">
+                                {{ number_format($row['count'], 0, ',', '.') }}
+                                <span class="font-normal text-slate-400">({{ number_format($row['percent'], 1, ',', '.') }}%)</span>
+                            </span>
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
+        </div>
+    </x-ui.card>
+
+    {{-- Tabel riwayat (diperbarui otomatis) --}}
+    <section wire:poll.10s class="card overflow-hidden">
+        <header class="card-header">
+            <div class="min-w-0">
+                <h2 class="card-title">Data pengukuran</h2>
+                <p class="mt-0.5 text-xs text-slate-500">Diperbarui otomatis setiap 10 detik. Nilai gas dalam ppm.</p>
+            </div>
+        </header>
+
+        @if ($logs->isEmpty())
+            <x-ui.empty-state
+                title="Belum ada data"
+                :description="$this->hasFilters() ? 'Tidak ada pengukuran yang cocok dengan filter. Coba ubah atau reset filter.' : 'Data akan muncul setelah sensor mulai mengirim pengukuran.'"
+                icon="heroicon-o-clock">
+                @if ($this->hasFilters())
+                    <button type="button" wire:click="resetFilters" class="btn btn-secondary btn-sm">Reset filter</button>
+                @endif
+            </x-ui.empty-state>
+        @else
+            <div class="overflow-x-auto">
+                <table class="table whitespace-nowrap">
+                    <thead>
                         <tr>
-                            <td colspan="5" class="py-12 text-center text-slate-400">
-                                Tidak ada data riwayat kualitas udara yang sesuai dengan filter pencarian.
-                            </td>
+                            <th>Waktu</th>
+                            <th>Ruangan</th>
+                            <th>Indeks KU</th>
+                            <th>Penyebab utama</th>
+                            @foreach ($gases as $gas)
+                                <th class="text-right">{{ $gas['symbol'] }}</th>
+                            @endforeach
                         </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
+                    </thead>
+                    <tbody>
+                        @foreach ($logs as $log)
+                            <tr wire:key="log-{{ $log->id }}">
+                                <td class="num text-slate-600">{{ $log->created_at->translatedFormat('d M Y H:i:s') }}</td>
+                                <td class="font-medium text-slate-900">{{ $log->node?->room?->name ?? $log->node?->name ?? 'Perangkat #'.$log->node_id }}</td>
+                                <td>
+                                    <span class="flex items-center gap-2">
+                                        <span class="w-8 font-semibold text-slate-900 num">{{ number_format($log->ku_value, 0, ',', '.') }}</span>
+                                        <x-ui.ku-badge :status="$log->ku_status" size="sm" />
+                                    </span>
+                                </td>
+                                <td>
+                                    @if ($log->ku_dominant && isset($gases[$log->ku_dominant]))
+                                        <span class="font-medium text-slate-900">{{ $gases[$log->ku_dominant]['symbol'] }}</span>
+                                    @else
+                                        <span class="text-slate-400">—</span>
+                                    @endif
+                                </td>
+                                @foreach ($gases as $key => $gas)
+                                    <td class="text-right num">{{ number_format($log->{$key}, 2, ',', '.') }}</td>
+                                @endforeach
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
 
-        <!-- Pagination Links -->
-        <div class="p-4 border-t border-slate-100 dark:border-slate-800">
-            {{ $logs->links() }}
-        </div>
-    </div>
-
+            @if ($logs->hasPages())
+                <div class="border-t border-slate-100 px-5 py-4 sm:px-6">
+                    {{ $logs->links() }}
+                </div>
+            @endif
+        @endif
+    </section>
 </div>

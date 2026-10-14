@@ -11,21 +11,17 @@ class ExampleTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_unauthenticated_user_redirected_to_login(): void
+    public function test_public_home_is_accessible_without_login(): void
     {
-        $response = $this->get('/');
-
-        $response->assertRedirect('/login');
+        $this->get('/')->assertOk();
     }
 
-    public function test_authenticated_user_can_access_dashboard(): void
+    public function test_admin_can_access_admin_panel(): void
     {
         $this->seed(SetupRbacSeeder::class);
 
         $user = User::where('email', 'admin@siasap.test')->first();
 
-        $response = $this->actingAs($user)->get('/');
-
-        $response->assertStatus(200);
+        $this->actingAs($user)->get(route('admin.overview'))->assertOk();
     }
 }
