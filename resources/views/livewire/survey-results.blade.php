@@ -4,6 +4,7 @@
 @endphp
 <div class="space-y-6">
     <x-ui.page-header
+        icon="tabler-clipboard-check"
         title="Hasil Kuesioner SUS"
         description="Rekap uji coba produk menggunakan System Usability Scale untuk mengukur tingkat kegunaan website.">
         <x-slot:eyebrow>Uji Coba Produk</x-slot:eyebrow>
@@ -16,7 +17,7 @@
                 @endforeach
             </select>
             <button type="button" wire:click="export" class="btn btn-primary btn-sm" @disabled($summary['count'] === 0)>
-                <x-heroicon-o-arrow-down-tray class="size-4" /> Unduh CSV
+                <x-tabler-download class="size-4" /> Unduh CSV
             </button>
         </x-slot:actions>
     </x-ui.page-header>
@@ -24,28 +25,28 @@
     <x-ui.flash />
 
     <div class="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <x-ui.stat label="Jumlah responden" :value="$summary['count']" unit="orang" icon="heroicon-o-users"
+        <x-ui.stat label="Jumlah responden" :value="$summary['count']" unit="orang" icon="tabler-users"
                    :hint="$group !== '' ? $groups[$group] : 'Semua kelompok'" />
-        <x-ui.stat label="Rata-rata skor SUS" :value="$fmt($summary['mean'], 2)" icon="heroicon-o-chart-bar"
+        <x-ui.stat label="Rata-rata skor SUS" :value="$fmt($summary['mean'], 2)" icon="tabler-star"
                    :hint="'Acuan rata-rata global: '.$fmt($benchmark, 0)" />
-        <x-ui.stat label="Grade" :value="$summary['grade']['grade'] ?? '–'" icon="heroicon-o-academic-cap"
+        <x-ui.stat label="Grade" :value="$summary['grade']['grade'] ?? '–'" icon="tabler-award"
                    :hint="$summary['grade'] ? $summary['grade']['adjective'].' · '.$summary['acceptability']['label'] : 'Belum ada data'" />
-        <x-ui.stat label="Standar deviasi" :value="$fmt($summary['sd'], 2)" icon="heroicon-o-arrows-right-left"
+        <x-ui.stat label="Standar deviasi" :value="$fmt($summary['sd'], 2)" icon="tabler-chart-dots"
                    hint="Simpangan baku sampel (n − 1)" />
     </div>
 
     @if ($summary['count'] === 0)
         <div class="card">
-            <x-ui.empty-state title="Belum ada respons" icon="heroicon-o-clipboard-document-list"
+            <x-ui.empty-state title="Belum ada respons" icon="tabler-clipboard-list"
                               description="Bagikan halaman kuesioner kepada responden uji coba. Hasilnya akan tampil di sini.">
                 <a href="{{ route('survey') }}" class="btn btn-secondary btn-sm" target="_blank">
-                    <x-heroicon-o-arrow-top-right-on-square class="size-4" /> Buka Kuesioner
+                    <x-tabler-external-link class="size-4" /> Buka Kuesioner
                 </a>
             </x-ui.empty-state>
         </div>
     @else
         <div class="grid gap-6 lg:grid-cols-3">
-            <x-ui.card class="lg:col-span-2" title="Analisis per butir"
+            <x-ui.card class="lg:col-span-2" icon="tabler-list-numbers" title="Analisis per butir"
                        description="Kontribusi = (rata-rata − 1) untuk butir ganjil, (5 − rata-rata) untuk butir genap, × 2,5. Jumlah kontribusi = rata-rata skor SUS."
                        :padded="false">
                 <div class="overflow-x-auto">
@@ -83,7 +84,7 @@
             </x-ui.card>
 
             <div class="space-y-6">
-                <x-ui.card title="Sebaran skor" description="Jumlah responden per pita grade.">
+                <x-ui.card icon="tabler-chart-bar" title="Sebaran skor" description="Jumlah responden per pita grade.">
                     <ul class="space-y-3">
                         @foreach ($summary['bands'] as $band)
                             <li wire:key="band-{{ $band['grade'] }}">
@@ -99,7 +100,7 @@
                     </ul>
                 </x-ui.card>
 
-                <x-ui.card title="Catatan metodologi">
+                <x-ui.card icon="tabler-info-circle" title="Catatan metodologi">
                     <div class="space-y-3 text-xs leading-relaxed text-slate-600">
                         <p>Instrumen menggunakan <strong class="font-semibold text-slate-800">System Usability Scale</strong> (Brooke, 1996) berisi 10 butir dengan skala Likert 1–5, adaptasi bahasa Indonesia oleh Sharfina &amp; Santoso (2016).</p>
                         <p class="rounded-lg bg-slate-50 px-3 py-2 font-mono text-[11px] text-slate-700">
@@ -111,7 +112,7 @@
             </div>
         </div>
 
-        <x-ui.card title="Daftar respons" :description="$responses->total().' respons'" :padded="false">
+        <x-ui.card icon="tabler-message-circle" title="Daftar respons" :description="$responses->total().' respons'" :padded="false">
             <div class="overflow-x-auto">
                 <table class="table">
                     <thead>
@@ -155,7 +156,7 @@
                                             wire:click="delete({{ $response->id }})"
                                             wire:confirm="Hapus respons ini? Tindakan ini tidak dapat dibatalkan."
                                             aria-label="Hapus respons">
-                                        <x-heroicon-o-trash class="size-4" />
+                                        <x-tabler-trash class="size-4" />
                                     </button>
                                 </td>
                             </tr>

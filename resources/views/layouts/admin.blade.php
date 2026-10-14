@@ -39,7 +39,7 @@
             <div>
                 <p class="eyebrow mb-2 px-3">Situs Publik</p>
                 <a href="{{ route('home') }}" class="side-link">
-                    <x-heroicon-o-arrow-top-right-on-square class="size-4.5 shrink-0" />
+                    <x-tabler-external-link class="size-4.5 shrink-0" />
                     Lihat Halaman Pengguna
                 </a>
             </div>
@@ -58,7 +58,7 @@
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
                         <button type="submit" class="btn btn-ghost btn-sm" title="Keluar" aria-label="Keluar">
-                            <x-heroicon-o-arrow-right-start-on-rectangle class="size-4" />
+                            <x-tabler-logout class="size-4" />
                         </button>
                     </form>
                 </div>
@@ -69,7 +69,7 @@
     <div class="lg:pl-64">
         <header class="sticky top-0 z-30 flex h-14 items-center gap-3 border-b border-slate-200 bg-white/85 px-4 backdrop-blur lg:hidden">
             <button type="button" class="btn btn-ghost btn-sm" @click="sidebar = true" aria-label="Buka menu">
-                <x-heroicon-o-bars-3 class="size-5" />
+                <x-tabler-menu-2 class="size-5" />
             </button>
             <x-ui.brand :subtitle="false" />
         </header>

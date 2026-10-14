@@ -1,11 +1,12 @@
 <div class="space-y-6">
     <x-ui.page-header
+        :icon="'tabler-history'"
         title="Riwayat Kualitas Udara"
         description="Catatan hasil pengukuran sensor di setiap ruangan. Gunakan filter untuk melihat ruangan, kategori, atau tanggal tertentu.">
         <x-slot:eyebrow>Riwayat</x-slot:eyebrow>
         <x-slot:actions>
             <button type="button" wire:click="downloadCsv" wire:loading.attr="disabled" wire:target="downloadCsv" class="btn btn-secondary">
-                <x-heroicon-o-arrow-down-tray class="size-4" />
+                <x-tabler-download class="size-4" />
                 <span wire:loading.remove wire:target="downloadCsv">Unduh CSV</span>
                 <span wire:loading wire:target="downloadCsv">Menyiapkan…</span>
             </button>
@@ -16,7 +17,7 @@
     <section class="card card-body">
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-[1fr_1fr_1fr_1fr_auto] lg:items-end">
             <div>
-                <label for="filter-room" class="label">Ruangan</label>
+                <label for="filter-room" class="label inline-flex items-center gap-1.5"><x-tabler-door class="size-3.5 text-slate-400" /> Ruangan</label>
                 <select id="filter-room" wire:model.live="room" class="input">
                     <option value="">Semua ruangan</option>
                     @foreach ($rooms as $r)
@@ -25,7 +26,7 @@
                 </select>
             </div>
             <div>
-                <label for="filter-category" class="label">Kategori</label>
+                <label for="filter-category" class="label inline-flex items-center gap-1.5"><x-tabler-category class="size-3.5 text-slate-400" /> Kategori</label>
                 <select id="filter-category" wire:model.live="category" class="input">
                     <option value="">Semua kategori</option>
                     @foreach ($categories as $key => $cat)
@@ -34,23 +35,23 @@
                 </select>
             </div>
             <div>
-                <label for="filter-from" class="label">Tanggal dari</label>
+                <label for="filter-from" class="label inline-flex items-center gap-1.5"><x-tabler-calendar class="size-3.5 text-slate-400" /> Tanggal dari</label>
                 <input id="filter-from" type="date" wire:model.live="from" @if ($to) max="{{ $to }}" @endif class="input">
             </div>
             <div>
-                <label for="filter-to" class="label">Tanggal sampai</label>
+                <label for="filter-to" class="label inline-flex items-center gap-1.5"><x-tabler-calendar class="size-3.5 text-slate-400" /> Tanggal sampai</label>
                 <input id="filter-to" type="date" wire:model.live="to" @if ($from) min="{{ $from }}" @endif class="input">
             </div>
             <div class="sm:col-span-2 lg:col-span-1">
                 <button type="button" wire:click="resetFilters" class="btn btn-ghost w-full lg:w-auto" @disabled(! $this->hasFilters())>
-                    <x-heroicon-o-arrow-path class="size-4" /> Reset filter
+                    <x-tabler-filter-off class="size-4" /> Reset filter
                 </button>
             </div>
         </div>
     </section>
 
     {{-- Ringkasan --}}
-    <x-ui.card title="Ringkasan" description="Periode: {{ $period }}">
+    <x-ui.card :icon="'tabler-chart-pie'" title="Ringkasan" description="Periode: {{ $period }}">
         <div class="grid grid-cols-1 gap-6 md:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)]">
             <dl class="grid grid-cols-3 gap-4">
                 <div>
@@ -88,7 +89,7 @@
                     @foreach ($summary['distribution'] as $status => $row)
                         <li class="text-xs">
                             <span class="flex items-center gap-1.5 text-slate-500">
-                                <span class="size-2 rounded-full" style="background-color: {{ $categories[$status]['color'] }}"></span>
+                                <x-dynamic-component :component="$categories[$status]['icon']" class="size-4 shrink-0" style="color: {{ $categories[$status]['color'] }}" />
                                 {{ $categories[$status]['label'] }}
                             </span>
                             <span class="mt-0.5 block font-semibold text-slate-900 num">
@@ -105,9 +106,14 @@
     {{-- Tabel riwayat (diperbarui otomatis) --}}
     <section wire:poll.10s class="card overflow-hidden">
         <header class="card-header">
-            <div class="min-w-0">
-                <h2 class="card-title">Data pengukuran</h2>
-                <p class="mt-0.5 text-xs text-slate-500">Diperbarui otomatis setiap 10 detik. Nilai gas dalam ppm.</p>
+            <div class="flex min-w-0 items-center gap-3">
+                <span class="icon-chip">
+                    <x-tabler-table class="size-4.5" />
+                </span>
+                <div class="min-w-0">
+                    <h2 class="card-title">Data pengukuran</h2>
+                    <p class="mt-0.5 text-xs text-slate-500">Diperbarui otomatis setiap 10 detik. Nilai gas dalam ppm.</p>
+                </div>
             </div>
         </header>
 
@@ -115,9 +121,9 @@
             <x-ui.empty-state
                 title="Belum ada data"
                 :description="$this->hasFilters() ? 'Tidak ada pengukuran yang cocok dengan filter. Coba ubah atau reset filter.' : 'Data akan muncul setelah sensor mulai mengirim pengukuran.'"
-                icon="heroicon-o-clock">
+                icon="tabler-clock">
                 @if ($this->hasFilters())
-                    <button type="button" wire:click="resetFilters" class="btn btn-secondary btn-sm">Reset filter</button>
+                    <button type="button" wire:click="resetFilters" class="btn btn-secondary btn-sm"><x-tabler-filter-off class="size-4" /> Reset filter</button>
                 @endif
             </x-ui.empty-state>
         @else

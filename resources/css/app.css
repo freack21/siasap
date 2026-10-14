@@ -61,6 +61,18 @@
         @apply text-sm font-semibold text-slate-900;
     }
 
+    .icon-chip {
+        @apply flex size-9 shrink-0 items-center justify-center rounded-xl bg-accent-50 text-accent-700;
+    }
+
+    .icon-chip-sm {
+        @apply size-8 rounded-lg;
+    }
+
+    .icon-chip-lg {
+        @apply size-12 rounded-2xl;
+    }
+
     .eyebrow {
         @apply text-xs font-medium uppercase tracking-wider text-slate-500;
     }
@@ -126,7 +138,7 @@
     }
 
     .nav-link {
-        @apply rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900;
+        @apply inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900;
     }
 
     .nav-link-active {

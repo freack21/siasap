@@ -1,4 +1,4 @@
-@props(['status' => null, 'size' => 'md'])
+@props(['status' => null, 'size' => 'md', 'icon' => false])
 
 @php($category = \App\Support\AirQuality::category($status))
 
@@ -9,6 +9,10 @@
     'px-2.5 py-1 text-xs' => $size === 'md',
     'px-3 py-1 text-sm' => $size === 'lg',
 ]) }}>
-    <span class="size-1.5 rounded-full {{ $category['dot'] }}"></span>
+    @if ($icon)
+        <x-dynamic-component :component="$category['icon']" @class(['size-3.5' => $size !== 'lg', 'size-4' => $size === 'lg']) />
+    @else
+        <span class="size-1.5 rounded-full {{ $category['dot'] }}"></span>
+    @endif
     {{ $category['label'] }}
 </span>
