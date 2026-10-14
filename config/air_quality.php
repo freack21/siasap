@@ -86,4 +86,10 @@ return [
     // Indeks maksimum (clamp) untuk konsentrasi di atas breakpoint terakhir.
     'max_index' => 500,
 
+    // Interval kirim firmware (detik); dipakai estimasi paket pada perhitungan QoS.
+    'send_interval_seconds' => 5,
+
+    // Perangkat dianggap daring bila data terakhir masuk dalam rentang ini (detik).
+    'online_threshold_seconds' => 30,
+
 ];

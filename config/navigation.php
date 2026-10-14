@@ -2,49 +2,49 @@
 
 /*
 |--------------------------------------------------------------------------
-| Menu Navigasi Sidebar
+| Menu Sidebar Panel Admin
 |--------------------------------------------------------------------------
 |
-| Daftar menu statis untuk sidebar. Setiap item hanya ditampilkan jika
-| pengguna memiliki permission yang disebutkan (null = semua pengguna).
-| Urutan array menentukan urutan tampilan; item dikelompokkan per section.
+| Item hanya ditampilkan bila pengguna memiliki permission terkait
+| (null = semua pengguna yang login). 'active' adalah pola nama route untuk
+| menandai menu aktif; default sama dengan 'route'.
 |
 */
 
 return [
     [
-        'title' => 'Kualitas Udara',
-        'route' => 'user.dashboard',
-        'icon' => 'heroicon-o-sparkles',
-        'permission' => 'user.view',
-        'section' => 'PEMANTAUAN UDARA',
-    ],
-    [
-        'title' => 'Riwayat Kualitas Udara',
-        'route' => 'user.history',
-        'icon' => 'heroicon-o-clock',
-        'permission' => 'user.history',
-        'section' => 'PEMANTAUAN UDARA',
-    ],
-    [
-        'title' => 'Telemetri Teknis',
-        'route' => 'telemetry',
-        'icon' => 'heroicon-o-cpu-chip',
+        'title' => 'Ringkasan',
+        'route' => 'admin.overview',
+        'icon' => 'heroicon-o-squares-2x2',
         'permission' => 'telemetry.view',
-        'section' => 'PANEL PENGELOLA',
+        'section' => 'Pemantauan',
     ],
     [
-        'title' => 'Benchmark QoS Topologi',
-        'route' => 'qos-analytics',
-        'icon' => 'heroicon-o-chart-bar-square',
-        'permission' => 'qos.view',
-        'section' => 'PANEL PENGELOLA',
+        'title' => 'Data Sensor',
+        'route' => 'admin.data',
+        'icon' => 'heroicon-o-table-cells',
+        'permission' => 'telemetry.view',
+        'section' => 'Pemantauan',
     ],
     [
-        'title' => 'Master Ruangan & Node',
-        'route' => 'room-management',
+        'title' => 'Ruangan & Perangkat',
+        'route' => 'admin.rooms',
         'icon' => 'heroicon-o-building-office-2',
         'permission' => 'rooms.manage',
-        'section' => 'PANEL PENGELOLA',
+        'section' => 'Pengelolaan',
+    ],
+    [
+        'title' => 'Pengujian Jaringan',
+        'route' => 'admin.qos',
+        'icon' => 'heroicon-o-signal',
+        'permission' => 'qos.view',
+        'section' => 'Pengujian',
+    ],
+    [
+        'title' => 'Hasil Kuesioner',
+        'route' => 'admin.survey',
+        'icon' => 'heroicon-o-clipboard-document-check',
+        'permission' => 'survey.view',
+        'section' => 'Pengujian',
     ],
 ];

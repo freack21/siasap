@@ -3,10 +3,12 @@
 namespace App\Livewire;
 
 use App\Models\SensorLog;
+use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\WithPagination;
 
+#[Layout('layouts::public')]
 #[Title('Riwayat Kualitas Udara — SIASAP')]
 class UserHistory extends Component
 {

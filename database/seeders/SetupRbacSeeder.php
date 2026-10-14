@@ -26,19 +26,13 @@ class SetupRbacSeeder extends Seeder
             'description' => 'Akses monitoring teknis dan manajemen sesi pengujian jaringan.',
         ]);
 
-        $userRole = Role::firstOrCreate(['name' => 'user'], [
-            'display_name' => 'Pengguna Umum',
-            'description' => 'Akses tampilan kualitas udara yang ramah pengguna & riwayat data.',
-        ]);
-
         // 2. Create Permissions
         $permissions = [
-            ['name' => 'user.view', 'display_name' => 'Lihat Pemantauan Udara', 'group' => 'Pemantauan Utama'],
-            ['name' => 'user.history', 'display_name' => 'Lihat Riwayat Udara', 'group' => 'Pemantauan Utama'],
-            ['name' => 'telemetry.view', 'display_name' => 'Lihat Telemetri Teknis', 'group' => 'Panel Pengelola'],
+            ['name' => 'telemetry.view', 'display_name' => 'Lihat Ringkasan & Data Sensor', 'group' => 'Panel Pengelola'],
             ['name' => 'qos.view', 'display_name' => 'Lihat Analisis Topologi', 'group' => 'Panel Pengelola'],
             ['name' => 'session.manage', 'display_name' => 'Mulai & Kelola Sesi Pengujian', 'group' => 'Panel Pengelola'],
             ['name' => 'rooms.manage', 'display_name' => 'Kelola Master Ruangan & Node', 'group' => 'Panel Pengelola'],
+            ['name' => 'survey.view', 'display_name' => 'Lihat Hasil Kuesioner', 'group' => 'Panel Pengelola'],
         ];
 
         $permModels = [];
@@ -49,25 +43,20 @@ class SetupRbacSeeder extends Seeder
         // 3. Assign Permissions to Roles
         $adminRole->permissions()->sync(collect($permModels)->pluck('id'));
         $researcherRole->permissions()->sync([
-            $permModels['user.view']->id,
-            $permModels['user.history']->id,
             $permModels['telemetry.view']->id,
             $permModels['qos.view']->id,
             $permModels['session.manage']->id,
             $permModels['rooms.manage']->id,
         ]);
-        $userRole->permissions()->sync([
-            $permModels['user.view']->id,
-            $permModels['user.history']->id,
-        ]);
 
-        // Bersihkan permission lama yang fiturnya sudah dihapus (simulasi data, RBAC & navigasi dinamis)
-        Permission::whereIn('name', ['telemetry.simulate', 'users.manage', 'navigation.manage'])->each(function (Permission $permission) {
+        // Bersihkan permission lama yang fiturnya sudah dihapus. Halaman pengguna kini publik,
+        // sehingga permission user.view/user.history dan role 'user' tidak diperlukan lagi.
+        Permission::whereIn('name', ['telemetry.simulate', 'users.manage', 'navigation.manage', 'user.view', 'user.history'])->each(function (Permission $permission) {
             $permission->roles()->detach();
             $permission->delete();
         });
 
-        // 4. Create Default Admin & User Accounts
+        // 4. Create Default Admin Account
         $adminUser = User::firstOrCreate(
             ['email' => 'admin@siasap.test'],
             [
@@ -77,14 +66,9 @@ class SetupRbacSeeder extends Seeder
         );
         $adminUser->roles()->sync([$adminRole->id]);
 
-        $publicUser = User::firstOrCreate(
-            ['email' => 'user@siasap.test'],
-            [
-                'name' => 'Pengguna Umum',
-                'password' => Hash::make('password'),
-            ]
-        );
-        $publicUser->roles()->sync([$userRole->id]);
+        // Akun & role 'user' lama tidak dipakai lagi (halaman pengguna bersifat publik)
+        User::where('email', 'user@siasap.test')->delete();
+        Role::where('name', 'user')->delete();
 
         // 5. Seed 3 Default Rooms & 3 Nodes
         $roomTamu = \App\Models\Room::firstOrCreate(

@@ -6,10 +6,12 @@ use App\Models\Node;
 use App\Models\TestingSession;
 use App\Support\QosCalculator;
 use Illuminate\Support\Facades\DB;
+use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
+#[Layout('layouts::admin')]
 #[Title('Benchmark QoS Topologi (Star vs Mesh) — SIASAP')]
 class QosAnalytics extends Component
 {

@@ -4,9 +4,11 @@ namespace App\Livewire;
 
 use App\Models\SensorLog;
 use App\Models\TestingSession;
+use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
+#[Layout('layouts::admin')]
 #[Title('Monitoring Live Telemetry — SIASAP')]
 class TelemetryDashboard extends Component
 {

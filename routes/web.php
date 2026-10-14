@@ -1,35 +1,44 @@
 <?php
 
+use App\Livewire\AdminOverview;
+use App\Livewire\AirQualityGuide;
 use App\Livewire\Auth\Login;
 use App\Livewire\QosAnalytics;
+use App\Livewire\RoomDetail;
 use App\Livewire\RoomManagement;
+use App\Livewire\SurveyForm;
+use App\Livewire\SurveyResults;
 use App\Livewire\TelemetryDashboard;
 use App\Livewire\UserDashboard;
 use App\Livewire\UserHistory;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-// Guest Routes (Public Login)
+// Halaman pengguna (publik, tanpa login): navigasi atas
+Route::get('/', UserDashboard::class)->name('home');
+Route::get('/ruangan/{room}', RoomDetail::class)->name('rooms.show');
+Route::get('/riwayat', UserHistory::class)->name('history');
+Route::get('/panduan', AirQualityGuide::class)->name('guide');
+Route::get('/kuesioner', SurveyForm::class)->name('survey');
+
+// Autentikasi pengelola
 Route::middleware('guest')->group(function () {
     Route::get('/login', Login::class)->name('login');
 });
 
-// Logout Route
 Route::post('/logout', function () {
     Auth::logout();
     request()->session()->invalidate();
     request()->session()->regenerateToken();
-    return redirect()->route('login');
+
+    return redirect()->route('home');
 })->name('logout')->middleware('auth');
 
-// Protected Dashboard Routes (Requires Authenticated User)
-Route::middleware('auth')->group(function () {
-    // Tampilan User / Publik (Clean, Non-Teknis)
-    Route::get('/', UserDashboard::class)->name('user.dashboard');
-    Route::get('/riwayat', UserHistory::class)->name('user.history');
-
-    // Panel Admin / Peneliti (Teknis, QoS & Sensor Nodes)
-    Route::get('/admin/telemetry', TelemetryDashboard::class)->name('telemetry');
-    Route::get('/admin/qos-analytics', QosAnalytics::class)->name('qos-analytics');
-    Route::get('/admin/rooms', RoomManagement::class)->name('room-management');
+// Panel admin / pengelola: sidebar, hak akses dicek di tiap komponen
+Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/', AdminOverview::class)->name('overview');
+    Route::get('/data-sensor', TelemetryDashboard::class)->name('data');
+    Route::get('/ruangan', RoomManagement::class)->name('rooms');
+    Route::get('/pengujian-jaringan', QosAnalytics::class)->name('qos');
+    Route::get('/kuesioner', SurveyResults::class)->name('survey');
 });

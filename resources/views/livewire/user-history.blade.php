@@ -20,7 +20,7 @@
             </p>
         </div>
 
-        <a href="{{ route('user.dashboard') }}" 
+        <a href="{{ route('home') }}" 
            class="px-4 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-bold transition-all flex items-center gap-2 self-start md:self-auto">
             <x-heroicon-o-arrow-left class="w-4 h-4" />
             <span>Kembali ke Dashboard Utama</span>

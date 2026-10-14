@@ -36,10 +36,10 @@ class Login extends Component
 
             // Smart RBAC redirection based on user permissions/roles
             if ($user->hasPermission('telemetry.view') || $user->hasRole('admin') || $user->hasRole('researcher')) {
-                return redirect()->intended(route('telemetry'));
+                return redirect()->intended(route('admin.overview'));
             }
 
-            return redirect()->intended(route('user.dashboard'));
+            return redirect()->intended(route('home'));
         }
 
         $this->addError('email', 'Alamat email atau kata sandi yang Anda masukkan tidak cocok.');

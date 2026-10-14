@@ -17,7 +17,7 @@
             </p>
         </div>
 
-        <a href="{{ route('user.history') }}" 
+        <a href="{{ route('history') }}" 
            class="px-4 py-2.5 bg-sky-600 hover:bg-sky-500 text-white rounded-xl text-xs font-bold shadow-md shadow-sky-500/20 transition-all flex items-center gap-2 self-start md:self-auto z-10">
             <x-heroicon-o-clock class="w-4 h-4" />
             <span>Lihat Riwayat Kualitas Udara</span>

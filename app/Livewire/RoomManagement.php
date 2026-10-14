@@ -4,9 +4,11 @@ namespace App\Livewire;
 
 use App\Models\Node;
 use App\Models\Room;
+use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
+#[Layout('layouts::admin')]
 #[Title('Kelola Master Ruangan & Node — SIASAP')]
 class RoomManagement extends Component
 {
