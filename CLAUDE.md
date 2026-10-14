@@ -142,3 +142,12 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
 - Run `vendor/bin/phpunit` to call the test runner directly. It accepts the same file path and `--filter=testName` arguments.
 
 </laravel-boost-guidelines>
+
+# Alur Branch SIASAP
+
+- `master` dibekukan sebagai versi awal (v1). Jangan commit, merge, atau push ke `master`.
+- `v2` adalah branch integrasi untuk seluruh pengembangan baru. Jangan commit langsung ke `v2`.
+- Setiap pekerjaan dibuat di branch sendiri yang bercabang dari `v2` terbaru, dengan nama deskriptif sesuai fitur: `feat/<fitur>`, `fix/<masalah>`, `docs/<topik>`, `refactor/<area>`, `test/<area>` (huruf kecil, dipisah tanda hubung). Contoh: `feat/notifikasi-telegram`, `fix/pdr-node-offline`.
+- Branch dianggap siap di-merge ke `v2` bila: seluruh `php artisan test` lulus, `vendor/bin/pint` bersih untuk file yang diubah, dan `npm run build` berhasil bila ada perubahan frontend.
+- Sebelum merge, perbarui branch dengan `v2` terbaru (`git merge origin/v2`) dan selesaikan konflik di branch fitur, bukan di `v2`.
+- Merge ke `v2` dengan `git merge --no-ff <branch>` agar riwayat per fitur tetap terbaca, lalu push `v2`.
