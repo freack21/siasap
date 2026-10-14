@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Models\SensorLog;
+use App\Models\Role;
 use App\Models\User;
 use Database\Seeders\SetupRbacSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -18,73 +18,59 @@ class NavigationTest extends TestCase
         $this->seed(SetupRbacSeeder::class);
     }
 
-    public function test_admin_sees_admin_links_in_sidebar(): void
+    public function test_public_pages_use_topbar_without_admin_sidebar(): void
+    {
+        $this->get(route('home'))
+            ->assertOk()
+            ->assertSee('Navigasi utama')
+            ->assertSee(route('history'))
+            ->assertSee(route('guide'))
+            ->assertSee(route('survey'))
+            ->assertSee('Masuk Admin')
+            ->assertDontSee('Navigasi admin');
+    }
+
+    public function test_admin_sees_all_sidebar_links(): void
     {
         $admin = User::where('email', 'admin@siasap.test')->first();
 
         $this->actingAs($admin)
-            ->get(route('user.dashboard'))
+            ->get(route('admin.overview'))
             ->assertOk()
-            ->assertSee('Kualitas Udara')
-            ->assertSee('Riwayat Kualitas Udara')
-            ->assertSee('PANEL PENGELOLA')
-            ->assertSee(route('telemetry'))
-            ->assertSee(route('qos-analytics'))
-            ->assertSee(route('room-management'));
+            ->assertSee('Navigasi admin')
+            ->assertSee(route('admin.data'))
+            ->assertSee(route('admin.rooms'))
+            ->assertSee(route('admin.qos'))
+            ->assertSee(route('admin.survey'));
     }
 
-    public function test_basic_user_does_not_see_admin_links_in_sidebar(): void
+    public function test_sidebar_hides_links_without_permission(): void
     {
-        $user = User::where('email', 'user@siasap.test')->first();
+        $researcher = User::create([
+            'name' => 'Peneliti',
+            'email' => 'peneliti@siasap.test',
+            'password' => 'password',
+        ]);
+        $researcher->roles()->sync([Role::where('name', 'researcher')->value('id')]);
 
-        $this->actingAs($user)
-            ->get(route('user.dashboard'))
+        $this->actingAs($researcher)
+            ->get(route('admin.overview'))
             ->assertOk()
-            ->assertSee(route('user.history'))
-            ->assertDontSee('PANEL PENGELOLA')
-            ->assertDontSee(route('telemetry'))
-            ->assertDontSee(route('qos-analytics'))
-            ->assertDontSee(route('room-management'));
+            ->assertSee(route('admin.qos'))
+            ->assertDontSee(route('admin.survey'));
     }
 
-    public function test_removed_admin_routes_return_404(): void
+    public function test_admin_pages_require_login(): void
+    {
+        $this->get(route('admin.overview'))->assertRedirect(route('login'));
+    }
+
+    public function test_removed_routes_return_404(): void
     {
         $admin = User::where('email', 'admin@siasap.test')->first();
 
-        foreach (['/admin/sessions-management', '/admin/rbac-management', '/admin/navigation-management'] as $uri) {
+        foreach (['/admin/telemetry', '/admin/qos-analytics', '/admin/rooms', '/admin/sessions-management', '/admin/rbac-management', '/admin/navigation-management'] as $uri) {
             $this->actingAs($admin)->get($uri)->assertNotFound();
         }
-    }
-
-    public function test_telemetry_dashboard_has_no_simulation_button(): void
-    {
-        $admin = User::where('email', 'admin@siasap.test')->first();
-
-        $this->actingAs($admin)
-            ->get(route('telemetry'))
-            ->assertOk()
-            ->assertDontSee('generateSimulatedData')
-            ->assertDontSee('Simulasi Transmisi');
-    }
-
-    public function test_dashboards_render_ku_index_and_null_rssi(): void
-    {
-        $admin = User::where('email', 'admin@siasap.test')->first();
-
-        SensorLog::create([
-            'node_id' => 1,
-            'co2' => 400, 'nh3' => 5, 'co' => 3, 'h2' => 2,
-            'ku_value' => 120, 'ku_status' => 'Sedang', 'ku_dominant' => 'co',
-            'rssi' => null, 'seq_number' => 1, 'hop_count' => 1, 'topology_type' => 'star',
-        ]);
-
-        $this->actingAs($admin)->get(route('telemetry'))
-            ->assertOk()
-            ->assertSee('Parameter dominan: CO')
-            ->assertSee('—')
-            ->assertDontSee('null dBm');
-
-        $this->actingAs($admin)->get(route('user.dashboard'))->assertOk()->assertSee('Indeks KU 120');
-        $this->actingAs($admin)->get(route('user.history'))->assertOk()->assertSee('Indeks 120');
     }
 }
