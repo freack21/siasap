@@ -2,10 +2,13 @@
 
 namespace App\Livewire;
 
-use App\Models\SensorLog;
+use App\Models\Node;
 use App\Models\TestingSession;
+use App\Support\QosCalculator;
+use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Title;
 use Livewire\Component;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 #[Title('Benchmark QoS Topologi (Star vs Mesh) — SIASAP')]
 class QosAnalytics extends Component
@@ -17,10 +20,20 @@ class QosAnalytics extends Component
 
     public ?int $filterSessionId = null;
 
+    public const CSV_COLUMNS = [
+        'session_id', 'session_name', 'topology_type', 'node_id', 'seq_number', 'rssi', 'hop_count',
+        'co2', 'nh3', 'co', 'h2', 'ku_value', 'ku_status', 'created_at',
+    ];
+
     public function mount()
     {
-        if (!auth()->user() || !auth()->user()->hasPermission('qos.view')) {
-            abort(403, 'Anda tidak memiliki hak akses ke modul analisis ini.');
+        $this->authorizePermission('qos.view', 'Anda tidak memiliki hak akses ke modul analisis ini.');
+    }
+
+    private function authorizePermission(string $permission, string $message): void
+    {
+        if (! auth()->user() || ! auth()->user()->hasPermission($permission)) {
+            abort(403, $message);
         }
     }
 
@@ -37,6 +50,8 @@ class QosAnalytics extends Component
      */
     public function startSession()
     {
+        $this->authorizePermission('session.manage', 'Anda tidak memiliki hak akses untuk mengelola sesi pengujian.');
+
         $this->validate([
             'sessionName' => 'required|string|max:100',
             'sessionTopology' => 'required|in:star,mesh',
@@ -69,6 +84,8 @@ class QosAnalytics extends Component
      */
     public function stopActiveSession()
     {
+        $this->authorizePermission('session.manage', 'Anda tidak memiliki hak akses untuk mengelola sesi pengujian.');
+
         $activeSession = TestingSession::active()->first();
         if ($activeSession) {
             $activeSession->update([
@@ -80,166 +97,49 @@ class QosAnalytics extends Component
     }
 
     /**
-     * Populate synthetic research dataset for both Star and Mesh topologies
+     * Export raw sensor_logs (only logs bound to a testing session) as CSV
+     * for the thesis appendix / statistical analysis.
      */
-    public function populateResearchBenchmarkData()
+    public function exportCsv(): StreamedResponse
     {
-        // Session 1: Star Topology Benchmark
-        $starSession = TestingSession::create([
-            'name' => 'Uji Komparasi Star (Jarak & Halangan Dinding)',
-            'topology_type' => 'star',
-            'status' => 'completed',
-            'description' => 'Skenario Node 1 & 2 jarak dekat, Node 3 terhalang dinding/blind spot.',
-            'started_at' => now()->subHours(2),
-            'ended_at' => now()->subHour(),
-        ]);
+        $this->authorizePermission('qos.view', 'Anda tidak memiliki hak akses ke modul analisis ini.');
 
-        // Node 1 & 2 in Star: high PDR (98%), RSSI -55dBm, 50 packets
-        for ($i = 1; $i <= 50; $i++) {
-            foreach ([1, 2] as $nodeId) {
-                if (rand(1, 100) <= 98) { // 98% PDR
-                    SensorLog::create([
-                        'testing_session_id' => $starSession->id,
-                        'node_id' => $nodeId,
-                        'co2' => rand(25, 45),
-                        'nh3' => rand(10, 20),
-                        'co' => rand(5, 15),
-                        'h2' => rand(2, 10),
-                        'ku_value' => rand(25, 45),
-                        'ku_status' => 'Baik',
-                        'rssi' => rand(-60, -50),
-                        'seq_number' => $i,
-                        'hop_count' => 1,
-                        'topology_type' => 'star',
-                        'created_at' => now()->subHours(2)->addSeconds($i * 5),
-                    ]);
-                }
-            }
-            // Node 3 in Star (Blind Spot): low PDR (42%) due to wall interference
-            if (rand(1, 100) <= 42) {
-                SensorLog::create([
-                    'testing_session_id' => $starSession->id,
-                    'node_id' => 3,
-                    'co2' => rand(30, 50),
-                    'nh3' => rand(12, 22),
-                    'co' => rand(8, 18),
-                    'h2' => rand(5, 12),
-                    'ku_value' => rand(30, 50),
-                    'ku_status' => 'Baik',
-                    'rssi' => rand(-92, -84),
-                    'seq_number' => $i,
-                    'hop_count' => 1,
-                    'topology_type' => 'star',
-                    'created_at' => now()->subHours(2)->addSeconds($i * 5),
-                ]);
-            }
-        }
+        $sessionId = $this->filterSessionId;
+        $filename = 'siasap-qos-sensor-logs-'.($sessionId ? 'sesi-'.$sessionId : 'semua-sesi').'-'.now()->format('Ymd_His').'.csv';
 
-        // Session 2: Mesh Topology Benchmark
-        $meshSession = TestingSession::create([
-            'name' => 'Uji Komparasi Mesh Multi-Hop Relay',
-            'topology_type' => 'mesh',
-            'status' => 'completed',
-            'description' => 'Skenario Node 3 merelay sinyal melalui Node 2 untuk mengatasi blind spot.',
-            'started_at' => now()->subHour(),
-            'ended_at' => now(),
-        ]);
+        return response()->streamDownload(function () use ($sessionId) {
+            $out = fopen('php://output', 'w');
+            fputcsv($out, self::CSV_COLUMNS);
 
-        // Mesh nodes: Node 1 & 2 direct (hop=1, PDR 96%), Node 3 multi-hop (hop=2, PDR 94%)
-        for ($i = 1; $i <= 50; $i++) {
-            foreach ([1, 2, 3] as $nodeId) {
-                $pdrThreshold = ($nodeId === 3) ? 94 : 96;
-                if (rand(1, 100) <= $pdrThreshold) {
-                    SensorLog::create([
-                        'testing_session_id' => $meshSession->id,
-                        'node_id' => $nodeId,
-                        'co2' => rand(20, 50),
-                        'nh3' => rand(8, 25),
-                        'co' => rand(4, 18),
-                        'h2' => rand(2, 12),
-                        'ku_value' => rand(20, 50),
-                        'ku_status' => 'Baik',
-                        'rssi' => ($nodeId === 3) ? rand(-72, -62) : rand(-62, -52),
-                        'seq_number' => $i,
-                        'hop_count' => ($nodeId === 3) ? 2 : 1,
-                        'topology_type' => 'mesh',
-                        'created_at' => now()->subHour()->addSeconds($i * 5),
-                    ]);
-                }
-            }
-        }
+            DB::table('sensor_logs')
+                ->join('testing_sessions', 'testing_sessions.id', '=', 'sensor_logs.testing_session_id')
+                ->when($sessionId, fn ($q) => $q->where('sensor_logs.testing_session_id', $sessionId))
+                ->select([
+                    'sensor_logs.id',
+                    'sensor_logs.testing_session_id as session_id',
+                    'testing_sessions.name as session_name',
+                    'sensor_logs.topology_type',
+                    'sensor_logs.node_id',
+                    'sensor_logs.seq_number',
+                    'sensor_logs.rssi',
+                    'sensor_logs.hop_count',
+                    'sensor_logs.co2',
+                    'sensor_logs.nh3',
+                    'sensor_logs.co',
+                    'sensor_logs.h2',
+                    'sensor_logs.ku_value',
+                    'sensor_logs.ku_status',
+                    'sensor_logs.created_at',
+                ])
+                ->orderBy('sensor_logs.id')
+                ->chunk(1000, function ($rows) use ($out) {
+                    foreach ($rows as $row) {
+                        fputcsv($out, array_map(fn ($col) => $row->{$col}, self::CSV_COLUMNS));
+                    }
+                });
 
-        session()->flash('message', 'Dataset empiris riset berhasil di-generate untuk Topologi Star & Mesh!');
-    }
-
-    /**
-     * Compute QoS metrics helper
-     */
-    private function computeQosMetrics(string $topology, ?int $sessionId = null): array
-    {
-        $query = SensorLog::where('topology_type', $topology);
-
-        if ($sessionId) {
-            $query->where('testing_session_id', $sessionId);
-        }
-
-        $receivedCount = $query->count();
-        if ($receivedCount === 0) {
-            return [
-                'total_received' => 0,
-                'expected_packets' => 0,
-                'pdr' => 0,
-                'loss_rate' => 0,
-                'avg_rssi' => 0,
-                'avg_hop' => 0,
-                'per_node' => [],
-            ];
-        }
-
-        $avgRssi = round($query->avg('rssi') ?? 0, 1);
-        $avgHop  = round($query->avg('hop_count') ?? 1, 2);
-
-        // Calculate expected packets based on sequence numbers per node
-        $totalExpected = 0;
-        $perNodeMetrics = [];
-
-        for ($n = 1; $n <= 3; $n++) {
-            $nodeQuery = (clone $query)->where('node_id', $n);
-            $nodeReceived = $nodeQuery->count();
-            $maxSeq = $nodeQuery->max('seq_number');
-            $minSeq = $nodeQuery->min('seq_number');
-
-            $expected = ($maxSeq && $minSeq) ? ($maxSeq - $minSeq + 1) : $nodeReceived;
-            if ($expected < $nodeReceived) {
-                $expected = $nodeReceived;
-            }
-
-            $totalExpected += $expected;
-            $nodePdr = $expected > 0 ? round(($nodeReceived / $expected) * 100, 1) : 0;
-            $nodeLoss = round(100 - $nodePdr, 1);
-
-            $perNodeMetrics[$n] = [
-                'received' => $nodeReceived,
-                'expected' => $expected,
-                'pdr' => $nodePdr,
-                'loss_rate' => $nodeLoss,
-                'avg_rssi' => round($nodeQuery->avg('rssi') ?? 0, 1),
-                'avg_hop' => round($nodeQuery->avg('hop_count') ?? 1, 1),
-            ];
-        }
-
-        $overallPdr = $totalExpected > 0 ? round(($receivedCount / $totalExpected) * 100, 1) : 0;
-        $overallLoss = round(100 - $overallPdr, 1);
-
-        return [
-            'total_received' => $receivedCount,
-            'expected_packets' => $totalExpected,
-            'pdr' => $overallPdr,
-            'loss_rate' => $overallLoss,
-            'avg_rssi' => $avgRssi,
-            'avg_hop' => $avgHop,
-            'per_node' => $perNodeMetrics,
-        ];
+            fclose($out);
+        }, $filename, ['Content-Type' => 'text/csv; charset=UTF-8']);
     }
 
     public function render()
@@ -248,14 +148,17 @@ class QosAnalytics extends Component
         $sessionsList = TestingSession::latest()->take(10)->get();
 
         // Calculate metrics for Star vs Mesh
-        $starQos = $this->computeQosMetrics('star', $this->filterSessionId);
-        $meshQos = $this->computeQosMetrics('mesh', $this->filterSessionId);
+        $starQos = QosCalculator::forTopology('star', $this->filterSessionId);
+        $meshQos = QosCalculator::forTopology('mesh', $this->filterSessionId);
 
         return view('livewire.qos-analytics', [
             'activeSession' => $activeSession,
             'sessionsList' => $sessionsList,
             'starQos' => $starQos,
             'meshQos' => $meshQos,
+            'nodeNames' => Node::query()->pluck('name', 'id'),
+            'canManageSessions' => (bool) auth()->user()?->hasPermission('session.manage'),
+            'sendInterval' => QosCalculator::sendIntervalSeconds(),
         ]);
     }
 }
