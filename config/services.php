@@ -28,6 +28,12 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'telemetry' => [
+        // Kunci API opsional untuk endpoint /api/telemetry (header X-Api-Key).
+        // Jika kosong, endpoint tidak memerlukan autentikasi.
+        'api_key' => env('TELEMETRY_API_KEY'),
+    ],
+
     'slack' => [
         'notifications' => [
             'bot_user_oauth_token' => env('SLACK_BOT_USER_OAUTH_TOKEN'),
