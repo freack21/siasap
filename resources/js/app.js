@@ -15,6 +15,7 @@ Chart.register(LineController, LineElement, PointElement, LinearScale, CategoryS
 Chart.defaults.font.family = "'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif";
 Chart.defaults.font.size = 11;
 Chart.defaults.color = '#64748b';
+Chart.defaults.locale = 'id-ID';
 
 /**
  * Komponen Alpine untuk grafik garis.
@@ -52,18 +53,23 @@ function lineChart() {
         },
 
         datasets(payload) {
-            return (payload.datasets || []).map((set) => ({
-                label: set.label,
-                data: set.data,
-                borderColor: set.color,
-                backgroundColor: set.color + '1a',
-                fill: payload.datasets.length === 1,
-                tension: 0.35,
-                borderWidth: 2,
-                pointRadius: 0,
-                pointHoverRadius: 4,
-                spanGaps: true,
-            }));
+            return (payload.datasets || []).map((set) => {
+                // Titik ditampilkan bila datanya sedikit, agar satu-dua pembacaan tetap terlihat.
+                const filled = (set.data || []).filter((value) => value !== null).length;
+
+                return {
+                    label: set.label,
+                    data: set.data,
+                    borderColor: set.color,
+                    backgroundColor: set.color + '1a',
+                    fill: payload.datasets.length === 1,
+                    tension: 0.35,
+                    borderWidth: 2,
+                    pointRadius: filled <= 3 ? 3 : 0,
+                    pointHoverRadius: 4,
+                    spanGaps: true,
+                };
+            });
         },
 
         render(payload) {
