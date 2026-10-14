@@ -5,10 +5,26 @@
  * Deskripsi Peran Node 3:
  * 1. Berada di area Blind Spot (terhalang dinding / jauh dari router & Node 1 Gateway).
  * 2. Membaca sensor gas lokal miliknya sendiri (Node ID 3 - Dapur).
- * 3. Mengirim paket telemetri via ESP-NOW ke Node 2 (Relay Node).
- * 4. Node 2 akan menerima paket ini, menaikkan Hop Count (menjadi 2 Hop), dan meneruskannya
- *    ke Node 1 (Root Gateway) untuk disimpan di database Laravel SIASAP.
+ * 3. Mengirim paket telemetri via ESP-NOW broadcast (ditujukan ke Node 2 / Relay Node).
+ * 4. Node 2 menerima paket ini, mengukur RSSI link 3->2, menaikkan Hop Count, lalu
+ *    meneruskannya ke Node 1 (Root Gateway) untuk disimpan di database Laravel SIASAP.
+ *
+ * Definisi metrik (seragam untuk semua topologi, lihat arduino/README.md):
+ * - rssi      : RSSI TERLEMAH (minimum) dari seluruh link nirkabel yang dilalui paket sampai
+ *               ke WiFi Access Point. RSSI hanya bisa diukur oleh PENERIMA, sehingga node
+ *               pengirim mengisi rssi = 0 ("belum terukur"); setiap penerima ESP-NOW dan
+ *               Root Gateway (link WiFi ke AP) yang mengisinya dengan nilai terukur.
+ * - hop_count : jumlah transmisi nirkabel sampai paket mencapai WiFi AP. Leaf mengisi 1
+ *               (transmisi ESP-NOW miliknya), Relay +1, Root Gateway +1 (hop gateway -> AP).
+ *               Via relay = 3 hop; bila tertangkap langsung oleh gateway = 2 hop.
+ *
+ * Kebutuhan: ESP32 Arduino core >= 3.0.
  * ========================================================================================= */
+
+#include <esp_arduino_version.h>
+#if !defined(ESP_ARDUINO_VERSION_MAJOR) || ESP_ARDUINO_VERSION_MAJOR < 3
+#error "Butuh ESP32 Arduino core >= 3.0 (Boards Manager: esp32 by Espressif Systems versi 3.x)."
+#endif
 
 #include <WiFi.h>
 #include <esp_now.h>
@@ -28,6 +44,9 @@ const unsigned long INTERVAL_KIRIM = 5000;
 #define PIN_MQ135 35
 
 const float RL        = 1.0;
+// PENTING: R0 berbeda untuk setiap sensor fisik. Setiap board WAJIB memakai R0 hasil
+// kalibrasinya sendiri dari sketch arduino/kalibrasi_r0/kalibrasi_r0.ino (udara bersih,
+// setelah burn-in 24-48 jam). Nilai di bawah hanya nilai awal/contoh.
 const float R0_MQ2    = 0.174;
 const float R0_MQ135  = 19.30;
 
@@ -70,11 +89,6 @@ float hitungPPM(float rs, float r0, float a, float b) {
   return a * pow(rasio, b);
 }
 
-// Callback status pengiriman ESP-NOW
-void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status) {
-  // Status pengiriman paket
-}
-
 // ======================== SETUP ========================
 void setup() {
   Serial.begin(115200);
@@ -102,8 +116,6 @@ void setup() {
     Serial.println("[ERROR] Gagal inisialisasi ESP-NOW!");
     return;
   }
-
-  esp_now_register_send_cb(OnDataSent);
 
   // Daftarkan Peer Broadcast
   esp_now_peer_info_t peerInfo = {};
@@ -154,16 +166,18 @@ void loop() {
 
   seqNumber++;
 
-  // 3. Susun Paket Data Node 3 (Awal Hop Count = 1 sebelum diestafet oleh Relay)
+  // 3. Susun Paket Data Node 3
+  //    rssi = 0 -> "belum terukur"; diisi oleh penerima (Relay / Gateway) dari rx_ctrl->rssi.
+  //    hop_count = 1 -> transmisi ESP-NOW milik Node 3; Relay & Gateway masing-masing +1.
   struct_mesh_packet myPacket;
   myPacket.node_id    = NODE_ID;
   myPacket.co2        = ppm_co2;
   myPacket.nh3        = ppm_nh3;
   myPacket.co         = ppm_co;
   myPacket.h2         = ppm_h2;
-  myPacket.rssi       = -78; // Estimasi sinyal jarak jauh/terhalang dinding
+  myPacket.rssi       = 0;   // Belum terukur (diukur di sisi penerima)
   myPacket.seq_number = seqNumber;
-  myPacket.hop_count  = 1;   // Node 2 (Relay) akan menaikkan nilai ini menjadi 2 Hop!
+  myPacket.hop_count  = 1;   // Hop pertama: Node 3 -> (Relay / Gateway)
 
   // 4. Kirim Paket Data via ESP-NOW ke Node 2 (Relay)
   esp_err_t result = esp_now_send(broadcastAddress, (uint8_t *) &myPacket, sizeof(struct_mesh_packet));
@@ -172,7 +186,7 @@ void loop() {
   Serial.print("[LEAF TRANSMIT] Node #"); Serial.print(NODE_ID);
   Serial.print(" Paket #"); Serial.print(seqNumber);
   Serial.print(" -> Status ESP-NOW: ");
-  Serial.println((result == ESP_OK) ? "Sukses Terpancar ke Relay" : "Gagal");
+  Serial.println((result == ESP_OK) ? "Sukses Masuk Antrean Kirim" : "Gagal");
 
   Serial.print("CO2: "); Serial.print(ppm_co2, 2); Serial.print(" ppm | ");
   Serial.print("NH3: "); Serial.print(ppm_nh3, 2); Serial.print(" ppm | ");

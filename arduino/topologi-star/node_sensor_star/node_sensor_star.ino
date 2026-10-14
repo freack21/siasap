@@ -9,6 +9,12 @@
  * Konfigurasi Node:
  * - Ubah NODE_ID (1: Ruang Tamu, 2: Kamar, 3: Dapur) sesuai penempatan perangkat.
  * - Ubah SSID, PASSWORD WiFi, dan IP_SERVER sesuai jaringan lokal Anda.
+ * - Isi API_KEY bila backend Laravel mengaktifkan TELEMETRY_API_KEY.
+ *
+ * Definisi metrik (seragam untuk semua topologi, lihat arduino/README.md):
+ * - rssi      : RSSI TERLEMAH dari seluruh link nirkabel sampai WiFi AP. Pada Star hanya ada
+ *               satu link (Node -> AP), sehingga rssi = WiFi.RSSI().
+ * - hop_count : jumlah transmisi nirkabel sampai paket mencapai WiFi AP. Pada Star = 1.
  * ========================================================================================= */
 
 #include <WiFi.h>
@@ -23,6 +29,10 @@ const char* WIFI_PASSWORD = "cargocargo";
 // Contoh: "http://192.168.137.1:8000/api/telemetry"
 const char* SERVER_URL    = "http://192.168.137.1:8000/api/telemetry";
 
+// API Key opsional. Isi dengan nilai TELEMETRY_API_KEY di file .env Laravel bila backend
+// mewajibkannya. Biarkan kosong ("") bila backend tidak memakai API key.
+const char* API_KEY       = "";
+
 // Interval pengiriman data (milidetik) -> Default: 5000 ms (5 detik)
 const unsigned long INTERVAL_KIRIM = 5000;
 
@@ -36,6 +46,9 @@ const unsigned long INTERVAL_KIRIM = 5000;
 
 // Parameter Hambatan Beban & Kalibrasi R0
 const float RL        = 1.0;
+// PENTING: R0 berbeda untuk setiap sensor fisik. Setiap board WAJIB memakai R0 hasil
+// kalibrasinya sendiri dari sketch arduino/kalibrasi_r0/kalibrasi_r0.ino (udara bersih,
+// setelah burn-in 24-48 jam). Nilai di bawah hanya nilai awal/contoh.
 const float R0_MQ2    = 0.174;
 const float R0_MQ135  = 19.30;
 
@@ -158,7 +171,7 @@ void loop() {
 
   // 4. Evaluasi Kualitas Udara & Indikator Sinyal
   String status_ku = tentukanStatusKU(ppm_co2, ppm_nh3, ppm_co, ppm_h2);
-  long rssi = WiFi.RSSI();
+  long rssi = WiFi.RSSI();  // Satu-satunya link nirkabel: Node -> AP
   seqNumber++;
 
   // 5. Susun Payload JSON Sesuai Kebutuhan Backend Laravel SIASAP
@@ -170,7 +183,7 @@ void loop() {
   jsonPayload += "\"h2\":"             + String(ppm_h2, 2) + ",";
   jsonPayload += "\"rssi\":"           + String(rssi) + ",";
   jsonPayload += "\"seq_number\":"     + String(seqNumber) + ",";
-  jsonPayload += "\"hop_count\":1,";
+  jsonPayload += "\"hop_count\":1,";  // Satu transmisi nirkabel: Node -> AP
   jsonPayload += "\"topology_type\":\"star\"";
   jsonPayload += "}";
 
@@ -179,6 +192,9 @@ void loop() {
     HTTPClient http;
     http.begin(SERVER_URL);
     http.addHeader("Content-Type", "application/json");
+    if (strlen(API_KEY) > 0) {
+      http.addHeader("X-Api-Key", API_KEY);
+    }
 
     int httpResponseCode = http.POST(jsonPayload);
 

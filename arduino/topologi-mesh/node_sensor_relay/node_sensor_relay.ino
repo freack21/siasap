@@ -3,11 +3,27 @@
  * TOPOLOGI MESH - ESP32 NODE 2 (INTERMEDIATE / RELAY SENSOR NODE)
  * =========================================================================================
  * Deskripsi Peran Node 2:
- * 1. Membaca sensor gas lokal miliknya sendiri (Node ID 2 - Kamar, Hop Count = 1).
- * 2. Mengirim data lokal secara berkala ke Node 1 (Root Gateway) via ESP-NOW.
+ * 1. Membaca sensor gas lokal miliknya sendiri (Node ID 2 - Kamar).
+ * 2. Mengirim data lokal secara berkala ke Node 1 (Root Gateway) via ESP-NOW
+ *    (hop_count = 1 dari Node 2; Gateway menambah +1 untuk hop ke AP -> total 2).
  * 3. Berfungsi sebagai RELAY / JEMBATAN: Mendengarkan paket dari Node 3 (Leaf yang berada di
- *    blind spot), menambahkan Hop Count (Hop = 2), lalu meneruskannya (retransmit) ke Node 1.
+ *    blind spot), MENGUKUR RSSI link 3->2 dari paket yang diterima, menambah Hop Count (+1),
+ *    lalu meneruskannya (retransmit) ke Node 1. Paket dengan hop_count > 1 (sudah pernah
+ *    di-relay) diabaikan agar relay tidak pernah me-relay ulang.
+ *
+ * Definisi metrik (seragam untuk semua topologi, lihat arduino/README.md):
+ * - rssi      : RSSI TERLEMAH (minimum) dari seluruh link nirkabel yang dilalui paket sampai
+ *               ke WiFi AP. Pengirim mengisi 0 ("belum terukur"); setiap penerima ESP-NOW
+ *               menerapkan rssi = (rssi == 0) ? terukur : min(rssi, terukur).
+ * - hop_count : jumlah transmisi nirkabel sampai paket mencapai WiFi AP.
+ *
+ * Kebutuhan: ESP32 Arduino core >= 3.0 (signature callback esp_now_recv_info_t).
  * ========================================================================================= */
+
+#include <esp_arduino_version.h>
+#if !defined(ESP_ARDUINO_VERSION_MAJOR) || ESP_ARDUINO_VERSION_MAJOR < 3
+#error "Butuh ESP32 Arduino core >= 3.0 (Boards Manager: esp32 by Espressif Systems versi 3.x)."
+#endif
 
 #include <WiFi.h>
 #include <esp_now.h>
@@ -27,6 +43,9 @@ const unsigned long INTERVAL_KIRIM = 5000;
 #define PIN_MQ135 35
 
 const float RL        = 1.0;
+// PENTING: R0 berbeda untuk setiap sensor fisik. Setiap board WAJIB memakai R0 hasil
+// kalibrasinya sendiri dari sketch arduino/kalibrasi_r0/kalibrasi_r0.ino (udara bersih,
+// setelah burn-in 24-48 jam). Nilai di bawah hanya nilai awal/contoh.
 const float R0_MQ2    = 0.174;
 const float R0_MQ135  = 19.30;
 
@@ -69,29 +88,63 @@ float hitungPPM(float rs, float r0, float a, float b) {
   return a * pow(rasio, b);
 }
 
-// Callback saat berhasil / gagal mengirim via ESP-NOW
-void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status) {
-  // Status pengiriman
+// ======================== ANTREAN RELAY ========================
+// Callback ESP-NOW berjalan di task WiFi, sehingga paket yang akan di-relay dimasukkan ke
+// antrean dan dipancarkan ulang dari loop() (bukan dari dalam callback).
+#define MAX_RELAY_QUEUE 10
+struct_mesh_packet relayQueue[MAX_RELAY_QUEUE];
+volatile int relayHead  = 0;   // indeks paket terdepan
+volatile int relayCount = 0;   // jumlah paket dalam antrean
+volatile unsigned long relayDropped = 0;  // paket dibuang karena antrean penuh
+unsigned long relayDroppedReported = 0;
+portMUX_TYPE relayMux = portMUX_INITIALIZER_UNLOCKED;
+
+// Gabungkan RSSI terukur ke paket: ambil nilai TERLEMAH (minimum) sepanjang jalur.
+// rssi == 0 berarti belum ada link yang terukur.
+int gabungRssi(int rssiPaket, int rssiTerukur) {
+  if (rssiPaket == 0) return rssiTerukur;
+  return (rssiTerukur < rssiPaket) ? rssiTerukur : rssiPaket;
 }
 
-// Callback saat menerima paket dari Node 3 (Leaf / Blind Spot)
-void OnDataRecv(const uint8_t *mac_addr, const uint8_t *incomingData, int len) {
-  if (len == sizeof(struct_mesh_packet)) {
-    struct_mesh_packet incomingPkt;
-    memcpy(&incomingPkt, incomingData, sizeof(struct_mesh_packet));
+// Callback saat menerima paket ESP-NOW (signature ESP32 Arduino core 3.x)
+void OnDataRecv(const esp_now_recv_info_t *info, const uint8_t *incomingData, int len) {
+  if (len != sizeof(struct_mesh_packet)) return;
 
-    // Jika paket berasal dari Node 3, lakukan RELAY (Hop Count bertambah)
-    if (incomingPkt.node_id == 3) {
-      incomingPkt.hop_count += 1; // Lompatan bertambah menjadi 2 Hop!
-      
-      Serial.println("-------------------------------------------------------");
-      Serial.print("[MESH RELAY] Menerima data dari Node #3. Meneruskan ke Root Gateway...");
-      Serial.print(" (Hop Baru: "); Serial.print(incomingPkt.hop_count); Serial.println(")");
+  struct_mesh_packet incomingPkt;
+  memcpy(&incomingPkt, incomingData, sizeof(struct_mesh_packet));
 
-      // Teruskan paket ke Root Gateway via Broadcast ESP-NOW
-      esp_now_send(broadcastAddress, (uint8_t *) &incomingPkt, sizeof(struct_mesh_packet));
-    }
+  // Hanya relay paket node lain yang BELUM pernah di-relay (hop_count == 1).
+  // Paket dengan hop_count > 1 sudah melewati relay -> abaikan (cegah relay ulang / loop).
+  if (incomingPkt.node_id == NODE_ID || incomingPkt.hop_count > 1) return;
+
+  // Ukur RSSI link (pengirim -> Node 2) dari paket yang BARU diterima ini
+  int rssiTerukur = info->rx_ctrl->rssi;
+  incomingPkt.rssi = gabungRssi(incomingPkt.rssi, rssiTerukur);
+  incomingPkt.hop_count += 1;  // Transmisi ulang Relay -> Gateway
+
+  portENTER_CRITICAL(&relayMux);
+  if (relayCount < MAX_RELAY_QUEUE) {
+    int tail = (relayHead + relayCount) % MAX_RELAY_QUEUE;
+    relayQueue[tail] = incomingPkt;
+    relayCount++;
+  } else {
+    relayDropped++;
   }
+  portEXIT_CRITICAL(&relayMux);
+}
+
+// Ambil satu paket dari antrean relay (true jika ada)
+bool ambilPaketRelay(struct_mesh_packet &out) {
+  bool ada = false;
+  portENTER_CRITICAL(&relayMux);
+  if (relayCount > 0) {
+    out = relayQueue[relayHead];
+    relayHead = (relayHead + 1) % MAX_RELAY_QUEUE;
+    relayCount--;
+    ada = true;
+  }
+  portEXIT_CRITICAL(&relayMux);
+  return ada;
 }
 
 // ======================== SETUP ========================
@@ -122,8 +175,7 @@ void setup() {
     return;
   }
 
-  esp_now_register_send_cb(OnDataSent);
-  esp_now_register_recv_cb(esp_now_recv_cb_t(OnDataRecv));
+  esp_now_register_recv_cb(OnDataRecv);
 
   // Daftarkan Peer Broadcast
   esp_now_peer_info_t peerInfo = {};
@@ -140,6 +192,29 @@ void setup() {
 
 // ======================== LOOP UTAMA ========================
 void loop() {
+  // 0. Pancarkan ulang paket relay (dari Node 3) yang menunggu di antrean
+  struct_mesh_packet relayPkt;
+  while (ambilPaketRelay(relayPkt)) {
+    esp_err_t res = esp_now_send(broadcastAddress, (uint8_t *) &relayPkt, sizeof(struct_mesh_packet));
+    Serial.println("-------------------------------------------------------");
+    Serial.print("[MESH RELAY] Paket Node #"); Serial.print(relayPkt.node_id);
+    Serial.print(" Seq #"); Serial.print(relayPkt.seq_number);
+    Serial.print(" diteruskan ke Root Gateway (Hop: "); Serial.print(relayPkt.hop_count);
+    Serial.print(", RSSI link terukur: "); Serial.print(relayPkt.rssi);
+    Serial.print(" dBm) -> "); Serial.println((res == ESP_OK) ? "Sukses Masuk Antrean Kirim" : "Gagal");
+  }
+
+  // Laporkan paket relay yang terbuang karena antrean penuh (drop di sisi relay, bukan link radio)
+  unsigned long droppedNow;
+  portENTER_CRITICAL(&relayMux);
+  droppedNow = relayDropped;
+  portEXIT_CRITICAL(&relayMux);
+  if (droppedNow != relayDroppedReported) {
+    Serial.print("[RELAY OVERFLOW] Antrean relay penuh! Total paket dibuang di relay: ");
+    Serial.println(droppedNow);
+    relayDroppedReported = droppedNow;
+  }
+
   // Transmisi data lokal Node 2 secara berkala
   if (millis() - lastSendTime < INTERVAL_KIRIM) {
     return;
@@ -174,16 +249,18 @@ void loop() {
 
   seqNumber++;
 
-  // 3. Susun Paket Data Node 2 (Hop Count = 1)
+  // 3. Susun Paket Data Node 2
+  //    rssi = 0 -> "belum terukur"; Gateway mengisinya dari rx_ctrl->rssi saat menerima.
+  //    hop_count = 1 -> transmisi ESP-NOW Node 2 -> Gateway; Gateway +1 untuk hop ke AP.
   struct_mesh_packet myPacket;
   myPacket.node_id    = NODE_ID;
   myPacket.co2        = ppm_co2;
   myPacket.nh3        = ppm_nh3;
   myPacket.co         = ppm_co;
   myPacket.h2         = ppm_h2;
-  myPacket.rssi       = -60; // Estimasi kekuatan sinyal radio ESP-NOW
+  myPacket.rssi       = 0;   // Belum terukur (diukur di sisi penerima)
   myPacket.seq_number = seqNumber;
-  myPacket.hop_count  = 1;   // Transmisi langsung ke Node 1 (1 Hop)
+  myPacket.hop_count  = 1;   // Hop pertama: Node 2 -> Gateway
 
   // 4. Kirim Paket Data via ESP-NOW ke Root Gateway
   esp_err_t result = esp_now_send(broadcastAddress, (uint8_t *) &myPacket, sizeof(struct_mesh_packet));
@@ -192,7 +269,7 @@ void loop() {
   Serial.print("[KIRIM LOKAL] Node #"); Serial.print(NODE_ID);
   Serial.print(" Paket #"); Serial.print(seqNumber);
   Serial.print(" -> Status ESP-NOW: ");
-  Serial.println((result == ESP_OK) ? "Sukses Terpancar" : "Gagal");
+  Serial.println((result == ESP_OK) ? "Sukses Masuk Antrean Kirim" : "Gagal");
 
   Serial.print("CO2: "); Serial.print(ppm_co2, 2); Serial.print(" ppm | ");
   Serial.print("NH3: "); Serial.print(ppm_nh3, 2); Serial.print(" ppm | ");
