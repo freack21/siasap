@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\Permission;
 use App\Models\Role;
-use App\Models\SystemNavigation;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -37,12 +36,9 @@ class SetupRbacSeeder extends Seeder
             ['name' => 'user.view', 'display_name' => 'Lihat Pemantauan Udara', 'group' => 'Pemantauan Utama'],
             ['name' => 'user.history', 'display_name' => 'Lihat Riwayat Udara', 'group' => 'Pemantauan Utama'],
             ['name' => 'telemetry.view', 'display_name' => 'Lihat Telemetri Teknis', 'group' => 'Panel Pengelola'],
-            ['name' => 'telemetry.simulate', 'display_name' => 'Jalankan Simulasi Transmisi', 'group' => 'Panel Pengelola'],
             ['name' => 'qos.view', 'display_name' => 'Lihat Analisis Topologi', 'group' => 'Panel Pengelola'],
             ['name' => 'session.manage', 'display_name' => 'Mulai & Kelola Sesi Pengujian', 'group' => 'Panel Pengelola'],
             ['name' => 'rooms.manage', 'display_name' => 'Kelola Master Ruangan & Node', 'group' => 'Panel Pengelola'],
-            ['name' => 'users.manage', 'display_name' => 'Kelola Pengguna & Hak Akses', 'group' => 'Pengaturan'],
-            ['name' => 'navigation.manage', 'display_name' => 'Kelola Navigasi Sistem', 'group' => 'Pengaturan'],
         ];
 
         $permModels = [];
@@ -56,7 +52,6 @@ class SetupRbacSeeder extends Seeder
             $permModels['user.view']->id,
             $permModels['user.history']->id,
             $permModels['telemetry.view']->id,
-            $permModels['telemetry.simulate']->id,
             $permModels['qos.view']->id,
             $permModels['session.manage']->id,
             $permModels['rooms.manage']->id,
@@ -65,6 +60,12 @@ class SetupRbacSeeder extends Seeder
             $permModels['user.view']->id,
             $permModels['user.history']->id,
         ]);
+
+        // Bersihkan permission lama yang fiturnya sudah dihapus (simulasi data, RBAC & navigasi dinamis)
+        Permission::whereIn('name', ['telemetry.simulate', 'users.manage', 'navigation.manage'])->each(function (Permission $permission) {
+            $permission->roles()->detach();
+            $permission->delete();
+        });
 
         // 4. Create Default Admin & User Accounts
         $adminUser = User::firstOrCreate(
@@ -142,76 +143,5 @@ class SetupRbacSeeder extends Seeder
                 'is_active' => true,
             ]
         );
-
-        // 6. Create System Navigations
-        $navigations = [
-            // Section: Pemantauan Udara
-            [
-                'title' => 'Kualitas Udara',
-                'route_name' => 'user.dashboard',
-                'icon' => 'heroicon-o-sparkles',
-                'permission_name' => 'user.view',
-                'section' => 'PEMANTAUAN UDARA',
-                'order' => 1,
-            ],
-            [
-                'title' => 'Riwayat Kualitas Udara',
-                'route_name' => 'user.history',
-                'icon' => 'heroicon-o-clock',
-                'permission_name' => 'user.history',
-                'section' => 'PEMANTAUAN UDARA',
-                'order' => 2,
-            ],
-
-            // Section: Panel Pengelola
-            [
-                'title' => 'Telemetri Teknis',
-                'route_name' => 'telemetry',
-                'icon' => 'heroicon-o-cpu-chip',
-                'permission_name' => 'telemetry.view',
-                'section' => 'PANEL PENGELOLA',
-                'order' => 3,
-            ],
-            [
-                'title' => 'Benchmark QoS Topologi',
-                'route_name' => 'qos-analytics',
-                'icon' => 'heroicon-o-chart-bar-square',
-                'permission_name' => 'qos.view',
-                'section' => 'PANEL PENGELOLA',
-                'order' => 4,
-            ],
-            [
-                'title' => 'Master Ruangan & Node',
-                'route_name' => 'room-management',
-                'icon' => 'heroicon-o-building-office-2',
-                'permission_name' => 'rooms.manage',
-                'section' => 'PANEL PENGELOLA',
-                'order' => 5,
-            ],
-
-            // Section: Pengaturan Hak Akses
-            [
-                'title' => 'Pengguna & Hak Akses',
-                'route_name' => 'rbac-management',
-                'icon' => 'heroicon-o-shield-check',
-                'permission_name' => 'users.manage',
-                'section' => 'PENGATURAN HAK AKSES',
-                'order' => 6,
-            ],
-            [
-                'title' => 'Navigasi Sistem',
-                'route_name' => 'navigation-management',
-                'icon' => 'heroicon-o-bars-3-center-left',
-                'permission_name' => 'navigation.manage',
-                'section' => 'PENGATURAN HAK AKSES',
-                'order' => 7,
-            ],
-        ];
-
-        SystemNavigation::truncate();
-
-        foreach ($navigations as $nav) {
-            SystemNavigation::create($nav);
-        }
     }
 }

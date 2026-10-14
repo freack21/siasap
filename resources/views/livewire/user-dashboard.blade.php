@@ -38,7 +38,7 @@
                         {{ $worstStatus }}
                     </h2>
                     <span class="text-xs text-slate-600 dark:text-slate-300 font-bold bg-slate-100 dark:bg-white/10 px-3 py-1 rounded-lg border border-slate-200 dark:border-transparent">
-                        Indeks: <strong>{{ $maxKuOverall }} PPM</strong>
+                        Indeks KU: <strong>{{ $maxKuOverall }}</strong>
                     </span>
                 </div>
             </div>
@@ -105,8 +105,11 @@
                                 <span class="text-[10px] font-bold uppercase tracking-wider opacity-75">Tingkat Kebersihan Udara</span>
                                 <div class="text-xl font-black flex items-center justify-between">
                                     <span>{{ $latest->ku_status }}</span>
-                                    <span class="text-sm font-bold opacity-90">{{ $latest->ku_value }} PPM</span>
+                                    <span class="text-sm font-bold opacity-90">Indeks KU {{ $latest->ku_value }}</span>
                                 </div>
+                                @if ($latest->ku_dominant)
+                                    <span class="text-[10px] font-semibold opacity-75">Parameter dominan: {{ ['co2' => 'CO₂', 'nh3' => 'NH₃', 'co' => 'CO', 'h2' => 'H₂'][$latest->ku_dominant] ?? strtoupper($latest->ku_dominant) }}</span>
+                                @endif
                             </div>
 
                             <!-- 4 Gas Parameters Grid (CO2, NH3, CO, H2) -->
@@ -158,27 +161,27 @@
                 <x-heroicon-o-information-circle class="w-5 h-5 text-indigo-500" />
                 <span>Panduan Kategori & 4 Indikator Parameter Gas Udara</span>
             </h2>
-            <span class="text-xs text-slate-400">Satuan pengisian: PPM (Parts Per Million)</span>
+            <span class="text-xs text-slate-400">Indeks KU tanpa satuan (0–500); konsentrasi gas dalam PPM</span>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
             <div class="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 space-y-1">
-                <span class="font-black text-emerald-700 dark:text-emerald-400 text-sm">1. Baik (0 - 50 PPM)</span>
+                <span class="font-black text-emerald-700 dark:text-emerald-400 text-sm">1. Baik (Indeks 0 - 50)</span>
                 <p class="text-slate-600 dark:text-slate-300">Udara sangat bersih dan tidak menimbulkan dampak kesehatan sama sekali.</p>
             </div>
 
             <div class="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 space-y-1">
-                <span class="font-black text-amber-700 dark:text-amber-400 text-sm">2. Sedang (51 - 150 PPM)</span>
+                <span class="font-black text-amber-700 dark:text-amber-400 text-sm">2. Sedang (Indeks 51 - 150)</span>
                 <p class="text-slate-600 dark:text-slate-300">Kualitas udara masih dapat diterima oleh manusia pada umumnya.</p>
             </div>
 
             <div class="p-4 rounded-xl bg-orange-500/10 border border-orange-500/20 space-y-1">
-                <span class="font-black text-orange-700 dark:text-orange-400 text-sm">3. Tidak Sehat (151 - 300 PPM)</span>
+                <span class="font-black text-orange-700 dark:text-orange-400 text-sm">3. Tidak Sehat (Indeks 151 - 300)</span>
                 <p class="text-slate-600 dark:text-slate-300">Dapat memicu gangguan pada mata, tenggorokan, dan kelompok sensitif.</p>
             </div>
 
             <div class="p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 space-y-1">
-                <span class="font-black text-rose-700 dark:text-rose-400 text-sm">4. Berbahaya (> 300 PPM)</span>
+                <span class="font-black text-rose-700 dark:text-rose-400 text-sm">4. Berbahaya (Indeks > 300)</span>
                 <p class="text-slate-600 dark:text-slate-300">Tingkat polutan tinggi! Disarankan evakuasi dan penggunaan masker khusus.</p>
             </div>
         </div>

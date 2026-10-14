@@ -7,7 +7,6 @@ use App\Models\Permission;
 use App\Models\Role;
 use App\Models\Room;
 use App\Models\SensorLog;
-use App\Models\SystemNavigation;
 use App\Models\TestingSession;
 use App\Models\User;
 use Illuminate\Console\Command;
@@ -94,7 +93,6 @@ class ClearTransactionDataCommand extends Command
                 ['Master Node Perangkat (nodes)', Node::count() . ' Perangkat Node', 'AMAN (Utuh)'],
                 ['Pengguna Terdaftar (users)', User::count() . ' Akun', 'AMAN (Utuh)'],
                 ['Hak Akses & Role (RBAC)', Role::count() . ' Role / ' . Permission::count() . ' Perms', 'AMAN (Utuh)'],
-                ['Navigasi Sistem (system_navigations)', SystemNavigation::count() . ' Menu Navigasi', 'AMAN (Utuh)'],
             ]
         );
         $this->newLine();

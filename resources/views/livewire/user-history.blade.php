@@ -97,8 +97,11 @@
                             <td class="py-4 px-4 text-center">
                                 <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full font-extrabold text-xs border {{ $badge['bg'] }}">
                                     <span class="w-2 h-2 rounded-full {{ $badge['dot'] }}"></span>
-                                    {{ $log->ku_status }} ({{ $log->ku_value }} PPM)
+                                    {{ $log->ku_status }} (Indeks {{ $log->ku_value }})
                                 </span>
+                                @if ($log->ku_dominant)
+                                    <span class="block mt-1 text-[10px] text-slate-400">Parameter dominan: {{ ['co2' => 'CO₂', 'nh3' => 'NH₃', 'co' => 'CO', 'h2' => 'H₂'][$log->ku_dominant] ?? strtoupper($log->ku_dominant) }}</span>
+                                @endif
                             </td>
                             <td class="py-4 px-4 text-center">
                                 <div class="inline-flex items-center gap-2 text-[11px] font-medium bg-slate-50 dark:bg-slate-800/60 px-3 py-1.5 rounded-xl border border-slate-200/80 dark:border-slate-700">

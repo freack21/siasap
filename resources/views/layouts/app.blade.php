@@ -97,16 +97,10 @@
                 <nav class="flex-1 px-3 py-2 space-y-5 overflow-y-auto custom-scrollbar">
                     @php
                         $user = auth()->user();
-                        $navsQuery = \App\Models\SystemNavigation::active()->get();
-                        
-                        $allowedNavs = $navsQuery->filter(function($nav) use ($user) {
-                            if (empty($nav->permission_name)) {
-                                return true;
-                            }
-                            return $user && $user->hasPermission($nav->permission_name);
-                        });
 
-                        $navSections = $allowedNavs->groupBy('section');
+                        $navSections = collect(config('navigation', []))
+                            ->filter(fn ($nav) => empty($nav['permission']) || ($user && $user->hasPermission($nav['permission'])))
+                            ->groupBy('section');
                     @endphp
 
                     @foreach ($navSections as $section => $navs)
@@ -117,15 +111,15 @@
                             <div class="mt-1 space-y-0.5">
                                 @foreach ($navs as $nav)
                                     @php
-                                        $isActive = $nav->route_name && request()->routeIs($nav->route_name);
-                                        $url = $nav->route_name ? route($nav->route_name) : ($nav->url ?? '#');
+                                        $isActive = request()->routeIs($nav['route']);
+                                        $url = route($nav['route']);
                                     @endphp
                                     <a href="{{ $url }}" 
                                        class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all group {{ $isActive ? 'bg-sky-500/10 text-sky-700 dark:bg-sky-400/15 dark:text-sky-300 font-bold border-l-4 border-sky-500 shadow-sm' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60' }}">
                                         
-                                        <x-dynamic-component :component="$nav->icon" class="w-4 h-4 shrink-0 transition-transform group-hover:scale-110 {{ $isActive ? 'text-sky-600 dark:text-sky-400' : 'text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-200' }}" />
+                                        <x-dynamic-component :component="$nav['icon']" class="w-4 h-4 shrink-0 transition-transform group-hover:scale-110 {{ $isActive ? 'text-sky-600 dark:text-sky-400' : 'text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-200' }}" />
                                         
-                                        <span class="truncate">{{ $nav->title }}</span>
+                                        <span class="truncate">{{ $nav['title'] }}</span>
                                     </a>
                                 @endforeach
                             </div>
