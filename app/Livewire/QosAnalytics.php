@@ -12,12 +12,14 @@ use Livewire\Component;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 #[Layout('layouts::admin')]
-#[Title('Benchmark QoS Topologi (Star vs Mesh) — SIASAP')]
+#[Title('Pengujian Jaringan — SIASAP')]
 class QosAnalytics extends Component
 {
     // Form Inputs for New Testing Session
     public string $sessionName = '';
+
     public string $sessionTopology = 'star';
+
     public string $sessionDescription = '';
 
     public ?int $filterSessionId = null;
@@ -40,7 +42,7 @@ class QosAnalytics extends Component
     }
 
     /**
-     * Poll QoS analytics data every 3 seconds for real-time benchmark updates
+     * Poll QoS analytics data every 5 seconds for real-time benchmark updates
      */
     public function refreshAnalytics()
     {

@@ -3,10 +3,12 @@
 namespace Tests\Feature;
 
 use App\Livewire\QosAnalytics;
+use App\Models\Node;
 use App\Models\Permission;
 use App\Models\Role;
 use App\Models\TestingSession;
 use App\Models\User;
+use Database\Seeders\SetupRbacSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -44,7 +46,7 @@ class QosAnalyticsTest extends TestCase
 
         Livewire::actingAs($user)
             ->test(QosAnalytics::class)
-            ->assertDontSee('Mulai Sesi Pengujian Sekarang')
+            ->assertDontSee('Mulai Sesi Pengujian')
             ->set('sessionName', 'Sesi Ilegal')
             ->call('startSession')
             ->assertForbidden();
@@ -77,7 +79,7 @@ class QosAnalyticsTest extends TestCase
 
     public function test_renders_node_names_and_estimated_footnote(): void
     {
-        \App\Models\Node::create(['name' => 'Node Sensor Dapur', 'code' => 'NODE-X1', 'is_active' => true]);
+        Node::create(['name' => 'Node Sensor Dapur', 'code' => 'NODE-X1', 'is_active' => true]);
         $session = TestingSession::create([
             'name' => 'Sesi Star B', 'topology_type' => 'star', 'status' => 'completed',
             'started_at' => now()->subMinutes(10), 'ended_at' => now(),
@@ -132,5 +134,21 @@ class QosAnalyticsTest extends TestCase
         $this->assertStringStartsWith($session->id.',"Sesi Star A",star,1,7,-61,1,', $lines[1]);
 
         Carbon::setTestNow();
+    }
+
+    public function test_admin_can_open_network_testing_page(): void
+    {
+        $this->seed(SetupRbacSeeder::class);
+        $admin = User::where('email', 'admin@siasap.test')->first();
+
+        $this->actingAs($admin)
+            ->get(route('admin.qos'))
+            ->assertOk()
+            ->assertSee('Pengujian Jaringan — SIASAP', false)
+            ->assertSee('Topologi Star')
+            ->assertSee('Topologi Mesh')
+            ->assertSee('Mulai Sesi Pengujian')
+            ->assertSee('Catatan metodologi')
+            ->assertSee('Hipotesis penelitian');
     }
 }

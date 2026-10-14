@@ -8,12 +8,14 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
-#[Title('Masuk Akun — SIASAP')]
+#[Title('Masuk — SIASAP')]
 #[Layout('components.layouts.auth')]
 class Login extends Component
 {
     public string $email = '';
+
     public string $password = '';
+
     public bool $remember = false;
 
     protected array $rules = [

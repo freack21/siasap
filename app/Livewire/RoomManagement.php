@@ -9,37 +9,52 @@ use Livewire\Attributes\Title;
 use Livewire\Component;
 
 #[Layout('layouts::admin')]
-#[Title('Kelola Master Ruangan & Node — SIASAP')]
+#[Title('Ruangan & Perangkat — SIASAP')]
 class RoomManagement extends Component
 {
     public string $activeTab = 'rooms'; // 'rooms' or 'nodes'
 
     // Room Form Fields
     public bool $showRoomModal = false;
+
     public ?int $editingRoomId = null;
+
     public string $roomName = '';
+
     public string $roomCode = '';
+
     public string $roomDescription = '';
 
     // Node Form Fields
     public bool $showNodeModal = false;
+
     public ?int $editingNodeId = null;
+
     public ?int $nodeRoomId = null;
+
     public string $nodeName = '';
+
     public string $nodeCode = '';
+
     public string $nodeDescription = '';
+
     public bool $nodeIsActive = true;
 
     public function mount()
     {
-        if (!auth()->user() || !auth()->user()->hasPermission('rooms.manage')) {
-            abort(403, 'Anda tidak memiliki hak akses ke modul manajemen ruangan dan node ini.');
+        $this->authorizeManage();
+    }
+
+    private function authorizeManage(): void
+    {
+        if (! auth()->user() || ! auth()->user()->hasPermission('rooms.manage')) {
+            abort(403, 'Anda tidak memiliki hak akses ke modul ruangan dan perangkat ini.');
         }
     }
 
     public function setTab(string $tab)
     {
-        $this->activeTab = $tab;
+        $this->activeTab = in_array($tab, ['rooms', 'nodes'], true) ? $tab : 'rooms';
     }
 
     // --- Room Actions ---
@@ -61,9 +76,11 @@ class RoomManagement extends Component
 
     public function saveRoom()
     {
+        $this->authorizeManage();
+
         $this->validate([
             'roomName' => 'required|string|max:255',
-            'roomCode' => 'nullable|string|max:50|unique:rooms,code,' . $this->editingRoomId,
+            'roomCode' => 'nullable|string|max:50|unique:rooms,code,'.$this->editingRoomId,
             'roomDescription' => 'nullable|string|max:500',
         ], [
             'roomName.required' => 'Nama ruangan wajib diisi.',
@@ -79,15 +96,17 @@ class RoomManagement extends Component
             ]
         );
 
-        session()->flash('success', $this->editingRoomId ? 'Data ruangan berhasil diperbarui!' : 'Ruangan baru berhasil ditambahkan!');
+        session()->flash('message', $this->editingRoomId ? 'Data ruangan berhasil diperbarui.' : 'Ruangan baru berhasil ditambahkan.');
         $this->closeRoomModal();
     }
 
     public function deleteRoom(int $id)
     {
+        $this->authorizeManage();
+
         $room = Room::findOrFail($id);
         $room->delete();
-        session()->flash('success', 'Data ruangan berhasil dihapus.');
+        session()->flash('message', 'Data ruangan berhasil dihapus.');
     }
 
     public function closeRoomModal()
@@ -128,10 +147,12 @@ class RoomManagement extends Component
 
     public function saveNode()
     {
+        $this->authorizeManage();
+
         $this->validate([
             'nodeRoomId' => 'nullable|exists:rooms,id',
             'nodeName' => 'required|string|max:255',
-            'nodeCode' => 'required|string|max:50|unique:nodes,code,' . $this->editingNodeId,
+            'nodeCode' => 'required|string|max:50|unique:nodes,code,'.$this->editingNodeId,
             'nodeDescription' => 'nullable|string|max:500',
             'nodeIsActive' => 'boolean',
         ], [
@@ -151,15 +172,17 @@ class RoomManagement extends Component
             ]
         );
 
-        session()->flash('success', $this->editingNodeId ? 'Data node sensor berhasil diperbarui!' : 'Node sensor baru berhasil ditambahkan!');
+        session()->flash('message', $this->editingNodeId ? 'Data node sensor berhasil diperbarui.' : 'Node sensor baru berhasil ditambahkan.');
         $this->closeNodeModal();
     }
 
     public function deleteNode(int $id)
     {
+        $this->authorizeManage();
+
         $node = Node::findOrFail($id);
         $node->delete();
-        session()->flash('success', 'Data node sensor berhasil dihapus.');
+        session()->flash('message', 'Data node sensor berhasil dihapus.');
     }
 
     public function closeNodeModal()
@@ -181,8 +204,10 @@ class RoomManagement extends Component
 
     public function render()
     {
-        $rooms = Room::withCount('nodes')->latest()->get();
-        $nodes = Node::with('room')->latest()->get();
+        $rooms = Room::withCount(['nodes', 'nodes as active_nodes_count' => fn ($q) => $q->where('is_active', true)])
+            ->orderBy('name')
+            ->get();
+        $nodes = Node::with('room:id,name')->orderBy('code')->get();
 
         return view('livewire.room-management', [
             'rooms' => $rooms,

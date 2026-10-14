@@ -1,332 +1,270 @@
-<div class="space-y-8">
-
-    <!-- Header Banner & Action Bar -->
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm relative overflow-hidden">
-        <div class="space-y-1 z-10">
-            <div class="flex items-center gap-2">
-                <h1 class="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">
-                    Master Ruangan & Node Sensor Perangkat
-                </h1>
-                <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-indigo-500/10 text-indigo-600 dark:bg-indigo-400/10 dark:text-indigo-400 border border-indigo-500/20">
-                    Master Data
-                </span>
-            </div>
-            <p class="text-sm text-slate-500 dark:text-slate-400">
-                Kelola pemetaan lokasi ruangan (Ruang Tamu, Kamar, Dapur) dan penempatan perangkat sensor node IoT.
-            </p>
-        </div>
-
-        <div class="flex items-center gap-3 z-10">
+<div class="space-y-6">
+    <x-ui.page-header title="Ruangan & Perangkat"
+                      description="Kelola daftar ruangan yang dipantau beserta node sensor IoT yang terpasang di setiap ruangan.">
+        <x-slot:eyebrow>Data Master</x-slot:eyebrow>
+        <x-slot:actions>
             @if ($activeTab === 'rooms')
-                <button wire:click="openCreateRoomModal" 
-                        class="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold shadow-md shadow-indigo-500/20 transition-all flex items-center gap-2">
-                    <x-heroicon-o-plus class="w-4 h-4" />
-                    <span>Tambah Ruangan Baru</span>
+                <button type="button" wire:click="openCreateRoomModal" class="btn btn-primary">
+                    <x-heroicon-o-plus class="size-4" />
+                    Tambah Ruangan
                 </button>
             @else
-                <button wire:click="openCreateNodeModal" 
-                        class="px-4 py-2.5 bg-sky-600 hover:bg-sky-500 text-white rounded-xl text-xs font-bold shadow-md shadow-sky-500/20 transition-all flex items-center gap-2">
-                    <x-heroicon-o-plus class="w-4 h-4" />
-                    <span>Tambah Node Sensor</span>
+                <button type="button" wire:click="openCreateNodeModal" class="btn btn-primary">
+                    <x-heroicon-o-plus class="size-4" />
+                    Tambah Node
                 </button>
             @endif
-        </div>
+        </x-slot:actions>
+    </x-ui.page-header>
+
+    <x-ui.flash />
+
+    {{-- Segmented control --}}
+    <div class="inline-flex rounded-xl border border-slate-200 bg-white p-1" role="tablist">
+        <button type="button" role="tab" wire:click="setTab('rooms')" aria-selected="{{ $activeTab === 'rooms' ? 'true' : 'false' }}"
+                @class([
+                    'inline-flex items-center gap-2 rounded-lg px-3.5 py-1.5 text-sm font-medium transition',
+                    'bg-slate-900 text-white' => $activeTab === 'rooms',
+                    'text-slate-600 hover:text-slate-900' => $activeTab !== 'rooms',
+                ])>
+            <x-heroicon-o-building-office-2 class="size-4" />
+            Ruangan
+            <span class="num text-xs opacity-70">{{ $rooms->count() }}</span>
+        </button>
+        <button type="button" role="tab" wire:click="setTab('nodes')" aria-selected="{{ $activeTab === 'nodes' ? 'true' : 'false' }}"
+                @class([
+                    'inline-flex items-center gap-2 rounded-lg px-3.5 py-1.5 text-sm font-medium transition',
+                    'bg-slate-900 text-white' => $activeTab === 'nodes',
+                    'text-slate-600 hover:text-slate-900' => $activeTab !== 'nodes',
+                ])>
+            <x-heroicon-o-cpu-chip class="size-4" />
+            Perangkat Node
+            <span class="num text-xs opacity-70">{{ $nodes->count() }}</span>
+        </button>
     </div>
 
-    <!-- Alert Notifications -->
-    @if (session()->has('success'))
-        <div class="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-700 dark:text-emerald-400 text-xs font-bold flex items-center gap-2">
-            <x-heroicon-o-check-circle class="w-5 h-5 text-emerald-500 shrink-0" />
-            <span>{{ session('success') }}</span>
-        </div>
-    @endif
-
-    <!-- Main Content Container with Tabs -->
-    <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm overflow-hidden">
-        
-        <!-- Tab Navigation Bar -->
-        <div class="p-4 bg-slate-50/50 dark:bg-slate-900/50 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
-            <div class="flex items-center gap-2">
-                <button wire:click="setTab('rooms')" 
-                        class="px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 {{ $activeTab === 'rooms' ? 'bg-indigo-600 text-white shadow-md shadow-indigo-500/20' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-200/60 dark:hover:bg-slate-800' }}">
-                    <x-heroicon-o-building-office-2 class="w-4 h-4" />
-                    <span>Data Master Ruangan ({{ count($rooms) }})</span>
-                </button>
-
-                <button wire:click="setTab('nodes')" 
-                        class="px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 {{ $activeTab === 'nodes' ? 'bg-sky-600 text-white shadow-md shadow-sky-500/20' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-200/60 dark:hover:bg-slate-800' }}">
-                    <x-heroicon-o-cpu-chip class="w-4 h-4" />
-                    <span>Node Sensor Perangkat ({{ count($nodes) }})</span>
-                </button>
-            </div>
-        </div>
-
-        <!-- Tab 1: Master Ruangan -->
-        @if ($activeTab === 'rooms')
-            <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse">
-                    <thead>
-                        <tr class="bg-slate-50/70 dark:bg-slate-800/40 text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 border-b border-slate-100 dark:border-slate-800">
-                            <th class="py-3.5 px-6">Nama Ruangan</th>
-                            <th class="py-3.5 px-4">Kode Ruangan</th>
-                            <th class="py-3.5 px-6">Deskripsi Lokasi</th>
-                            <th class="py-3.5 px-4 text-center">Jumlah Node Sensor</th>
-                            <th class="py-3.5 px-6 text-right">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-100 dark:divide-slate-800/60 text-xs">
-                        @forelse ($rooms as $room)
-                            <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors">
-                                <td class="py-4 px-6 font-bold text-slate-900 dark:text-white">
-                                    <div class="flex items-center gap-2">
-                                        <div class="w-8 h-8 rounded-lg bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
-                                            <x-heroicon-o-building-office-2 class="w-4 h-4" />
-                                        </div>
-                                        <span>{{ $room->name }}</span>
-                                    </div>
-                                </td>
-                                <td class="py-4 px-4 font-mono font-bold text-slate-600 dark:text-slate-300">
-                                    <span class="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
-                                        {{ $room->code ?? '-' }}
-                                    </span>
-                                </td>
-                                <td class="py-4 px-6 text-slate-500 dark:text-slate-400">
-                                    {{ $room->description ?? 'Tidak ada deskripsi' }}
-                                </td>
-                                <td class="py-4 px-4 text-center">
-                                    <span class="px-3 py-1 rounded-full font-extrabold text-xs bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
-                                        {{ $room->nodes_count }} Node
-                                    </span>
-                                </td>
-                                <td class="py-4 px-6 text-right space-x-2">
-                                    <button wire:click="editRoom({{ $room->id }})" 
-                                            class="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg text-xs font-semibold transition-all">
-                                        Edit
-                                    </button>
-                                    <button wire:click="deleteRoom({{ $room->id }})" 
-                                            wire:confirm="Apakah Anda yakin ingin menghapus ruangan ini?"
-                                            class="px-2.5 py-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-600 dark:text-rose-400 rounded-lg text-xs font-semibold transition-all">
-                                        Hapus
-                                    </button>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="5" class="py-12 text-center text-slate-400">
-                                    Belum ada data ruangan terdaftar. Silakan tambahkan ruangan baru.
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-        @endif
-
-        <!-- Tab 2: Master Node Sensor -->
-        @if ($activeTab === 'nodes')
-            <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse">
-                    <thead>
-                        <tr class="bg-slate-50/70 dark:bg-slate-800/40 text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 border-b border-slate-100 dark:border-slate-800">
-                            <th class="py-3.5 px-6">Nama Node Sensor</th>
-                            <th class="py-3.5 px-4">Kode Unique</th>
-                            <th class="py-3.5 px-4">Lokasi Ruangan</th>
-                            <th class="py-3.5 px-4 text-center">Status Keaktifan</th>
-                            <th class="py-3.5 px-6 text-right">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-100 dark:divide-slate-800/60 text-xs">
-                        @forelse ($nodes as $node)
-                            <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors">
-                                <td class="py-4 px-6 font-bold text-slate-900 dark:text-white">
-                                    <div class="flex items-center gap-2">
-                                        <div class="w-8 h-8 rounded-lg bg-sky-500/10 text-sky-600 dark:text-sky-400 flex items-center justify-center font-extrabold">
-                                            N{{ $node->id }}
-                                        </div>
-                                        <div>
-                                            <div class="font-bold text-slate-900 dark:text-white">{{ $node->name }}</div>
-                                            <div class="text-[10px] text-slate-400 font-normal">{{ $node->description }}</div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="py-4 px-4 font-mono font-bold text-slate-600 dark:text-slate-300">
-                                    <span class="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
-                                        {{ $node->code }}
-                                    </span>
-                                </td>
-                                <td class="py-4 px-4 font-semibold text-slate-700 dark:text-slate-200">
-                                    @if ($node->room)
-                                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 font-bold border border-indigo-500/20">
-                                            <x-heroicon-o-building-office-2 class="w-3.5 h-3.5" />
-                                            {{ $node->room->name }}
-                                        </span>
-                                    @else
-                                        <span class="text-slate-400 italic">Belum ditempatkan</span>
-                                    @endif
-                                </td>
-                                <td class="py-4 px-4 text-center">
-                                    @if ($node->is_active)
-                                        <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-500/15 text-emerald-600 dark:bg-emerald-400/15 dark:text-emerald-400 border border-emerald-500/30 inline-flex items-center gap-1">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                                            Aktif
-                                        </span>
-                                    @else
-                                        <span class="px-2.5 py-1 rounded-full text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-400 border border-slate-200 dark:border-slate-700">
-                                            Non-aktif
-                                        </span>
-                                    @endif
-                                </td>
-                                <td class="py-4 px-6 text-right space-x-2">
-                                    <button wire:click="editNode({{ $node->id }})" 
-                                            class="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg text-xs font-semibold transition-all">
-                                        Edit
-                                    </button>
-                                    <button wire:click="deleteNode({{ $node->id }})" 
-                                            wire:confirm="Apakah Anda yakin ingin menghapus node sensor ini?"
-                                            class="px-2.5 py-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-600 dark:text-rose-400 rounded-lg text-xs font-semibold transition-all">
-                                        Hapus
-                                    </button>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="5" class="py-12 text-center text-slate-400">
-                                    Belum ada data node sensor terdaftar.
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-        @endif
-
-    </div>
-
-    <!-- MODAL 1: Create / Edit Room -->
-    @if ($showRoomModal)
-        <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fade-in">
-            <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xl w-full max-w-lg overflow-hidden space-y-6 p-6">
-                
-                <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-4">
-                    <h3 class="text-lg font-bold text-slate-900 dark:text-white">
-                        {{ $editingRoomId ? 'Edit Data Ruangan' : 'Tambah Ruangan Baru' }}
-                    </h3>
-                    <button wire:click="closeRoomModal" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
-                        <x-heroicon-o-x-mark class="w-6 h-6" />
+    @if ($activeTab === 'rooms')
+        <x-ui.card :padded="false">
+            @if ($rooms->isEmpty())
+                <x-ui.empty-state title="Belum ada ruangan"
+                                  description="Tambahkan ruangan pertama agar node sensor dapat ditempatkan dan datanya dipantau."
+                                  icon="heroicon-o-building-office-2">
+                    <button type="button" wire:click="openCreateRoomModal" class="btn btn-secondary btn-sm">
+                        <x-heroicon-o-plus class="size-4" /> Tambah Ruangan
                     </button>
-                </div>
-
-                <form wire:submit.prevent="saveRoom" class="space-y-4 text-xs">
-                    <!-- Room Name -->
-                    <div class="space-y-1">
-                        <label class="font-bold text-slate-700 dark:text-slate-300">Nama Ruangan <span class="text-rose-500">*</span></label>
-                        <input type="text" wire:model="roomName" placeholder="Contoh: Ruang Tamu, Kamar Utama, Dapur" 
-                               class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                        @error('roomName') <span class="text-rose-500 font-semibold">{{ $message }}</span> @enderror
-                    </div>
-
-                    <!-- Room Code -->
-                    <div class="space-y-1">
-                        <label class="font-bold text-slate-700 dark:text-slate-300">Kode Ruangan (Opsional)</label>
-                        <input type="text" wire:model="roomCode" placeholder="Contoh: ROOM-TAMU" 
-                               class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                        @error('roomCode') <span class="text-rose-500 font-semibold">{{ $message }}</span> @enderror
-                    </div>
-
-                    <!-- Description -->
-                    <div class="space-y-1">
-                        <label class="font-bold text-slate-700 dark:text-slate-300">Deskripsi Lokasi</label>
-                        <textarea wire:model="roomDescription" rows="3" placeholder="Keterangan singkat lokasi ruangan..." 
-                                  class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
-                        @error('roomDescription') <span class="text-rose-500 font-semibold">{{ $message }}</span> @enderror
-                    </div>
-
-                    <!-- Modal Actions -->
-                    <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
-                        <button type="button" wire:click="closeRoomModal" class="px-4 py-2 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-xl font-bold">
-                            Batal
-                        </button>
-                        <button type="submit" class="px-5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-bold shadow-md shadow-indigo-500/20">
-                            Simpan Ruangan
-                        </button>
-                    </div>
-                </form>
-
-            </div>
-        </div>
-    @endif
-
-    <!-- MODAL 2: Create / Edit Node -->
-    @if ($showNodeModal)
-        <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fade-in">
-            <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xl w-full max-w-lg overflow-hidden space-y-6 p-6">
-                
-                <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-4">
-                    <h3 class="text-lg font-bold text-slate-900 dark:text-white">
-                        {{ $editingNodeId ? 'Edit Data Node Sensor' : 'Tambah Node Sensor Baru' }}
-                    </h3>
-                    <button wire:click="closeNodeModal" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
-                        <x-heroicon-o-x-mark class="w-6 h-6" />
-                    </button>
-                </div>
-
-                <form wire:submit.prevent="saveNode" class="space-y-4 text-xs">
-                    <!-- Node Name -->
-                    <div class="space-y-1">
-                        <label class="font-bold text-slate-700 dark:text-slate-300">Nama Node Sensor <span class="text-rose-500">*</span></label>
-                        <input type="text" wire:model="nodeName" placeholder="Contoh: Node Sensor 1 - Ruang Tamu" 
-                               class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white font-medium focus:outline-none focus:ring-2 focus:ring-sky-500">
-                        @error('nodeName') <span class="text-rose-500 font-semibold">{{ $message }}</span> @enderror
-                    </div>
-
-                    <!-- Unique Code -->
-                    <div class="space-y-1">
-                        <label class="font-bold text-slate-700 dark:text-slate-300">Kode Unik Perangkat <span class="text-rose-500">*</span></label>
-                        <input type="text" wire:model="nodeCode" placeholder="Contoh: NODE-01" 
-                               class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white font-medium focus:outline-none focus:ring-2 focus:ring-sky-500">
-                        @error('nodeCode') <span class="text-rose-500 font-semibold">{{ $message }}</span> @enderror
-                    </div>
-
-                    <!-- Select Room -->
-                    <div class="space-y-1">
-                        <label class="font-bold text-slate-700 dark:text-slate-300">Penempatan Ruangan</label>
-                        <select wire:model="nodeRoomId" 
-                                class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white font-semibold focus:outline-none focus:ring-2 focus:ring-sky-500">
-                            <option value="">-- Pilih Ruangan --</option>
+                </x-ui.empty-state>
+            @else
+                <div class="overflow-x-auto">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Nama Ruangan</th>
+                                <th>Kode</th>
+                                <th class="hidden md:table-cell">Deskripsi</th>
+                                <th class="text-right">Node</th>
+                                <th class="w-24 text-right"><span class="sr-only">Aksi</span></th>
+                            </tr>
+                        </thead>
+                        <tbody>
                             @foreach ($rooms as $room)
-                                <option value="{{ $room->id }}">{{ $room->name }} ({{ $room->code ?? 'No Code' }})</option>
+                                <tr wire:key="room-{{ $room->id }}">
+                                    <td class="font-medium text-slate-900">{{ $room->name }}</td>
+                                    <td>
+                                        @if ($room->code)
+                                            <span class="font-mono text-xs text-slate-600">{{ $room->code }}</span>
+                                        @else
+                                            <span class="text-slate-400">—</span>
+                                        @endif
+                                    </td>
+                                    <td class="hidden max-w-md text-slate-500 md:table-cell">
+                                        {{ $room->description ?: '—' }}
+                                    </td>
+                                    <td class="num text-right whitespace-nowrap">
+                                        <span class="font-medium text-slate-900">{{ $room->nodes_count }}</span>
+                                        <span class="text-xs text-slate-500">({{ $room->active_nodes_count }} aktif)</span>
+                                    </td>
+                                    <td class="text-right whitespace-nowrap">
+                                        <button type="button" wire:click="editRoom({{ $room->id }})" class="btn btn-ghost btn-sm" title="Ubah ruangan" aria-label="Ubah {{ $room->name }}">
+                                            <x-heroicon-o-pencil-square class="size-4" />
+                                        </button>
+                                        <button type="button" wire:click="deleteRoom({{ $room->id }})"
+                                                wire:confirm="Hapus ruangan &quot;{{ $room->name }}&quot;? Node di ruangan ini akan menjadi tanpa ruangan."
+                                                class="btn btn-ghost btn-sm hover:bg-rose-50 hover:text-rose-600" title="Hapus ruangan" aria-label="Hapus {{ $room->name }}">
+                                            <x-heroicon-o-trash class="size-4" />
+                                        </button>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            @endif
+        </x-ui.card>
+    @else
+        <x-ui.card :padded="false">
+            @if ($nodes->isEmpty())
+                <x-ui.empty-state title="Belum ada node sensor"
+                                  description="Daftarkan node sensor dengan kode yang sama seperti yang dikirim perangkat IoT."
+                                  icon="heroicon-o-cpu-chip">
+                    <button type="button" wire:click="openCreateNodeModal" class="btn btn-secondary btn-sm">
+                        <x-heroicon-o-plus class="size-4" /> Tambah Node
+                    </button>
+                </x-ui.empty-state>
+            @else
+                <div class="overflow-x-auto">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Nama Node</th>
+                                <th>Kode</th>
+                                <th>Ruangan</th>
+                                <th>Status</th>
+                                <th class="w-24 text-right"><span class="sr-only">Aksi</span></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($nodes as $node)
+                                <tr wire:key="node-{{ $node->id }}">
+                                    <td>
+                                        <p class="font-medium text-slate-900">{{ $node->name }}</p>
+                                        @if ($node->description)
+                                            <p class="mt-0.5 text-xs text-slate-500">{{ $node->description }}</p>
+                                        @endif
+                                    </td>
+                                    <td><span class="font-mono text-xs text-slate-600">{{ $node->code }}</span></td>
+                                    <td>
+                                        @if ($node->room)
+                                            {{ $node->room->name }}
+                                        @else
+                                            <span class="text-slate-400">Belum ditempatkan</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if ($node->is_active)
+                                            <span class="inline-flex items-center gap-1.5 rounded-full bg-accent-50 px-2 py-0.5 text-xs font-medium text-accent-700 ring-1 ring-inset ring-accent-100">
+                                                <span class="size-1.5 rounded-full bg-accent-500"></span> Aktif
+                                            </span>
+                                        @else
+                                            <span class="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-500 ring-1 ring-inset ring-slate-200">
+                                                <span class="size-1.5 rounded-full bg-slate-400"></span> Nonaktif
+                                            </span>
+                                        @endif
+                                    </td>
+                                    <td class="text-right whitespace-nowrap">
+                                        <button type="button" wire:click="editNode({{ $node->id }})" class="btn btn-ghost btn-sm" title="Ubah node" aria-label="Ubah {{ $node->name }}">
+                                            <x-heroicon-o-pencil-square class="size-4" />
+                                        </button>
+                                        <button type="button" wire:click="deleteNode({{ $node->id }})"
+                                                wire:confirm="Hapus node &quot;{{ $node->name }}&quot;? Data pembacaan yang sudah tersimpan tetap ada."
+                                                class="btn btn-ghost btn-sm hover:bg-rose-50 hover:text-rose-600" title="Hapus node" aria-label="Hapus {{ $node->name }}">
+                                            <x-heroicon-o-trash class="size-4" />
+                                        </button>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            @endif
+        </x-ui.card>
+    @endif
+
+    {{-- Modal ruangan --}}
+    @if ($showRoomModal)
+        <div class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 p-4"
+             x-data x-on:keydown.escape.window="$wire.closeRoomModal()"
+             role="dialog" aria-modal="true" aria-labelledby="room-modal-title">
+            <div class="absolute inset-0" wire:click="closeRoomModal"></div>
+            <form wire:submit="saveRoom" class="card relative w-full max-w-md">
+                <div class="card-header">
+                    <h2 id="room-modal-title" class="card-title">{{ $editingRoomId ? 'Ubah Ruangan' : 'Tambah Ruangan' }}</h2>
+                    <button type="button" wire:click="closeRoomModal" class="btn btn-ghost btn-sm" aria-label="Tutup">
+                        <x-heroicon-o-x-mark class="size-4" />
+                    </button>
+                </div>
+
+                <div class="card-body space-y-4">
+                    <div>
+                        <label for="roomName" class="label">Nama ruangan</label>
+                        <input id="roomName" type="text" wire:model="roomName" class="input" placeholder="Contoh: Ruang Tamu" autofocus>
+                        @error('roomName') <p class="mt-1 text-xs text-rose-600">{{ $message }}</p> @enderror
+                    </div>
+                    <div>
+                        <label for="roomCode" class="label">Kode ruangan <span class="text-slate-400">(opsional)</span></label>
+                        <input id="roomCode" type="text" wire:model="roomCode" class="input font-mono uppercase" placeholder="ROOM-TAMU">
+                        @error('roomCode') <p class="mt-1 text-xs text-rose-600">{{ $message }}</p> @enderror
+                    </div>
+                    <div>
+                        <label for="roomDescription" class="label">Deskripsi <span class="text-slate-400">(opsional)</span></label>
+                        <textarea id="roomDescription" wire:model="roomDescription" rows="3" class="input" placeholder="Keterangan singkat lokasi ruangan"></textarea>
+                        @error('roomDescription') <p class="mt-1 text-xs text-rose-600">{{ $message }}</p> @enderror
+                    </div>
+                </div>
+
+                <div class="flex justify-end gap-2 border-t border-slate-100 px-5 py-4 sm:px-6">
+                    <button type="button" wire:click="closeRoomModal" class="btn btn-secondary">Batal</button>
+                    <button type="submit" class="btn btn-primary" wire:loading.attr="disabled" wire:target="saveRoom">
+                        {{ $editingRoomId ? 'Simpan Perubahan' : 'Simpan Ruangan' }}
+                    </button>
+                </div>
+            </form>
+        </div>
+    @endif
+
+    {{-- Modal node --}}
+    @if ($showNodeModal)
+        <div class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 p-4"
+             x-data x-on:keydown.escape.window="$wire.closeNodeModal()"
+             role="dialog" aria-modal="true" aria-labelledby="node-modal-title">
+            <div class="absolute inset-0" wire:click="closeNodeModal"></div>
+            <form wire:submit="saveNode" class="card relative w-full max-w-md">
+                <div class="card-header">
+                    <h2 id="node-modal-title" class="card-title">{{ $editingNodeId ? 'Ubah Node Sensor' : 'Tambah Node Sensor' }}</h2>
+                    <button type="button" wire:click="closeNodeModal" class="btn btn-ghost btn-sm" aria-label="Tutup">
+                        <x-heroicon-o-x-mark class="size-4" />
+                    </button>
+                </div>
+
+                <div class="card-body space-y-4">
+                    <div>
+                        <label for="nodeName" class="label">Nama node</label>
+                        <input id="nodeName" type="text" wire:model="nodeName" class="input" placeholder="Contoh: Node Sensor 1 - Ruang Tamu" autofocus>
+                        @error('nodeName') <p class="mt-1 text-xs text-rose-600">{{ $message }}</p> @enderror
+                    </div>
+                    <div>
+                        <label for="nodeCode" class="label">Kode node</label>
+                        <input id="nodeCode" type="text" wire:model="nodeCode" class="input font-mono uppercase" placeholder="NODE-01">
+                        <p class="mt-1 text-xs text-slate-500">Harus sama dengan kode yang dikirim perangkat.</p>
+                        @error('nodeCode') <p class="mt-1 text-xs text-rose-600">{{ $message }}</p> @enderror
+                    </div>
+                    <div>
+                        <label for="nodeRoomId" class="label">Ruangan</label>
+                        <select id="nodeRoomId" wire:model="nodeRoomId" class="input">
+                            <option value="">Belum ditempatkan</option>
+                            @foreach ($rooms as $room)
+                                <option value="{{ $room->id }}">{{ $room->name }}</option>
                             @endforeach
                         </select>
-                        @error('nodeRoomId') <span class="text-rose-500 font-semibold">{{ $message }}</span> @enderror
+                        @error('nodeRoomId') <p class="mt-1 text-xs text-rose-600">{{ $message }}</p> @enderror
                     </div>
-
-                    <!-- Description -->
-                    <div class="space-y-1">
-                        <label class="font-bold text-slate-700 dark:text-slate-300">Deskripsi Sensor</label>
-                        <textarea wire:model="nodeDescription" rows="2" placeholder="Catatan spesifikasi sensor..." 
-                                  class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white font-medium focus:outline-none focus:ring-2 focus:ring-sky-500"></textarea>
-                        @error('nodeDescription') <span class="text-rose-500 font-semibold">{{ $message }}</span> @enderror
+                    <div>
+                        <label for="nodeDescription" class="label">Deskripsi <span class="text-slate-400">(opsional)</span></label>
+                        <textarea id="nodeDescription" wire:model="nodeDescription" rows="2" class="input" placeholder="Catatan penempatan atau spesifikasi"></textarea>
+                        @error('nodeDescription') <p class="mt-1 text-xs text-rose-600">{{ $message }}</p> @enderror
                     </div>
+                    <label class="flex items-center gap-2.5 text-sm text-slate-700">
+                        <input type="checkbox" wire:model="nodeIsActive" class="size-4 rounded border-slate-300 text-accent-600 focus:ring-accent-500">
+                        Node aktif dan menerima data
+                    </label>
+                </div>
 
-                    <!-- Is Active Checkbox -->
-                    <div class="flex items-center gap-2 pt-1">
-                        <input type="checkbox" id="nodeIsActive" wire:model="nodeIsActive" class="rounded border-slate-300 text-sky-600 focus:ring-sky-500">
-                        <label for="nodeIsActive" class="font-bold text-slate-700 dark:text-slate-300">Node Sensor Aktif Menerima Transmisi Data</label>
-                    </div>
-
-                    <!-- Modal Actions -->
-                    <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
-                        <button type="button" wire:click="closeNodeModal" class="px-4 py-2 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-xl font-bold">
-                            Batal
-                        </button>
-                        <button type="submit" class="px-5 py-2 bg-sky-600 hover:bg-sky-500 text-white rounded-xl font-bold shadow-md shadow-sky-500/20">
-                            Simpan Node Sensor
-                        </button>
-                    </div>
-                </form>
-
-            </div>
+                <div class="flex justify-end gap-2 border-t border-slate-100 px-5 py-4 sm:px-6">
+                    <button type="button" wire:click="closeNodeModal" class="btn btn-secondary">Batal</button>
+                    <button type="submit" class="btn btn-primary" wire:loading.attr="disabled" wire:target="saveNode">
+                        {{ $editingNodeId ? 'Simpan Perubahan' : 'Simpan Node' }}
+                    </button>
+                </div>
+            </form>
         </div>
     @endif
-
 </div>

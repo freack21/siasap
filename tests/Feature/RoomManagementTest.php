@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Livewire\RoomManagement;
 use App\Models\Node;
 use App\Models\Room;
 use App\Models\User;
@@ -25,9 +26,9 @@ class RoomManagementTest extends TestCase
         $admin = User::where('email', 'admin@siasap.test')->first();
 
         $this->actingAs($admin)
-            ->get(route('room-management'))
+            ->get(route('admin.rooms'))
             ->assertStatus(200)
-            ->assertSee('Master Ruangan')
+            ->assertSee('Ruangan & Perangkat')
             ->assertSee('Ruang Tamu')
             ->assertSee('Kamar')
             ->assertSee('Dapur');
@@ -35,10 +36,10 @@ class RoomManagementTest extends TestCase
 
     public function test_regular_user_cannot_access_room_management_page()
     {
-        $user = User::where('email', 'user@siasap.test')->first();
+        $user = User::factory()->create();
 
         $this->actingAs($user)
-            ->get(route('room-management'))
+            ->get(route('admin.rooms'))
             ->assertStatus(403);
     }
 
@@ -47,7 +48,7 @@ class RoomManagementTest extends TestCase
         $admin = User::where('email', 'admin@siasap.test')->first();
 
         Livewire::actingAs($admin)
-            ->test(\App\Livewire\RoomManagement::class)
+            ->test(RoomManagement::class)
             ->set('roomName', 'Garasi Utama')
             ->set('roomCode', 'ROOM-GARASI')
             ->set('roomDescription', 'Area tempat parkir kendaraan.')
@@ -66,7 +67,7 @@ class RoomManagementTest extends TestCase
         $room = Room::where('code', 'ROOM-TAMU')->first();
 
         Livewire::actingAs($admin)
-            ->test(\App\Livewire\RoomManagement::class)
+            ->test(RoomManagement::class)
             ->set('nodeRoomId', $room->id)
             ->set('nodeName', 'Node Testing Extra')
             ->set('nodeCode', 'NODE-99')
@@ -80,5 +81,56 @@ class RoomManagementTest extends TestCase
             'code' => 'NODE-99',
             'room_id' => $room->id,
         ]);
+    }
+
+    public function test_nodes_tab_lists_nodes_with_status()
+    {
+        $admin = User::where('email', 'admin@siasap.test')->first();
+        Node::create(['name' => 'Node Cadangan', 'code' => 'NODE-OFF', 'is_active' => false]);
+
+        Livewire::actingAs($admin)
+            ->test(RoomManagement::class)
+            ->call('setTab', 'nodes')
+            ->assertSee('Node Cadangan')
+            ->assertSee('NODE-OFF')
+            ->assertSee('Nonaktif')
+            ->assertSee('Belum ditempatkan')
+            ->call('openCreateNodeModal')
+            ->assertSet('showNodeModal', true)
+            ->assertSee('Tambah Node Sensor')
+            ->call('closeNodeModal')
+            ->assertSet('showNodeModal', false);
+    }
+
+    public function test_admin_can_delete_room_and_node()
+    {
+        $admin = User::where('email', 'admin@siasap.test')->first();
+        $room = Room::create(['name' => 'Gudang', 'code' => 'ROOM-GUDANG']);
+        $node = Node::create(['name' => 'Node Gudang', 'code' => 'NODE-GDG', 'room_id' => $room->id, 'is_active' => true]);
+
+        Livewire::actingAs($admin)
+            ->test(RoomManagement::class)
+            ->call('deleteNode', $node->id)
+            ->call('deleteRoom', $room->id);
+
+        $this->assertDatabaseMissing('nodes', ['id' => $node->id]);
+        $this->assertDatabaseMissing('rooms', ['id' => $room->id]);
+    }
+
+    public function test_mutating_actions_require_rooms_manage_permission()
+    {
+        $admin = User::where('email', 'admin@siasap.test')->first();
+        $room = Room::where('code', 'ROOM-TAMU')->first();
+
+        $component = Livewire::actingAs($admin)->test(RoomManagement::class);
+
+        // Hak akses dicabut setelah halaman terbuka: aksi tetap harus ditolak.
+        $admin->roles()->detach();
+        $this->app['auth']->forgetGuards();
+        Livewire::actingAs($admin->fresh());
+
+        $component->call('deleteRoom', $room->id)->assertForbidden();
+
+        $this->assertDatabaseHas('rooms', ['id' => $room->id]);
     }
 }
