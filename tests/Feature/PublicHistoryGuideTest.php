@@ -64,7 +64,7 @@ class PublicHistoryGuideTest extends TestCase
             ->assertSee('Unduh CSV')
             ->assertSee('Dapur Utama')
             ->assertSee('Kamar Tidur')
-            ->assertSee('01 Oct 2026 08:00:00');
+            ->assertSee('01 Okt 2026 08:00:00');
     }
 
     public function test_history_summary_reflects_filtered_set(): void

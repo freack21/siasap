@@ -1,58 +1,72 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# SIASAP — Sistem Monitoring Kualitas Udara Ruangan Berbasis IoT
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Aplikasi web untuk menyajikan data kualitas udara ruangan yang dikirim oleh node sensor ESP32 (MQ-2 dan MQ-135). Setiap node mengirim 4 parameter gas dalam ppm (CO₂, NH₃, CO, H₂); server menghitung **Indeks KU** dan kategori kualitas udara, lalu menampilkannya secara real-time.
 
-## About Laravel
+Dikembangkan dengan metode **Research and Development (R&D)** dan model pengembangan **Waterfall**.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Fitur
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+**Halaman pengguna** (publik, navigasi atas)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+| Halaman | Isi |
+|---|---|
+| Beranda `/` | Status kualitas udara saat ini, kartu per ruangan, status perangkat |
+| Detail Ruangan `/ruangan/{id}` | Nilai terkini 4 gas, sub-indeks, grafik tren 1 jam / 24 jam / 7 hari, statistik |
+| Riwayat `/riwayat` | Filter ruangan, kategori, dan tanggal; ringkasan periode; unduh CSV |
+| Panduan `/panduan` | Cara membaca Indeks KU, arti kategori, ambang batas tiap gas, FAQ |
+| Kuesioner `/kuesioner` | Kuesioner System Usability Scale (SUS) untuk uji coba produk |
 
-## Learning Laravel
+**Panel admin** (login, sidebar)
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+| Halaman | Isi |
+|---|---|
+| Ringkasan `/admin` | Statistik, status perangkat, grafik data per jam, peringatan terbaru |
+| Data Sensor `/admin/data-sensor` | Tabel data lengkap dengan filter dan ekspor CSV |
+| Ruangan & Perangkat `/admin/ruangan` | Kelola ruangan dan node sensor |
+| Pengujian Jaringan `/admin/pengujian-jaringan` | Modul pendukung: QoS topologi Star vs Mesh (PDR, packet loss, RSSI, hop) |
+| Hasil Kuesioner `/admin/kuesioner` | Skor SUS, grade, rata-rata per butir, ekspor CSV |
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Perhitungan Indeks KU
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+1. Setiap gas dikonversi menjadi **sub-indeks 0–500** dengan interpolasi linier antar titik batas (lihat `config/air_quality.php`).
+2. **Indeks KU = sub-indeks tertinggi**; gas penyebabnya ditampilkan sebagai *parameter dominan*.
+3. Kategori: Baik (0–50), Sedang (51–150), Tidak Sehat (151–300), Berbahaya (>300).
 
-## Agentic Development
+Ambang batas merupakan rujukan awal dan wajib dikonfirmasi bersama dosen pembimbing.
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+## Menjalankan
+
+Kebutuhan: PHP 8.3+, Composer, Node.js, database (SQLite/MySQL).
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+composer install
+cp .env.example .env
+php artisan key:generate
+php artisan migrate --seed --seeder=SetupRbacSeeder
+npm install && npm run build
+php artisan serve --host=0.0.0.0 --port=8000
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+Akun admin bawaan: `admin@siasap.test` / `password` (ganti setelah instalasi).
 
-## Contributing
+Perintah berguna:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+- `php artisan test` — menjalankan seluruh pengujian otomatis
+- `php artisan telemetry:clear` — mengosongkan data sensor dan sesi pengujian (data master tetap)
 
-## Code of Conduct
+## API untuk perangkat IoT
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+`POST /api/telemetry` (JSON)
 
-## Security Vulnerabilities
+| Field | Wajib | Keterangan |
+|---|---|---|
+| `node_id` | ya | ID node terdaftar |
+| `co2`, `nh3`, `co`, `h2` | ya | Konsentrasi gas (ppm) |
+| `seq_number` | ya | Nomor urut paket per node |
+| `hop_count` | ya | Jumlah lompatan nirkabel sampai access point |
+| `rssi` | tidak | dBm; kosong bila tidak terukur |
+| `topology_type` | tidak | `star` / `mesh` (diabaikan bila ada sesi pengujian aktif) |
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Bila `TELEMETRY_API_KEY` diisi di `.env`, setiap permintaan wajib mengirim header `X-Api-Key`.
 
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Firmware dan panduan perangkat ada di [`arduino/`](arduino/README.md).
