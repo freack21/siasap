@@ -1,10 +1,10 @@
 {{-- Layout halaman pengguna (penghuni ruangan): navigasi atas, tanpa sidebar. --}}
 @php
     $links = [
-        ['route' => 'home', 'label' => 'Beranda', 'active' => ['home', 'rooms.show']],
-        ['route' => 'history', 'label' => 'Riwayat', 'active' => ['history']],
-        ['route' => 'guide', 'label' => 'Panduan', 'active' => ['guide']],
-        ['route' => 'survey', 'label' => 'Kuesioner', 'active' => ['survey']],
+        ['route' => 'home', 'label' => 'Beranda', 'icon' => 'tabler-home-2', 'active' => ['home', 'rooms.show']],
+        ['route' => 'history', 'label' => 'Riwayat', 'icon' => 'tabler-history', 'active' => ['history']],
+        ['route' => 'guide', 'label' => 'Panduan', 'icon' => 'tabler-book-2', 'active' => ['guide']],
+        ['route' => 'survey', 'label' => 'Kuesioner', 'icon' => 'tabler-clipboard-check', 'active' => ['survey']],
     ];
 @endphp
 <!DOCTYPE html>
@@ -23,6 +23,7 @@
                 @foreach ($links as $link)
                     <a href="{{ route($link['route']) }}" wire:navigate
                        @class(['nav-link', 'nav-link-active' => request()->routeIs(...$link['active'])])>
+                        <x-dynamic-component :component="$link['icon']" class="size-4" />
                         {{ $link['label'] }}
                     </a>
                 @endforeach
@@ -31,16 +32,16 @@
             <div class="hidden justify-self-end md:block">
                 @auth
                     <a href="{{ route('admin.overview') }}" class="btn btn-secondary btn-sm">
-                        <x-heroicon-o-squares-2x2 class="size-4" /> Panel Admin
+                        <x-tabler-layout-dashboard class="size-4" /> Panel Admin
                     </a>
                 @else
-                    <a href="{{ route('login') }}" class="btn btn-ghost btn-sm">Masuk Admin</a>
+                    <a href="{{ route('login') }}" class="btn btn-ghost btn-sm"><x-tabler-login-2 class="size-4" /> Masuk Admin</a>
                 @endauth
             </div>
 
             <button type="button" class="btn btn-ghost btn-sm justify-self-end md:hidden" @click="open = !open" :aria-expanded="open" aria-label="Buka menu">
-                <x-heroicon-o-bars-3 class="size-5" x-show="!open" />
-                <x-heroicon-o-x-mark class="size-5" x-show="open" x-cloak />
+                <x-tabler-menu-2 class="size-5" x-show="!open" />
+                <x-tabler-x class="size-5" x-show="open" x-cloak />
             </button>
         </div>
 
@@ -49,14 +50,15 @@
                 @foreach ($links as $link)
                     <a href="{{ route($link['route']) }}" wire:navigate
                        @class(['nav-link', 'nav-link-active' => request()->routeIs(...$link['active'])])>
+                        <x-dynamic-component :component="$link['icon']" class="size-4" />
                         {{ $link['label'] }}
                     </a>
                 @endforeach
                 <div class="my-2 border-t border-slate-100"></div>
                 @auth
-                    <a href="{{ route('admin.overview') }}" class="nav-link">Panel Admin</a>
+                    <a href="{{ route('admin.overview') }}" class="nav-link"><x-tabler-layout-dashboard class="size-4" /> Panel Admin</a>
                 @else
-                    <a href="{{ route('login') }}" class="nav-link">Masuk Admin</a>
+                    <a href="{{ route('login') }}" class="nav-link"><x-tabler-login-2 class="size-4" /> Masuk Admin</a>
                 @endauth
             </div>
         </nav>
@@ -68,8 +70,8 @@
 
     <footer class="border-t border-slate-200 bg-white">
         <div class="mx-auto flex max-w-6xl flex-col gap-1 px-4 py-6 text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between sm:px-6">
-            <p>SIASAP — Sistem Monitoring Kualitas Udara Ruangan Berbasis IoT</p>
-            <p>&copy; {{ now()->year }} · Data diperbarui otomatis setiap beberapa detik</p>
+            <p class="inline-flex items-center gap-1.5"><x-tabler-wind class="size-4 text-accent-600" /> SIASAP — Sistem Monitoring Kualitas Udara Ruangan Berbasis IoT</p>
+            <p class="inline-flex items-center gap-1.5"><x-tabler-refresh class="size-3.5" /> &copy; {{ now()->year }} · Data diperbarui otomatis setiap beberapa detik</p>
         </div>
     </footer>
 
