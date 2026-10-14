@@ -1,9 +1,9 @@
 <div class="space-y-6">
-    <x-ui.page-header title="Data Sensor" description="Seluruh data mentah yang dikirim node sensor beserta hasil perhitungan Indeks KU dan parameter jaringan. Gunakan filter untuk menelusuri, lalu ekspor ke CSV untuk analisis lanjutan.">
+    <x-ui.page-header icon="tabler-table" title="Data Sensor" description="Seluruh data mentah yang dikirim node sensor beserta hasil perhitungan Indeks KU dan parameter jaringan. Gunakan filter untuk menelusuri, lalu ekspor ke CSV untuk analisis lanjutan.">
         <x-slot:eyebrow>Panel Pengelola</x-slot:eyebrow>
         <x-slot:actions>
             <button type="button" wire:click="export" wire:loading.attr="disabled" wire:target="export" class="btn btn-primary">
-                <x-heroicon-o-arrow-down-tray class="size-4" />
+                <x-tabler-download class="size-4" />
                 Ekspor CSV
             </button>
         </x-slot:actions>
@@ -13,7 +13,7 @@
     <x-ui.card>
         <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
             <div>
-                <label for="filter-node" class="label">Ruangan / node</label>
+                <label for="filter-node" class="label flex items-center gap-1.5"><x-tabler-cpu class="size-4 text-slate-400" />Ruangan / node</label>
                 <select id="filter-node" wire:model.live="node" class="input">
                     <option value="">Semua node</option>
                     @foreach ($nodes as $item)
@@ -22,7 +22,7 @@
                 </select>
             </div>
             <div>
-                <label for="filter-category" class="label">Kategori</label>
+                <label for="filter-category" class="label flex items-center gap-1.5"><x-tabler-gauge class="size-4 text-slate-400" />Kategori</label>
                 <select id="filter-category" wire:model.live="category" class="input">
                     <option value="">Semua kategori</option>
                     @foreach ($categories as $key => $meta)
@@ -31,7 +31,7 @@
                 </select>
             </div>
             <div>
-                <label for="filter-session" class="label">Sesi pengujian</label>
+                <label for="filter-session" class="label flex items-center gap-1.5"><x-tabler-flask class="size-4 text-slate-400" />Sesi pengujian</label>
                 <select id="filter-session" wire:model.live="session" class="input">
                     <option value="">Semua data</option>
                     <option value="{{ \App\Livewire\TelemetryDashboard::OUTSIDE_SESSION }}">Di luar sesi</option>
@@ -41,18 +41,18 @@
                 </select>
             </div>
             <div>
-                <label for="filter-from" class="label">Dari tanggal</label>
+                <label for="filter-from" class="label flex items-center gap-1.5"><x-tabler-calendar class="size-4 text-slate-400" />Dari tanggal</label>
                 <input id="filter-from" type="date" wire:model.live="dateFrom" class="input" />
             </div>
             <div>
-                <label for="filter-to" class="label">Sampai tanggal</label>
+                <label for="filter-to" class="label flex items-center gap-1.5"><x-tabler-calendar class="size-4 text-slate-400" />Sampai tanggal</label>
                 <input id="filter-to" type="date" wire:model.live="dateTo" class="input" />
             </div>
         </div>
         @if ($hasFilters)
             <div class="mt-4 flex justify-end">
                 <button type="button" wire:click="resetFilters" class="btn btn-ghost btn-sm">
-                    <x-heroicon-o-x-mark class="size-4" />
+                    <x-tabler-filter-off class="size-4" />
                     Reset filter
                 </button>
             </div>
@@ -63,19 +63,19 @@
     <div wire:poll.10s>
         <x-ui.card :padded="false">
             <div class="flex flex-wrap items-center gap-x-6 gap-y-1 border-b border-slate-100 px-5 py-3 text-sm">
-                <p class="text-slate-500">Total data: <span class="num font-semibold text-slate-900">{{ number_format($total, 0, ',', '.') }}</span></p>
-                <p class="text-slate-500">Rentang waktu:
+                <p class="inline-flex items-center gap-1.5 text-slate-500"><x-tabler-database class="size-4 text-slate-400" />Total data: <span class="num font-semibold text-slate-900">{{ number_format($total, 0, ',', '.') }}</span></p>
+                <p class="inline-flex flex-wrap items-center gap-1.5 text-slate-500"><x-tabler-calendar class="size-4 text-slate-400" />Rentang waktu:
                     @if ($firstAt)
                         <span class="num font-medium text-slate-900">{{ $firstAt->format('d/m/Y H:i:s') }} – {{ $lastAt->format('d/m/Y H:i:s') }}</span>
                     @else
                         <span class="text-slate-900">—</span>
                     @endif
                 </p>
-                <p class="text-xs text-slate-400 sm:ml-auto">Diperbarui otomatis setiap 10 detik</p>
+                <p class="inline-flex items-center gap-1 text-xs text-slate-400 sm:ml-auto"><x-tabler-refresh class="size-3.5" />Diperbarui otomatis setiap 10 detik</p>
             </div>
 
             @if ($logs->isEmpty())
-                <x-ui.empty-state title="Tidak ada data" :description="$hasFilters ? 'Tidak ada data yang cocok dengan filter. Ubah atau reset filter.' : 'Belum ada data sensor yang masuk.'" icon="heroicon-o-table-cells" />
+                <x-ui.empty-state title="Tidak ada data" :description="$hasFilters ? 'Tidak ada data yang cocok dengan filter. Ubah atau reset filter.' : 'Belum ada data sensor yang masuk.'" icon="tabler-table-off" />
             @else
                 <div class="overflow-x-auto">
                     <table class="table">

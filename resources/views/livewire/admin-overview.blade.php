@@ -1,27 +1,27 @@
 <div wire:poll.5s class="space-y-6">
     @php($gases = \App\Support\AirQuality::gases())
-    <x-ui.page-header title="Ringkasan" description="Kondisi sistem secara langsung: data masuk, status perangkat, dan peringatan kualitas udara. Diperbarui otomatis setiap 5 detik.">
+    <x-ui.page-header icon="tabler-layout-dashboard" title="Ringkasan" description="Kondisi sistem secara langsung: data masuk, status perangkat, dan peringatan kualitas udara. Diperbarui otomatis setiap 5 detik.">
         <x-slot:eyebrow>Panel Pengelola</x-slot:eyebrow>
     </x-ui.page-header>
 
     {{-- Statistik utama --}}
     <div class="grid grid-cols-2 gap-4 lg:grid-cols-5">
-        <x-ui.stat label="Data masuk hari ini" :value="number_format($stats['today'], 0, ',', '.')" unit="data" icon="heroicon-o-inbox-arrow-down" />
-        <x-ui.stat label="Perangkat daring" :value="$stats['online'].' / '.$stats['activeTotal']" hint="dari perangkat aktif" icon="heroicon-o-signal" />
-        <x-ui.stat label="Ruangan dipantau" :value="$stats['rooms']" unit="ruangan" icon="heroicon-o-home-modern" />
+        <x-ui.stat label="Data masuk hari ini" :value="number_format($stats['today'], 0, ',', '.')" unit="data" icon="tabler-database" />
+        <x-ui.stat label="Perangkat daring" :value="$stats['online'].' / '.$stats['activeTotal']" hint="dari perangkat aktif" icon="tabler-wifi" />
+        <x-ui.stat label="Ruangan dipantau" :value="$stats['rooms']" unit="ruangan" icon="tabler-building-community" />
         <x-ui.stat label="Rata-rata Indeks KU (24 jam)" :value="$stats['avgKu'] === null ? '—' : number_format($stats['avgKu'], 0)"
                    :hint="$stats['avgKu'] === null ? 'Belum ada data' : 'Kategori '.\App\Models\SensorLog::computeKuStatus($stats['avgKu'])"
-                   icon="heroicon-o-chart-bar" />
+                   icon="tabler-gauge" />
         <x-ui.stat class="col-span-2 lg:col-span-1" label="Sesi pengujian aktif"
                    :value="$activeSession ? $activeSession->name : 'Tidak ada'"
                    :hint="$activeSession ? 'Topologi '.ucfirst($activeSession->topology_type).' · sejak '.$activeSession->started_at?->format('H:i') : 'Data masuk tanpa sesi'"
-                   icon="heroicon-o-beaker" />
+                   icon="tabler-flask" />
     </div>
 
     {{-- Status perangkat --}}
-    <x-ui.card title="Status Perangkat" description="Perangkat dianggap daring bila data terakhir masuk ≤ {{ \App\Support\AirQuality::onlineThresholdSeconds() }} detik yang lalu." :padded="false">
+    <x-ui.card icon="tabler-cpu" title="Status Perangkat" description="Perangkat dianggap daring bila data terakhir masuk ≤ {{ \App\Support\AirQuality::onlineThresholdSeconds() }} detik yang lalu." :padded="false">
         @if ($devices->isEmpty())
-            <x-ui.empty-state title="Belum ada perangkat" description="Tambahkan node sensor pada menu Ruangan & Perangkat." icon="heroicon-o-cpu-chip" />
+            <x-ui.empty-state title="Belum ada perangkat" description="Tambahkan node sensor pada menu Ruangan & Perangkat." icon="tabler-cpu" />
         @else
             <div class="overflow-x-auto">
                 <table class="table">
@@ -31,7 +31,7 @@
                             <th>Ruangan</th>
                             <th>Status</th>
                             <th>Terakhir terlihat</th>
-                            <th class="text-right">RSSI</th>
+                            <th class="text-right"><span class="inline-flex items-center gap-1"><x-tabler-antenna-bars-5 class="size-4 text-slate-400" />RSSI</span></th>
                             <th class="text-right">Hop</th>
                             <th class="text-right">Seq terakhir</th>
                             <th>Kualitas udara</th>
@@ -50,11 +50,11 @@
                                 <td>
                                     @if ($device['online'])
                                         <span class="inline-flex items-center gap-1.5 text-xs font-medium text-accent-700">
-                                            <span class="size-1.5 rounded-full bg-accent-500"></span>Daring
+                                            <x-tabler-wifi class="size-4" />Daring
                                         </span>
                                     @else
                                         <span class="inline-flex items-center gap-1.5 text-xs font-medium text-slate-500">
-                                            <span class="size-1.5 rounded-full bg-slate-300"></span>Luring
+                                            <x-tabler-wifi-off class="size-4 text-slate-400" />Luring
                                         </span>
                                     @endif
                                 </td>
@@ -88,12 +88,12 @@
 
     {{-- Grafik 24 jam --}}
     <div class="grid gap-6 lg:grid-cols-2">
-        <x-ui.card title="Data Masuk per Jam" description="Jumlah data sensor yang diterima, 24 jam terakhir.">
+        <x-ui.card icon="tabler-chart-bar" title="Data Masuk per Jam" description="Jumlah data sensor yang diterima, 24 jam terakhir.">
             <x-ui.line-chart :chart="$countChart" height="h-64" />
         </x-ui.card>
-        <x-ui.card title="Rata-rata Indeks KU per Jam" description="Per ruangan, 24 jam terakhir.">
+        <x-ui.card icon="tabler-chart-line" title="Rata-rata Indeks KU per Jam" description="Per ruangan, 24 jam terakhir.">
             @if (empty($kuChart['datasets']))
-                <x-ui.empty-state title="Belum ada data" description="Belum ada data sensor dalam 24 jam terakhir." icon="heroicon-o-chart-bar" class="h-64 py-0" />
+                <x-ui.empty-state title="Belum ada data" description="Belum ada data sensor dalam 24 jam terakhir." icon="tabler-chart-line" class="h-64 py-0" />
             @else
                 <x-ui.line-chart :chart="$kuChart" height="h-64" />
             @endif
@@ -102,13 +102,16 @@
 
     <div class="grid gap-6 lg:grid-cols-3">
         {{-- Peringatan terbaru --}}
-        <x-ui.card class="lg:col-span-2" title="Peringatan Terbaru" description="Pembacaan dengan kategori Tidak Sehat atau Berbahaya." :padded="false">
+        <x-ui.card class="lg:col-span-2" icon="tabler-alert-triangle" title="Peringatan Terbaru" description="Pembacaan dengan kategori Tidak Sehat atau Berbahaya." :padded="false">
             @if ($alerts->isEmpty())
-                <x-ui.empty-state title="Tidak ada peringatan" description="Belum ada pembacaan berkategori Tidak Sehat atau Berbahaya." icon="heroicon-o-shield-check" />
+                <x-ui.empty-state title="Tidak ada peringatan" description="Belum ada pembacaan berkategori Tidak Sehat atau Berbahaya." icon="tabler-shield-check" />
             @else
                 <ul class="divide-y divide-slate-100">
                     @foreach ($alerts as $alert)
                         <li wire:key="alert-{{ $alert->id }}" class="flex flex-wrap items-center gap-x-4 gap-y-1 px-5 py-3 text-sm">
+                            <span class="flex size-7 shrink-0 items-center justify-center rounded-lg ring-1 ring-inset {{ \App\Support\AirQuality::category($alert->ku_status)['badge'] }}">
+                                <x-tabler-alert-triangle class="size-4" />
+                            </span>
                             <span class="num w-32 shrink-0 text-slate-500">{{ $alert->created_at->format('d/m H:i:s') }}</span>
                             <span class="min-w-0 flex-1 truncate font-medium text-slate-900">{{ $alert->node?->room?->name ?? $alert->node?->name ?? 'Node #'.$alert->node_id }}</span>
                             <span class="text-xs text-slate-500">
@@ -123,20 +126,22 @@
         </x-ui.card>
 
         {{-- Tautan cepat --}}
-        <x-ui.card title="Tautan Cepat">
+        <x-ui.card icon="tabler-link" title="Tautan Cepat">
             <div class="space-y-2">
                 @foreach ([
-                    ['route' => 'admin.data', 'title' => 'Data Sensor', 'text' => 'Telusuri, saring, dan ekspor data mentah.', 'icon' => 'heroicon-o-table-cells'],
-                    ['route' => 'admin.rooms', 'title' => 'Ruangan & Perangkat', 'text' => 'Kelola ruangan dan node sensor.', 'icon' => 'heroicon-o-home-modern'],
-                    ['route' => 'admin.qos', 'title' => 'Pengujian Jaringan', 'text' => 'Sesi pengujian dan analisis QoS topologi.', 'icon' => 'heroicon-o-signal'],
+                    ['route' => 'admin.data', 'title' => 'Data Sensor', 'text' => 'Telusuri, saring, dan ekspor data mentah.', 'icon' => 'tabler-table'],
+                    ['route' => 'admin.rooms', 'title' => 'Ruangan & Perangkat', 'text' => 'Kelola ruangan dan node sensor.', 'icon' => 'tabler-building-community'],
+                    ['route' => 'admin.qos', 'title' => 'Pengujian Jaringan', 'text' => 'Sesi pengujian dan analisis QoS topologi.', 'icon' => 'tabler-topology-star-3'],
                 ] as $link)
-                    <a href="{{ route($link['route']) }}" wire:navigate class="flex items-start gap-3 rounded-xl border border-slate-200 p-3 transition hover:border-accent-300 hover:bg-accent-50">
-                        <x-dynamic-component :component="$link['icon']" class="mt-0.5 size-5 shrink-0 text-accent-600" />
+                    <a href="{{ route($link['route']) }}" wire:navigate class="flex items-center gap-3 rounded-xl border border-slate-200 p-3 transition hover:border-accent-300 hover:bg-accent-50">
+                        <span class="icon-chip icon-chip-sm">
+                            <x-dynamic-component :component="$link['icon']" class="size-4" />
+                        </span>
                         <span class="min-w-0">
                             <span class="block text-sm font-semibold text-slate-900">{{ $link['title'] }}</span>
                             <span class="block text-xs text-slate-500">{{ $link['text'] }}</span>
                         </span>
-                        <x-heroicon-o-chevron-right class="ml-auto mt-0.5 size-4 shrink-0 text-slate-400" />
+                        <x-tabler-chevron-right class="ml-auto size-4 shrink-0 text-slate-400" />
                     </a>
                 @endforeach
             </div>
