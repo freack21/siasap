@@ -14,8 +14,8 @@
 </head>
 <body class="min-h-screen">
     <header x-data="{ open: false }" class="sticky top-0 z-40 border-b border-slate-200 bg-white/85 backdrop-blur">
-        <div class="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
-            <a href="{{ route('home') }}" wire:navigate class="shrink-0">
+        <div class="mx-auto grid h-16 max-w-6xl grid-cols-[1fr_auto] items-center gap-4 px-4 sm:px-6 md:grid-cols-[1fr_auto_1fr]">
+            <a href="{{ route('home') }}" wire:navigate class="justify-self-start">
                 <x-ui.brand />
             </a>
 
@@ -28,7 +28,7 @@
                 @endforeach
             </nav>
 
-            <div class="hidden md:block">
+            <div class="hidden justify-self-end md:block">
                 @auth
                     <a href="{{ route('admin.overview') }}" class="btn btn-secondary btn-sm">
                         <x-heroicon-o-squares-2x2 class="size-4" /> Panel Admin
@@ -38,7 +38,7 @@
                 @endauth
             </div>
 
-            <button type="button" class="btn btn-ghost btn-sm md:hidden" @click="open = !open" :aria-expanded="open" aria-label="Buka menu">
+            <button type="button" class="btn btn-ghost btn-sm justify-self-end md:hidden" @click="open = !open" :aria-expanded="open" aria-label="Buka menu">
                 <x-heroicon-o-bars-3 class="size-5" x-show="!open" />
                 <x-heroicon-o-x-mark class="size-5" x-show="open" x-cloak />
             </button>
