@@ -25,7 +25,8 @@ Chart.defaults.locale = 'id-ID';
  * nilainya setiap polling; MutationObserver lalu memperbarui grafik tanpa
  * membuat ulang canvas.
  *
- * Format data: { labels: [...], datasets: [{ label, data: [...], color }], yTitle?: string }
+ * Format data: { labels: [...], datasets: [{ label, data: [...], color, dashed? }], yTitle?: string }
+ * Dataset `dashed: true` digambar sebagai garis ambang putus-putus (tanpa titik/isian).
  */
 function lineChart() {
     return {
@@ -53,7 +54,26 @@ function lineChart() {
         },
 
         datasets(payload) {
-            return (payload.datasets || []).map((set) => {
+            const all = payload.datasets || [];
+            const series = all.filter((set) => !set.dashed).length;
+
+            return all.map((set) => {
+                if (set.dashed) {
+                    return {
+                        label: set.label,
+                        data: set.data,
+                        borderColor: set.color,
+                        backgroundColor: set.color,
+                        borderDash: [6, 4],
+                        borderWidth: 1.5,
+                        fill: false,
+                        tension: 0,
+                        pointRadius: 0,
+                        pointHoverRadius: 0,
+                        isThreshold: true,
+                    };
+                }
+
                 // Titik ditampilkan bila datanya sedikit, agar satu-dua pembacaan tetap terlihat.
                 const filled = (set.data || []).filter((value) => value !== null).length;
 
@@ -62,7 +82,7 @@ function lineChart() {
                     data: set.data,
                     borderColor: set.color,
                     backgroundColor: set.color + '1a',
-                    fill: payload.datasets.length === 1,
+                    fill: series === 1,
                     tension: 0.35,
                     borderWidth: 2,
                     pointRadius: filled <= 3 ? 3 : 0,
@@ -85,13 +105,15 @@ function lineChart() {
                         legend: {
                             display: (payload.datasets || []).length > 1,
                             position: 'bottom',
-                            labels: { usePointStyle: true, pointStyle: 'circle', boxWidth: 6, padding: 16 },
+                            labels: { usePointStyle: true, pointStyle: 'line', boxWidth: 16, padding: 16 },
                         },
                         tooltip: {
                             backgroundColor: '#0f172a',
                             padding: 10,
                             cornerRadius: 8,
                             titleFont: { weight: '600' },
+                            // Garis ambang bernilai tetap; tidak perlu diulang di tooltip
+                            filter: (item) => !item.dataset.isThreshold,
                         },
                     },
                     scales: {
