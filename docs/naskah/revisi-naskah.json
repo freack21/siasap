@@ -1,1143 +1,858 @@
 {
-  "keterangan": "Berkas ini memuat daftar revisi naskah skripsi SIASAP dalam bentuk yang dapat diterapkan otomatis ke naskah Word sebagai perubahan terlacak (Track Changes) dan komentar.",
+  "keterangan": "Daftar revisi naskah skripsi SIASAP yang diterapkan ke naskah Word terkini (naskah.docx) sebagai perubahan terlacak (Track Changes) dan komentar dengan docs/naskah/patch_naskah.py. Setiap \"cari\" disalin dari teks naskah terkini; \"ganti\" berisi teks lengkap rentang tersebut sesudah direvisi, sehingga hanya kata yang berubah yang ditandai. Butir yang sudah dikerjakan penulis tidak dicantumkan lagi. Butir yang hanya berisi \"catatan\" menjadi komentar untuk pekerjaan manual (gambar ulang, tabel, sub-subbab baru, penomoran, dan entri yang perlu dicek). Acuan: docs/revisi-naskah.md dan docs/superpowers/specs/2026-10-23-penyelarasan-naskah-design.md (Spec).",
   "revisi": [
     {
       "id": "0.1-01",
-      "lokasi": "Halaman sampul (judul)",
-      "cari": "SISTEM PREDIKSI KUALITAS UDARA",
-      "ganti": "SISTEM MONITORING KUALITAS UDARA",
-      "catatan": "Spec §1 dan §9: sistem hanya memantau, tidak memprediksi."
+      "lokasi": "Daftar Isi, paragraf 36",
+      "cari": "DAFTAR ISI",
+      "catatan": "Perbarui Daftar Isi (klik kanan > Update Field) setelah semua revisi diterima, terutama setelah penomoran sub-subbab 3.11 dan 3.12 diperbaiki (lihat komentar pada subbab tersebut) dan sub-subbab baru 3.8.7 serta 3.12.6 ditambahkan. Alasan: penyelarasan naskah dengan aplikasi (penomoran ganda)."
     },
     {
       "id": "0.2-01",
-      "lokasi": "Prakata, paragraf 1 (hlm. ii)",
-      "cari": "berjudul \"Rancang Bangun Sistem Prediksi Kualitas Udara Ruangan Berbasis Iot Sebagai Upaya Deteksi Dini Risiko Penyakit Pernapasan\".",
-      "ganti": "berjudul “Rancang Bangun Sistem *Monitoring* Kualitas Udara Ruangan Berbasis IoT”.",
-      "catatan": "Spec §9: hapus \"prediksi\" dan \"deteksi dini\". Aplikasi tidak menilai risiko penyakit; rekomendasinya informatif, bukan diagnosis medis."
+      "lokasi": "Daftar Gambar, paragraf 74",
+      "cari": "DAFTAR GAMBAR",
+      "catatan": "Perbarui Daftar Gambar (Update Field) setelah judul gambar di batang tubuh diganti dan Gambar 3.9 ditambahkan. Isi yang diharapkan: Gambar 3.1 Flowchart Sistem Monitoring Kualitas Udara; 3.2 Use Case Diagram Sistem Monitoring; 3.3 Wireframe Halaman Beranda; 3.4 Wireframe Halaman Detail Ruangan (Grafik Sensor); 3.5 Wireframe Halaman Riwayat; 3.6 Wireframe Halaman Panduan; 3.7 Wireframe Halaman Rekomendasi Tindakan; 3.8 Wireframe Halaman Status Perangkat (IoT System); 3.9 Wireframe Halaman Kuesioner UEQ. Nomor gambar memakai field SEQ, sehingga nomor 3.7 dan 3.8 akan benar sendiri setelah Update Field. Alasan: halaman aplikasi dan penyelarasan naskah dengan aplikasi."
     },
     {
       "id": "0.3-01",
-      "lokasi": "Daftar Isi (hlm. iii–iv)",
-      "cari": "DAFTAR ISI",
-      "catatan": "Perbarui Daftar Isi (klik kanan > Update Field) setelah penomoran diperbaiki: subbab 3.11 memuat 3.11.1–3.11.5 dan 3.12 memuat 3.12.1–3.12.7 (termasuk 3.12.6 Evaluasi Pengguna dengan UEQ). Tambahkan 3.8.7 Wireframe Halaman Kuesioner UEQ. Alasan: Spec §9, perbaiki penomoran ganda."
-    },
-    {
-      "id": "0.4-01",
-      "lokasi": "Daftar Gambar (hlm. v)",
-      "cari": "Gambar 3.7 Wireframe IoT System",
-      "catatan": "Perbarui Daftar Gambar setelah judul gambar di batang tubuh diganti. Isi yang benar: Gambar 3.1 Flowchart Sistem Monitoring Kualitas Udara; Gambar 3.2 Use Case Diagram Sistem Monitoring; Gambar 3.3 Wireframe Halaman Beranda; Gambar 3.4 Wireframe Halaman Detail Ruangan (Grafik Sensor); Gambar 3.5 Wireframe Halaman Riwayat; Gambar 3.6 Wireframe Halaman Panduan; Gambar 3.7 Wireframe Halaman Rekomendasi Tindakan; Gambar 3.8 Wireframe Halaman Status Perangkat (IoT System); Gambar 3.9 Wireframe Halaman Kuesioner UEQ. Alasan: Spec §9 dan §6; di batang tubuh Gambar 3.6 dan 3.7 sama-sama berjudul \"Exposure Duration dan Health Advisory\", dan wireframe IoT System bernomor 3.8, tidak sesuai dengan daftar ini."
-    },
-    {
-      "id": "0.5-01",
-      "lokasi": "Daftar Tabel (hlm. vi)",
+      "lokasi": "Daftar Tabel, paragraf 86",
       "cari": "DAFTAR TABEL",
-      "catatan": "Tabel 3.3 dipakai dua kali di batang tubuh (hlm. 54 dan 56). Pertahankan Tabel 3.3 = Aturan Rekomendasi Tindakan Preventif dan Tabel 3.4–3.10 tetap. Tambahkan Tabel 3.11 Pemetaan Butir UEQ ke Skala dan Tabel 3.12 Benchmark UEQ, lalu perbarui daftar ini (Update Field). Alasan: Spec §9; Spec §3 dan §8 merujuk Tabel 3.3 dan Tabel 3.5–3.10."
-    },
-    {
-      "id": "1.1-01",
-      "lokasi": "1.1, paragraf 5 (hlm. 3)",
-      "cari": "agar mampu mengelola data sensor, melakukan analisis data, serta menampilkan informasi secara terstruktur.",
-      "ganti": "agar mampu menerima, mengolah, dan menyimpan data sensor serta menampilkan informasi secara terstruktur.",
-      "catatan": "Spec §1: tanpa analisis tren maupun prediksi."
-    },
-    {
-      "id": "1.1-02",
-      "lokasi": "1.1, paragraf 8 (hlm. 4)",
-      "cari": "tanpa alat ukur terkalibrasi laboratorium (Solihat et al., 2025).",
-      "ganti": "tanpa alat ukur terkalibrasi laboratorium (Solihat et al., 2026).",
-      "catatan": "Spec §9: tahun Solihat 2026, sesuai daftar pustaka."
-    },
-    {
-      "id": "1.1-03",
-      "lokasi": "1.1, paragraf 8 (hlm. 4)",
-      "cari": "Perangkat mengirimkan nilai konsentrasi masing-masing gas dalam satuan ppm sebagai estimasi indikator kondisi udara ruangan.",
-      "ganti": "Perangkat mengirimkan nilai konsentrasi masing-masing gas dalam satuan ppm sebagai estimasi indikator kondisi udara ruangan. Nilai ppm tersebut dihitung oleh perangkat dengan rumus konversi Solihat et al. (2026) terhadap nilai acuan (*baseline*) yang diukur saat perangkat dinyalakan, sehingga bersifat indikator relatif terhadap kondisi udara awal dan bukan konsentrasi absolut.",
-      "catatan": "Spec §9: ppm sebagai indikator relatif berbasis baseline."
-    },
-    {
-      "id": "1.1-04",
-      "lokasi": "1.1, paragraf 8 (hlm. 4)",
-      "cari": "ambang batas konsentrasi gas (Solihat et al., 2025).",
-      "ganti": "ambang batas konsentrasi gas (Solihat et al., 2026).",
-      "catatan": "Spec §9: tahun Solihat 2026."
-    },
-    {
-      "id": "1.1-05",
-      "lokasi": "1.1, paragraf 10 (hlm. 5)",
-      "cari": "meneliti dengan judul \"Rancang Bangun Sistem Prediksi Kualitas Udara Ruangan Berbasis IoT\".",
-      "ganti": "meneliti dengan judul \"Rancang Bangun Sistem *Monitoring* Kualitas Udara Ruangan Berbasis IoT\".",
-      "catatan": "Spec §9 (judul)."
-    },
-    {
-      "id": "1.1-06",
-      "lokasi": "1.1, paragraf 10 (hlm. 5)",
-      "cari": "serta menguji fungsionalitas dan kemampuan sistem dalam memantau perubahan kondisi kualitas udara pada beberapa kondisi ruangan.",
-      "ganti": "menguji fungsionalitas sistem dalam memantau perubahan kondisi kualitas udara pada beberapa skenario kondisi di satu ruangan uji, serta mengevaluasi pengalaman pengguna dengan *User Experience Questionnaire* (UEQ).",
-      "catatan": "Spec §1: satu ruangan; pengujian black-box dan UEQ."
-    },
-    {
-      "id": "1.2-01",
-      "lokasi": "1.2 butir 3 (hlm. 5)",
-      "cari": "Bagaimana melakukan pengujian terhadap fungsionalitas dan kemampuan sistem…pada beberapa kondisi ruangan?",
-      "ganti": "Bagaimana menguji fungsionalitas sistem dalam memantau perubahan kondisi kualitas udara pada beberapa skenario kondisi ruangan, serta mengevaluasi pengalaman pengguna terhadap aplikasi?",
-      "catatan": "Spec §1 dan §7: evaluasi pengguna dengan UEQ termasuk metode penelitian."
-    },
-    {
-      "id": "1.3-01",
-      "lokasi": "1.3 butir 3 (hlm. 6)",
-      "cari": "Melakukan pengujian sistem pada beberapa kondisi ruangan untuk mengetahui kemampuan sistem dalam mendeteksi perubahan kondisi kualitas udara.",
-      "ganti": "Melakukan pengujian fungsional (*black-box*) pada beberapa skenario kondisi di satu ruangan uji serta mengukur pengalaman pengguna dengan UEQ 26 butir.",
-      "catatan": "Spec §1 dan §7."
+      "catatan": "Setelah tabel kedua bernomor 3.3 (Kategori Kualitas Udara Ruangan, subbab 3.9.3) dihapus, Tabel 3.3 hanya dipakai untuk Aturan Rekomendasi dan Tabel 3.4–3.10 tetap. Tambahkan Tabel 3.11 Pemetaan Butir UEQ ke Skala dan Tabel 3.12 Benchmark UEQ (subbab 3.12.6), lalu perbarui daftar ini (Update Field). Alasan: penyelarasan naskah dengan aplikasi."
     },
     {
       "id": "1.4-01",
-      "lokasi": "1.4 butir 4 (hlm. 6)",
-      "cari": "keras IoT, melainkan berfokus pada pengembangan aplikasi berbasis web.",
-      "ganti": "keras IoT, melainkan berfokus pada pengembangan aplikasi berbasis web. Kalibrasi sensor, akurasi nilai ppm, dan rumus konversi pada perangkat menjadi tanggung jawab penelitian IoT yang dikerjakan rekan satu proyek. Aplikasi hanya memvalidasi format data yang diterima.",
-      "catatan": "Spec §1 (validitas sensor)."
+      "lokasi": "1.4 Batasan Masalah, butir 7 (paragraf 136)",
+      "cari": "Sistem hanya memantau data real-time yang dikirim perangkat IoT secara berkala dengan interval 5–10 detik.",
+      "catatan": "Tambahkan butir 8 sesudah butir ini: \"Klasifikasi memakai satu rujukan ambang batas, yaitu Solihat et al. (2026), untuk keempat gas. Rujukan tersebut tidak menjelaskan dasar penetapan ambangnya, dan ambang hanya bermakna bila perangkat memakai rumus konversi yang sama (indikator relatif terhadap baseline saat perangkat dinyalakan).\" Alasan: aturan klasifikasi ambang dan penyelarasan naskah dengan aplikasi (satu sumber ambang; keterbatasan dasar ambang)."
     },
     {
       "id": "1.4-02",
-      "lokasi": "1.4 butir 6 (hlm. 6)",
-      "cari": "Pengujian sistem dilakukan pada beberapa kondisi ruangan, seperti kondisi ruangan normal, tertutup, dan kondisi dengan perubahan kualitas udara.",
-      "ganti": "Pengujian sistem dilakukan pada satu ruangan uji dengan empat skenario kondisi: ruangan normal, ruangan tertutup, ruangan berasap, dan ventilasi berbeda (Tabel 3.10).",
-      "catatan": "Spec §1 (satu ruangan); disamakan dengan Tabel 3.10."
-    },
-    {
-      "id": "1.4-03",
-      "lokasi": "1.4, butir baru 7",
-      "cari": "Adapun batasan masalah dari penelitian ini adalah sebagai berikut:",
-      "catatan": "Tambahkan butir baru 7 di akhir daftar Batasan Masalah: \"Sistem hanya memantau data real-time yang dikirim perangkat IoT secara berkala dengan interval 5–10 detik. Grafik dan riwayat hanya ditampilkan, tidak dianalisis, dan sistem tidak melakukan analisis tren maupun prediksi kualitas udara.\" Alasan: Spec §1 (fungsi sistem)."
-    },
-    {
-      "id": "1.4-04",
-      "lokasi": "1.4, butir baru 8",
-      "cari": "Adapun batasan masalah dari penelitian ini adalah sebagai berikut:",
-      "catatan": "Tambahkan butir baru 8: \"Klasifikasi memakai satu rujukan ambang batas, yaitu Solihat et al. (2026), untuk keempat gas. Rujukan tersebut tidak menjelaskan dasar penetapan ambangnya, dan ambang hanya bermakna bila perangkat memakai rumus konversi yang sama (indikator relatif terhadap baseline saat perangkat dinyalakan).\" Alasan: Spec §2 dan §9."
-    },
-    {
-      "id": "1.4-05",
-      "lokasi": "1.4, butir baru 9",
-      "cari": "Adapun batasan masalah dari penelitian ini adalah sebagai berikut:",
-      "catatan": "Tambahkan butir baru 9: \"Aplikasi dapat diakses tanpa login dan tidak memiliki panel administrator. Aktor sistem hanya Pengguna dan Perangkat IoT.\" Alasan: Spec §1 (aktor) dan §6 (halaman publik)."
-    },
-    {
-      "id": "1.5-01",
-      "lokasi": "1.5 butir 3 (hlm. 7)",
-      "cari": "yang terintegrasi dengan analisis data dalam bidang Rekayasa Perangkat Lunak.",
-      "ganti": "yang terintegrasi dengan pengolahan dan penyajian data dalam bidang Rekayasa Perangkat Lunak.",
-      "catatan": "Spec §1 (tanpa analisis tren/prediksi)."
-    },
-    {
-      "id": "1.6-01",
-      "lokasi": "1.6, BAB III (hlm. 7)",
-      "cari": "metode dan alur penelitian, metode pengembangan sistem cerdas,",
-      "ganti": "metode dan alur penelitian, metode pengembangan sistem (*Waterfall*),",
-      "catatan": "Spec §1 (Waterfall). Sistem berbasis aturan, bukan sistem cerdas."
-    },
-    {
-      "id": "2.1-01",
-      "lokasi": "2.1, paragraf 1 (hlm. 9)",
-      "cari": "Penelitian mengenai sistem pemantauan dan prediksi kualitas udara telah banyak dilakukan",
-      "ganti": "Penelitian mengenai sistem pemantauan kualitas udara telah banyak dilakukan",
-      "catatan": "Spec §9 (hapus \"prediksi\")."
-    },
-    {
-      "id": "2.1-02",
-      "lokasi": "2.1, Fikri et al. (hlm. 9)",
-      "cari": "Namun, penelitian tersebut masih berfokus pada monitoring tanpa adanya fitur prediksi kualitas udara.",
-      "ganti": "Namun, penelitian tersebut belum menyajikan saran tindakan preventif yang sesuai dengan kategori kondisi udara.",
-      "catatan": "Spec §9: celah \"belum ada prediksi\" diganti fokus penelitian ini (kategori dan rekomendasi)."
-    },
-    {
-      "id": "2.1-03",
-      "lokasi": "2.1, Khoeriah Utami et al. (hlm. 9)",
-      "cari": "tetapi belum mengembangkan sistem prediksi sebagai deteksi dini risiko kesehatan.",
-      "ganti": "tetapi informasi yang disajikan masih berupa nilai parameter dan grafik, belum diterjemahkan menjadi kategori kondisi udara yang mudah dipahami pengguna awam.",
-      "catatan": "Spec §9 (hapus kritik prediksi dan \"deteksi dini\")."
-    },
-    {
-      "id": "2.1-04",
-      "lokasi": "2.1, Rivangga et al. (hlm. 9–10)",
-      "cari": "Namun, penelitian ini belum mengintegrasikan hasil prediksi ke dalam sistem dashboard berbasis web secara interaktif.",
-      "ganti": "Penelitian ini menunjukkan pemanfaatan data historis untuk prediksi. Penelitian yang diusulkan tidak menempuh arah tersebut dan berfokus pada penyajian kondisi terkini secara *real-time*.",
-      "catatan": "Spec §1: kritik semula menyiratkan penelitian ini akan mengintegrasikan prediksi."
-    },
-    {
-      "id": "2.1-05",
-      "lokasi": "2.1, akhir uraian Sung & Hsiao (hlm. 10)",
-      "cari": "sebagian penelitian masih berfokus pada aspek monitoring tanpa mengintegrasikan fitur prediksi sebagai upaya deteksi dini risiko penyakit pernapasan.",
-      "ganti": "sebagian penelitian masih berfokus pada penyajian nilai sensor dan belum menerjemahkannya menjadi kategori kondisi udara beserta saran tindakan preventif.",
-      "catatan": "Spec §9."
-    },
-    {
-      "id": "2.1-06",
-      "lokasi": "2.1, Hananta et al. (hlm. 12)",
-      "cari": "belum mengembangkan fitur analisis lanjutan seperti prediksi kondisi udara…melalui pendekatan analitik berbasis perangkat lunak.",
-      "ganti": "belum menyediakan rekomendasi tindakan preventif berbasis aturan. Oleh karena itu, penelitian ini mengembangkan sistem yang tidak hanya menampilkan data, tetapi juga mengklasifikasikan nilai indikator gas berdasarkan ambang batas dan menyajikan saran tindakan sesuai kategori kondisi udara.",
-      "catatan": "Spec §1: tanpa prediksi; analisis durasi paparan tidak ada di aplikasi."
-    },
-    {
-      "id": "2.1-07",
-      "lokasi": "Tabel 2.1, kepala kolom (hlm. 13–15)",
-      "cari": "Implementation Of Internet Of Things (IOT) In Air Quality Monitoring (AQI)",
-      "catatan": "Kepala kolom kedua Tabel 2.1 tertulis \"Tahun\" padahal berisi nama peneliti. Ubah baris kepala menjadi \"No | Peneliti | Tahun | Judul | Metode | Hasil\", termasuk baris kepala yang berulang di setiap halaman tabel."
-    },
-    {
-      "id": "2.1-08",
-      "lokasi": "2.1, paragraf penutup 1 (hlm. 16)",
-      "cari": "Secara keseluruhan, penelitian terdahulu menunjukkan bahwa sistem monitoring kualitas udara berbasis IoT…kondisi udara yang lebih mudah dipahami pengguna. Selain itu, pengujian pada penelitian-penelitian tersebut…perubahan kualitas udara secara langsung.",
-      "ganti": "Secara keseluruhan, penelitian terdahulu menunjukkan bahwa sistem *monitoring* kualitas udara berbasis IoT telah banyak dikembangkan, baik menggunakan sensor partikulat maupun sensor gas sebagai indikator kondisi lingkungan. Sebagian penelitian telah mengklasifikasikan data sensor ke dalam kategori kualitas udara dan menampilkannya melalui halaman web, seperti yang dilakukan Solihat et al. (2026). Namun, informasi yang disajikan umumnya berhenti pada nilai ppm dan label kategori. Penelitian-penelitian tersebut belum menjelaskan gas yang menjadi penyebab kondisi tersebut dan belum memberikan saran tindakan preventif yang dapat dilakukan pengguna sesuai kondisi saat itu. Selain itu, pengujian pada penelitian-penelitian tersebut umumnya masih berfokus pada keakuratan pembacaan sensor dan indikator perangkat. Pengujian belum mencakup fungsionalitas aplikasi pada beberapa kondisi ruangan nyata, dan belum ada evaluasi pengalaman pengguna terhadap aplikasi yang digunakan.",
-      "catatan": "Celah penelitian dirumuskan ulang: tanpa prediksi; menonjolkan penyebab utama, rekomendasi, pengujian kondisi nyata, dan UEQ."
-    },
-    {
-      "id": "2.1-09",
-      "lokasi": "2.1, paragraf penutup 2 (hlm. 16)",
-      "cari": "Oleh karena itu, penelitian ini berfokus pada pengembangan aplikasi berbasis web…teruji fungsionalitasnya pada kondisi nyata.",
-      "ganti": "Oleh karena itu, penelitian ini berfokus pada pengembangan aplikasi berbasis web yang tidak hanya berfungsi sebagai media *monitoring*, tetapi juga menerjemahkan data indikator kualitas udara dari perangkat IoT menjadi informasi yang lebih mudah dipahami. Informasi tersebut berupa kategori kondisi udara untuk setiap gas dan secara keseluruhan, gas penyebab utama, serta rekomendasi tindakan preventif berbasis aturan yang mengacu pada strategi perbaikan kualitas udara dalam ruangan dari U.S. EPA. Fungsionalitas aplikasi diuji dengan metode *black-box*, termasuk pada empat kondisi di satu ruang uji: ruangan normal, ruangan tertutup, ruangan dengan paparan asap, dan ruangan dengan variasi tingkat ventilasi. Pengalaman pengguna dievaluasi menggunakan *User Experience Questionnaire* (UEQ). Dengan demikian, penelitian ini diharapkan dapat memberikan kontribusi dalam pengembangan sistem *monitoring* kualitas udara ruangan yang lebih informatif, teruji fungsionalitasnya pada kondisi nyata, dan dinilai dari sisi pengguna."
+      "lokasi": "1.4 Batasan Masalah, butir 7 (paragraf 136)",
+      "cari": "Grafik dan riwayat hanya ditampilkan, tidak dianalisis",
+      "catatan": "Tambahkan butir 9 sesudah butir 8: \"Aplikasi dapat diakses tanpa login dan tidak memiliki panel administrator. Aktor sistem hanya Pengguna dan Perangkat IoT.\" Alasan: ruang lingkup penelitian (aktor) dan halaman aplikasi (semua halaman publik)."
     },
     {
       "id": "2.3-01",
-      "lokasi": "2.3, paragraf 2 (hlm. 18)",
+      "lokasi": "2.3 Internet of Things, paragraf 265",
       "cari": "Atzori et al. (2025) menjelaskan bahwa IoT",
       "ganti": "Atzori et al. (2010) menjelaskan bahwa IoT",
-      "catatan": "Spec §9: artikel Computer Networks 54(15), DOI 10.1016/j.comnet.2010.05.010, terbit 2010."
+      "catatan": "Penyelarasan naskah dengan aplikasi: artikel Computer Networks 54(15), DOI 10.1016/j.comnet.2010.05.010, terbit 2010 (daftar pustaka sudah 2010). Sitasi ini adalah field Mendeley dengan format manual \"Atzori et al. (2025)\"; perbaiki juga lewat Mendeley (Edit Citation, hapus format manual) agar tahun tidak kembali menjadi 2025 saat sitasi diperbarui."
     },
     {
       "id": "2.3-02",
-      "lokasi": "2.3, paragraf 2 lanjutan (hlm. 19)",
+      "lokasi": "2.3 Internet of Things, paragraf 265",
       "cari": "Lebih lanjut, Atzori et al. (2025) menyatakan",
       "ganti": "Lebih lanjut, Atzori et al. (2010) menyatakan",
-      "catatan": "Spec §9 (tahun Atzori 2010)."
-    },
-    {
-      "id": "2.3-03",
-      "lokasi": "2.3, Shinde & Karode (hlm. 19)",
-      "cari": "Data historis ini dapat dimanfaatkan untuk analisis lebih lanjut, seperti mengetahui pola perubahan kualitas udara atau sebagai dasar pengembangan sistem prediksi.",
-      "ganti": "Data historis ini dapat dimanfaatkan untuk menelusuri kembali kondisi kualitas udara pada waktu tertentu.",
-      "catatan": "Spec §1: menghindarkan kesan bahwa penelitian ini menganalisis pola atau memprediksi."
-    },
-    {
-      "id": "2.4-01",
-      "lokasi": "2.4, paragraf 3 (hlm. 21)",
-      "cari": "sehingga dapat digunakan untuk analisis tren kualitas udara dalam periode tertentu.",
-      "ganti": "sehingga dapat ditampilkan kembali sebagai riwayat kualitas udara dalam periode tertentu.",
-      "catatan": "Spec §1: grafik/riwayat hanya ditampilkan, tidak dianalisis."
+      "catatan": "Penyelarasan naskah dengan aplikasi (tahun Atzori 2010). Perbaiki juga format manual sitasi Mendeley ini."
     },
     {
       "id": "2.7-01",
-      "lokasi": "2.7, paragraf 1 (hlm. 26)",
+      "lokasi": "2.7 Klasifikasi Indikator Kualitas Udara, paragraf 293",
       "cari": "menampilkan data secara real-time (Solihat et al., 2025).",
-      "ganti": "menampilkan data secara *real-time* (Solihat et al., 2026).",
-      "catatan": "Spec §9 (tahun Solihat)."
+      "ganti": "menampilkan data secara real-time (Solihat et al., 2026).",
+      "catatan": "Penyelarasan naskah dengan aplikasi: tahun Solihat 2026, sesuai daftar pustaka."
     },
     {
       "id": "2.7-02",
-      "lokasi": "2.7, paragraf 2 (hlm. 26)",
-      "cari": "melainkan digunakan sebagai indikator kualitas udara.",
-      "ganti": "melainkan digunakan sebagai indikator kualitas udara. Pada Solihat et al. (2026, hlm. 1596), nilai ppm dihitung dengan rumus ppm = (ADC − *baseline*) × (5,0/4096) × k, dengan k bernilai 100 untuk CO₂, 80 untuk NH₃, 50 untuk CO, dan 30 untuk H₂. *Baseline* adalah rata-rata 50 pembacaan ADC saat perangkat dinyalakan, dan selisih negatif dibulatkan menjadi nol. Akibatnya, nilai yang dihasilkan mendekati nol pada udara awal dan naik ketika kadar gas di sekitar sensor bertambah. Nilai ini merupakan indikator relatif terhadap kondisi udara saat perangkat dinyalakan, bukan konsentrasi absolut hasil alat ukur terkalibrasi.",
-      "catatan": "Spec §2 dan §9: ppm sebagai indikator relatif berbasis baseline; rumus sama dengan hitungPpm() di siasap_monitor.ino."
+      "lokasi": "2.7 Klasifikasi Indikator Kualitas Udara, paragraf 294",
+      "cari": "tidak mengukur jenis polutan secara spesifik menggunakan alat terkalibrasi laboratorium.",
+      "ganti": "tidak mengukur jenis polutan secara spesifik menggunakan alat terkalibrasi laboratorium. Pada Solihat et al. (2026, hlm. 1596), nilai ppm dihitung dengan rumus ppm = (ADC − *baseline*) × (5,0/4096) × k, dengan k bernilai 100 untuk CO₂, 80 untuk NH₃, 50 untuk CO, dan 30 untuk H₂. *Baseline* adalah rata-rata 50 pembacaan ADC saat perangkat dinyalakan. Pada perangkat penelitian ini, selisih negatif dibulatkan menjadi nol. Akibatnya, nilai yang dihasilkan mendekati nol pada udara awal dan naik ketika kadar gas di sekitar sensor bertambah. Nilai ini merupakan indikator relatif terhadap kondisi udara saat perangkat dinyalakan, bukan konsentrasi absolut hasil alat ukur terkalibrasi.",
+      "catatan": "Aturan klasifikasi ambang dan penyelarasan naskah dengan aplikasi: nilai ppm adalah indikator relatif berbasis baseline (rumus sama dengan fungsi hitungPpm() pada firmware). Bila perlu, jadikan tambahan ini paragraf tersendiri."
     },
     {
       "id": "2.7-03",
-      "lokasi": "2.7, paragraf 3 (hlm. 26)",
+      "lokasi": "2.7 Klasifikasi Indikator Kualitas Udara, paragraf 295",
       "cari": "berdasarkan ambang batas konsentrasi gas yang terdeteksi (Solihat et al., 2025).",
       "ganti": "berdasarkan ambang batas konsentrasi gas yang terdeteksi (Solihat et al., 2026).",
-      "catatan": "Spec §9."
+      "catatan": "Penyelarasan naskah dengan aplikasi (tahun Solihat 2026)."
     },
     {
       "id": "2.8-01",
-      "lokasi": "2.8, paragraf 3 (hlm. 27)",
+      "lokasi": "2.8 Klasifikasi Berbasis Ambang Batas, paragraf 300",
       "cari": "Berdasarkan penelitian yang dilakukan oleh Solihat et al. (2025),",
       "ganti": "Berdasarkan penelitian yang dilakukan oleh Solihat et al. (2026),",
-      "catatan": "Spec §9."
+      "catatan": "Penyelarasan naskah dengan aplikasi (tahun Solihat 2026)."
     },
     {
       "id": "2.8-02",
-      "lokasi": "Tabel 2.2 (hlm. 27)",
-      "cari": "Kategori kualitas udara ditentukan berdasarkan nilai parameter pencemar yang paling tinggi (terburuk).",
-      "catatan": "Tambahkan baris keterangan tepat di bawah Tabel 2.2 (sebelum paragraf ini): \"Sumber: Solihat et al. (2026, hlm. 1597).\" Nilai ambang tidak berubah. Alasan: Spec §2, satu sumber ambang untuk semua gas; nilai tabel sama dengan config/air_quality.php."
+      "lokasi": "2.8, judul Tabel 2.2 (paragraf 301)",
+      "cari": "Kategori Skor Indikator Kualitas Udara Ruangan",
+      "ganti": "Ambang Batas Kategori Indikator Kualitas Udara Ruangan",
+      "catatan": "Tabel ini berisi ambang ppm, bukan skor atau indeks (ruang lingkup penelitian: sub-indeks dan Indeks KU tidak dipakai). Perbarui Daftar Tabel setelahnya."
     },
     {
       "id": "2.8-03",
-      "lokasi": "2.8, sesudah rumus KU (hlm. 28)",
-      "cari": "Logika ini dapat dituliskan sebagai berikut:",
-      "catatan": "Sesudah keterangan rumus KU (setelah baris \"KH2 = kategori H₂.\"), tambahkan paragraf: \"Setiap batas pada Tabel 2.2 bersifat eksklusif. Nilai tepat pada batas masuk ke kategori berikutnya, misalnya CO₂ = 50 ppm termasuk Sedang dan CO₂ = 150 ppm termasuk Berbahaya. Urutan kategori adalah Baik < Sedang < Tidak Sehat < Berbahaya. Gas yang kategorinya sama dengan KU disebut penyebab utama (dapat lebih dari satu) dan tidak ditampilkan bila KU = Baik. Logika ini setara dengan fungsi evaluasi pada Solihat et al. (2026): udara Baik bila semua gas di bawah ambang Baik, Sedang bila semua gas di bawah ambang Sedang, dan seterusnya.\" Alasan: Spec §2 (aturan batas, penyebab utama, kesetaraan dengan paper)."
+      "lokasi": "2.8, di bawah Tabel 2.2 (paragraf 327)",
+      "cari": "Kategori kualitas udara ditentukan berdasarkan nilai parameter pencemar yang paling tinggi (terburuk).",
+      "catatan": "Tambahkan baris keterangan tepat di bawah Tabel 2.2 (sebelum paragraf ini, gaya Source seperti di bawah Gambar 2.1): \"Sumber: Solihat et al. (2026, hlm. 1597).\" Nilai ambang tidak berubah. Alasan: aturan klasifikasi ambang, satu sumber ambang untuk keempat gas; nilainya sama dengan konfigurasi aplikasi."
     },
     {
       "id": "2.8-04",
-      "lokasi": "2.8, paragraf \"Pada penelitian ini, threshold-based classification digunakan…\" (hlm. 28)",
+      "lokasi": "2.8, sesudah rumus KU (paragraf 327–334)",
+      "cari": "Logika ini dapat dituliskan sebagai berikut:",
+      "catatan": "Sesudah keterangan rumus KU (setelah baris \"KH2 = kategori H₂.\"), tambahkan paragraf: \"Setiap batas pada Tabel 2.2 bersifat eksklusif. Nilai tepat pada batas masuk ke kategori berikutnya, misalnya CO₂ = 50 ppm termasuk Sedang dan CO₂ = 150 ppm termasuk Berbahaya. Urutan kategori adalah Baik < Sedang < Tidak Sehat < Berbahaya. Gas yang kategorinya sama dengan KU disebut penyebab utama (dapat lebih dari satu) dan tidak ditampilkan bila KU = Baik. Logika ini setara dengan fungsi evaluasi pada Solihat et al. (2026): udara Baik bila semua gas di bawah ambang Baik, Sedang bila semua gas di bawah ambang Sedang, dan seterusnya.\" Alasan: aturan klasifikasi ambang."
+    },
+    {
+      "id": "2.8-05",
+      "lokasi": "2.8, paragraf 335",
+      "cari": "mengadopsi konsep penyajian kualitas udara dalam bentuk indeks, tetapi",
+      "ganti": "mengadopsi konsep penyajian kualitas udara dalam bentuk kategori bertingkat, tetapi",
+      "catatan": "Ruang lingkup penelitian: sistem tidak menghitung indeks (sub-indeks dan Indeks KU tidak dipakai); yang disajikan adalah empat kategori."
+    },
+    {
+      "id": "2.8-06",
+      "lokasi": "2.8, paragraf 335",
       "cari": "merupakan hasil estimasi dari pembacaan sensor MQ dan tidak melalui proses kalibrasi menggunakan alat ukur standar laboratorium.",
-      "ganti": "merupakan hasil estimasi dari pembacaan sensor MQ dan tidak melalui proses kalibrasi menggunakan alat ukur standar laboratorium. Solihat et al. (2026) tidak mencantumkan dasar penetapan ambang pada Tabel 2.2. Ambang tersebut juga hanya bermakna bila nilai ppm dihitung dengan rumus konversi yang sama, yaitu relatif terhadap *baseline* saat perangkat dinyalakan. Oleh karena itu, kategori pada penelitian ini menunjukkan perubahan kondisi udara relatif terhadap kondisi awal ruangan, bukan tingkat bahaya menurut standar kesehatan. Paper tersebut juga menampilkan Sedang dan Tidak Sehat dengan satu LED kuning, sedangkan fungsi evaluasinya menghasilkan empat kategori terpisah. Penelitian ini memakai empat kategori tersebut.",
-      "catatan": "Paragraf keterbatasan (Spec §2 dan §9). Bila perlu, jadikan tambahan ini paragraf tersendiri."
+      "ganti": "merupakan hasil estimasi dari pembacaan sensor MQ dan tidak melalui proses kalibrasi menggunakan alat ukur standar laboratorium. Solihat et al. (2026) tidak mencantumkan dasar penetapan ambang pada Tabel 2.2. Ambang tersebut juga hanya bermakna bila nilai ppm dihitung dengan rumus konversi yang sama, yaitu relatif terhadap *baseline* saat perangkat dinyalakan. Oleh karena itu, kategori pada penelitian ini menunjukkan perubahan kondisi udara relatif terhadap kondisi awal ruangan, bukan tingkat bahaya menurut standar kesehatan. Penelitian tersebut juga menampilkan kategori Sedang dan Tidak Sehat dengan satu LED kuning, sedangkan fungsi evaluasinya menghasilkan empat kategori terpisah. Penelitian ini memakai empat kategori tersebut.",
+      "catatan": "Paragraf keterbatasan dasar ambang (aturan klasifikasi ambang dan penyelarasan naskah dengan aplikasi). Bila perlu, jadikan tambahan ini paragraf tersendiri."
     },
     {
       "id": "2.9-01",
-      "lokasi": "2.9, paragraf penutup (hlm. 31)",
+      "lokasi": "2.9 Metode Waterfall, paragraf 356",
       "cari": "membangun sistem prediksi kualitas udara ruangan berbasis Internet of Things (IoT)",
-      "ganti": "membangun sistem *monitoring* kualitas udara ruangan berbasis *Internet of Things* (IoT)",
-      "catatan": "Spec §9 (hapus \"prediksi\"); metode tetap Waterfall."
+      "ganti": "membangun sistem *monitoring* kualitas udara ruangan berbasis Internet of Things (IoT)",
+      "catatan": "Penyelarasan naskah dengan aplikasi: sistem hanya memantau, tidak memprediksi (judul sudah \"Sistem Monitoring\")."
     },
     {
       "id": "3.1-01",
-      "lokasi": "3.1, paragraf 3 (hlm. 32)",
-      "cari": "yang dikirimkan perangkat IoT setiap 30 detik. Nilai ppm tersebut merupakan estimasi dari perangkat…tanpa melakukan konversi.",
-      "ganti": "yang dikirimkan perangkat IoT secara berkala dengan interval 5–10 detik (perangkat uji dikonfigurasi setiap 5 detik). Nilai ppm tersebut dihitung oleh perangkat dengan rumus konversi Solihat et al. (2026) relatif terhadap *baseline* saat perangkat dinyalakan dan tidak dikalibrasi dengan alat ukur standar laboratorium, sehingga digunakan sebagai indikator relatif kualitas udara ruangan. Sistem menerima nilai ppm apa adanya tanpa melakukan konversi.",
-      "catatan": "Spec §9: interval 30 → 5–10 detik (config/air_quality.php, INTERVAL_KIRIM = 5000 pada firmware); ppm relatif."
+      "lokasi": "3.1 Metode Penelitian, paragraf 363",
+      "cari": "yang dikirimkan perangkat IoT setiap 30 detik. Nilai ppm tersebut merupakan estimasi dari perangkat dan tidak dikalibrasi",
+      "ganti": "yang dikirimkan perangkat IoT secara berkala dengan interval 5–10 detik (perangkat uji dikonfigurasi setiap 5 detik). Nilai ppm tersebut merupakan estimasi dari perangkat yang dihitung relatif terhadap *baseline* saat perangkat dinyalakan (lihat subbab 2.7) dan tidak dikalibrasi",
+      "catatan": "Penyelarasan naskah dengan aplikasi: interval kirim 5–10 detik, perangkat uji 5 detik (sama dengan Batasan Masalah butir 7); ppm sebagai indikator relatif berbasis baseline."
     },
     {
       "id": "3.1-02",
-      "lokasi": "3.1, paragraf 4 (hlm. 32)",
+      "lokasi": "3.1 Metode Penelitian, paragraf 365",
       "cari": "sedangkan data yang tidak valid ditolak dan dicatat sebagai kesalahan.",
       "ganti": "sedangkan data yang tidak valid ditolak dengan respons HTTP 422 dan dicatat pada log penolakan data.",
-      "catatan": "TelemetryApiController::rejectPayload(); Spec §4."
+      "catatan": "Aturan penerimaan data: data ditolak dijawab HTTP 422 dan dicatat pada tabel penolakan."
     },
     {
       "id": "3.1-03",
-      "lokasi": "3.1, paragraf 5 (hlm. 33)",
+      "lokasi": "3.1 Metode Penelitian, paragraf 366",
       "cari": "Tahapan yang dilakukan meliputi analisis kebutuhan, perancangan sistem, implementasi, dan pengujian.",
       "ganti": "Tahapan yang dilakukan meliputi analisis kebutuhan, perancangan sistem, implementasi, dan pengujian. Evaluasi sistem dilakukan dengan dua cara. Pertama, *black-box testing* menguji kesesuaian fungsi terhadap kebutuhan (Tabel 3.5–3.10). Kedua, evaluasi pengalaman pengguna memakai *User Experience Questionnaire* (UEQ) 26 butir versi Bahasa Indonesia (Laugwitz et al., 2008; Santoso et al., 2016), yang hasilnya dibandingkan dengan *benchmark* UEQ (Schrepp et al., 2017). Pengujian dilakukan pada satu ruangan uji.",
-      "catatan": "Spec §9 (metode evaluasi UEQ) dan §1 (satu ruangan). Tambahkan entri Laugwitz et al. (2008), Santoso et al. (2016), dan Schrepp et al. (2017) ke daftar pustaka. Bila perlu, jadikan tambahan ini paragraf tersendiri."
+      "catatan": "Ruang lingkup penelitian dan penyelarasan naskah dengan aplikasi (metode evaluasi UEQ; satu ruangan). Tambahkan entri Laugwitz et al. (2008), Santoso et al. (2016), dan Schrepp et al. (2017) ke daftar pustaka. Bila perlu, jadikan tambahan ini paragraf tersendiri."
     },
     {
       "id": "3.2-01",
-      "lokasi": "Tabel 3.1, baris \"Output sistem\" (hlm. 35)",
+      "lokasi": "3.2, Tabel 3.1 baris Output sistem (paragraf 387)",
       "cari": "Dashboard real-time, grafik per gas, status/kategori kualitas udara, rekomendasi tindakan preventif",
-      "ganti": "Tujuh halaman web: Beranda, Detail Ruangan (grafik sensor), Riwayat (dengan ekspor CSV), Rekomendasi Tindakan, Status Perangkat, Panduan, dan Kuesioner UEQ",
-      "catatan": "Spec §6."
+      "ganti": "Tujuh halaman web: Beranda, Detail Ruangan (grafik per gas), Riwayat (dengan ekspor CSV), Rekomendasi Tindakan, Status Perangkat, Panduan, dan Kuesioner UEQ",
+      "catatan": "Halaman aplikasi: aplikasi terdiri atas tujuh halaman publik."
     },
     {
       "id": "3.2-02",
-      "lokasi": "Tabel 3.1, baris baru",
+      "lokasi": "3.2, Tabel 3.1 baris baru (dekat paragraf 381)",
       "cari": "Perangkat IoT dengan sensor MQ-135 dan MQ-2",
-      "catatan": "Tambahkan baris baru pada Tabel 3.1: Komponen \"Lokasi uji\", Keterangan \"Satu ruangan dengan satu perangkat IoT (device_id AIR-001)\". Alasan: Spec §1 (satu ruangan) dan §5 (seeder satu ruangan, satu perangkat)."
+      "catatan": "Tambahkan baris baru pada Tabel 3.1: Komponen \"Lokasi uji\", Keterangan \"Satu ruangan dengan satu perangkat IoT (device_id AIR-001)\". Alasan: ruang lingkup penelitian (satu ruangan) dan struktur data aplikasi (satu ruangan, satu perangkat)."
     },
     {
       "id": "3.2-03",
-      "lokasi": "Tabel 3.1, baris \"Batasan objek\"",
+      "lokasi": "3.2, Tabel 3.1 baris Batasan objek (paragraf 389)",
       "cari": "Tidak membahas perancangan/pengoperasian perangkat keras IoT, tidak melakukan kalibrasi sensor laboratorium, dan tidak mengukur polutan spesifik secara terkalibrasi",
       "ganti": "Tidak membahas perancangan/pengoperasian perangkat keras IoT, tidak melakukan kalibrasi sensor laboratorium, tidak mengukur polutan spesifik secara terkalibrasi, dan tidak melakukan analisis tren maupun prediksi; kalibrasi dan rumus konversi menjadi tanggung jawab penelitian IoT",
-      "catatan": "Spec §1."
+      "catatan": "Ruang lingkup penelitian (fungsi sistem dan validitas sensor), sama dengan Batasan Masalah butir 4 dan 7."
     },
     {
       "id": "3.3-01",
-      "lokasi": "3.3, paragraf 2 (hlm. 35)",
-      "cari": "Nilai ppm yang diterima sistem merupakan estimasi dari perangkat dan tidak melalui kalibrasi",
-      "ganti": "Nilai ppm yang diterima sistem merupakan indikator relatif yang dihitung perangkat terhadap *baseline* saat perangkat dinyalakan (Solihat et al., 2026) dan tidak melalui kalibrasi",
-      "catatan": "Spec §9 (ppm relatif)."
+      "lokasi": "3.3, Tabel 3.2 baris Timestamp, kolom Sumber Data (paragraf 413)",
+      "cari": "Sistem IoT / server",
+      "ganti": "Perangkat IoT",
+      "catatan": "Aplikasi menyimpan waktu pembacaan yang dikirim perangkat (atribut timestamp), bukan waktu server."
     },
     {
       "id": "3.3-02",
-      "lokasi": "Tabel 3.2, baris \"Timestamp\", kolom Sumber Data (hlm. 36)",
-      "cari": "Sistem IoT / server",
-      "ganti": "Perangkat IoT",
-      "catatan": "Aplikasi menyimpan waktu dari perangkat (recorded_at); TelemetryApiController."
+      "lokasi": "3.3, Tabel 3.2 baris Timestamp, kolom Keterangan (paragraf 414)",
+      "cari": "Waktu saat data sensor dikirimkan atau diterima oleh server",
+      "ganti": "Waktu pembacaan oleh perangkat dengan format YYYY-MM-DD HH:MM:SS",
+      "catatan": "Aturan penerimaan data: timestamp berformat Y-m-d H:i:s."
     },
     {
       "id": "3.3-03",
-      "lokasi": "Tabel 3.2, baris \"Timestamp\", kolom Keterangan (hlm. 36)",
-      "cari": "Waktu saat data sensor dikirimkan atau diterima oleh server",
-      "ganti": "Waktu pembacaan oleh perangkat dengan format YYYY-MM-DD HH:MM:SS",
-      "catatan": "Format Y-m-d H:i:s; TelemetryApiController."
+      "lokasi": "3.3, Tabel 3.2 baris Device ID (paragraf 417)",
+      "cari": "Identitas perangkat yang mengirimkan data sensor",
+      "ganti": "Identitas perangkat yang mengirimkan data sensor; harus sudah terdaftar di sistem",
+      "catatan": "Aturan penerimaan data: device_id harus terdaftar."
     },
     {
       "id": "3.3-04",
-      "lokasi": "Tabel 3.2, baris \"Device ID\"",
-      "cari": "Identitas perangkat yang mengirimkan data sensor",
-      "ganti": "Identitas perangkat yang mengirimkan data sensor; harus sudah terdaftar di sistem",
-      "catatan": "Validasi exists:nodes,code; Spec §4."
-    },
-    {
-      "id": "3.3-05",
-      "lokasi": "Tabel 3.2, baris baru",
+      "lokasi": "3.3, Tabel 3.2 baris baru (dekat paragraf 420)",
       "cari": "sebagai log sistem (audit trail)",
-      "catatan": "Tambahkan baris baru pada Tabel 3.2: Jenis Data \"Jawaban kuesioner UEQ\", Sumber Data \"Responden (pengguna aplikasi)\", Keterangan \"26 butir skala 1–7, diisi melalui halaman Kuesioner\". Alasan: Spec §7."
+      "catatan": "Tambahkan baris baru pada Tabel 3.2: Jenis Data \"Jawaban kuesioner UEQ\", Sumber Data \"Responden (pengguna aplikasi)\", Keterangan \"26 butir skala 1–7, diisi melalui halaman Kuesioner\". Alasan: evaluasi UEQ."
     },
     {
       "id": "3.4-01",
-      "lokasi": "3.4, butir 1) Observasi (hlm. 37)",
+      "lokasi": "3.4, butir 1) Observasi (paragraf 426)",
       "cari": "Observasi ini bertujuan untuk mengetahui format data, interval pengiriman data, serta alur penyimpanan data",
       "ganti": "Observasi ini bertujuan untuk mengetahui format data, interval pengiriman data yang dirancang 5–10 detik, serta alur penyimpanan data",
-      "catatan": "Spec §9 (interval)."
+      "catatan": "Penyelarasan naskah dengan aplikasi (interval kirim 5–10 detik)."
     },
     {
       "id": "3.4-02",
-      "lokasi": "3.4, butir baru 5) (hlm. 38)",
+      "lokasi": "3.4, butir baru 5) sesudah paragraf 432",
       "cari": "menerima, memvalidasi, menyimpan, mengklasifikasikan, dan menampilkan data sesuai dengan kebutuhan penelitian.",
-      "catatan": "Sesudah butir 4) Dokumentasi Data Pengujian, tambahkan butir baru \"5). Kuesioner UEQ\" dengan isi: \"Kuesioner User Experience Questionnaire (UEQ) 26 butir versi Bahasa Indonesia diberikan kepada responden setelah mereka menggunakan aplikasi. Setiap butir berupa pasangan kata berlawanan dengan skala 7 titik. Kuesioner diisi melalui halaman Kuesioner pada aplikasi, dan nama responden bersifat opsional. Jumlah responden: (cek).\" Lengkapi jumlah responden sebelum dimasukkan. Alasan: Spec §7 dan §9."
+      "catatan": "Sesudah butir 4) Dokumentasi Data Pengujian, tambahkan butir baru \"5). Kuesioner UEQ\" dengan isi: \"Kuesioner User Experience Questionnaire (UEQ) 26 butir versi Bahasa Indonesia diberikan kepada responden setelah mereka menggunakan aplikasi. Setiap butir berupa pasangan kata berlawanan dengan skala 7 titik. Kuesioner diisi melalui halaman Kuesioner pada aplikasi, dan nama responden bersifat opsional. Jumlah responden: (cek).\" Lengkapi jumlah responden sebelum dimasukkan. Alasan: evaluasi UEQ dan penyelarasan naskah dengan aplikasi."
     },
     {
       "id": "3.5-01",
-      "lokasi": "3.5, tahap 3) Implementation (hlm. 39)",
+      "lokasi": "3.5, tahap 3) Implementation (paragraf 442)",
       "cari": "serta menampilkan informasi monitoring dan prediksi kualitas udara melalui dashboard web.",
-      "ganti": "serta menampilkan informasi *monitoring*, kategori kualitas udara, dan rekomendasi tindakan melalui aplikasi web.",
-      "catatan": "Spec §9 (hapus \"prediksi\")."
+      "ganti": "serta menampilkan informasi monitoring dan kategori kualitas udara beserta rekomendasi tindakan melalui dashboard web.",
+      "catatan": "Penyelarasan naskah dengan aplikasi: hapus \"prediksi\"."
     },
     {
       "id": "3.5-02",
-      "lokasi": "3.5, tahap 4) Testing (hlm. 39)",
+      "lokasi": "3.5, tahap 4) Testing (paragraf 444)",
       "cari": "Hasil dari tahap pengujian digunakan untuk mengetahui apakah sistem telah berjalan dengan baik dan bebas dari kesalahan fungsional.",
-      "ganti": "Pengujian terdiri atas *black-box testing* terhadap setiap fungsi dan halaman (Tabel 3.5–3.10) serta evaluasi pengalaman pengguna dengan UEQ 26 butir. *Black-box testing* menunjukkan apakah sistem bebas dari kesalahan fungsional, sedangkan UEQ menunjukkan penilaian pengguna terhadap aplikasi.",
-      "catatan": "Spec §9 (tahap Testing)."
+      "ganti": "Pengujian tersebut dilakukan dengan metode *black-box testing* (Tabel 3.5–3.10). Hasil dari tahap pengujian digunakan untuk mengetahui apakah sistem telah berjalan dengan baik dan bebas dari kesalahan fungsional. Selain itu, pengalaman pengguna dievaluasi dengan *User Experience Questionnaire* (UEQ) 26 butir untuk mengetahui penilaian pengguna terhadap aplikasi.",
+      "catatan": "Penyelarasan naskah dengan aplikasi: tahap Testing terdiri atas black-box testing dan evaluasi pengguna dengan UEQ."
     },
     {
       "id": "3.6-01",
-      "lokasi": "3.6, paragraf 2 (hlm. 40)",
-      "cari": "IoT Layer, Analysis Layer, dan Presentation Layer.",
-      "ganti": "*IoT Layer*, *Processing Layer* (lapisan pengolahan), dan *Presentation Layer*.",
-      "catatan": "Spec §1: lapisan ini hanya mengklasifikasikan dan memetakan rekomendasi, tidak menganalisis tren."
+      "lokasi": "3.6 Arsitektur Sistem, paragraf 450 dan judul 3.6.2 (paragraf 454)",
+      "cari": "Analysis Layer",
+      "ganti": "Processing Layer",
+      "catatan": "Ruang lingkup penelitian: lapisan ini hanya mengklasifikasikan data dan memetakan rekomendasi, tidak menganalisis tren. Perbarui juga gambar arsitektur bila memuat nama lapisan ini.",
+      "semua": true
     },
     {
       "id": "3.6-02",
-      "lokasi": "3.6, paragraf 2 (hlm. 40)",
+      "lokasi": "3.6 Arsitektur Sistem, paragraf 450",
       "cari": "memudahkan pengembangan, pemeliharaan, dan pengujian..",
       "ganti": "memudahkan pengembangan, pemeliharaan, dan pengujian.",
-      "catatan": "Hapus titik ganda."
+      "catatan": "Titik ganda."
     },
     {
       "id": "3.6-03",
-      "lokasi": "3.6.1 IoT Layer (hlm. 40)",
+      "lokasi": "3.6.1 IoT Layer, paragraf 453",
       "cari": "Data dikirim secara berkala setiap 30 detik melalui jaringan internet menggunakan REST API (HTTP).",
-      "ganti": "Data dikirim secara berkala setiap 5–10 detik (perangkat uji: 5 detik) melalui jaringan internet ke *endpoint* POST /api/telemetry (REST API, HTTP). Nilai ppm dihitung perangkat relatif terhadap *baseline* saat dinyalakan (Solihat et al., 2026).",
-      "catatan": "Spec §9 (interval) dan §4 (endpoint)."
+      "ganti": "Data dikirim secara berkala setiap 5–10 detik (perangkat uji: 5 detik) melalui jaringan internet menggunakan REST API (HTTP) ke *endpoint* POST /api/telemetry.",
+      "catatan": "Penyelarasan naskah dengan aplikasi (interval) dan aturan penerimaan data (endpoint)."
     },
     {
       "id": "3.6-04",
-      "lokasi": "Judul 3.6.2 (hlm. 40)",
-      "cari": "3.6.2. Analysis Layer",
-      "ganti": "3.6.2. *Processing Layer*",
-      "catatan": "Spec §1. Sesuaikan juga frasa \"Lapisan analisis\" pada kalimat pertama 3.6.2 menjadi \"Lapisan pengolahan\"."
+      "lokasi": "3.6.2 Processing Layer, paragraf 455",
+      "cari": "Lapisan analisis merupakan inti",
+      "ganti": "Lapisan pengolahan merupakan inti",
+      "catatan": "Disamakan dengan nama lapisan Processing Layer (ruang lingkup penelitian)."
     },
     {
       "id": "3.6-05",
-      "lokasi": "3.6.3 Presentation Layer (hlm. 41)",
+      "lokasi": "3.6.3 Presentation Layer, paragraf 464",
       "cari": "grafik dan tabel data historis per gas.",
-      "catatan": "Tambahkan butir sesudah butir ini: \"gas penyebab utama;\", \"status koneksi perangkat dan data yang ditolak;\", \"panduan membaca kategori beserta tabel ambang;\", \"kuesioner UEQ.\" Sesuaikan tanda baca butir terakhir. Alasan: Spec §6 (7 halaman)."
+      "catatan": "Tambahkan butir sesudah butir ini: \"gas penyebab utama;\", \"status koneksi perangkat dan data yang ditolak;\", \"panduan membaca kategori beserta tabel ambang;\", dan \"kuesioner UEQ.\" Sesuaikan tanda baca butir terakhir. Alasan: halaman aplikasi (tujuh halaman)."
     },
     {
       "id": "3.6-06",
-      "lokasi": "3.6.4 Alur Kerja Sistem, langkah 1 (hlm. 41)",
+      "lokasi": "3.6.4 Alur Kerja Sistem, langkah 1 (paragraf 467)",
       "cari": "Perangkat IoT mengirimkan nilai ppm CO₂, NH₃, CO, dan H₂ ke server setiap 30 detik.",
       "ganti": "Perangkat IoT mengirimkan nilai ppm CO₂, NH₃, CO, dan H₂ beserta device_id dan timestamp ke server setiap 5–10 detik.",
-      "catatan": "Spec §9 (interval)."
+      "catatan": "Penyelarasan naskah dengan aplikasi (interval) dan aturan penerimaan data (format data)."
     },
     {
       "id": "3.6-07",
-      "lokasi": "3.6.4 Alur Kerja Sistem, langkah 2 (hlm. 41)",
+      "lokasi": "3.6.4 Alur Kerja Sistem, langkah 2 (paragraf 468)",
       "cari": "Sistem memvalidasi data. Data yang tidak valid ditolak dan dicatat sebagai error.",
-      "ganti": "Sistem memvalidasi data. Data yang tidak valid ditolak (HTTP 422) dan dicatat pada log penolakan data.",
-      "catatan": "Spec §4."
+      "ganti": "Sistem memvalidasi data. Data yang tidak valid ditolak (HTTP 422) dan dicatat pada log penolakan data sebagai error.",
+      "catatan": "Aturan penerimaan data."
+    },
+    {
+      "id": "3.6-08",
+      "lokasi": "3.6.4 Alur Kerja Sistem, langkah 4 (paragraf 470)",
+      "cari": "Sistem mengklasifikasikan setiap gas dan menentukan kategori keseluruhan.",
+      "ganti": "Sistem mengklasifikasikan setiap gas, menentukan kategori keseluruhan, dan menentukan gas penyebab utama.",
+      "catatan": "Aturan klasifikasi ambang: penyebab utama ditentukan dan disimpan bersama kategori."
     },
     {
       "id": "3.7-01",
-      "lokasi": "3.7.1, paragraf 2 (hlm. 42)",
+      "lokasi": "3.7.1 Flowchart Sistem, paragraf 481",
       "cari": "Apabila data tidak valid, sistem mencatat kesalahan pada error handler, menolak data tersebut, dan menunggu pengiriman data berikutnya.",
-      "ganti": "Apabila data tidak valid, sistem menolak data dengan respons HTTP 422, mencatatnya pada log penolakan data (ditampilkan di halaman Status Perangkat), dan menunggu pengiriman berikutnya.",
-      "catatan": "Spec §4 (pencatatan penolakan) dan §6 (halaman Perangkat menampilkan 10 penolakan terakhir)."
+      "ganti": "Apabila data tidak valid, sistem menolak data tersebut dengan respons HTTP 422, mencatatnya pada log penolakan data (ditampilkan di halaman Status Perangkat), dan menunggu pengiriman data berikutnya.",
+      "catatan": "Aturan penerimaan data (pencatatan penolakan) dan halaman aplikasi (halaman Status Perangkat menampilkan sepuluh penolakan terakhir)."
     },
     {
       "id": "3.7-02",
-      "lokasi": "Gambar 3.1 (hlm. 43)",
-      "cari": "Flowchart Sistem Monitoring dan Prediksi Kualitas Udara",
-      "ganti": "*Flowchart* Sistem *Monitoring* Kualitas Udara",
-      "catatan": "Gambar ulang Gambar 3.1 dengan alur: terima data → validasi → (tidak valid: tolak 422 dan catat penolakan) → simpan → klasifikasi per gas (Tabel 2.2) → KU = kategori terburuk → penyebab utama → rekomendasi (Tabel 3.3) → simpan hasil → tampil di halaman. Hapus blok prediksi atau analisis tren bila ada. Alasan: Spec §9.",
-      "semua": true
+      "lokasi": "3.7.1 Flowchart Sistem, paragraf 482",
+      "cari": "Kategori kualitas udara secara keseluruhan ditentukan dari kategori terburuk di antara keempat parameter.",
+      "ganti": "Kategori kualitas udara secara keseluruhan ditentukan dari kategori terburuk di antara keempat parameter, dan gas dengan kategori terburuk tersebut dicatat sebagai penyebab utama.",
+      "catatan": "Aturan klasifikasi ambang (penyebab utama); langkah ini juga perlu ada pada Gambar 3.1."
     },
     {
       "id": "3.7-03",
-      "lokasi": "3.7.2 Use Case, paragraf 2 (hlm. 44)",
-      "cari": "dengan dua aktor, yaitu pengguna dan perangkat IoT.…mengirimkan nilai ppm CO₂, NH₃, CO, dan H₂ ke sistem.",
-      "ganti": "dengan dua aktor, yaitu Pengguna dan Perangkat IoT. Tidak ada aktor administrator karena seluruh halaman dapat diakses tanpa login. Pengguna dapat melihat beranda *real-time*, melihat grafik sensor per ruangan, melihat dan mengekspor riwayat data, melihat rekomendasi tindakan preventif, melihat status perangkat, membaca panduan, dan mengisi kuesioner UEQ. Perangkat IoT mengirimkan data ppm CO₂, NH₃, CO, dan H₂.",
-      "catatan": "Spec §9 (use case 2 aktor) dan §6 (7 halaman)."
+      "lokasi": "3.7.1, judul Gambar 3.1 (paragraf 484)",
+      "cari": "Flowchart Sistem Monitoring dan Prediksi Kualitas Udara",
+      "ganti": "Flowchart Sistem Monitoring Kualitas Udara",
+      "catatan": "Gambar ulang Gambar 3.1 dengan alur: terima data → validasi → (tidak valid: tolak dengan HTTP 422 dan catat penolakan) → simpan → klasifikasi per gas (Tabel 2.2) → KU = kategori terburuk → penyebab utama → rekomendasi (Tabel 3.3) → simpan hasil → tampil di halaman. Hapus blok prediksi atau analisis tren bila ada. Alasan: penyelarasan naskah dengan aplikasi."
     },
     {
       "id": "3.7-04",
-      "lokasi": "Gambar 3.2 (hlm. 45)",
+      "lokasi": "3.7.2 Use Case Diagram, paragraf 490",
+      "cari": "Pengguna merupakan aktor utama yang berinteraksi langsung dengan aplikasi web, dengan tiga fungsi yang dapat diakses, yaitu melihat dashboard real-time, melihat rekomendasi tindakan preventif, dan melihat grafik serta data historis.",
+      "ganti": "Pengguna merupakan aktor utama yang berinteraksi langsung dengan aplikasi web, dengan tujuh fungsi yang dapat diakses, yaitu melihat dashboard real-time, melihat grafik sensor, melihat dan mengekspor riwayat data, melihat rekomendasi tindakan preventif, melihat status perangkat, membaca panduan, dan mengisi kuesioner UEQ. Tidak ada aktor administrator karena seluruh halaman dapat diakses tanpa login.",
+      "catatan": "Penyelarasan naskah dengan aplikasi (use case dua aktor) dan halaman aplikasi (tujuh halaman)."
+    },
+    {
+      "id": "3.7-05",
+      "lokasi": "3.7.2 Use Case Diagram, paragraf 491–492 dan Gambar 3.2",
       "cari": "Dengan use case diagram ini, hubungan antara aktor dan fungsi utama sistem dapat digambarkan lebih jelas.",
-      "catatan": "Gambar ulang Gambar 3.2: aktor Pengguna dan Perangkat IoT; use case Pengguna ditambah Melihat Grafik Sensor, Melihat dan Mengekspor Riwayat, Melihat Status Perangkat, Membaca Panduan, dan Mengisi Kuesioner UEQ. Relasi «include» untuk Menerima dan Memvalidasi Data, Menentukan Kategori, dan Menghasilkan Rekomendasi tetap dipakai. Alasan: Spec §1 dan §6."
+      "catatan": "Gambar ulang Gambar 3.2: aktor Pengguna dan Perangkat IoT; use case Pengguna menjadi Melihat Dashboard Real-Time (halaman Beranda), Melihat Grafik Sensor, Melihat dan Mengekspor Riwayat, Melihat Rekomendasi Tindakan Preventif, Melihat Status Perangkat, Membaca Panduan, dan Mengisi Kuesioner UEQ. Relasi «include» ke Menerima dan Memvalidasi Data, Menentukan Kategori, dan Menghasilkan Rekomendasi tetap dipakai. Sesuaikan juga paragraf sebelumnya: \"Melihat Grafik dan Data Historis\" dipecah menjadi Melihat Grafik Sensor serta Melihat dan Mengekspor Riwayat, lalu tambahkan satu kalimat untuk setiap use case baru. Alasan: ruang lingkup penelitian dan halaman aplikasi."
     },
     {
       "id": "3.8-01",
-      "lokasi": "3.8, pengantar baru (hlm. 45)",
-      "cari": "Halaman dashboard merupakan halaman utama pada aplikasi monitoring",
-      "catatan": "Sisipkan paragraf pengantar di antara judul 3.8 dan 3.8.1: \"Aplikasi web terdiri atas tujuh halaman publik yang diakses melalui navigasi atas tanpa login: Beranda (/), Detail Ruangan (/ruangan/{ruangan}), Riwayat (/riwayat), Rekomendasi Tindakan (/rekomendasi), Status Perangkat (/perangkat), Panduan (/panduan), dan Kuesioner UEQ (/kuesioner). Data pada halaman diperbarui otomatis mengikuti interval kirim perangkat (5 detik).\" Alasan: Spec §6 dan §9."
+      "lokasi": "3.8 Perancangan Aplikasi Web, judul subbab (paragraf 496)",
+      "cari": "Perancangan Aplikasi Web",
+      "catatan": "Sisipkan paragraf pengantar di antara judul 3.8 dan 3.8.1: \"Aplikasi web terdiri atas tujuh halaman publik yang diakses melalui navigasi atas tanpa login: Beranda (/), Detail Ruangan (/ruangan/{ruangan}), Riwayat (/riwayat), Rekomendasi Tindakan (/rekomendasi), Status Perangkat (/perangkat), Panduan (/panduan), dan Kuesioner UEQ (/kuesioner). Data pada halaman diperbarui otomatis mengikuti interval kirim perangkat (5 detik).\" Alasan: halaman aplikasi dan penyelarasan naskah dengan aplikasi."
     },
     {
       "id": "3.8-02",
-      "lokasi": "3.8.1, paragraf 2 (hlm. 45)",
-      "cari": "Bagian navigasi atas menyediakan menu Beranda, Riwayat, Panduan, dan Kuesioner,…dan waktu pembaruan data terakhir.",
-      "ganti": "Bagian navigasi atas menyediakan menu Beranda, Riwayat, Rekomendasi, Perangkat, Panduan, dan Kuesioner. Karena penelitian ini memakai satu ruangan uji, Beranda langsung menampilkan kondisi ruangan tersebut: kategori kualitas udara keseluruhan, gas penyebab utama, kartu empat gas (nilai ppm dan label kategori), kartu rekomendasi tindakan, dan waktu pembaruan data terakhir.",
-      "catatan": "Spec §1 (tanpa admin; satu ruangan) dan §6 (Beranda)."
+      "lokasi": "3.8.1, judul (paragraf 497)",
+      "cari": "Wireframe Halaman Dashboard",
+      "ganti": "Wireframe Halaman Beranda",
+      "catatan": "Halaman aplikasi: nama halaman di aplikasi adalah Beranda."
     },
     {
       "id": "3.8-03",
-      "lokasi": "3.8.1, paragraf 3 (hlm. 45)",
-      "cari": "kualitas udara, nilai indeks KU, gas yang menjadi penyebab utama",
-      "ganti": "kualitas udara, gas yang menjadi penyebab utama",
-      "catatan": "Spec §1: sub-indeks 0–500 dan Indeks KU dihapus."
+      "lokasi": "3.8.1, paragraf 499",
+      "cari": "Bagian navigasi atas menyediakan menu Beranda, Riwayat, Panduan, dan Kuesioner, serta tombol Masuk Admin untuk mengakses panel administrator. Bagian ringkasan utama menampilkan kategori kualitas udara terburuk dari seluruh ruangan, nama ruangan dengan kondisi terburuk, jumlah ruangan yang dipantau, jumlah sensor aktif, dan waktu pembaruan data terakhir.",
+      "ganti": "Bagian navigasi atas menyediakan menu Beranda, Riwayat, Rekomendasi, Perangkat, Panduan, dan Kuesioner, tanpa tombol masuk administrator. Karena penelitian ini memakai satu ruangan uji, bagian ringkasan utama langsung menampilkan kondisi ruangan tersebut, yaitu nama ruangan, status koneksi perangkat, kategori kualitas udara keseluruhan, gas penyebab utama, kartu rekomendasi tindakan, dan waktu pembaruan data terakhir.",
+      "catatan": "Ruang lingkup penelitian (tanpa admin; satu ruangan) dan halaman aplikasi (Beranda langsung menampilkan ruangan bila hanya ada satu ruangan)."
     },
     {
       "id": "3.8-04",
-      "lokasi": "3.8.1, paragraf 4 (hlm. 46)",
-      "cari": "terdapat legenda kategori kualitas udara yang terdiri atas Baik, Sedang, Tidak Sehat, dan Berbahaya beserta rentang nilai indeksnya.",
-      "ganti": "terdapat legenda empat kategori (Baik, Sedang, Tidak Sehat, Berbahaya) dengan warna masing-masing; rincian ambang ppm per gas tersedia di halaman Panduan.",
-      "catatan": "Spec §1: klasifikasi langsung memakai ambang ppm (Tabel 2.2)."
+      "lokasi": "3.8.1, paragraf 500",
+      "cari": "Bagian Kondisi per Ruangan menampilkan kartu untuk setiap ruangan yang dipantau. Setiap kartu memuat nama ruangan, status koneksi sensor, kategori kualitas udara, nilai indeks KU, gas yang menjadi penyebab utama, serta nilai ppm untuk masing-masing parameter gas, yaitu CO₂, NH₃, CO, dan H₂.",
+      "ganti": "Bagian kartu gas menampilkan satu kartu untuk masing-masing parameter gas, yaitu CO₂, NH₃, CO, dan H₂. Setiap kartu memuat nilai ppm dan label kategori gas tersebut.",
+      "catatan": "Ruang lingkup penelitian: Indeks KU tidak dipakai; halaman aplikasi: Beranda memuat kartu empat gas (ppm dan label kategori)."
     },
     {
       "id": "3.8-05",
-      "lokasi": "Gambar 3.3 (hlm. 46)",
-      "cari": "Gambar 3.3 Wireframe Dashboard",
-      "ganti": "Gambar 3.3 *Wireframe* Halaman Beranda",
-      "catatan": "Gambar ulang tanpa tombol Masuk Admin, kartu banyak ruangan, dan Indeks KU. Alasan: Spec §6.",
-      "semua": true
+      "lokasi": "3.8.1, paragraf 501",
+      "cari": "Pada bagian bawah kartu ruangan, terdapat legenda kategori kualitas udara yang terdiri atas Baik, Sedang, Tidak Sehat, dan Berbahaya beserta rentang nilai indeksnya. Legenda tersebut membantu pengguna memahami kategori kualitas udara yang ditampilkan. Dengan demikian, dashboard menyajikan ringkasan kondisi setiap ruangan, status sensor, dan informasi konsentrasi gas secara terstruktur sehingga pengguna dapat mengetahui kondisi kualitas udara ruangan dengan cepat.",
+      "ganti": "Pada bagian bawah halaman, terdapat legenda kategori kualitas udara yang terdiri atas Baik, Sedang, Tidak Sehat, dan Berbahaya dengan warna masing-masing, beserta tautan ke halaman Panduan yang memuat ambang ppm setiap gas. Legenda tersebut membantu pengguna memahami kategori kualitas udara yang ditampilkan. Dengan demikian, dashboard menyajikan ringkasan kondisi ruangan, status sensor, dan informasi konsentrasi gas secara terstruktur sehingga pengguna dapat mengetahui kondisi kualitas udara ruangan dengan cepat.",
+      "catatan": "Ruang lingkup penelitian: klasifikasi langsung memakai ambang ppm (Tabel 2.2), tanpa rentang indeks."
     },
     {
       "id": "3.8-06",
-      "lokasi": "3.8.2, paragraf 1 (hlm. 46)",
-      "cari": "nilai konsentrasi gas, tren perubahan kualitas udara, statistik pembacaan, serta riwayat data sensor.",
-      "ganti": "nilai ppm tiap gas, grafik nilai gas terhadap waktu, dan sepuluh pembacaan terakhir.",
-      "catatan": "Spec §1 (grafik hanya ditampilkan) dan §6."
+      "lokasi": "3.8.1, judul Gambar 3.3 (paragraf 503)",
+      "cari": "Wireframe Dashboard",
+      "ganti": "Wireframe Halaman Beranda",
+      "catatan": "Gambar ulang tanpa tombol Masuk Admin, kartu banyak ruangan, dan Indeks KU. Alasan: halaman aplikasi."
     },
     {
       "id": "3.8-07",
-      "lokasi": "3.8.2, paragraf 3 (hlm. 47)",
-      "cari": "Bagian ringkasan menampilkan nilai indeks kualitas udara (Indeks KU), gas yang menjadi",
-      "ganti": "Bagian ringkasan menampilkan gas yang menjadi",
-      "catatan": "Spec §1: Indeks KU dihapus."
+      "lokasi": "3.8.2, paragraf 505",
+      "cari": "nilai konsentrasi gas, tren perubahan kualitas udara, statistik pembacaan, serta riwayat data sensor.",
+      "ganti": "nilai konsentrasi gas, grafik nilai gas terhadap waktu, statistik pembacaan, serta sepuluh pembacaan terakhir.",
+      "catatan": "Ruang lingkup penelitian: grafik hanya ditampilkan, tidak dianalisis; halaman aplikasi: halaman ini memuat sepuluh pembacaan terakhir."
     },
     {
       "id": "3.8-08",
-      "lokasi": "3.8.2, paragraf 4 (hlm. 47)",
-      "cari": "nilai konsentrasi dalam satuan ppm, sub-indeks, dan kategori kualitas udara",
-      "ganti": "nilai konsentrasi dalam satuan ppm dan kategori kualitas udara",
-      "catatan": "Spec §1: sub-indeks dihapus; kartu gas memuat nama gas, nilai ppm, dan kategori."
+      "lokasi": "3.8.2, paragraf 507",
+      "cari": "Bagian ringkasan menampilkan nilai indeks kualitas udara (Indeks KU), gas yang menjadi penyebab utama",
+      "ganti": "Bagian ringkasan menampilkan kategori kualitas udara keseluruhan, gas yang menjadi penyebab utama",
+      "catatan": "Ruang lingkup penelitian: Indeks KU tidak dipakai."
     },
     {
       "id": "3.8-09",
-      "lokasi": "3.8.2, paragraf 5 (hlm. 47)",
-      "cari": "Bagian tren kualitas udara menampilkan grafik tren…selama periode yang dipilih.",
-      "ganti": "Bagian grafik sensor menyediakan pemilih gas (CO₂, NH₃, CO, atau H₂) dan pemilih rentang waktu (1 jam, 24 jam, atau 7 hari). Grafik menampilkan nilai ppm gas terpilih terhadap waktu beserta garis ambang kategori dari Tabel 2.2 agar pengguna dapat melihat posisi nilai terhadap batas kategori. Grafik hanya menampilkan data dan tidak dipakai untuk analisis tren.",
-      "catatan": "Spec §1 (tanpa Indeks KU dan analisis tren) dan §6 (Detail Ruangan)."
+      "lokasi": "3.8.2, paragraf 508",
+      "cari": "nilai konsentrasi dalam satuan ppm, sub-indeks, dan kategori kualitas udara",
+      "ganti": "nilai konsentrasi dalam satuan ppm, dan kategori kualitas udara",
+      "catatan": "Ruang lingkup penelitian: sub-indeks tidak dipakai."
     },
     {
       "id": "3.8-10",
-      "lokasi": "3.8.2, paragraf 6 (hlm. 47)",
-      "cari": "Bagian statistik menyajikan nilai rata-rata…berdasarkan data pemantauan yang tersedia.",
-      "ganti": "",
-      "catatan": "Hapus bagian statistik (Spec §1). Hapus juga paragraf kosong yang tersisa."
+      "lokasi": "3.8.2, paragraf 509",
+      "cari": "Bagian tren kualitas udara menampilkan grafik tren kualitas udara berdasarkan rentang waktu yang dapat dipilih pengguna, yaitu 1 jam, 24 jam, atau 7 hari. Grafik terdiri atas tren Indeks KU dan grafik konsentrasi gas CO₂, NH₃, CO, dan H₂. Informasi tersebut membantu pengguna mengamati perubahan kondisi kualitas udara selama periode yang dipilih.",
+      "ganti": "Bagian grafik sensor menampilkan grafik nilai ppm gas terpilih berdasarkan rentang waktu yang dapat dipilih pengguna, yaitu 1 jam, 24 jam, atau 7 hari. Pengguna dapat memilih gas CO₂, NH₃, CO, atau H₂, dan grafik dilengkapi garis ambang kategori dari Tabel 2.2. Informasi tersebut membantu pengguna mengamati perubahan kondisi kualitas udara selama periode yang dipilih tanpa analisis tren.",
+      "catatan": "Ruang lingkup penelitian (tanpa Indeks KU dan analisis tren) dan halaman aplikasi (pemilih gas, rentang waktu, garis ambang)."
     },
     {
       "id": "3.8-11",
-      "lokasi": "3.8.2, paragraf 7 (hlm. 47)",
-      "cari": "Bagian proporsi waktu per kategori menampilkan…selama periode pemantauan.",
-      "ganti": "",
-      "catatan": "Hapus bagian proporsi waktu per kategori (Spec §1). Hapus juga paragraf kosong yang tersisa."
+      "lokasi": "3.8.2, paragraf 510",
+      "cari": "tertinggi Indeks KU selama rentang waktu yang dipilih.",
+      "ganti": "tertinggi nilai ppm gas terpilih selama rentang waktu yang dipilih.",
+      "catatan": "Ruang lingkup penelitian: Indeks KU tidak dipakai. Aplikasi menampilkan rata-rata, minimum, dan maksimum ppm gas terpilih serta proporsi kategori keseluruhan pada rentang yang dipilih, sehingga bagian statistik dan proporsi (paragraf berikutnya) dipertahankan. Bila kedua bagian ini dihapus dari naskah, hapus juga dari aplikasi."
     },
     {
       "id": "3.8-12",
-      "lokasi": "3.8.2, paragraf 8 (hlm. 47–48)",
+      "lokasi": "3.8.2, paragraf 512",
       "cari": "waktu pembacaan, status atau kategori kualitas udara, Indeks KU, serta nilai ppm untuk CO₂, NH₃, CO, dan H₂.",
-      "ganti": "waktu pembacaan, kategori kualitas udara keseluruhan, serta nilai ppm CO₂, NH₃, CO, dan H₂.",
-      "catatan": "Spec §1."
+      "ganti": "waktu pembacaan, kategori kualitas udara keseluruhan, serta nilai ppm untuk CO₂, NH₃, CO, dan H₂.",
+      "catatan": "Ruang lingkup penelitian: Indeks KU tidak dipakai."
     },
     {
       "id": "3.8-13",
-      "lokasi": "Gambar 3.4 (hlm. 48)",
-      "cari": "Gambar 3.4 Wireframe Sensor Charts",
-      "ganti": "Gambar 3.4 *Wireframe* Halaman Detail Ruangan (Grafik Sensor)",
-      "catatan": "Gambar ulang: pemilih gas, rentang 1 jam/24 jam/7 hari, garis ambang, 10 pembacaan terakhir; tanpa statistik, proporsi waktu, dan Indeks KU. Alasan: Spec §6.",
-      "semua": true
+      "lokasi": "3.8.2, judul Gambar 3.4 (paragraf 514)",
+      "cari": "Wireframe Sensor Charts",
+      "ganti": "Wireframe Halaman Detail Ruangan (Grafik Sensor)",
+      "catatan": "Gambar ulang: pemilih gas, rentang 1 jam/24 jam/7 hari, garis ambang, statistik ppm gas terpilih, proporsi kategori, dan sepuluh pembacaan terakhir; tanpa Indeks KU dan sub-indeks. Alasan: halaman aplikasi."
     },
     {
       "id": "3.8-14",
-      "lokasi": "3.8.3 (hlm. 48)",
-      "cari": "Halaman riwayat kualitas udara menampilkan data pembacaan…serta unduhan data dalam format CSV.",
-      "ganti": "Halaman Riwayat menampilkan data pembacaan yang tersimpan di basis data. Pengguna dapat memfilter data berdasarkan rentang tanggal dan kategori, berpindah halaman (*pagination*), dan mengunduh data dalam format CSV. Kolom CSV: waktu, ruangan, nilai ppm empat gas, kategori empat gas, kategori keseluruhan, penyebab utama, dan rekomendasi.",
-      "catatan": "Spec §6 (Riwayat) dan §1: hapus \"ringkasan periode\"."
+      "lokasi": "3.8.3, judul (paragraf 516)",
+      "cari": "Wireframe Halaman Historical Data",
+      "ganti": "Wireframe Halaman Riwayat",
+      "catatan": "Halaman aplikasi: nama halaman di aplikasi adalah Riwayat."
     },
     {
       "id": "3.8-15",
-      "lokasi": "3.8.3, paragraf 2 (hlm. 49)",
-      "cari": "dapat menelusuri riwayat pembacaan sensor, melihat nilai Indeks KU, serta mengetahui kategori",
-      "ganti": "dapat menelusuri riwayat pembacaan sensor serta mengetahui kategori",
-      "catatan": "Spec §1: Indeks KU dihapus."
+      "lokasi": "3.8.3, judul Gambar 3.5 (paragraf 519)",
+      "cari": "Gambar 3.5 Historical Data",
+      "ganti": "Gambar 3.5 Wireframe Halaman Riwayat",
+      "catatan": "Gambar ulang tanpa Indeks KU (filter ruangan, kategori, dan tanggal; ringkasan periode; tabel; pagination; ekspor CSV). Alasan: halaman aplikasi."
     },
     {
       "id": "3.8-16",
-      "lokasi": "Gambar 3.5 (hlm. 49)",
-      "cari": "Gambar 3.5 Historical Data",
-      "ganti": "Gambar 3.5 *Wireframe* Halaman Riwayat",
-      "catatan": "Gambar ulang tanpa Indeks KU (filter tanggal dan kategori, pagination, ekspor CSV). Alasan: Spec §6.",
-      "semua": true
+      "lokasi": "3.8.3, paragraf 520",
+      "cari": "dapat menelusuri riwayat pembacaan sensor, melihat nilai Indeks KU, serta mengetahui kategori",
+      "ganti": "dapat menelusuri riwayat pembacaan sensor serta mengetahui kategori",
+      "catatan": "Ruang lingkup penelitian: Indeks KU tidak dipakai."
     },
     {
       "id": "3.8-17",
-      "lokasi": "3.8.4, paragraf 1 (hlm. 49)",
-      "cari": "Halaman panduan kualitas udara berfungsi memberikan informasi…untuk melihat kondisi ruangan.",
-      "ganti": "Halaman Panduan menjelaskan cara membaca kategori kualitas udara: kategori tiap gas ditentukan dari ambang pada Tabel 2.2, kategori keseluruhan adalah kategori terburuk, dan penyebab utama adalah gas dengan kategori terburuk tersebut. Contoh perhitungan memakai data pada subbab 3.9.2. Halaman ini juga memuat tabel ambang (sumber: Solihat et al., 2026), keterangan empat gas yang dipantau beserta sensornya, pertanyaan umum, dan batasan sistem: nilai ppm adalah indikator relatif terhadap *baseline* perangkat, dasar penetapan ambang tidak dicantumkan oleh sumbernya, dan informasi pada aplikasi bukan diagnosis medis.",
-      "catatan": "Spec §1, §2, dan §6 (Panduan). Paragraf ini menggantikan seluruh uraian 3.8.4 yang memuat Indeks KU dan sub-indeks; tiga paragraf berikutnya dihapus."
+      "lokasi": "3.8.4, paragraf 523",
+      "cari": "mengenai cara membaca nilai Indeks KU, memahami kategori kualitas udara, serta",
+      "ganti": "mengenai cara membaca kategori kualitas udara serta",
+      "catatan": "Ruang lingkup penelitian: Indeks KU tidak dipakai."
     },
     {
       "id": "3.8-18",
-      "lokasi": "3.8.4, paragraf 2 (hlm. 49)",
-      "cari": "Bagian Cara Membaca Indeks KU menjelaskan…kategori kualitas udara secara keseluruhan.",
-      "ganti": "",
-      "catatan": "Dihapus karena sudah tercakup dalam paragraf pertama 3.8.4 (Spec §1: Indeks KU dan sub-indeks dihapus). Hapus juga paragraf kosong yang tersisa."
+      "lokasi": "3.8.4, paragraf 524",
+      "cari": "Bagian Cara Membaca Indeks KU menjelaskan tahapan penentuan kualitas udara, mulai dari sub-indeks setiap gas, penentuan Indeks KU berdasarkan sub-indeks tertinggi, hingga identifikasi gas yang menjadi penyebab utama. Bagian Contoh Perhitungan menampilkan nilai konsentrasi dan sub-indeks untuk setiap gas sebagai ilustrasi proses penentuan kategori kualitas udara secara keseluruhan.",
+      "ganti": "Bagian Cara Membaca Kategori menjelaskan tahapan penentuan kualitas udara, mulai dari kategori setiap gas berdasarkan ambang batas, penentuan kategori keseluruhan berdasarkan kategori terburuk, hingga identifikasi gas yang menjadi penyebab utama. Bagian Tabel Ambang Batas menampilkan ambang setiap kategori untuk keempat gas beserta sumbernya (Solihat et al., 2026) dan menjelaskan bahwa nilai tepat pada batas masuk ke kategori berikutnya.",
+      "catatan": "Ruang lingkup penelitian (tanpa sub-indeks dan Indeks KU) dan halaman aplikasi (Panduan memuat cara membaca kategori dan tabel ambang). Bagian Contoh Perhitungan tidak ada di aplikasi."
     },
     {
       "id": "3.8-19",
-      "lokasi": "3.8.4, paragraf 3 (hlm. 50)",
-      "cari": "Selanjutnya, bagian Arti Setiap Kategori menampilkan…serta ambang batas setiap kategori.",
-      "ganti": "",
-      "catatan": "Dihapus karena sudah tercakup dalam paragraf pertama 3.8.4 (\"rentang indeks\" tidak ada lagi). Hapus juga paragraf kosong yang tersisa."
+      "lokasi": "3.8.4, paragraf 525",
+      "cari": "Selanjutnya, bagian Arti Setiap Kategori menampilkan empat kategori kualitas udara, yaitu Baik, Sedang, Tidak Sehat, dan Berbahaya, beserta rentang indeks dan tindakan yang disarankan. Bagian Gas yang Dipantau memberikan informasi mengenai empat parameter gas yang digunakan, yaitu CO₂, NH₃, CO, dan H₂, termasuk sensor, sumber umum, serta ambang batas setiap kategori.",
+      "ganti": "Selanjutnya, bagian Arti Setiap Kategori menampilkan empat kategori kualitas udara, yaitu Baik, Sedang, Tidak Sehat, dan Berbahaya, beserta penjelasan singkat, tingkat rekomendasi, dan tindakan yang disarankan. Bagian Gas yang Dipantau memberikan informasi mengenai empat parameter gas yang digunakan, yaitu CO₂, NH₃, CO, dan H₂, termasuk sensor, sumber umum, serta dampaknya.",
+      "catatan": "Ruang lingkup penelitian: tidak ada rentang indeks; ambang setiap kategori ditampilkan pada Tabel Ambang Batas."
     },
     {
       "id": "3.8-20",
-      "lokasi": "3.8.4, paragraf 4 (hlm. 50)",
-      "cari": "Pada bagian Pertanyaan Umum, pengguna dapat membuka…bukan merupakan diagnosis medis.",
-      "ganti": "",
-      "catatan": "Dihapus karena sudah tercakup dalam paragraf pertama 3.8.4 (\"ambang batas mengacu pada konfigurasi sistem\" diganti sumber Solihat et al., 2026). Hapus juga paragraf kosong yang tersisa."
+      "lokasi": "3.8.4, paragraf 526",
+      "cari": "Halaman ini juga mencantumkan keterangan bahwa ambang batas mengacu pada konfigurasi sistem dan bukan merupakan diagnosis medis.",
+      "ganti": "Halaman ini juga memuat bagian Batasan yang menjelaskan bahwa nilai ppm merupakan indikator relatif terhadap *baseline* saat perangkat dinyalakan, ambang batas berasal dari satu sumber (Solihat et al., 2026) yang tidak menjelaskan dasar penetapannya, dan informasi pada aplikasi bukan merupakan diagnosis medis.",
+      "catatan": "Aturan klasifikasi ambang (sumber ambang dan keterbatasannya) dan halaman aplikasi (Panduan memuat batasan)."
     },
     {
       "id": "3.8-21",
-      "lokasi": "Gambar 3.6 (hlm. 50)",
-      "cari": "Gambar 3.6 Exposure Duration dan Health Advisory",
-      "ganti": "Gambar 3.6 *Wireframe* Halaman Panduan",
-      "catatan": "Gambar ulang tanpa Indeks KU, sub-indeks, durasi paparan, maupun health advisory. Alasan: Spec §9; judul lama merujuk fitur yang tidak ada.",
+      "lokasi": "3.8.4 dan 3.8.5, judul Gambar 3.6 (paragraf 528 dan 534)",
+      "cari": "Exposure Duration dan Health Advisory",
+      "catatan": "Kedua gambar ini berjudul sama \"Exposure Duration dan Health Advisory\" dan sama-sama bernomor 3.6, sehingga tidak dapat diganti otomatis satu per satu. Gambar di bawah 3.8.4 menjadi \"Gambar 3.6 Wireframe Halaman Panduan\"; gambar ulang tanpa Indeks KU, sub-indeks, durasi paparan, maupun health advisory. Gambar di bawah 3.8.5 menjadi \"Gambar 3.7 Wireframe Halaman Rekomendasi Tindakan\" (nomornya menjadi 3.7 setelah Update Field); gambar ulang dengan kategori dan rekomendasi saat ini, tabel empat aturan (Tabel 3.3), dasar EPA, dan disclaimer. Alasan: penyelarasan naskah dengan aplikasi.",
       "semua": true
     },
     {
       "id": "3.8-22",
-      "lokasi": "3.8.5, paragraf 2 (hlm. 51)",
+      "lokasi": "3.8.5, paragraf 532",
       "cari": "tindakan yang disarankan pada tiap tingkat kondisi udara.",
-      "ganti": "tindakan yang disarankan pada tiap tingkat kondisi udara. Halaman ini menampilkan pula dasar penyusunan rekomendasi, yaitu tiga strategi U.S. EPA (kendali sumber, peningkatan ventilasi, dan pembersihan udara) dan prinsip gradasi urgensi penyampaian AQI EPA (lihat 3.10.1).",
-      "catatan": "Spec §3 dan §6; config/recommendations.php (basis)."
+      "ganti": "tindakan yang disarankan pada tiap tingkat kondisi udara. Halaman ini menampilkan pula dasar penyusunan rekomendasi, yaitu tiga strategi U.S. EPA (kendali sumber, peningkatan ventilasi, dan pembersihan udara) serta prinsip gradasi urgensi penyampaian AQI EPA (lihat subbab 3.10.1).",
+      "catatan": "Aturan rekomendasi dan halaman aplikasi: halaman Rekomendasi memuat dasar rekomendasi."
     },
     {
       "id": "3.8-23",
-      "lokasi": "Gambar 3.7 (hlm. 51)",
-      "cari": "Gambar 3.7 Exposure Duration dan Health Advisory",
-      "ganti": "Gambar 3.7 *Wireframe* Halaman Rekomendasi Tindakan",
-      "catatan": "Gambar ulang: kategori dan rekomendasi saat ini, tabel empat aturan (Tabel 3.3), dasar EPA, dan disclaimer. Alasan: Spec §9."
+      "lokasi": "3.8.6, judul (paragraf 535)",
+      "cari": "Wireframe Halaman IoT System",
+      "ganti": "Wireframe Halaman Status Perangkat (IoT System)",
+      "catatan": "Halaman aplikasi: nama halaman di aplikasi adalah Status Perangkat."
     },
     {
       "id": "3.8-24",
-      "lokasi": "3.8.6, paragraf 1 (hlm. 51–52)",
-      "cari": "perangkat dinyatakan terhubung apabila data masih diterima dalam batas waktu tertentu dari interval pengiriman 30 detik.",
-      "ganti": "perangkat dinyatakan terhubung apabila data terakhir diterima tidak lebih dari 30 detik yang lalu, yaitu tiga kali interval pengiriman maksimum 10 detik.",
-      "catatan": "Spec §6 dan §9; online_threshold_seconds = 30."
+      "lokasi": "3.8.6, paragraf 536",
+      "cari": "Halaman IoT System menampilkan",
+      "ganti": "Halaman Status Perangkat (IoT System) menampilkan",
+      "catatan": "Halaman aplikasi (nama halaman)."
     },
     {
       "id": "3.8-25",
-      "lokasi": "3.8.6, paragraf 2 (hlm. 52)",
-      "cari": "penyimpanan ke basis data, klasifikasi kualitas udara, pembuatan rekomendasi, dan penyajian hasil pada dashboard.",
-      "ganti": "penyimpanan ke basis data, klasifikasi kualitas udara, pembuatan rekomendasi, dan penyajian hasil pada *dashboard*. Halaman ini juga menampilkan sepuluh data terakhir yang ditolak beserta alasan penolakannya.",
-      "catatan": "Spec §6 (Status Perangkat)."
+      "lokasi": "3.8.6, paragraf 536",
+      "cari": "perangkat dinyatakan terhubung apabila data masih diterima dalam batas waktu tertentu dari interval pengiriman 30 detik.",
+      "ganti": "perangkat dinyatakan terhubung apabila data terakhir diterima tidak lebih dari 30 detik yang lalu (tiga kali interval pengiriman maksimum 10 detik).",
+      "catatan": "Halaman aplikasi: terhubung bila data terakhir ≤ 30 detik (3 × interval maksimum 10 detik); interval kirim bukan 30 detik."
     },
     {
       "id": "3.8-26",
-      "lokasi": "Gambar 3.8 (hlm. 52)",
-      "cari": "Gambar 3.8 Wireframe IoT System",
-      "ganti": "Gambar 3.8 *Wireframe* Halaman Status Perangkat (*IoT System*)",
-      "catatan": "Gambar ulang dengan tabel penolakan data; samakan nomor dengan Daftar Gambar (di sana tertulis 3.7). Alasan: Spec §9."
+      "lokasi": "3.8.7 baru, sesudah 3.8.6 (paragraf 536)",
+      "cari": "memantau apakah data dari perangkat berhasil diterima oleh aplikasi web",
+      "catatan": "Sesudah Gambar 3.8, tambahkan sub-subbab baru \"3.8.7 Wireframe Halaman Kuesioner UEQ\" dengan isi: \"Halaman Kuesioner menampilkan 26 butir UEQ versi Bahasa Indonesia. Setiap butir berupa pasangan kata berlawanan, misalnya menyusahkan – menyenangkan, dengan tujuh pilihan di antaranya. Responden dapat mengisi nama secara opsional. Satu alamat IP dibatasi tiga kali pengisian per jam untuk mencegah pengisian berulang. Wireframe halaman ditunjukkan pada Gambar 3.9.\" Sisipkan Gambar 3.9 Wireframe Halaman Kuesioner UEQ (baru). Alasan: halaman aplikasi (halaman 7) dan evaluasi UEQ."
     },
     {
       "id": "3.8-27",
-      "lokasi": "3.8.7 (baru, sesudah 3.8.6)",
-      "cari": "memantau apakah data dari perangkat berhasil diterima oleh aplikasi web",
-      "catatan": "Sesudah Gambar 3.8, tambahkan sub-subbab baru \"3.8.7 Wireframe Halaman Kuesioner UEQ\" dengan isi: \"Halaman Kuesioner menampilkan 26 butir UEQ versi Bahasa Indonesia. Setiap butir berupa pasangan kata berlawanan, misalnya menyusahkan – menyenangkan, dengan tujuh pilihan di antaranya. Responden dapat mengisi nama secara opsional. Satu alamat IP dibatasi tiga kali pengisian per jam untuk mencegah pengisian berulang. Wireframe halaman ditunjukkan pada Gambar 3.9.\" Sisipkan Gambar 3.9 Wireframe Halaman Kuesioner UEQ (baru). Alasan: Spec §6 (halaman 7) dan §7."
+      "lokasi": "3.8.6, paragraf 537",
+      "cari": "penyimpanan ke basis data, klasifikasi kualitas udara, pembuatan rekomendasi, dan penyajian hasil pada dashboard.",
+      "ganti": "penyimpanan ke basis data, klasifikasi kualitas udara, pembuatan rekomendasi, dan penyajian hasil pada dashboard. Selain itu, halaman ini menampilkan sepuluh data terakhir yang ditolak beserta alasan penolakannya.",
+      "catatan": "Halaman aplikasi: halaman Status Perangkat menampilkan sepuluh penolakan terakhir."
+    },
+    {
+      "id": "3.8-28",
+      "lokasi": "3.8.6, judul Gambar 3.7 (paragraf 539)",
+      "cari": "Wireframe IoT System",
+      "ganti": "Wireframe Halaman Status Perangkat (IoT System)",
+      "catatan": "Gambar ulang dengan status koneksi (≤ 30 detik) dan tabel sepuluh penolakan terakhir. Nomor gambar ini menjadi 3.8 setelah Update Field. Alasan: halaman aplikasi dan penyelarasan naskah dengan aplikasi."
     },
     {
       "id": "3.9-01",
-      "lokasi": "3.9, paragraf 2 (hlm. 52–53)",
+      "lokasi": "3.9, paragraf 542",
       "cari": "dan tidak dinyatakan sebagai nilai Air Quality Index (AQI) resmi.",
-      "ganti": "dan tidak dinyatakan sebagai nilai *Air Quality Index* (AQI) resmi. Perangkat menghitung nilai tersebut dengan rumus Solihat et al. (2026), yaitu ppm = max(0, ADC − *baseline*) × (5,0/4096) × k, sehingga nilainya mendekati nol pada kondisi udara saat perangkat dinyalakan. Rumus ini diterapkan oleh penelitian IoT; aplikasi web tidak bergantung pada rumus, hanya pada ambang Tabel 2.2.",
-      "catatan": "Spec §2 dan §9 (ppm relatif berbasis baseline)."
+      "ganti": "dan tidak dinyatakan sebagai nilai Air Quality Index (AQI) resmi. Nilai tersebut dihitung oleh perangkat relatif terhadap *baseline* saat perangkat dinyalakan dengan rumus Solihat et al. (2026) yang dijelaskan pada subbab 2.7. Rumus ini diterapkan oleh penelitian IoT; aplikasi web tidak bergantung pada rumus tersebut, hanya pada ambang Tabel 2.2.",
+      "catatan": "Aturan klasifikasi ambang dan penyelarasan naskah dengan aplikasi (ppm relatif berbasis baseline; konversi menjadi tanggung jawab penelitian IoT)."
     },
     {
       "id": "3.9-02",
-      "lokasi": "3.9.1, paragraf 1 (hlm. 53)",
-      "cari": "yang dikirimkan oleh perangkat IoT setiap 30 detik.",
-      "ganti": "yang dikirimkan oleh perangkat IoT setiap 5–10 detik (perangkat uji: 5 detik).",
-      "catatan": "Spec §9 (interval)."
+      "lokasi": "3.9, langkah pengolahan (paragraf 547)",
+      "cari": "Menentukan kategori kualitas udara keseluruhan dari kategori terburuk",
+      "ganti": "Menentukan kategori kualitas udara keseluruhan dari kategori terburuk dan gas penyebab utamanya",
+      "catatan": "Aturan klasifikasi ambang (penyebab utama)."
     },
     {
       "id": "3.9-03",
-      "lokasi": "3.9.1, sesudah contoh payload (hlm. 53)",
-      "cari": "Data tersebut diproses oleh backend aplikasi web melalui tahapan validasi",
-      "ganti": "Data dikirim ke *endpoint* POST /api/telemetry dalam format JSON. Aturan validasinya: semua atribut wajib ada; co2_ppm, nh3_ppm, co_ppm, dan h2_ppm berupa angka ≥ 0; device_id harus terdaftar di sistem; dan timestamp berformat YYYY-MM-DD HH:MM:SS. Data valid dijawab HTTP 201 beserta kategori dan rekomendasinya. Data tidak valid dijawab HTTP 422 dan dicatat pada log penolakan data. Data tersebut diproses oleh *backend* aplikasi web melalui tahapan validasi",
-      "catatan": "Contoh payload dipertahankan. Tambahan ini disisipkan sesudah contoh (Spec §4 dan §9; TelemetryApiController::store()). Sebaiknya pisahkan kalimat tambahan menjadi paragraf tersendiri sebelum \"Data tersebut diproses…\"."
+      "lokasi": "3.9.1 Data Input Sensor, paragraf 551",
+      "cari": "yang dikirimkan oleh perangkat IoT setiap 30 detik.",
+      "ganti": "yang dikirimkan oleh perangkat IoT setiap 5–10 detik (perangkat uji: 5 detik).",
+      "catatan": "Penyelarasan naskah dengan aplikasi (interval)."
     },
     {
       "id": "3.9-04",
-      "lokasi": "3.9.2, sesudah contoh (hlm. 54)",
-      "cari": "Kategori ini menjadi dasar penentuan rekomendasi tindakan.",
-      "ganti": "Kategori ini menjadi dasar penentuan rekomendasi tindakan. Gas yang kategorinya sama dengan kategori keseluruhan disebut penyebab utama; pada contoh ini penyebab utamanya adalah CO. Bila lebih dari satu gas berada pada kategori terburuk, semuanya ditampilkan sebagai penyebab utama. Bila kategori keseluruhan Baik, penyebab utama tidak ditampilkan.",
-      "catatan": "Spec §2 (penyebab utama)."
+      "lokasi": "3.9.1, sesudah contoh data (paragraf 560)",
+      "cari": "Data tersebut diproses oleh backend aplikasi web melalui tahapan validasi data, klasifikasi setiap parameter berdasarkan ambang batas, penentuan kategori kualitas udara secara keseluruhan, dan pemberian rekomendasi tindakan preventif berbasis aturan (rule-based).",
+      "ganti": "Data dikirim ke *endpoint* POST /api/telemetry dalam format JSON. Data tersebut diproses oleh backend aplikasi web melalui tahapan validasi data, klasifikasi setiap parameter berdasarkan ambang batas, penentuan kategori kualitas udara secara keseluruhan, dan pemberian rekomendasi tindakan preventif berbasis aturan (rule-based). Aturan validasinya: semua atribut wajib ada; co2_ppm, nh3_ppm, co_ppm, dan h2_ppm berupa angka ≥ 0; device_id harus terdaftar di sistem; dan timestamp berformat YYYY-MM-DD HH:MM:SS. Data yang valid dijawab dengan kode HTTP 201 beserta kategori dan rekomendasinya, sedangkan data yang tidak valid dijawab dengan kode HTTP 422 dan dicatat pada log penolakan data.",
+      "catatan": "Aturan penerimaan data dan penyelarasan naskah dengan aplikasi: contoh data dipertahankan karena sudah sesuai; tambahan ini menjelaskan endpoint dan aturan validasi (Tabel 3.7)."
     },
     {
       "id": "3.9-05",
-      "lokasi": "3.9.3, paragraf 1 (hlm. 54)",
-      "cari": "Setiap nilai dibandingkan dengan rentang ambang batas menggunakan pendekatan threshold-based classification untuk menentukan kategori per parameter.",
-      "ganti": "Setiap nilai dibandingkan dengan rentang ambang batas menggunakan pendekatan *threshold-based classification* untuk menentukan kategori per parameter. Perbandingan dilakukan berurutan dengan batas eksklusif (<) sesuai Tabel 2.2, sehingga nilai tepat pada batas masuk ke kategori yang lebih buruk.",
-      "catatan": "Spec §2 (aturan batas); diuji pada Tabel 3.8 baris 6–7."
+      "lokasi": "3.9.2 Penentuan Kategori Keseluruhan, paragraf 564",
+      "cari": "Kategori ini menjadi dasar penentuan rekomendasi tindakan.",
+      "ganti": "Kategori ini menjadi dasar penentuan rekomendasi tindakan. Gas yang kategorinya sama dengan kategori keseluruhan disebut penyebab utama; pada contoh ini penyebab utamanya adalah CO. Bila lebih dari satu gas berada pada kategori terburuk, semuanya ditampilkan sebagai penyebab utama. Bila kategori keseluruhan Baik, penyebab utama tidak ditampilkan.",
+      "catatan": "Aturan klasifikasi ambang (penyebab utama)."
     },
     {
       "id": "3.9-06",
-      "lokasi": "3.9.3, kalimat pengantar Tabel 3.3 Kategori (hlm. 54)",
-      "cari": "Tabel 3.3 menunjukkan kriteria penentuan setiap kategori kualitas udara yang digunakan dalam sistem",
-      "ganti": "Kriteria setiap kategori mengikuti ambang pada Tabel 2.2 dan aturan kategori terburuk pada subbab 3.9.2.",
-      "catatan": "Spec §9 (penomoran tabel ganda)."
+      "lokasi": "3.9.3, paragraf 567",
+      "cari": "Setiap nilai dibandingkan dengan rentang ambang batas menggunakan pendekatan threshold-based classification untuk menentukan kategori per parameter.",
+      "ganti": "Setiap nilai dibandingkan dengan rentang ambang batas menggunakan pendekatan threshold-based classification untuk menentukan kategori per parameter. Perbandingan dilakukan berurutan dengan batas eksklusif (<) sesuai Tabel 2.2, sehingga nilai tepat pada batas masuk ke kategori yang lebih buruk.",
+      "catatan": "Aturan klasifikasi ambang (aturan batas); diuji pada Tabel 3.8 baris 6–7."
     },
     {
       "id": "3.9-07",
-      "lokasi": "Tabel 3.3 Kategori Kualitas Udara Ruangan (hlm. 54–55)",
+      "lokasi": "3.9.3, kalimat pengantar tabel (paragraf 569)",
+      "cari": "Tabel 3.3 menunjukkan kriteria penentuan setiap kategori kualitas udara yang digunakan dalam sistem",
+      "ganti": "Kriteria setiap kategori mengikuti ambang pada Tabel 2.2 dan aturan kategori terburuk pada subbab 3.9.2.",
+      "catatan": "Penyelarasan naskah dengan aplikasi: nomor Tabel 3.3 dipakai dua kali. Tabel di bawah kalimat ini dihapus (lihat komentar berikutnya)."
+    },
+    {
+      "id": "3.9-08",
+      "lokasi": "3.9.3, Tabel 3.3 Kategori Kualitas Udara Ruangan (paragraf 570–585)",
       "cari": "Tabel 3.3 Kategori Kualitas Udara Ruangan",
-      "catatan": "Hapus judul dan tabel ini sehingga Tabel 3.3 hanya dipakai untuk aturan rekomendasi. Isi tabel sudah tercakup dalam Tabel 2.2 dan rumus KU. Alternatif: beri tabel ini nomor sendiri lalu geser semua nomor tabel sesudahnya (tidak disarankan karena Spec dan berkas pengujian merujuk Tabel 3.3–3.10). Alasan: Spec §9."
+      "catatan": "Hapus judul dan tabel ini sehingga nomor Tabel 3.3 hanya dipakai untuk Aturan Rekomendasi. Isi tabel sudah tercakup dalam Tabel 2.2 dan rumus KU. Judul tabel ini juga tidak memakai field SEQ seperti tabel lain. Alternatif: beri tabel ini nomor sendiri lalu geser semua nomor tabel sesudahnya (tidak disarankan karena rancangan aplikasi dan berkas pengujian merujuk Tabel 3.3–3.10). Alasan: penyelarasan naskah dengan aplikasi."
     },
     {
       "id": "3.10-01",
-      "lokasi": "3.10.1, paragraf 2 (hlm. 55)",
+      "lokasi": "3.10.1, paragraf 593",
       "cari": "Jenis tindakan pada Tabel 3.4 mengacu",
       "ganti": "Jenis tindakan pada Tabel 3.3 mengacu",
-      "catatan": "Penomoran tabel (Spec §9)."
+      "catatan": "Penomoran tabel: aturan rekomendasi ada di Tabel 3.3 (penyelarasan naskah dengan aplikasi)."
     },
     {
       "id": "3.10-02",
-      "lokasi": "3.10.1, paragraf 2 (hlm. 55), sitasi EPA",
+      "lokasi": "3.10.1, paragraf 593, sitasi EPA",
       "cari": "U.S. Environmental Protection Agency (2026)",
-      "catatan": "Tahun sitasi EPA mengikuti entri daftar pustaka baru \"Improving Indoor Air Quality\" (https://www.epa.gov/indoor-air-quality-iaq/improving-indoor-air-quality); tahun: (cek). Kutipan ini belum punya entri di daftar pustaka."
+      "catatan": "Sitasi ini belum punya entri di daftar pustaka (entri EPA yang ada adalah Appendix G to Part 58, 2024). Tambahkan entri \"U.S. Environmental Protection Agency. ((cek) tahun). Improving Indoor Air Quality. https://www.epa.gov/indoor-air-quality-iaq/improving-indoor-air-quality\" dan sesuaikan tahun sitasi dengan entri tersebut. Bila tahunnya sama dengan entri EPA lain, beri huruf a/b."
     },
     {
       "id": "3.10-03",
-      "lokasi": "3.10.1, sesudah kalimat \"…aktivitas yang melepaskan polutan.\" (hlm. 56)",
+      "lokasi": "3.10.1, paragraf 593",
       "cari": "terutama saat berlangsung aktivitas yang melepaskan polutan.",
       "ganti": "terutama saat berlangsung aktivitas yang melepaskan polutan. Setiap aturan memakai satu atau lebih strategi tersebut. Kategori Baik dan Sedang memakai peningkatan ventilasi, sedangkan Tidak Sehat dan Berbahaya memakai peningkatan ventilasi dan kendali sumber. Tingkat urgensi (Normal, Waspada, Perlu Tindakan, Segera Bertindak) mengikuti prinsip penyampaian AQI U.S. EPA (EPA-403/B-26-003, Tabel 5): anjuran makin tegas seiring kategori memburuk. Penelitian ini hanya mengadopsi prinsip bertingkat tersebut, bukan angka AQI.",
-      "catatan": "Spec §3 (dasar rekomendasi); config/recommendations.php (strategies, basis). Tambahkan entri EPA-403/B-26-003 ke daftar pustaka."
+      "catatan": "Aturan rekomendasi (dasar rekomendasi). Tambahkan entri EPA-403/B-26-003 ke daftar pustaka."
     },
     {
       "id": "3.10-04",
-      "lokasi": "3.10.2, paragraf 1 (hlm. 56)",
+      "lokasi": "3.10.2, paragraf 596",
       "cari": "Aturan tersebut dirangkum pada Tabel 3.4.",
       "ganti": "Aturan tersebut dirangkum pada Tabel 3.3.",
-      "catatan": "Penomoran tabel."
+      "catatan": "Penomoran tabel: tabel di bawahnya bernomor 3.3."
     },
     {
       "id": "3.10-05",
-      "lokasi": "Tabel 3.3 Aturan Rekomendasi (hlm. 56)",
-      "cari": "Tingkatkan ventilasi, periksa dan kurangi sumber polutan seperti asap atau gas",
-      "catatan": "Tabel 3.3 tidak diubah: teks rekomendasi di aplikasi (config/recommendations.php) sama persis dengan tabel ini. Spec §3."
-    },
-    {
-      "id": "3.10-06",
-      "lokasi": "3.10.3 (hlm. 56–57)",
+      "lokasi": "3.10.3, paragraf 615",
       "cari": "Rekomendasi diperbarui otomatis setiap kali sistem menerima data baru dari perangkat IoT.",
-      "ganti": "Rekomendasi disimpan bersama setiap data yang diterima dan tampilan diperbarui otomatis mengikuti interval kirim perangkat (5 detik).",
-      "catatan": "Spec §4 (level rekomendasi disimpan) dan §6 (interval polling)."
+      "ganti": "Rekomendasi disimpan bersama setiap data yang diterima, dan tampilan diperbarui otomatis mengikuti interval kirim perangkat (5 detik).",
+      "catatan": "Aturan penerimaan data (tingkat rekomendasi disimpan bersama data) dan halaman aplikasi (halaman diperbarui tiap 5 detik)."
     },
     {
       "id": "3.11-01",
-      "lokasi": "Sub-subbab 3.11 (hlm. 57)",
-      "cari": "3.13.1 Integrasi Data IoT",
-      "ganti": "3.11.1 Integrasi Data IoT",
-      "catatan": "Spec §9 (penomoran subbab ganda)."
+      "lokasi": "3.11, judul sub-subbab (paragraf 626, 629, 634, 640, 647)",
+      "cari": "Integrasi Data IoT",
+      "catatan": "Penomoran otomatis sub-subbab di 3.11 tampil sebagai 3.13.1–3.13.5, padahal subbabnya 3.11. Perbaiki daftar bernomor bertingkat pada gaya Heading 3 (atau mulai ulang penomoran) sehingga menjadi 3.11.1 Integrasi Data IoT, 3.11.2 Implementasi Komponen Perangkat Lunak, 3.11.3 Implementasi Fitur Utama, 3.11.4 Implementasi Antarmuka Pengguna, dan 3.11.5 Teknologi yang Digunakan. Alasan: penyelarasan naskah dengan aplikasi (penomoran ganda)."
     },
     {
       "id": "3.11-02",
-      "lokasi": "3.11.1 (hlm. 57)",
+      "lokasi": "3.11.1 Integrasi Data IoT, paragraf 627",
       "cari": "Data tersebut dikirimkan ke server secara berkala setiap 30 detik melalui jaringan internet.",
       "ganti": "Data tersebut dikirimkan ke server secara berkala setiap 5–10 detik melalui jaringan internet.",
-      "catatan": "Spec §9 (interval)."
+      "catatan": "Penyelarasan naskah dengan aplikasi (interval)."
     },
     {
       "id": "3.11-03",
-      "lokasi": "3.11.1 (hlm. 57)",
+      "lokasi": "3.11.1 Integrasi Data IoT, paragraf 627",
       "cari": "Aplikasi web berperan sebagai penerima data melalui endpoint API yang disediakan pada sisi backend.",
-      "ganti": "Aplikasi web berperan sebagai penerima data melalui *endpoint* POST /api/telemetry yang disediakan pada sisi *backend*. Data yang ditolak dicatat pada tabel log penolakan.",
-      "catatan": "Spec §4."
+      "ganti": "Aplikasi web berperan sebagai penerima data melalui endpoint API POST /api/telemetry yang disediakan pada sisi backend. Data yang ditolak dicatat pada tabel log penolakan.",
+      "catatan": "Aturan penerimaan data (endpoint dan pencatatan penolakan)."
     },
     {
       "id": "3.11-04",
-      "lokasi": "Sub-subbab 3.11 (hlm. 58)",
-      "cari": "3.13.2 Implementasi Komponen Perangkat Lunak",
-      "ganti": "3.11.2 Implementasi Komponen Perangkat Lunak",
-      "catatan": "Spec §9 (penomoran subbab ganda)."
+      "lokasi": "3.11.2, paragraf Database (paragraf 632)",
+      "cari": "kategori per gas, kategori keseluruhan, dan waktu pembacaan. Data yang tersimpan juga digunakan untuk menampilkan riwayat pembacaan pada halaman historical data.",
+      "ganti": "kategori per gas, kategori keseluruhan, gas penyebab utama, tingkat rekomendasi, dan waktu pembacaan, serta data yang ditolak beserta alasannya dan jawaban kuesioner UEQ. Data yang tersimpan juga digunakan untuk menampilkan riwayat pembacaan pada halaman Riwayat.",
+      "catatan": "Struktur data aplikasi (kolom data sensor; tabel penolakan dan jawaban UEQ) dan halaman aplikasi (nama halaman Riwayat)."
     },
     {
       "id": "3.11-05",
-      "lokasi": "3.11.2, paragraf Database (hlm. 58)",
-      "cari": "kategori per gas, kategori keseluruhan, dan waktu pembacaan.",
-      "ganti": "kategori per gas, kategori keseluruhan, gas penyebab utama, tingkat rekomendasi, waktu pembacaan, data yang ditolak beserta alasannya, serta jawaban kuesioner UEQ.",
-      "catatan": "Spec §5 (kolom sensor_logs; tabel telemetry_rejections dan ueq_responses)."
+      "lokasi": "3.11.2, paragraf Frontend (paragraf 633)",
+      "cari": "data historis, kategori kualitas udara, dan rekomendasi tindakan.",
+      "ganti": "data historis, kategori kualitas udara, rekomendasi tindakan, status perangkat, panduan, dan kuesioner UEQ.",
+      "catatan": "Halaman aplikasi (tujuh halaman)."
     },
     {
       "id": "3.11-06",
-      "lokasi": "Sub-subbab 3.11 (hlm. 58)",
-      "cari": "3.13.3 Implementasi Fitur Utama",
-      "ganti": "3.11.3 Implementasi Fitur Utama",
-      "catatan": "Spec §9 (penomoran subbab ganda)."
+      "lokasi": "3.11.3 Implementasi Fitur Utama, paragraf 639",
+      "cari": "kategori kualitas udara keseluruhan pada saat itu, menggunakan aturan if-then.",
+      "catatan": "Sesudah fitur 2), tambahkan dua fitur: \"3). Penerimaan dan Validasi Data. Fitur ini menerima data melalui API, memvalidasi format, dan mencatat data yang ditolak.\" dan \"4). Kuesioner UEQ. Fitur ini mengumpulkan 26 butir jawaban responden dan menghitung skor per skala.\" Alasan: aturan penerimaan data dan evaluasi UEQ."
     },
     {
       "id": "3.11-07",
-      "lokasi": "3.11.3 (hlm. 58–59)",
-      "cari": "kategori kualitas udara keseluruhan pada saat itu, menggunakan aturan if-then.",
-      "catatan": "Sesudah fitur 2), tambahkan dua fitur: \"3). Penerimaan dan Validasi Data. Fitur ini menerima data melalui API, memvalidasi format, dan mencatat data yang ditolak.\" dan \"4). Kuesioner UEQ. Fitur ini mengumpulkan 26 butir jawaban responden dan menghitung skor per skala.\" Alasan: Spec §4 dan §7."
+      "lokasi": "3.11.5 Teknologi yang Digunakan, paragraf 648",
+      "cari": "Implementasi sistem menggunakan teknologi sebagaimana ditunjukkan pada Tabel 3.5.",
+      "ganti": "Implementasi sistem menggunakan teknologi sebagaimana ditunjukkan pada Tabel 3.4.",
+      "catatan": "Penomoran tabel: tabel teknologi bernomor 3.4."
     },
     {
       "id": "3.11-08",
-      "lokasi": "Sub-subbab 3.11 (hlm. 59)",
-      "cari": "3.13.4 Implementasi Antarmuka Pengguna",
-      "ganti": "3.11.4 Implementasi Antarmuka Pengguna",
-      "catatan": "Spec §9 (penomoran subbab ganda)."
+      "lokasi": "3.11.5, Tabel 3.4 baris Backend (paragraf 655)",
+      "cari": "Laravel",
+      "ganti": "Laravel 13 (PHP 8.3)",
+      "catatan": "Sesuai versi terpasang di aplikasi (laravel/framework v13.34, PHP 8.3)."
     },
     {
       "id": "3.11-09",
-      "lokasi": "Sub-subbab 3.11 (hlm. 59)",
-      "cari": "3.13.5 Teknologi yang Digunakan",
-      "ganti": "3.11.5 Teknologi yang Digunakan",
-      "catatan": "Spec §9 (penomoran subbab ganda)."
+      "lokasi": "3.11.5, Tabel 3.4 baris Database (paragraf 658)",
+      "cari": "MySQL",
+      "catatan": "(cek) Konfigurasi aplikasi saat ini (.env dan .env.example) memakai SQLite. Pastikan basis data yang dipakai saat pengujian, lalu sesuaikan isi sel ini."
     },
     {
       "id": "3.11-10",
-      "lokasi": "3.11.5 (hlm. 59)",
-      "cari": "Implementasi sistem menggunakan teknologi sebagaimana ditunjukkan pada Tabel 3.5.",
-      "ganti": "Implementasi sistem menggunakan teknologi sebagaimana ditunjukkan pada Tabel 3.4.",
-      "catatan": "Penomoran tabel (tabelnya bernomor 3.4)."
-    },
-    {
-      "id": "3.11-11",
-      "lokasi": "Tabel 3.4 Teknologi, baris Backend (hlm. 59)",
-      "cari": "Laravel",
-      "ganti": "Laravel 13 (PHP 8.3)",
-      "catatan": "Sesuai composer.lock (laravel/framework v13.34.0) dan PHP 8.3."
-    },
-    {
-      "id": "3.11-12",
-      "lokasi": "Tabel 3.4 Teknologi, baris Frontend (hlm. 59)",
+      "lokasi": "3.11.5, Tabel 3.4 baris Frontend (paragraf 661)",
       "cari": "HTML, CSS, JavaScript",
       "ganti": "Blade, Livewire 4, Tailwind CSS 4, Chart.js 4",
-      "catatan": "Sesuai composer.json (livewire/livewire ^4.4) dan package.json (tailwindcss ^4.0.0, chart.js ^4.4.4)."
+      "catatan": "Sesuai teknologi aplikasi (livewire/livewire v4, tailwindcss ^4, chart.js ^4)."
     },
     {
       "id": "3.12-01",
-      "lokasi": "3.12, paragraf 2 (hlm. 60)",
+      "lokasi": "3.12 Pengujian Sistem, paragraf 671",
       "cari": "menghasilkan keluaran yang sesuai dengan aturan yang dirancang.",
       "ganti": "menghasilkan keluaran yang sesuai dengan aturan yang dirancang. Selain itu, pengalaman pengguna dievaluasi dengan *User Experience Questionnaire* (UEQ) 26 butir.",
-      "catatan": "Spec §1 dan §7 (ditambahkan di akhir paragraf yang memuat \"Metode yang digunakan adalah black-box testing…\")."
+      "catatan": "Ruang lingkup penelitian dan evaluasi UEQ (evaluasi pengguna dengan UEQ)."
     },
     {
       "id": "3.12-02",
-      "lokasi": "Sub-subbab 3.12 (hlm. 60)",
-      "cari": "3.14.1 Rencana Pengujian",
-      "ganti": "3.12.1 Rencana Pengujian",
-      "catatan": "Spec §9 (penomoran ganda)."
+      "lokasi": "3.12, judul sub-subbab (paragraf 673–854)",
+      "cari": "Kesimpulan Pengujian",
+      "catatan": "Penomoran otomatis sub-subbab di 3.12 tampil sebagai 3.14.1–3.14.6, padahal subbabnya 3.12. Perbaiki daftar bernomor bertingkat pada gaya Heading 3 sehingga menjadi 3.12.1 Rencana Pengujian, 3.12.2 Pengujian Fungsional Aplikasi, 3.12.3 Pengujian Pengolahan Data Sensor, 3.12.4 Pengujian Rekomendasi Tindakan Preventif, 3.12.5 Pengujian pada Beberapa Kondisi Ruangan, 3.12.6 Evaluasi Pengguna dengan UEQ (baru), dan 3.12.7 Kesimpulan Pengujian. Alasan: penyelarasan naskah dengan aplikasi."
     },
     {
       "id": "3.12-03",
-      "lokasi": "3.12.1, paragraf 1 (hlm. 60)",
+      "lokasi": "3.12.1 Rencana Pengujian, paragraf 674",
       "cari": "Pengujian dilakukan pada empat aspek utama.",
       "ganti": "Pengujian dilakukan pada lima aspek utama.",
-      "catatan": "Spec §9 (3.12 + UEQ)."
+      "catatan": "Penyelarasan naskah dengan aplikasi: aspek kelima adalah evaluasi pengguna dengan UEQ."
     },
     {
       "id": "3.12-04",
-      "lokasi": "3.12.1, paragraf 1 (hlm. 60)",
+      "lokasi": "3.12.1 Rencana Pengujian, paragraf 674",
       "cari": "pada situasi ruangan yang berbeda. Rencana pengujian dapat dilihat pada Tabel 3.5.",
       "ganti": "pada situasi ruangan yang berbeda. Evaluasi pengguna dengan UEQ mengukur pengalaman pengguna terhadap aplikasi. Rencana pengujian dapat dilihat pada Tabel 3.5.",
-      "catatan": "Spec §9 (aspek kelima: UEQ)."
+      "catatan": "Evaluasi UEQ dan penyelarasan naskah dengan aplikasi."
     },
     {
       "id": "3.12-05",
-      "lokasi": "Tabel 3.5 baris 1 (hlm. 60)",
+      "lokasi": "3.12.1, Tabel 3.5 baris 1 (paragraf 682)",
       "cari": "Dashboard, sensor charts, historical data, rekomendasi tindakan, dan IoT system",
       "ganti": "Beranda, detail ruangan (grafik sensor), riwayat, rekomendasi tindakan, status perangkat, panduan, dan kuesioner UEQ",
-      "catatan": "Spec §6 (7 halaman)."
+      "catatan": "Halaman aplikasi (tujuh halaman)."
     },
     {
       "id": "3.12-06",
-      "lokasi": "Tabel 3.5 baris 4 (hlm. 61)",
-      "cari": "Ruangan normal, tertutup, berasap, dan ventilasi berbeda",
-      "ganti": "Empat skenario kondisi pada satu ruangan uji: normal, tertutup, berasap, dan ventilasi berbeda",
-      "catatan": "Spec §1 (satu ruangan)."
+      "lokasi": "3.12.1, Tabel 3.5 baris 2 (paragraf 687)",
+      "cari": "yang diterima dari divalidasi",
+      "ganti": "yang diterima dari perangkat IoT divalidasi",
+      "catatan": "Kata \"perangkat IoT\" terlewat."
     },
     {
       "id": "3.12-07",
-      "lokasi": "Tabel 3.5 baris baru 5",
-      "cari": "Memastikan sistem mampu memantau perubahan kondisi kualitas udara",
-      "catatan": "Tambahkan baris 5 pada Tabel 3.5: Jenis Pengujian \"Evaluasi Pengguna (UEQ)\"; Aspek yang Diuji \"Enam skala UEQ: daya tarik, kejelasan, efisiensi, ketepatan, stimulasi, kebaruan\"; Tujuan Pengujian \"Mengetahui pengalaman pengguna dan membandingkannya dengan benchmark UEQ\". Alasan: Spec §7."
+      "lokasi": "3.12.1, Tabel 3.5 baris 4 (paragraf 694)",
+      "cari": "Ruangan normal, tertutup, berasap, dan ventilasi berbeda",
+      "ganti": "Empat skenario kondisi pada satu ruangan uji: normal, tertutup, berasap, dan ventilasi berbeda",
+      "catatan": "Ruang lingkup penelitian (satu ruangan)."
     },
     {
       "id": "3.12-08",
-      "lokasi": "Sub-subbab 3.12 (hlm. 61)",
-      "cari": "3.14.2 Pengujian Fungsional Aplikasi",
-      "ganti": "3.12.2 Pengujian Fungsional Aplikasi",
-      "catatan": "Spec §9 (penomoran ganda)."
+      "lokasi": "3.12.1, Tabel 3.5 baris baru 5 (dekat paragraf 695)",
+      "cari": "Memastikan sistem mampu memantau perubahan kondisi kualitas udara",
+      "catatan": "Tambahkan baris 5 pada Tabel 3.5: Jenis Pengujian \"Evaluasi Pengguna (UEQ)\"; Aspek yang Diuji \"Enam skala UEQ: daya tarik, kejelasan, efisiensi, ketepatan, stimulasi, kebaruan\"; Tujuan Pengujian \"Mengetahui pengalaman pengguna dan membandingkannya dengan benchmark UEQ\". Alasan: evaluasi UEQ."
     },
     {
       "id": "3.12-09",
-      "lokasi": "3.12.2, paragraf 1 (hlm. 61)",
+      "lokasi": "3.12.2 Pengujian Fungsional Aplikasi, paragraf 698",
       "cari": "Fitur yang diuji meliputi halaman dashboard, sensor charts, historical data, rekomendasi tindakan, dan IoT system.",
-      "ganti": "Fitur yang diuji meliputi ketujuh halaman aplikasi.",
-      "catatan": "Spec §6."
+      "ganti": "Fitur yang diuji meliputi ketujuh halaman aplikasi, yaitu beranda, detail ruangan (grafik sensor), riwayat, rekomendasi tindakan, status perangkat, panduan, dan kuesioner UEQ.",
+      "catatan": "Halaman aplikasi (tujuh halaman)."
     },
     {
       "id": "3.12-10",
-      "lokasi": "3.12.2, paragraf 1 (hlm. 61)",
+      "lokasi": "3.12.2 Pengujian Fungsional Aplikasi, paragraf 698",
       "cari": "Hasilnya dapat dilihat pada Tabel 3.7.",
-      "ganti": "Skenario pengujian dapat dilihat pada Tabel 3.6.",
-      "catatan": "Rujukan tabel salah (seharusnya 3.6)."
+      "ganti": "Skenario pengujiannya dapat dilihat pada Tabel 3.6.",
+      "catatan": "Rujukan tabel: skenario fungsional ada di Tabel 3.6 (Tabel 3.7 adalah validasi data)."
     },
     {
       "id": "3.12-11",
-      "lokasi": "Tabel 3.6 baris 1–2 (hlm. 61–62)",
+      "lokasi": "3.12.2, Tabel 3.6 baris 1 (paragraf 705–706)",
       "cari": "Membuka halaman dashboard saat data masuk",
-      "catatan": "Pada kolom Fitur Tabel 3.6, ganti \"Dashboard\" (baris 1) menjadi \"Beranda\" dan \"Sensor charts\" (baris 2) menjadi \"Detail ruangan (grafik sensor)\". Sesuaikan juga skenario baris 1 menjadi \"Membuka halaman beranda saat data masuk\". Alasan: Spec §6."
+      "catatan": "Ganti kolom Fitur baris 1 dari \"Dashboard\" menjadi \"Beranda\" agar sama dengan nama halaman di aplikasi (halaman aplikasi). Sel itu tidak dapat diganti otomatis karena kata \"Dashboard\" muncul di banyak tempat."
     },
     {
       "id": "3.12-12",
-      "lokasi": "Tabel 3.6 baris 2, Hasil yang Diharapkan (hlm. 62)",
-      "cari": "Grafik menampilkan nilai parameter terpilih berdasarkan waktu",
-      "ganti": "Grafik menampilkan nilai gas terpilih pada rentang 1 jam, 24 jam, atau 7 hari beserta garis ambang kategori.",
-      "catatan": "Spec §6."
+      "lokasi": "3.12.2, Tabel 3.6 baris 2, kolom Fitur (paragraf 709)",
+      "cari": "Sensor charts",
+      "ganti": "Detail ruangan (grafik sensor)",
+      "catatan": "Halaman aplikasi (nama halaman)."
     },
     {
       "id": "3.12-13",
-      "lokasi": "Tabel 3.6 baris 7 (hlm. 62)",
-      "cari": "Menampilkan device ID, jenis sensor, last update, dan status koneksi",
-      "ganti": "Menampilkan device ID, gas yang dikirim, waktu data terakhir, status koneksi (terhubung bila data terakhir ≤ 30 detik), alur data, dan sepuluh penolakan terakhir",
-      "catatan": "Spec §6 (halaman 5). Ganti juga kolom Fitur \"IoT system\" menjadi \"Status perangkat\" dan skenario \"Membuka halaman IoT system\" menjadi \"Membuka halaman status perangkat\"."
+      "lokasi": "3.12.2, Tabel 3.6 baris 2, Hasil yang Diharapkan (paragraf 711)",
+      "cari": "Grafik menampilkan nilai parameter terpilih berdasarkan waktu",
+      "ganti": "Grafik menampilkan nilai gas terpilih pada rentang 1 jam, 24 jam, atau 7 hari beserta garis ambang kategori",
+      "catatan": "Halaman aplikasi (Detail Ruangan)."
     },
     {
       "id": "3.12-14",
-      "lokasi": "Tabel 3.6 baris baru 8–9",
-      "cari": "Pengujian ini memastikan aplikasi dapat menampilkan informasi kualitas udara secara real-time",
-      "catatan": "Tambahkan dua baris pada Tabel 3.6 (sebelum paragraf ini): \"8 | Panduan | Membuka halaman panduan | Menampilkan cara membaca kategori, tabel ambang (Solihat et al., 2026), keterangan empat gas, pertanyaan umum, dan batasan\" dan \"9 | Kuesioner UEQ | Mengisi 26 butir lalu mengirim | Jawaban tersimpan dan muncul pesan berhasil; pengiriman dengan butir kosong ditolak\". Alasan: Spec §6 (halaman 6–7) dan §8."
-    },
-    {
-      "id": "3.12-15",
-      "lokasi": "Sub-subbab 3.12 (hlm. 62)",
-      "cari": "3.14.3 Pengujian Pengolahan Data Sensor",
-      "ganti": "3.12.3 Pengujian Pengolahan Data Sensor",
-      "catatan": "Spec §9 (penomoran ganda)."
-    },
-    {
-      "id": "3.12-16",
-      "lokasi": "3.12.3, paragraf 2 (hlm. 62)",
-      "cari": "sedangkan data tidak valid ditolak dan dicatat pada error handler.",
-      "ganti": "sedangkan data tidak valid ditolak dan dicatat pada log penolakan data yang dapat dilihat di halaman Status Perangkat.",
-      "catatan": "Spec §4 dan §6."
-    },
-    {
-      "id": "3.12-17",
-      "lokasi": "Tabel 3.7, kolom Hasil yang Diharapkan baris 2–5 (hlm. 63)",
-      "cari": "Data ditolak dan kesalahan dicatat",
-      "ganti": "Data ditolak (HTTP 422) dan dicatat pada log penolakan data",
-      "catatan": "Spec §4. Berlaku untuk keempat baris (2–5).",
+      "lokasi": "3.12.2, Tabel 3.6 baris 3–5, kolom Fitur (paragraf 713, 717, 721)",
+      "cari": "Historical data",
+      "ganti": "Riwayat",
+      "catatan": "Halaman aplikasi (nama halaman Riwayat).",
       "semua": true
     },
     {
+      "id": "3.12-15",
+      "lokasi": "3.12.2, Tabel 3.6 baris 7, Skenario (paragraf 730)",
+      "cari": "Membuka halaman IoT system",
+      "ganti": "Membuka halaman status perangkat",
+      "catatan": "Halaman aplikasi. Ganti juga kolom Fitur baris 7 dari \"IoT system\" menjadi \"Status perangkat\"."
+    },
+    {
+      "id": "3.12-16",
+      "lokasi": "3.12.2, Tabel 3.6 baris 7, Hasil yang Diharapkan (paragraf 731)",
+      "cari": "Menampilkan device ID, jenis sensor, last update, dan status koneksi",
+      "ganti": "Menampilkan device ID, gas yang dikirim, waktu data terakhir, status koneksi (terhubung bila data terakhir ≤ 30 detik), alur data, dan sepuluh penolakan terakhir",
+      "catatan": "Halaman aplikasi (halaman Status Perangkat)."
+    },
+    {
+      "id": "3.12-17",
+      "lokasi": "3.12.2, Tabel 3.6 baris baru 8–9 (sebelum paragraf 732)",
+      "cari": "Pengujian ini memastikan aplikasi dapat menampilkan informasi kualitas udara secara real-time",
+      "catatan": "Tambahkan dua baris pada Tabel 3.6: \"8 | Panduan | Membuka halaman panduan | Menampilkan cara membaca kategori, tabel ambang (Solihat et al., 2026), keterangan empat gas, pertanyaan umum, dan batasan\" dan \"9 | Kuesioner UEQ | Mengisi 26 butir lalu mengirim | Jawaban tersimpan dan muncul pesan berhasil; pengiriman dengan butir kosong ditolak\". Alasan: halaman aplikasi (halaman 6–7) dan rencana pengujian."
+    },
+    {
       "id": "3.12-18",
-      "lokasi": "Tabel 3.7 baris 4 (hlm. 63)",
-      "cari": "device_id kosong",
-      "ganti": "device_id kosong atau tidak terdaftar",
-      "catatan": "Validasi exists:nodes,code (Spec §4)."
+      "lokasi": "3.12.3 Pengujian Pengolahan Data Sensor, paragraf 735",
+      "cari": "sedangkan data tidak valid ditolak dan dicatat pada error handler.",
+      "ganti": "sedangkan data tidak valid ditolak dengan respons HTTP 422, lalu tercatat dalam log penolakan data yang dapat dilihat di halaman Status Perangkat.",
+      "catatan": "Aturan penerimaan data dan halaman aplikasi."
     },
     {
       "id": "3.12-19",
-      "lokasi": "Tabel 3.8 (hlm. 63)",
-      "cari": "Baris 3 dan 4 menguji penentuan kategori keseluruhan",
-      "catatan": "Nilai Tabel 3.8 tidak diubah; semua hasil yang diharapkan sesuai ambang aplikasi. Opsional: tambahkan kolom \"Penyebab Utama\" (1: –, 2: CO₂, 3: CO, 4: H₂, 5: NH₃, 6: CO₂, 7: CO₂). Alasan: Spec §2 dan §8."
+      "lokasi": "3.12.3, Tabel 3.7 baris 2–5, Hasil yang Diharapkan (paragraf 745, 748, 751, 754)",
+      "cari": "Data ditolak dan kesalahan dicatat",
+      "ganti": "Data ditolak (HTTP 422) dan dicatat pada log penolakan data",
+      "catatan": "Aturan penerimaan data. Berlaku untuk keempat baris.",
+      "semua": true
     },
     {
       "id": "3.12-20",
-      "lokasi": "Sub-subbab 3.12 (hlm. 64)",
-      "cari": "3.14.4 Pengujian Rekomendasi Tindakan Preventif",
-      "ganti": "3.12.4 Pengujian Rekomendasi Tindakan Preventif",
-      "catatan": "Spec §9 (penomoran ganda)."
+      "lokasi": "3.12.3, Tabel 3.7 baris 4 (paragraf 750)",
+      "cari": "device_id kosong",
+      "ganti": "device_id kosong atau tidak terdaftar",
+      "catatan": "Aturan penerimaan data: device_id harus terdaftar."
     },
     {
       "id": "3.12-21",
-      "lokasi": "Tabel 3.9 baris 3 (hlm. 64)",
+      "lokasi": "3.12.4, Tabel 3.9 baris 3 (paragraf 821)",
       "cari": "Tingkatkan ventilasi, periksa dan kurangi sumber polutan, serta kurangi aktivitas di dalam ruangan.",
       "ganti": "Tingkatkan ventilasi, periksa dan kurangi sumber polutan seperti asap atau gas, serta kurangi aktivitas di dalam ruangan.",
-      "catatan": "Spec §3: teks harus persis sama dengan Tabel 3.3. Tambahkan juga kolom \"Tingkat\" pada Tabel 3.9 (Normal, Waspada, Perlu Tindakan, Segera Bertindak)."
+      "catatan": "Aturan rekomendasi: teks harus persis sama dengan Tabel 3.3. Tambahkan juga kolom \"Tingkat\" pada Tabel 3.9 (Normal, Waspada, Perlu Tindakan, Segera Bertindak)."
     },
     {
       "id": "3.12-22",
-      "lokasi": "Tabel 3.9 baris 4 (hlm. 64)",
+      "lokasi": "3.12.4, Tabel 3.9 baris 4 (paragraf 824)",
       "cari": "Segera tingkatkan ventilasi, hentikan sumber polutan, dan pertimbangkan meninggalkan ruangan sementara.",
       "ganti": "Segera tingkatkan ventilasi, hentikan sumber polutan, dan pertimbangkan meninggalkan ruangan sementara sampai kondisi udara membaik.",
-      "catatan": "Spec §3: teks harus persis sama dengan Tabel 3.3; pengujian membandingkan teks secara utuh."
+      "catatan": "Aturan rekomendasi: teks harus persis sama dengan Tabel 3.3; pengujian membandingkan teks secara utuh."
     },
     {
       "id": "3.12-23",
-      "lokasi": "Sub-subbab 3.12 (hlm. 64)",
-      "cari": "3.14.5 Pengujian pada Beberapa Kondisi Ruangan",
-      "ganti": "3.12.5 Pengujian pada Beberapa Kondisi Ruangan",
-      "catatan": "Spec §9 (penomoran ganda)."
+      "lokasi": "3.12.5 Pengujian pada Beberapa Kondisi Ruangan, paragraf 826",
+      "cari": "perubahan kondisi udara dibuat secara terkontrol di ruangan yang sama.",
+      "ganti": "perubahan kondisi udara dibuat secara terkontrol di satu ruangan uji yang sama. Karena nilai ppm dihitung relatif terhadap *baseline* saat perangkat dinyalakan, perangkat dinyalakan pada kondisi ruangan normal dengan ventilasi biasa dan tidak dinyalakan ulang di antara skenario, agar seluruh skenario memakai acuan yang sama.",
+      "catatan": "Ruang lingkup penelitian (satu ruangan) dan aturan klasifikasi ambang (baseline)."
     },
     {
       "id": "3.12-24",
-      "lokasi": "3.12.5, paragraf 1 (hlm. 64)",
-      "cari": "perubahan kondisi udara dibuat secara terkontrol di ruangan yang sama.",
-      "ganti": "perubahan kondisi udara dibuat secara terkontrol di ruangan yang sama. Seluruh skenario dilakukan di satu ruangan uji. Karena nilai ppm dihitung relatif terhadap *baseline* saat perangkat dinyalakan, perangkat dinyalakan pada kondisi ruangan normal dengan ventilasi biasa dan tidak dinyalakan ulang di antara skenario, agar seluruh skenario memakai acuan yang sama.",
-      "catatan": "Spec §1 (satu ruangan) dan §2 (baseline)."
+      "lokasi": "3.12.6 baru dan Tabel 3.11–3.12 baru (sesudah paragraf 853)",
+      "cari": "Pada setiap skenario, sistem juga dicek",
+      "catatan": "Sesudah 3.12.5, tambahkan sub-subbab baru \"3.12.6 Evaluasi Pengguna dengan UEQ\": \"Evaluasi pengguna memakai User Experience Questionnaire (UEQ) 26 butir (Laugwitz et al., 2008) versi Bahasa Indonesia (Santoso et al., 2016). Setiap butir berupa pasangan kata berlawanan dengan skala 1–7. Jawaban diubah ke rentang −3 sampai +3, dan nilai butir 3, 4, 5, 9, 10, 12, 17, 18, 19, 21, 23, 24, dan 25 dibalik karena istilah positifnya berada di sisi kiri. Butir dikelompokkan ke dalam enam skala (Tabel 3.11). Untuk setiap skala dihitung rata-rata, simpangan baku, dan Cronbach's alpha, lalu rata-rata skala dibandingkan dengan benchmark UEQ (Schrepp et al., 2017) untuk memperoleh kategori Excellent, Good, Above Average, Below Average, atau Bad (Tabel 3.12). Data mentah dapat diekspor ke format yang kompatibel dengan UEQ Data Analysis Tool. Jumlah dan kriteria responden: (cek).\"\nTabel 3.11 Pemetaan Butir UEQ ke Skala: Attractiveness (daya tarik) 1, 12, 14, 16, 24, 25; Perspicuity (kejelasan) 2, 4, 13, 21; Efficiency (efisiensi) 9, 20, 22, 23; Dependability (ketepatan) 8, 11, 17, 19; Stimulation (stimulasi) 5, 6, 7, 18; Novelty (kebaruan) 3, 10, 15, 26.\nTabel 3.12 Benchmark UEQ, batas bawah rata-rata untuk Excellent / Good / Above Average / Below Average (di bawahnya Bad): Attractiveness 1,75 / 1,52 / 1,17 / 0,70; Perspicuity 1,90 / 1,56 / 1,08 / 0,64; Efficiency 1,78 / 1,47 / 0,98 / 0,54; Dependability 1,65 / 1,48 / 1,14 / 0,78; Stimulation 1,55 / 1,31 / 0,99 / 0,50; Novelty 1,40 / 1,05 / 0,71 / 0,30. Seluruh angka: (cek) terhadap UEQ Handbook sebelum dicantumkan.\nAlasan: evaluasi UEQ dan penyelarasan naskah dengan aplikasi."
     },
     {
       "id": "3.12-25",
-      "lokasi": "3.12.5, paragraf penutup (hlm. 65)",
+      "lokasi": "3.12.5, paragraf penutup (paragraf 853)",
       "cari": "sesuai interval pengiriman 30 detik dan tersimpan pada halaman historical data.",
       "ganti": "sesuai interval pengiriman 5–10 detik dan tersimpan pada halaman Riwayat.",
-      "catatan": "Spec §9 (interval)."
+      "catatan": "Penyelarasan naskah dengan aplikasi (interval) dan halaman aplikasi (nama halaman)."
     },
     {
       "id": "3.12-26",
-      "lokasi": "3.12.6 Evaluasi Pengguna dengan UEQ (baru)",
-      "cari": "Pada setiap skenario, sistem juga dicek apakah data tampil di dashboard",
-      "catatan": "Sesudah 3.12.5, tambahkan sub-subbab baru \"3.12.6 Evaluasi Pengguna dengan UEQ\": \"Evaluasi pengguna memakai User Experience Questionnaire (UEQ) 26 butir (Laugwitz et al., 2008) versi Bahasa Indonesia (Santoso et al., 2016). Setiap butir berupa pasangan kata berlawanan dengan skala 1–7. Jawaban diubah ke rentang −3 sampai +3, dan nilai butir 3, 4, 5, 9, 10, 12, 17, 18, 19, 21, 23, 24, dan 25 dibalik karena istilah positifnya berada di sisi kiri. Butir dikelompokkan ke dalam enam skala (Tabel 3.11). Untuk setiap skala dihitung rata-rata, simpangan baku, dan Cronbach's alpha, lalu rata-rata skala dibandingkan dengan benchmark UEQ (Schrepp et al., 2017) untuk memperoleh kategori Excellent, Good, Above Average, Below Average, atau Bad (Tabel 3.12). Data mentah dapat diekspor ke format yang kompatibel dengan UEQ Data Analysis Tool. Jumlah dan kriteria responden: (cek).\" Lengkapi jumlah dan kriteria responden. Alasan: Spec §7 dan §9; config/ueq.php; perintah php artisan ueq:report."
+      "lokasi": "3.12.7 Kesimpulan Pengujian, paragraf 855",
+      "cari": "yaitu dashboard, sensor charts, historical data, rekomendasi tindakan, dan IoT system.",
+      "ganti": "yaitu ketujuh halaman aplikasi: Beranda, Detail Ruangan, Riwayat, Rekomendasi Tindakan, Status Perangkat, Panduan, dan Kuesioner UEQ.",
+      "catatan": "Halaman aplikasi (tujuh halaman)."
     },
     {
       "id": "3.12-27",
-      "lokasi": "Tabel 3.11 (baru) Pemetaan Butir UEQ ke Skala",
-      "cari": "Pada setiap skenario, sistem juga dicek apakah data tampil di dashboard",
-      "catatan": "Di 3.12.6, sisipkan Tabel 3.11 Pemetaan Butir UEQ ke Skala: Attractiveness (daya tarik): 1, 12, 14, 16, 24, 25; Perspicuity (kejelasan): 2, 4, 13, 21; Efficiency (efisiensi): 9, 20, 22, 23; Dependability (ketepatan): 8, 11, 17, 19; Stimulation (stimulasi): 5, 6, 7, 18; Novelty (kebaruan): 3, 10, 15, 26. Alasan: Spec §7; config/ueq.php (scales)."
+      "lokasi": "3.12.7 Kesimpulan Pengujian, paragraf 856",
+      "cari": "memastikan bahwa nilai pembacaan sensor dapat diolah menjadi nilai ppm per parameter gas dan diklasifikasikan",
+      "ganti": "memastikan bahwa nilai ppm per parameter gas yang diterima dari perangkat dapat divalidasi dan diklasifikasikan",
+      "catatan": "Aplikasi tidak mengonversi pembacaan menjadi ppm; konversi dilakukan perangkat (subbab 3.1; ruang lingkup penelitian)."
     },
     {
       "id": "3.12-28",
-      "lokasi": "Tabel 3.12 (baru) Benchmark UEQ",
-      "cari": "Pada setiap skenario, sistem juga dicek apakah data tampil di dashboard",
-      "catatan": "Di 3.12.6, sisipkan Tabel 3.12 Benchmark UEQ: batas bawah rata-rata untuk Excellent / Good / Above Average / Below Average (di bawahnya: Bad). Attractiveness 1,75 / 1,52 / 1,17 / 0,70; Perspicuity 1,90 / 1,56 / 1,08 / 0,64; Efficiency 1,78 / 1,47 / 0,98 / 0,54; Dependability 1,65 / 1,48 / 1,14 / 0,78; Stimulation 1,55 / 1,31 / 0,99 / 0,50; Novelty 1,40 / 1,05 / 0,71 / 0,30. Seluruh angka: (cek) terhadap UEQ Handbook sebelum dicantumkan. Alasan: Spec §7; config/ueq.php (benchmark)."
-    },
-    {
-      "id": "3.12-29",
-      "lokasi": "Sub-subbab 3.12 (hlm. 65)",
-      "cari": "3.14.6 Kesimpulan Pengujian",
-      "ganti": "3.12.7 Kesimpulan Pengujian",
-      "catatan": "Spec §9: menjadi 3.12.7 karena 3.12.6 Evaluasi Pengguna dengan UEQ disisipkan sebelumnya."
-    },
-    {
-      "id": "3.12-30",
-      "lokasi": "3.12.7 Kesimpulan Pengujian, paragraf 1 (hlm. 65)",
-      "cari": "yaitu dashboard, sensor charts, historical data, rekomendasi tindakan, dan IoT system.",
-      "ganti": "yaitu ketujuh halaman aplikasi: Beranda, Detail Ruangan, Riwayat, Rekomendasi Tindakan, Status Perangkat, Panduan, dan Kuesioner UEQ.",
-      "catatan": "Spec §6."
-    },
-    {
-      "id": "3.12-31",
-      "lokasi": "3.12.7, paragraf 2 (hlm. 65)",
-      "cari": "memastikan bahwa nilai pembacaan sensor dapat diolah menjadi nilai ppm per parameter gas dan diklasifikasikan",
-      "ganti": "memastikan bahwa nilai ppm per parameter gas yang diterima dari perangkat divalidasi dan diklasifikasikan",
-      "catatan": "Aplikasi tidak mengonversi pembacaan menjadi ppm; konversi dilakukan perangkat (Spec §1)."
-    },
-    {
-      "id": "3.12-32",
-      "lokasi": "3.12.7, paragraf baru sebelum paragraf penutup",
+      "lokasi": "3.12.7 Kesimpulan Pengujian, paragraf 858",
       "cari": "normal, tertutup, berasap, dan dengan ventilasi berbeda.",
       "ganti": "normal, tertutup, berasap, dan dengan ventilasi berbeda. Evaluasi pengguna dengan UEQ dilakukan untuk mengetahui pengalaman pengguna pada enam skala dan membandingkannya dengan *benchmark* UEQ.",
-      "catatan": "Spec §7. Bila perlu, jadikan tambahan ini paragraf tersendiri."
+      "catatan": "Evaluasi UEQ. Bila perlu, jadikan tambahan ini paragraf tersendiri."
     },
     {
       "id": "DP-01",
-      "lokasi": "Daftar Pustaka, entri yang perlu ditambahkan",
+      "lokasi": "Daftar Pustaka, entri yang perlu ditambahkan (paragraf 863)",
       "cari": "Adisti, K. P., & Nugraha, I. (2025).",
       "catatan": "Tambahkan entri berikut ke daftar pustaka (urut abjad): (1) U.S. Environmental Protection Agency. ((cek) tahun). Improving Indoor Air Quality. https://www.epa.gov/indoor-air-quality-iaq/improving-indoor-air-quality (tanggal akses: cek); (2) U.S. Environmental Protection Agency. ((cek) tahun). Technical Assistance Document for the Reporting of Daily Air Quality – the Air Quality Index (AQI) (EPA-403/B-26-003) (judul lengkap dan tahun: cek); (3) Laugwitz, B., Held, T., & Schrepp, M. (2008). Construction and evaluation of a user experience questionnaire (prosiding, halaman, DOI: cek); (4) Schrepp, M., Hinderks, A., & Thomaschewski, J. (2017). Construction of a benchmark for the User Experience Questionnaire (UEQ) (jurnal, volume, halaman, DOI: cek); (5) Santoso, H. B., Schrepp, M., Isal, R. Y. K., Utomo, A. Y., & Priyogi, B. (2016). Measuring user experience of the student-centered e-learning environment (jurnal, volume, halaman, DOI: cek); (6) Schrepp, M. ((cek) tahun). User Experience Questionnaire Handbook. ueq-online.org (versi dan tahun: cek)."
     },
     {
       "id": "DP-02",
-      "lokasi": "Entri AirNow.gov (2026)",
-      "cari": "AirNow.gov. (2026). Air Quality Index (AQI) Basics.",
-      "catatan": "Tidak ditemukan sitasi entri ini di teks. Hapus bila memang tidak dikutip, atau tambahkan sitasinya di teks."
-    },
-    {
-      "id": "DP-03",
-      "lokasi": "Entri Atzori (hlm. 67)",
-      "cari": "Atzori, L., Iera, A., & Morabito, G. (2025). The Internet of Things : A survey.",
-      "ganti": "Atzori, L., Iera, A., & Morabito, G. (2010). The Internet of Things: A survey.",
-      "catatan": "Spec §9: terbit 2010. Cetak miring nama jurnal Computer Networks."
-    },
-    {
-      "id": "DP-04",
-      "lokasi": "Entri Hartiala et al. (2026)",
-      "cari": "Hartiala, M., Elenius, V., Aguado, A., Silas, P.",
-      "catatan": "Tidak ditemukan sitasi entri ini di teks. Hapus bila memang tidak dikutip, atau tambahkan sitasinya di teks."
-    },
-    {
-      "id": "DP-05",
-      "lokasi": "Entri Huda et al. (2025)",
-      "cari": "Huda, N. F., Lutfi, A., & Lazim, F. (2025).",
-      "catatan": "Tidak ditemukan sitasi entri ini di teks. Hapus bila memang tidak dikutip, atau tambahkan sitasinya di teks."
-    },
-    {
-      "id": "DP-06",
-      "lokasi": "Entri Makridakis et al. (1999) (hlm. 68)",
-      "cari": "Makridakis, S., Wheelwright, S. C., & Hyndman, R. J. (1999). Forecasting: Methods and Applications. 94(445), 345–346.",
-      "ganti": "",
-      "catatan": "Spec §9: referensi peramalan tidak dipakai; tidak ada sitasi dalam teks. Hapus juga paragraf kosong yang tersisa."
-    },
-    {
-      "id": "DP-07",
-      "lokasi": "Entri Méndez et al. (2023)",
-      "cari": "Méndez, M., Merayo, M. G., & Núñez, M. (2023).",
-      "catatan": "Tidak ditemukan sitasi entri ini di teks dan isinya tentang peramalan (Spec §1: tanpa prediksi), sehingga sebaiknya dihapus."
-    },
-    {
-      "id": "DP-08",
-      "lokasi": "Entri Nurrohman et al. (2024)",
-      "cari": "Nurrohman, A., Wibisono, S., & Darma, S. (2024).",
-      "catatan": "Tidak ditemukan sitasi entri ini di teks. Hapus bila memang tidak dikutip, atau tambahkan sitasinya di teks."
-    },
-    {
-      "id": "DP-09",
-      "lokasi": "Entri Pant et al. (2023)",
-      "cari": "Pant, A., Joshi, R. C., Sharma, S., & Pant, K. (2023).",
-      "catatan": "Tidak ditemukan sitasi entri ini di teks dan isinya tentang peramalan (Spec §1: tanpa prediksi), sehingga sebaiknya dihapus."
-    },
-    {
-      "id": "DP-10",
-      "lokasi": "Entri Power (2002) (hlm. 69)",
-      "cari": "Power, D. J. (2002). Decision Support Systems: Concepts and Resources for Managers.",
-      "ganti": "",
-      "catatan": "Spec §9; tidak ada sitasi dalam teks. Hapus juga paragraf kosong yang tersisa."
-    },
-    {
-      "id": "DP-11",
-      "lokasi": "Entri scikit-learn (2026) MinMaxScaler (hlm. 69)",
-      "cari": "scikit-learn. (2026). MinMaxScaler.…sklearn.preprocessing.MinMaxScaler.html",
-      "ganti": "",
-      "catatan": "Spec §9; tidak ada sitasi dan tidak ada normalisasi data di aplikasi. Hapus juga paragraf kosong yang tersisa."
-    },
-    {
-      "id": "DP-12",
-      "lokasi": "Entri Solihat (hlm. 69)",
-      "cari": "Jurnal Informatika Dan Teknik Elektro Terapan, 14(1).",
-      "ganti": "*Jurnal Informatika dan Teknik Elektro Terapan*, 14(1), 1592–1599.",
-      "catatan": "Tambahkan nomor halaman 1592–1599 (teks paper; config/air_quality.php)."
-    },
-    {
-      "id": "DP-13",
-      "lokasi": "Entri Turban et al. (2007) (hlm. 70)",
-      "cari": "Turban, E., Aronson, J. E., & Liang, T.-P. (2007). Decision Support and Business…Prentice-Hall of India Private Limited.",
-      "ganti": "",
-      "catatan": "Spec §9; tidak ada sitasi dalam teks. Hapus juga paragraf kosong yang tersisa."
-    },
-    {
-      "id": "DP-14",
-      "lokasi": "Entri U.S. EPA (2025a) Exposure Calculations (hlm. 70)",
-      "cari": "U.S. Environmental Protection Agency. (2025a). Exposure Calculations.…https://www.epa.gov/expobox/exposure-calculations",
-      "ganti": "",
-      "catatan": "Spec §9; fitur durasi paparan tidak ada. Hapus juga paragraf kosong yang tersisa."
-    },
-    {
-      "id": "DP-15",
-      "lokasi": "Entri U.S. EPA (2025b)",
-      "cari": "U.S. Environmental Protection Agency. (2025b). Research on Health Effects from Air Pollution.",
-      "catatan": "Setelah entri 2025a dihapus, ubah \"(2025b)\" menjadi \"(2025)\", atau hapus entri ini juga bila memang tidak dikutip (tidak ditemukan sitasinya di teks)."
-    },
-    {
-      "id": "DP-16",
-      "lokasi": "Entri World Health Organization (2024)",
-      "cari": "World Health Organization. (2024). Health consequences of air pollution on populations.",
-      "catatan": "Tidak ditemukan sitasi entri ini di teks (teks mengutip WHO, 2026). Hapus bila memang tidak dikutip, atau tambahkan sitasinya di teks."
+      "lokasi": "Daftar Pustaka, entri Solihat (paragraf 887)",
+      "cari": "Solihat, S. M., Salsabila, S., & Si, M. (2026). SISTEM PEMANTAUAN KUALITAS UDARA BERBASIS ESP32 MENGGUNAKAN SENSOR GAS MQ-135 DAN MQ-2. 14(1), 1592–1599.",
+      "ganti": "Solihat, S. M., Salsabila, S., & Susilawati. (2026). SISTEM PEMANTAUAN KUALITAS UDARA BERBASIS ESP32 MENGGUNAKAN SENSOR GAS MQ-135 DAN MQ-2. *Jurnal Informatika dan Teknik Elektro Terapan*, 14(1), 1592–1599. https://doi.org/10.23960/jitet.v14i1.5568",
+      "catatan": "Penulis ketiga tertulis \"Si, M.\" karena Mendeley membaca gelar M.Si. sebagai nama. Pada artikel, penulis ketiga adalah Susilawati, M.Si., sehingga dalam APA ditulis \"Susilawati.\" Perbaiki juga data penulis di Mendeley agar tidak kembali saat daftar pustaka diperbarui. Nama jurnal dan DOI dilengkapi. Ubah juga judul artikel menjadi huruf kapital di awal kata dan tidak miring, seperti entri lain (yang miring cukup nama jurnal dan volume). Perbaiki juga metadata referensi ini di Mendeley."
     }
   ]
 }
