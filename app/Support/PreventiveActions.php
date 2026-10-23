@@ -87,7 +87,7 @@ class PreventiveActions
             'sub_index' => round($subIndex, 1),
             'category' => $category,
             'level' => $level['key'],
-            'level_label' => $level['label'].' (AQI EPA: '.$level['epa_label'].')',
+            'level_label' => $level['label'].' ('.$level['epa_label'].')',
             'cautionary' => $level['cautionary'],
             'actions' => config("preventive_actions.actions.co.{$level['key']}", []),
             'sources' => self::sources(config('preventive_actions.gas_sources.co')),

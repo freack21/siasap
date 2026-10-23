@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Models\Room;
 use App\Models\SensorLog;
 use App\Support\AirQuality;
+use App\Support\PreventiveActions;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Livewire\Attributes\Layout;
@@ -13,8 +14,8 @@ use Livewire\Attributes\Url;
 use Livewire\Component;
 
 /**
- * Detail satu ruangan: nilai terkini, grafik tren, ringkasan statistik,
- * dan pembacaan terakhir.
+ * Detail satu ruangan: nilai terkini, tindakan preventif, grafik tren,
+ * ringkasan statistik, dan pembacaan terakhir.
  */
 #[Layout('layouts::public')]
 #[Title('Detail Ruangan — SIASAP')]
@@ -75,6 +76,7 @@ class RoomDetail extends Component
             'dominant' => $current
                 ? ($current->ku_dominant ?? SensorLog::computeKu($current->co2, $current->nh3, $current->co, $current->h2)['dominant'])
                 : null,
+            'preventive' => $current ? PreventiveActions::forLog($current) : null,
             'devices' => $devices,
             'lastUpdate' => $latestLogs->max('created_at'),
             'recent' => $recent,
