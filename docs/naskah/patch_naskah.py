@@ -17,6 +17,7 @@ Pemakaian:
 Opsi lain:
   --langsung        ganti tanpa Track Changes
   --tanpa-komentar  abaikan semua "catatan"
+  --tanpa-alasan    komentar hanya untuk butir manual (tanpa "ganti")
   --pertama         bila teks ditemukan di beberapa tempat, pakai yang pertama
   --hanya ID,ID     terapkan butir tertentu saja
   --laporan F.csv   simpan laporan per butir
@@ -650,6 +651,10 @@ def run(arguments: argparse.Namespace) -> int:
                             max_numeric_id(list(parts.values()), ("commentRangeStart", "commentReference"))) + 1,
     )
     with_comments = not arguments.tanpa_komentar
+    if arguments.tanpa_alasan:
+        for revision in revisions:
+            if revision.ganti is not None:
+                revision.catatan = None
 
     for revision in revisions:
         try:
@@ -746,6 +751,7 @@ def main() -> int:
     parser.add_argument("--penulis", default="Revisi Naskah", help="nama yang tercatat di Track Changes")
     parser.add_argument("--langsung", action="store_true", help="ganti tanpa Track Changes")
     parser.add_argument("--tanpa-komentar", action="store_true", help="abaikan butir 'catatan'")
+    parser.add_argument("--tanpa-alasan", action="store_true", help="komentar hanya untuk butir manual")
     parser.add_argument("--pertama", action="store_true", help="bila ambigu, pakai kemunculan pertama")
     parser.add_argument("--hanya", help="id butir dipisah koma")
     parser.add_argument("--laporan", help="simpan laporan ke CSV")
