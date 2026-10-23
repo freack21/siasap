@@ -1,0 +1,125 @@
+{
+  "keterangan": "Data pustaka untuk patch_naskah.py (dirujuk dari tata-tulis.json, kunci \"pustaka\"). Setiap sitasi di batang tubuh dijadikan field Mendeley ADDIN CSL_CITATION berformat APA 7 dan daftar pustaka (field CSL_BIBLIOGRAPHY) disusun ulang dari itemData karya yang disitasi. Karya yang sudah ada di pustaka Mendeley penulis diambil dari field di naskah (itemData dan uris dipakai apa adanya); \"perbaikan\" hanya untuk data yang jelas salah, dengan sumber terverifikasi di sumber.json. \"baru\" adalah karya yang belum ada di Mendeley (tanpa uris); diekspor ke referensi-baru.ris/.bib untuk diimpor penulis. Huruf a/b/c dihitung otomatis (penulis dan tahun sama, urut judul). \"ejaan_baku\" menjaga huruf besar nama diri dan akronim saat judul diubah ke sentence case.",
+  "judul_daftar_pustaka": "DAFTAR PUSTAKA",
+  "penghubung_naratif": "dan",
+  "perataan_daftar_pustaka": "left",
+  "awalan_sumber": ["Sumber"],
+  "ejaan_baku": [
+    "Internet of Things", "IoT", "ESP32", "MQ-135", "MQ-2", "MQ135", "LPG", "AQI", "UEQ", "HCI", "USAB",
+    "EURASIP", "Google Looker Studio", "Pertamina Green Village", "Python", "Indonesia", "Air Quality Index",
+    "User Experience Questionnaire", "Part 58", "(Model: MQ135)", "(Model: MQ-2)"
+  ],
+  "ejaan_judul": {
+    "Real - Time": "Real-Time"
+  },
+  "perbaikan": [
+    {
+      "cocok": {"family": "Solihat", "tahun": "2026"},
+      "keterangan": "Penulis ketiga diparse Mendeley sebagai \"Si, M.\" (gelar S.Si., M.Si.); nama sebenarnya Susilawati (satu nama). Judul huruf kapital semua, nama jurnal dan DOI dilengkapi dari halaman artikel (sumber.json: solihat2026).",
+      "itemData": {
+        "author": [
+          {"dropping-particle": "", "family": "Solihat", "given": "Sophia Maratu", "non-dropping-particle": "", "parse-names": false, "suffix": ""},
+          {"dropping-particle": "", "family": "Salsabila", "given": "Salwa", "non-dropping-particle": "", "parse-names": false, "suffix": ""},
+          {"dropping-particle": "", "family": "Susilawati", "given": "", "non-dropping-particle": "", "parse-names": false, "suffix": ""}
+        ],
+        "title": "Sistem pemantauan kualitas udara berbasis ESP32 menggunakan sensor gas MQ-135 dan MQ-2",
+        "container-title": "Jurnal Informatika dan Teknik Elektro Terapan",
+        "DOI": "10.23960/jitet.v14i1.5568"
+      }
+    }
+  ],
+  "baru": [
+    {
+      "id": "epa2026a_co",
+      "alias": ["U.S. EPA", "EPA"],
+      "itemData": {"type": "webpage", "author": [{"family": "U.S. Environmental Protection Agency", "given": ""}],
+                   "issued": {"date-parts": [[2026, 7, 15]]}, "title": "Carbon monoxide's impact on indoor air quality",
+                   "URL": "https://www.epa.gov/indoor-air-quality-iaq/carbon-monoxides-impact-indoor-air-quality"}
+    },
+    {
+      "id": "epa2026b_iaq",
+      "alias": ["U.S. EPA", "EPA"],
+      "itemData": {"type": "webpage", "author": [{"family": "U.S. Environmental Protection Agency", "given": ""}],
+                   "issued": {"date-parts": [[2026, 8, 3]]}, "title": "Improving indoor air quality",
+                   "URL": "https://www.epa.gov/indoor-air-quality-iaq/improving-indoor-air-quality"}
+    },
+    {
+      "id": "epa2026c_aqi_tad",
+      "alias": ["U.S. EPA", "EPA"],
+      "itemData": {"type": "report", "author": [{"family": "U.S. Environmental Protection Agency", "given": ""}],
+                   "issued": {"date-parts": [[2026]]},
+                   "title": "Technical assistance document for the reporting of daily air quality – the Air Quality Index (AQI)",
+                   "number": "EPA-403/B-26-003", "publisher": "Office of Air Quality Planning and Standards",
+                   "URL": "https://document.airnow.gov/technical-assistance-document-for-the-reporting-of-daily-air-quailty.pdf"}
+    },
+    {
+      "id": "atsdr2011_amonia",
+      "alias": ["Agency for Toxic Substances and Disease Registry [ATSDR]", "ATSDR"],
+      "itemData": {"type": "report", "author": [{"family": "Agency for Toxic Substances and Disease Registry", "given": ""}],
+                   "issued": {"date-parts": [[2011]]}, "title": "ToxFAQs™ for ammonia",
+                   "publisher": "U.S. Department of Health and Human Services",
+                   "URL": "https://wwwn.cdc.gov/TSP/ToxFAQs/ToxFAQsDetails.aspx?faqid=10&toxid=2"}
+    },
+    {
+      "id": "persily2017",
+      "itemData": {"type": "article-journal",
+                   "author": [{"family": "Persily", "given": "A."}, {"family": "Jonge", "non-dropping-particle": "de", "given": "L."}],
+                   "issued": {"date-parts": [[2017]]}, "title": "Carbon dioxide generation rates for building occupants",
+                   "container-title": "Indoor Air", "volume": "27", "issue": "5", "page": "868-879", "DOI": "10.1111/ina.12383"}
+    },
+    {
+      "id": "laugwitz2008",
+      "itemData": {"type": "paper-conference",
+                   "author": [{"family": "Laugwitz", "given": "B."}, {"family": "Held", "given": "T."}, {"family": "Schrepp", "given": "M."}],
+                   "editor": [{"family": "Holzinger", "given": "A."}],
+                   "issued": {"date-parts": [[2008]]}, "title": "Construction and evaluation of a user experience questionnaire",
+                   "container-title": "HCI and usability for education and work: USAB 2008",
+                   "collection-title": "Lecture Notes in Computer Science", "volume": "5298", "page": "63-76",
+                   "publisher": "Springer", "DOI": "10.1007/978-3-540-89350-9_6"}
+    },
+    {
+      "id": "santoso2016",
+      "itemData": {"type": "article-journal",
+                   "author": [{"family": "Santoso", "given": "H. B."}, {"family": "Schrepp", "given": "M."}, {"family": "Isal", "given": "R. Y. K."},
+                              {"family": "Utomo", "given": "A. Y."}, {"family": "Priyogi", "given": "B."}],
+                   "issued": {"date-parts": [[2016]]}, "title": "Measuring user experience of the student-centered e-learning environment",
+                   "container-title": "The Journal of Educators Online", "volume": "13", "issue": "1", "page": "58-79",
+                   "DOI": "10.9743/jeo.2016.1.5"}
+    },
+    {
+      "id": "schrepp2017",
+      "itemData": {"type": "article-journal",
+                   "author": [{"family": "Schrepp", "given": "M."}, {"family": "Hinderks", "given": "A."}, {"family": "Thomaschewski", "given": "J."}],
+                   "issued": {"date-parts": [[2017]]}, "title": "Construction of a benchmark for the User Experience Questionnaire (UEQ)",
+                   "container-title": "International Journal of Interactive Multimedia and Artificial Intelligence",
+                   "volume": "4", "issue": "4", "page": "40-44", "DOI": "10.9781/ijimai.2017.445"}
+    },
+    {
+      "id": "winsen2015a_mq135",
+      "alias": ["Zhengzhou Winsen Electronics Technology Co., Ltd.", "Winsen"],
+      "itemData": {"type": "report", "author": [{"family": "Zhengzhou Winsen Electronics Technology", "given": ""}],
+                   "issued": {"date-parts": [[2015]]}, "title": "Air quality gas sensor (Model: MQ135) manual",
+                   "version": "1.4", "genre": "Lembar data",
+                   "URL": "https://www.winsen-sensor.com/d/files/PDF/Semiconductor%20Gas%20Sensor/MQ135%20(Ver1.4)%20-%20Manual.pdf"}
+    },
+    {
+      "id": "winsen2015b_mq2",
+      "alias": ["Zhengzhou Winsen Electronics Technology Co., Ltd.", "Winsen"],
+      "itemData": {"type": "report", "author": [{"family": "Zhengzhou Winsen Electronics Technology", "given": ""}],
+                   "issued": {"date-parts": [[2015]]}, "title": "Smoke sensor (Model: MQ-2) manual",
+                   "version": "1.4", "genre": "Lembar data",
+                   "URL": "https://www.winsen-sensor.com/d/files/semiconductor/mq-2.pdf"}
+    },
+    {
+      "id": "mq2_datasheet_tt",
+      "itemData": {"type": "report", "title": "MQ-2 semiconductor sensor for combustible gas", "genre": "Lembar data",
+                   "publisher": "Pololu", "URL": "https://www.pololu.com/file/0J309/MQ2.pdf"}
+    },
+    {
+      "id": "mq135_datasheet_tt",
+      "itemData": {"type": "report", "title": "Technical data MQ-135 gas sensor", "genre": "Lembar data",
+                   "publisher": "Olimex",
+                   "URL": "https://www.olimex.com/Products/Components/Sensors/Gas/SNS-MQ135/resources/SNS-MQ135.pdf"}
+    }
+  ]
+}
