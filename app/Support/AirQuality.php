@@ -13,7 +13,7 @@ use InvalidArgumentException;
 class AirQuality
 {
     /**
-     * @return array<string, array{label: string, icon: string, color: string, badge: string, dot: string, soft: string, description: string, advice: string}>
+     * @return array<string, array{label: string, icon: string, color: string, badge: string, dot: string, soft: string, description: string}>
      */
     public static function categories(): array
     {
@@ -26,7 +26,6 @@ class AirQuality
                 'dot' => 'bg-emerald-500',
                 'soft' => 'bg-emerald-50',
                 'description' => 'Kualitas udara ruangan nyaman dan tidak berisiko bagi kesehatan.',
-                'advice' => 'Pertahankan sirkulasi udara seperti biasa.',
             ],
             'Sedang' => [
                 'label' => 'Sedang',
@@ -36,7 +35,6 @@ class AirQuality
                 'dot' => 'bg-amber-500',
                 'soft' => 'bg-amber-50',
                 'description' => 'Masih dapat diterima, namun mulai ada penumpukan gas di dalam ruangan.',
-                'advice' => 'Buka jendela atau nyalakan ventilasi untuk menambah pertukaran udara.',
             ],
             'Tidak Sehat' => [
                 'label' => 'Tidak Sehat',
@@ -46,7 +44,6 @@ class AirQuality
                 'dot' => 'bg-orange-500',
                 'soft' => 'bg-orange-50',
                 'description' => 'Dapat menimbulkan keluhan seperti pusing, sesak, atau iritasi bila terpapar lama.',
-                'advice' => 'Kurangi aktivitas di ruangan, perbaiki ventilasi, dan cari sumber gas.',
             ],
             'Berbahaya' => [
                 'label' => 'Berbahaya',
@@ -56,7 +53,6 @@ class AirQuality
                 'dot' => 'bg-rose-500',
                 'soft' => 'bg-rose-50',
                 'description' => 'Konsentrasi gas tinggi dan berisiko langsung terhadap kesehatan atau keselamatan.',
-                'advice' => 'Segera tinggalkan ruangan, buka seluruh akses udara, dan periksa sumber kebocoran gas.',
             ],
         ];
     }
@@ -64,7 +60,7 @@ class AirQuality
     /**
      * Metadata kategori; status tak dikenal (mis. belum ada data) mendapat gaya netral.
      *
-     * @return array{label: string, icon: string, color: string, badge: string, dot: string, soft: string, description: string, advice: string}
+     * @return array{label: string, icon: string, color: string, badge: string, dot: string, soft: string, description: string}
      */
     public static function category(?string $status): array
     {
@@ -76,7 +72,6 @@ class AirQuality
             'dot' => 'bg-slate-400',
             'soft' => 'bg-slate-50',
             'description' => 'Belum ada data yang diterima dari sensor.',
-            'advice' => 'Pastikan perangkat sensor menyala dan terhubung ke jaringan.',
         ];
     }
 
