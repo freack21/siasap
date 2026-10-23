@@ -104,7 +104,7 @@ Teks dan sumber disimpan di `config/recommendations.php`; logika di `App\Support
 | 2 | Detail Ruangan / Grafik Sensor | `/ruangan/{room}` | Pemilih gas (CO₂/NH₃/CO/H₂), rentang 1 jam/24 jam/7 hari, garis ambang kategori pada grafik, 10 pembacaan terakhir. |
 | 3 | Riwayat | `/riwayat` | Filter tanggal & kategori, pagination, ekspor CSV (kolom: waktu, ruangan, 4 ppm, 4 kategori, KU, penyebab, rekomendasi). |
 | 4 | Rekomendasi Tindakan | `/rekomendasi` | Kategori & rekomendasi saat ini; tabel 4 aturan; dasar (EPA IAQ + gradasi AQI); disclaimer. |
-| 5 | Status Perangkat (IoT System) | `/perangkat` | device_id, gas yang dikirim, waktu data terakhir, status koneksi (terhubung bila data ≤ 3× interval), alur data, 10 penolakan terakhir. |
+| 5 | Status Perangkat (IoT System) | `/perangkat` | device_id, gas yang dikirim, waktu data terakhir, status koneksi (terhubung bila data terakhir ≤ 30 detik, yaitu 3× interval maksimum 10 detik), alur data, 10 penolakan terakhir. |
 | 6 | Panduan | `/panduan` | Cara membaca kategori, tabel ambang (Solihat et al.), keterangan 4 gas, FAQ, batasan. |
 | 7 | Kuesioner UEQ | `/kuesioner` | 26 butir UEQ versi Indonesia, skala 7 titik, data responden opsional (nama). |
 
