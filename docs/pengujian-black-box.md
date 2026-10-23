@@ -24,7 +24,7 @@ Kolom **Hasil Aktual** hanya berisi hasil yang benar-benar diperiksa oleh kasus 
 | Tanggal eksekusi | 23 Oktober 2026 |
 | Peramban (uji manual) | (diisi saat uji manual: nama dan versi peramban) |
 
-Hasil eksekusi `php artisan test --compact` pada 23 Oktober 2026: **135 kasus uji lulus, 495 *assertion*, 0 gagal** (durasi ±6,5 detik). Jumlah ini terdiri atas 79 kasus uji *feature* dan 56 kasus uji *unit*. Kasus uji dengan *data provider* dihitung satu per set data, misalnya `TelemetryApiTest::test_table_3_8_classification_via_api` dihitung 7 kali (baris 1–7).
+Hasil eksekusi `php artisan test --compact` pada 23 Oktober 2026: **147 kasus uji lulus, 601 *assertion*, 0 gagal** (durasi ±6,5 detik). Jumlah ini terdiri atas 91 kasus uji *feature* dan 56 kasus uji *unit*. Kasus uji dengan *data provider* dihitung satu per set data, misalnya `TelemetryApiTest::test_table_3_8_classification_via_api` dihitung 7 kali (baris 1–7).
 
 Pembagian kasus uji per kelas:
 
@@ -145,8 +145,8 @@ Data uji dasar (format naskah 3.9.1): `device_id` = `AIR-001` (terdaftar dan akt
 | 10 | Waktu perangkat berbeda dengan waktu server | `timestamp` = `2026-05-01 10:00:00`, waktu server 2026-10-23 12:00:00 | Waktu perangkat disimpan apa adanya; waktu terima memakai waktu server | Sesuai harapan | Valid | `TelemetryApiTest::test_device_timestamp_is_kept_while_created_at_is_server_time` |
 | 11 | API key dikonfigurasi | `TELEMETRY_API_KEY` = `rahasia-node`; kirim tanpa header, dengan `X-Api-Key: salah`, lalu dengan kunci benar | Tanpa/salah kunci: HTTP 401, tidak dicatat sebagai penolakan validasi; kunci benar: HTTP 201 | Sesuai harapan | Valid | `TelemetryApiTest::test_api_key_is_enforced_when_configured_without_logging_rejection` |
 | 12 | API key tidak dikonfigurasi | `TELEMETRY_API_KEY` kosong, tanpa header | HTTP 201 | Sesuai harapan | Valid | `TelemetryApiTest::test_api_key_is_not_required_when_empty` |
-| 13 | `device_id` milik perangkat nonaktif | `device_id` perangkat dengan status tidak aktif | HTTP 422 dengan pesan galat field terkait (`device_id`); penolakan tercatat | (diisi setelah diuji) | Belum diuji (manual) | — (perilaku ini ditambahkan pada perbaikan terpisah; perbarui status setelah kasus ujinya lulus) |
-| 14 | Pengiriman melebihi batas laju | Lebih dari 60 permintaan per menit dari sumber yang sama | Permintaan berlebih ditolak dengan HTTP 429 | (diisi setelah diuji) | Belum diuji (manual) | — (pembatasan laju ditambahkan pada perbaikan terpisah; perbarui status setelah kasus ujinya lulus) |
+| 13 | `device_id` milik perangkat nonaktif | `device_id` perangkat dengan status tidak aktif | HTTP 422 dengan pesan galat field terkait (`device_id`); penolakan tercatat | Sesuai harapan | Valid | `TelemetryApiTest::test_inactive_device_is_rejected` |
+| 14 | Pengiriman melebihi batas laju | Lebih dari 60 permintaan per menit dari sumber yang sama | Permintaan berlebih ditolak dengan HTTP 429 | Sesuai harapan | Valid | `TelemetryApiTest::test_telemetry_endpoint_is_throttled_to_sixty_requests_per_minute` |
 
 ### b. Pengujian klasifikasi kualitas udara
 
@@ -272,11 +272,11 @@ Kasus uji berikut mendukung evaluasi pengguna (UEQ) dan penyiapan data. Bagian i
 | Tabel | Jumlah Skenario | Valid | Belum diuji (manual) |
 |---|---|---|---|
 | Tabel 3.6 Pengujian Fungsional Aplikasi | 47 | 42 | 5 (F8, F15, F22, F33, F47) |
-| Tabel 3.7 Pengujian Validasi Data | 14 | 12 | 2 (baris 13, 14) |
+| Tabel 3.7 Pengujian Validasi Data | 14 | 14 | 0 |
 | Tabel 3.8 Pengujian Klasifikasi Kualitas Udara (termasuk pengujian tambahan) | 11 | 11 | 0 |
 | Tabel 3.9 Pengujian Rekomendasi Tindakan Preventif (termasuk pengujian tambahan) | 8 | 8 | 0 |
 | Tabel 3.10 Skenario Pengujian pada Beberapa Kondisi Ruangan | 4 | 0 | 4 |
 | Pengujian pendukung | 11 | 11 | 0 |
-| **Jumlah** | **95** | **84** | **11** |
+| **Jumlah** | **95** | **86** | **9** |
 
-Kesimpulan sementara (23 Oktober 2026): seluruh skenario yang diotomasi lulus (135 kasus uji, 495 *assertion*, 0 gagal). Kelima butir wajib Tabel 3.7 naskah, ketujuh baris Tabel 3.8, dan keempat baris Tabel 3.9 berstatus Valid. Skenario yang masih membutuhkan pengamatan di peramban atau dengan perangkat IoT nyata, termasuk seluruh Tabel 3.10, berstatus "Belum diuji (manual)" dan harus diisi dari pengujian lapangan sebelum dilaporkan di Bab IV.
+Kesimpulan sementara (23 Oktober 2026): seluruh skenario yang diotomasi lulus (147 kasus uji, 601 *assertion*, 0 gagal). Kelima butir wajib Tabel 3.7 naskah, ketujuh baris Tabel 3.8, dan keempat baris Tabel 3.9 berstatus Valid. Skenario yang masih membutuhkan pengamatan di peramban atau dengan perangkat IoT nyata, termasuk seluruh Tabel 3.10, berstatus "Belum diuji (manual)" dan harus diisi dari pengujian lapangan sebelum dilaporkan di Bab IV.
