@@ -102,7 +102,7 @@ mengubah teks; sisipan berikutnya ke sasaran yang sama diletakkan berurutan.
     paragraf "cari" ke akhir sisipan (terlacak), untuk sisipan di akhir bab.
       {"teks": "...", "seperti": "<cari>"}         salin pPr paragraf itu
       {"tabel": [["sel", ...], ...], "seperti": "<judul atau isi tabel contoh>",
-       "lebar": [1, 4, 5]}                         tabel baru (baris tersisip),
+       "lebar": [1, 4, 5], "rata": "kiri"}          tabel baru (baris tersisip),
                                                    format dari tabel contoh
       {"gambar": "berkas.png"}                     paragraf gambar baru; bentuk
                                                    dan lebar dari gambar terdekat
@@ -1207,12 +1207,48 @@ def remove_stray_empty_paragraphs(body: etree._Element, config: dict, styles: St
     return changed
 
 
+def has_inserted_mark(paragraph: etree._Element) -> bool:
+    return paragraph.find(f"{w('pPr')}/{w('rPr')}/{w('ins')}") is not None
+
+
+def keep_headings_with_next(body: etree._Element, styles: StyleBook, session: Session) -> int:
+    """Heading tidak boleh tertinggal sendirian di dasar halaman."""
+    changed = 0
+    for paragraph in body.iter(w("p")):
+        style = styles.paragraph_style(paragraph) or ""
+        if not re.fullmatch(r"(?i)heading[1-6]", style) or is_listing_paragraph(paragraph):
+            continue
+        if not paragraph_plain_text(paragraph).strip() or styles.keeps_with_next(paragraph):
+            continue
+        if has_inserted_mark(paragraph):
+            properties = paragraph.find(w("pPr"))
+            place_in_order(properties, etree.Element(w("keepNext")), PARAGRAPH_PROPERTY_ORDER)
+        else:
+            set_keep_next(paragraph, session)
+        changed += 1
+    return changed
+
+
+def align_table_left(table: etree._Element) -> None:
+    """Isi sel tabel sisipan rata kiri, agar tidak muncul celah lebar antarkata."""
+    for paragraph in table.iter(w("p")):
+        properties = paragraph.find(w("pPr"))
+        if properties is None:
+            properties = etree.Element(w("pPr"))
+            paragraph.insert(0, properties)
+        for existing in properties.findall(w("jc")):
+            properties.remove(existing)
+        place_in_order(properties, etree.Element(w("jc"), {w("val"): "left"}), PARAGRAPH_PROPERTY_ORDER)
+
+
 def apply_layout_rules(body: etree._Element, config: dict, styles: StyleBook, session: Session) -> dict[str, int]:
     counts = {}
     if config.get("hapus_paragraf_kosong"):
         counts["paragraf kosong di antara paragraf isi dihapus"] = remove_stray_empty_paragraphs(body, config, styles, session)
     if config.get("jaga_judul", True):
         counts["judul tabel/gambar dijaga"] = keep_captions_with_objects(body, styles, session)
+    if config.get("jaga_heading", True):
+        counts["heading dijaga bersama paragraf berikutnya"] = keep_headings_with_next(body, styles, session)
     counts["kata Indonesia/akronim/judul kutipan ditegakkan"] = upright_terms(body, config, styles, session)
     counts["istilah asing dimiringkan"] = italicise_terms(body, config, styles, session)
     if config.get("rapikan_spasi", True):
@@ -2043,6 +2079,8 @@ def op_insert_paragraphs(revision: Revision, workspace: Workspace) -> tuple[list
             element = build_table(table, entry["tabel"], session)
             if entry.get("lebar"):
                 set_column_widths(element, entry["lebar"])
+            if entry.get("rata") == "kiri":
+                align_table_left(element)
             tables += 1
         elif "gambar" in entry:
             image = session.resolve_path(entry["gambar"])
@@ -2729,7 +2767,8 @@ def name_family(name: dict) -> str:
 
 def name_initials(given: str) -> str:
     initials = []
-    for word in re.split(r"\s+", (given or "").replace(".", ". ").strip()):
+    spaced = re.sub(r"\.\s*-\s*", ".-", (given or "").replace(".", ". "))
+    for word in re.split(r"\s+", spaced.strip()):
         pieces = [piece.strip(".") for piece in word.split("-") if piece.strip(".")]
         if pieces:
             initials.append("-".join(piece[0].upper() + "." for piece in pieces))
@@ -2737,7 +2776,15 @@ def name_initials(given: str) -> str:
 
 
 def authors_of(item: dict) -> list[dict]:
-    return [name for name in item.get("author") or [] if name_family(name)]
+    """Penulis karya; bila tidak ada, editor (mis. RFC yang disusun editor)."""
+    names = item.get("author") or item.get("editor") or []
+    return [name for name in names if name_family(name)]
+
+
+def editor_label(item: dict) -> str:
+    if item.get("author") or not item.get("editor"):
+        return ""
+    return " (Ed.)." if len(authors_of(item)) == 1 else " (Eds.)."
 
 
 def short_authors(item: dict, connector: str = "&") -> str | None:
@@ -2913,7 +2960,10 @@ def render_reference(work: Work, config: dict) -> list[tuple[str, bool]]:
     pieces: list[tuple[str, bool]] = []
     authors = authors_of(item)
     if authors:
-        pieces.append((f"{reference_authors(authors)} {date} ", False))
+        names = reference_authors(authors)
+        if editor_label(item):
+            names = names + editor_label(item)
+        pieces.append((f"{names} {date} ", False))
         pieces.extend(title_part)
         pieces.append((f"{closing} ", False))
     else:
