@@ -3,11 +3,43 @@
   "judul_daftar_pustaka": "DAFTAR PUSTAKA",
   "penghubung_naratif": "dan",
   "perataan_daftar_pustaka": "left",
-  "awalan_sumber": ["Sumber"],
+  "awalan_sumber": [
+    "Sumber"
+  ],
   "ejaan_baku": [
-    "Internet of Things", "IoT", "ESP32", "MQ-135", "MQ-2", "MQ135", "LPG", "AQI", "UEQ", "HCI", "USAB",
-    "EURASIP", "Google Looker Studio", "Pertamina Green Village", "Python", "Indonesia", "Air Quality Index",
-    "User Experience Questionnaire", "Part 58", "(Model: MQ135)", "(Model: MQ-2)"
+    "Internet of Things",
+    "IoT",
+    "ESP32",
+    "MQ-135",
+    "MQ-2",
+    "MQ135",
+    "LPG",
+    "AQI",
+    "UEQ",
+    "HCI",
+    "USAB",
+    "EURASIP",
+    "Google Looker Studio",
+    "Pertamina Green Village",
+    "Python",
+    "Indonesia",
+    "Air Quality Index",
+    "User Experience Questionnaire",
+    "Part 58",
+    "(Model: MQ135)",
+    "(Model: MQ-2)",
+    "Laravel",
+    "Livewire",
+    "Tailwind CSS",
+    "Chart.js",
+    "MySQL",
+    "JavaScript Object Notation",
+    "JSON",
+    "HTTP",
+    "OMG Unified Modeling Language",
+    "Unified Modeling Language",
+    "UML",
+    "OMG"
   ],
   "ejaan_judul": {
     "Real - Time": "Real-Time"
@@ -15,16 +47,40 @@
   "perbaikan": [
     {
       "kunci": "solihat2026",
-      "cocok": {"family": "Solihat", "tahun": "2026"},
+      "cocok": {
+        "family": "Solihat",
+        "tahun": "2026"
+      },
       "keterangan": "Penulis ketiga diparse Mendeley sebagai \"Si, M.\" (gelar S.Si., M.Si.); nama sebenarnya Susilawati (satu nama). Judul huruf kapital semua, nama jurnal dan DOI dilengkapi dari halaman artikel (sumber.json: solihat2026).",
       "bukti": {
         "author, title, container-title, DOI": "https://doi.org/10.23960/jitet.v14i1.5568 (sumber.json: solihat2026)"
       },
       "itemData": {
         "author": [
-          {"dropping-particle": "", "family": "Solihat", "given": "Sophia Maratu", "non-dropping-particle": "", "parse-names": false, "suffix": ""},
-          {"dropping-particle": "", "family": "Salsabila", "given": "Salwa", "non-dropping-particle": "", "parse-names": false, "suffix": ""},
-          {"dropping-particle": "", "family": "Susilawati", "given": "", "non-dropping-particle": "", "parse-names": false, "suffix": ""}
+          {
+            "dropping-particle": "",
+            "family": "Solihat",
+            "given": "Sophia Maratu",
+            "non-dropping-particle": "",
+            "parse-names": false,
+            "suffix": ""
+          },
+          {
+            "dropping-particle": "",
+            "family": "Salsabila",
+            "given": "Salwa",
+            "non-dropping-particle": "",
+            "parse-names": false,
+            "suffix": ""
+          },
+          {
+            "dropping-particle": "",
+            "family": "Susilawati",
+            "given": "",
+            "non-dropping-particle": "",
+            "parse-names": false,
+            "suffix": ""
+          }
         ],
         "title": "Sistem pemantauan kualitas udara berbasis ESP32 menggunakan sensor gas MQ-135 dan MQ-2",
         "container-title": "Jurnal Informatika dan Teknik Elektro Terapan",
@@ -33,7 +89,10 @@
     },
     {
       "kunci": "adisti2025",
-      "cocok": {"family": "Adisti", "tahun": "2025"},
+      "cocok": {
+        "family": "Adisti",
+        "tahun": "2025"
+      },
       "keterangan": "DOI belum ada; nama jurnal resmi memakai singkatan JATI.",
       "bukti": {
         "container-title, DOI": "https://api.crossref.org/works/10.36040/jati.v9i2.12744"
@@ -45,14 +104,23 @@
     },
     {
       "kunci": "anist2025",
-      "cocok": {"family": "Anist", "tahun": "2026"},
+      "cocok": {
+        "family": "Anist",
+        "tahun": "2026"
+      },
       "keterangan": "Makalah prosiding (bukan artikel jurnal): nama prosiding, volume 4, penerbit SciTePress; tahun terbit prosiding 2025 (bukan 2026).",
       "bukti": {
         "type, container-title, volume, publisher, issued": "https://www.scitepress.org/Link.aspx?doi=10.5220/0013914100004919 ; https://api.crossref.org/works/10.5220/0013914100004919"
       },
       "itemData": {
         "type": "paper-conference",
-        "issued": {"date-parts": [["2025"]]},
+        "issued": {
+          "date-parts": [
+            [
+              "2025"
+            ]
+          ]
+        },
         "container-title": "Proceedings of the 1st International Conference on Research and Development in Information, Communication, and Computing Technologies",
         "volume": "4",
         "publisher": "SciTePress"
@@ -60,8 +128,13 @@
     },
     {
       "kunci": "fajarb2023",
-      "alias": ["B et al."],
-      "cocok": {"family": "B", "tahun": "2023"},
+      "alias": [
+        "B et al."
+      ],
+      "cocok": {
+        "family": "B",
+        "tahun": "2023"
+      },
       "keterangan": "Penulis pertama diparse Mendeley sebagai \"B, Muhammad Fajar\"; nama terdaftar di penerbit: Muhammad Fajar B (nama keluarga \"Fajar B\"). Nama jurnal dan DOI dilengkapi.",
       "bukti": {
         "author, container-title, volume, issue, DOI": "https://api.crossref.org/works/10.26858/jmtik.v6i2.45943",
@@ -69,11 +142,46 @@
       },
       "itemData": {
         "author": [
-          {"dropping-particle": "", "family": "Fajar B", "given": "Muhammad", "non-dropping-particle": "", "parse-names": false, "suffix": ""},
-          {"dropping-particle": "", "family": "Lestary", "given": "Fitriyanty Dwi", "non-dropping-particle": "", "parse-names": false, "suffix": ""},
-          {"dropping-particle": "", "family": "Hidayat", "given": "Akmal", "non-dropping-particle": "", "parse-names": false, "suffix": ""},
-          {"dropping-particle": "", "family": "Fadhilatunisa", "given": "Della", "non-dropping-particle": "", "parse-names": false, "suffix": ""},
-          {"dropping-particle": "", "family": "Eka", "given": "Azzahra", "non-dropping-particle": "", "parse-names": false, "suffix": ""}
+          {
+            "dropping-particle": "",
+            "family": "Fajar B",
+            "given": "Muhammad",
+            "non-dropping-particle": "",
+            "parse-names": false,
+            "suffix": ""
+          },
+          {
+            "dropping-particle": "",
+            "family": "Lestary",
+            "given": "Fitriyanty Dwi",
+            "non-dropping-particle": "",
+            "parse-names": false,
+            "suffix": ""
+          },
+          {
+            "dropping-particle": "",
+            "family": "Hidayat",
+            "given": "Akmal",
+            "non-dropping-particle": "",
+            "parse-names": false,
+            "suffix": ""
+          },
+          {
+            "dropping-particle": "",
+            "family": "Fadhilatunisa",
+            "given": "Della",
+            "non-dropping-particle": "",
+            "parse-names": false,
+            "suffix": ""
+          },
+          {
+            "dropping-particle": "",
+            "family": "Eka",
+            "given": "Azzahra",
+            "non-dropping-particle": "",
+            "parse-names": false,
+            "suffix": ""
+          }
         ],
         "container-title": "Jurnal MediaTIK",
         "DOI": "10.26858/jmtik.v6i2.45943"
@@ -81,15 +189,32 @@
     },
     {
       "kunci": "candra2026",
-      "cocok": {"family": "Candra", "tahun": "2026"},
+      "cocok": {
+        "family": "Candra",
+        "tahun": "2026"
+      },
       "keterangan": "Penulis sebenarnya dua orang (Joni Candra dan Hazimah), bukan \"Candra, Joni Eka\"; nama jurnal dan DOI dilengkapi; volume 8.",
       "bukti": {
         "author, container-title, volume, DOI": "https://jurnal.itscience.org/index.php/CNAPC/article/view/7173 ; https://api.crossref.org/works/10.47709/cnahpc.v8i1.7173"
       },
       "itemData": {
         "author": [
-          {"dropping-particle": "", "family": "Candra", "given": "Joni", "non-dropping-particle": "", "parse-names": false, "suffix": ""},
-          {"dropping-particle": "", "family": "Hazimah", "given": "", "non-dropping-particle": "", "parse-names": false, "suffix": ""}
+          {
+            "dropping-particle": "",
+            "family": "Candra",
+            "given": "Joni",
+            "non-dropping-particle": "",
+            "parse-names": false,
+            "suffix": ""
+          },
+          {
+            "dropping-particle": "",
+            "family": "Hazimah",
+            "given": "",
+            "non-dropping-particle": "",
+            "parse-names": false,
+            "suffix": ""
+          }
         ],
         "container-title": "Journal of Computer Networks, Architecture and High Performance Computing",
         "volume": "8",
@@ -98,7 +223,10 @@
     },
     {
       "kunci": "dineshkumar2021",
-      "cocok": {"family": "Dineshkumar", "tahun": "2021"},
+      "cocok": {
+        "family": "Dineshkumar",
+        "tahun": "2021"
+      },
       "keterangan": "Nama jurnal, volume, nomor, dan nomor artikel belum ada.",
       "bukti": {
         "container-title, volume, issue, number": "https://api.crossref.org/works/10.1088/1742-6596/1964/6/062081"
@@ -112,7 +240,10 @@
     },
     {
       "kunci": "falahuddin2025",
-      "cocok": {"family": "Falahuddin", "tahun": "2025"},
+      "cocok": {
+        "family": "Falahuddin",
+        "tahun": "2025"
+      },
       "keterangan": "Nama jurnal belum ada. Judul terbit (Crossref/penerbit) berbahasa Indonesia dan penulis keempat Susilawati.",
       "bukti": {
         "container-title, title, author": "https://api.crossref.org/works/10.20527/sjmekinematika.v10i2.443"
@@ -120,17 +251,48 @@
       "itemData": {
         "title": "Unjuk kerja performa sistem monitoring konsentrasi PM1, PM2.5, PM10, CO dan CO2 di dalam ruangan berbasis Internet of Things (IoT)",
         "author": [
-          {"dropping-particle": "", "family": "Falahuddin", "given": "Muhamad Anda", "non-dropping-particle": "", "parse-names": false, "suffix": ""},
-          {"dropping-particle": "", "family": "Ayu", "given": "Wirenda Sekar", "non-dropping-particle": "", "parse-names": false, "suffix": ""},
-          {"dropping-particle": "", "family": "Arman", "given": "Muhammad", "non-dropping-particle": "", "parse-names": false, "suffix": ""},
-          {"dropping-particle": "", "family": "Susilawati", "given": "", "non-dropping-particle": "", "parse-names": false, "suffix": ""}
+          {
+            "dropping-particle": "",
+            "family": "Falahuddin",
+            "given": "Muhamad Anda",
+            "non-dropping-particle": "",
+            "parse-names": false,
+            "suffix": ""
+          },
+          {
+            "dropping-particle": "",
+            "family": "Ayu",
+            "given": "Wirenda Sekar",
+            "non-dropping-particle": "",
+            "parse-names": false,
+            "suffix": ""
+          },
+          {
+            "dropping-particle": "",
+            "family": "Arman",
+            "given": "Muhammad",
+            "non-dropping-particle": "",
+            "parse-names": false,
+            "suffix": ""
+          },
+          {
+            "dropping-particle": "",
+            "family": "Susilawati",
+            "given": "",
+            "non-dropping-particle": "",
+            "parse-names": false,
+            "suffix": ""
+          }
         ],
         "container-title": "Scientific Journal of Mechanical Engineering Kinematika"
       }
     },
     {
       "kunci": "fikri2025",
-      "cocok": {"family": "Fikri", "tahun": "2025"},
+      "cocok": {
+        "family": "Fikri",
+        "tahun": "2025"
+      },
       "keterangan": "DOI belum ada.",
       "bukti": {
         "DOI": "https://api.crossref.org/works/10.55606/juisik.v5i2.1326"
@@ -141,7 +303,10 @@
     },
     {
       "kunci": "gunawan2023",
-      "cocok": {"family": "Gunawan", "tahun": "2023"},
+      "cocok": {
+        "family": "Gunawan",
+        "tahun": "2023"
+      },
       "keterangan": "Penulis ketiga Luh Joni Erawati Dewi (Mendeley memecahnya menjadi dua orang); nama jurnal dan DOI dilengkapi.",
       "bukti": {
         "author, container-title, DOI": "https://jurnal.polgan.ac.id/index.php/sinkron/article/view/12799",
@@ -149,9 +314,30 @@
       },
       "itemData": {
         "author": [
-          {"dropping-particle": "", "family": "Gunawan", "given": "Agus", "non-dropping-particle": "", "parse-names": false, "suffix": ""},
-          {"dropping-particle": "", "family": "Gunadi", "given": "I Gede Aris", "non-dropping-particle": "", "parse-names": false, "suffix": ""},
-          {"dropping-particle": "", "family": "Dewi", "given": "Luh Joni Erawati", "non-dropping-particle": "", "parse-names": false, "suffix": ""}
+          {
+            "dropping-particle": "",
+            "family": "Gunawan",
+            "given": "Agus",
+            "non-dropping-particle": "",
+            "parse-names": false,
+            "suffix": ""
+          },
+          {
+            "dropping-particle": "",
+            "family": "Gunadi",
+            "given": "I Gede Aris",
+            "non-dropping-particle": "",
+            "parse-names": false,
+            "suffix": ""
+          },
+          {
+            "dropping-particle": "",
+            "family": "Dewi",
+            "given": "Luh Joni Erawati",
+            "non-dropping-particle": "",
+            "parse-names": false,
+            "suffix": ""
+          }
         ],
         "container-title": "Sinkron: Jurnal dan Penelitian Teknik Informatika",
         "DOI": "10.33395/sinkron.v8i3.12799"
@@ -159,8 +345,13 @@
     },
     {
       "kunci": "wibowo2024",
-      "alias": ["Hananta et al."],
-      "cocok": {"family": "Hananta", "tahun": "2024"},
+      "alias": [
+        "Hananta et al."
+      ],
+      "cocok": {
+        "family": "Hananta",
+        "tahun": "2024"
+      },
       "keterangan": "Penulis sebenarnya Hendri Hananta Wahyu Wibowo, Zulkhairi, dan Lilis Kurniasari (Mendeley: Hananta, Wibowo, Kurniasari); nama jurnal dan DOI dilengkapi.",
       "bukti": {
         "author, container-title, DOI": "https://api.crossref.org/works/10.25124/jett.v11i1.7569",
@@ -168,9 +359,30 @@
       },
       "itemData": {
         "author": [
-          {"dropping-particle": "", "family": "Wibowo", "given": "Hendri Hananta Wahyu", "non-dropping-particle": "", "parse-names": false, "suffix": ""},
-          {"dropping-particle": "", "family": "Zulkhairi", "given": "", "non-dropping-particle": "", "parse-names": false, "suffix": ""},
-          {"dropping-particle": "", "family": "Kurniasari", "given": "Lilis", "non-dropping-particle": "", "parse-names": false, "suffix": ""}
+          {
+            "dropping-particle": "",
+            "family": "Wibowo",
+            "given": "Hendri Hananta Wahyu",
+            "non-dropping-particle": "",
+            "parse-names": false,
+            "suffix": ""
+          },
+          {
+            "dropping-particle": "",
+            "family": "Zulkhairi",
+            "given": "",
+            "non-dropping-particle": "",
+            "parse-names": false,
+            "suffix": ""
+          },
+          {
+            "dropping-particle": "",
+            "family": "Kurniasari",
+            "given": "Lilis",
+            "non-dropping-particle": "",
+            "parse-names": false,
+            "suffix": ""
+          }
         ],
         "container-title": "Jurnal Elektro dan Telekomunikasi Terapan",
         "DOI": "10.25124/jett.v11i1.7569"
@@ -178,7 +390,10 @@
     },
     {
       "kunci": "hariyanti2011",
-      "cocok": {"family": "Hariyanti", "tahun": "2011"},
+      "cocok": {
+        "family": "Hariyanti",
+        "tahun": "2011"
+      },
       "keterangan": "Nama jurnal, volume, nomor, halaman, dan DOI belum ada.",
       "bukti": {
         "container-title, volume, issue, page, DOI": "https://juti.if.its.ac.id/index.php/juti/article/view/63 ; https://api.crossref.org/works/10.12962/j24068535.v9i1.a63"
@@ -193,19 +408,64 @@
     },
     {
       "kunci": "haryanto2024",
-      "cocok": {"family": "Haryanto", "tahun": "2024"},
+      "cocok": {
+        "family": "Haryanto",
+        "tahun": "2024"
+      },
       "keterangan": "Penulis kelima Miftachul Ulum (bukan Hanifudin Sukri); nama jurnal dan DOI dilengkapi.",
       "bukti": {
         "author, container-title, DOI": "https://journal.unesa.ac.id/index.php/jistel/article/view/36488 ; https://api.crossref.org/works/10.26740/jistel.v1n1.p51-62"
       },
       "itemData": {
         "author": [
-          {"dropping-particle": "", "family": "Haryanto", "given": "", "non-dropping-particle": "", "parse-names": false, "suffix": ""},
-          {"dropping-particle": "", "family": "Rahmadani", "given": "Mochamad Rafli", "non-dropping-particle": "", "parse-names": false, "suffix": ""},
-          {"dropping-particle": "", "family": "Purnamasari", "given": "Dian Neipa", "non-dropping-particle": "", "parse-names": false, "suffix": ""},
-          {"dropping-particle": "", "family": "Saputro", "given": "Adi Kurniawan", "non-dropping-particle": "", "parse-names": false, "suffix": ""},
-          {"dropping-particle": "", "family": "Ulum", "given": "Miftachul", "non-dropping-particle": "", "parse-names": false, "suffix": ""},
-          {"dropping-particle": "", "family": "Rahmawati", "given": "Diana", "non-dropping-particle": "", "parse-names": false, "suffix": ""}
+          {
+            "dropping-particle": "",
+            "family": "Haryanto",
+            "given": "",
+            "non-dropping-particle": "",
+            "parse-names": false,
+            "suffix": ""
+          },
+          {
+            "dropping-particle": "",
+            "family": "Rahmadani",
+            "given": "Mochamad Rafli",
+            "non-dropping-particle": "",
+            "parse-names": false,
+            "suffix": ""
+          },
+          {
+            "dropping-particle": "",
+            "family": "Purnamasari",
+            "given": "Dian Neipa",
+            "non-dropping-particle": "",
+            "parse-names": false,
+            "suffix": ""
+          },
+          {
+            "dropping-particle": "",
+            "family": "Saputro",
+            "given": "Adi Kurniawan",
+            "non-dropping-particle": "",
+            "parse-names": false,
+            "suffix": ""
+          },
+          {
+            "dropping-particle": "",
+            "family": "Ulum",
+            "given": "Miftachul",
+            "non-dropping-particle": "",
+            "parse-names": false,
+            "suffix": ""
+          },
+          {
+            "dropping-particle": "",
+            "family": "Rahmawati",
+            "given": "Diana",
+            "non-dropping-particle": "",
+            "parse-names": false,
+            "suffix": ""
+          }
         ],
         "container-title": "Journal of Intelligent System and Telecommunication",
         "DOI": "10.26740/jistel.v1n1.p51-62"
@@ -213,18 +473,56 @@
     },
     {
       "kunci": "kafidhah2026",
-      "cocok": {"family": "Kafidhah", "tahun": "2026"},
+      "cocok": {
+        "family": "Kafidhah",
+        "tahun": "2026"
+      },
       "keterangan": "Penulis lima orang (Mendeley hanya dua); nama jurnal dan DOI dilengkapi.",
       "bukti": {
         "author, container-title, DOI": "https://journal.unusida.ac.id/index.php/jigen/article/view/1979 ; https://api.crossref.org/works/10.55732/40sz5917"
       },
       "itemData": {
         "author": [
-          {"dropping-particle": "", "family": "Kafidhah", "given": "Khamalatul", "non-dropping-particle": "", "parse-names": false, "suffix": ""},
-          {"dropping-particle": "", "family": "Alamin", "given": "Mochammad Machlul", "non-dropping-particle": "", "parse-names": false, "suffix": ""},
-          {"dropping-particle": "", "family": "Maulana", "given": "Achmad Ardhi", "non-dropping-particle": "", "parse-names": false, "suffix": ""},
-          {"dropping-particle": "", "family": "Al Uthaimin", "given": "Muhammad Murtafi", "non-dropping-particle": "", "parse-names": false, "suffix": ""},
-          {"dropping-particle": "", "family": "Nabilla", "given": "Saniya Nahda", "non-dropping-particle": "", "parse-names": false, "suffix": ""}
+          {
+            "dropping-particle": "",
+            "family": "Kafidhah",
+            "given": "Khamalatul",
+            "non-dropping-particle": "",
+            "parse-names": false,
+            "suffix": ""
+          },
+          {
+            "dropping-particle": "",
+            "family": "Alamin",
+            "given": "Mochammad Machlul",
+            "non-dropping-particle": "",
+            "parse-names": false,
+            "suffix": ""
+          },
+          {
+            "dropping-particle": "",
+            "family": "Maulana",
+            "given": "Achmad Ardhi",
+            "non-dropping-particle": "",
+            "parse-names": false,
+            "suffix": ""
+          },
+          {
+            "dropping-particle": "",
+            "family": "Al Uthaimin",
+            "given": "Muhammad Murtafi",
+            "non-dropping-particle": "",
+            "parse-names": false,
+            "suffix": ""
+          },
+          {
+            "dropping-particle": "",
+            "family": "Nabilla",
+            "given": "Saniya Nahda",
+            "non-dropping-particle": "",
+            "parse-names": false,
+            "suffix": ""
+          }
         ],
         "container-title": "Journal of Informatics, Game Engineering, and Networking",
         "DOI": "10.55732/40sz5917"
@@ -232,7 +530,10 @@
     },
     {
       "kunci": "lestari2025",
-      "cocok": {"family": "Lestari", "tahun": "2025"},
+      "cocok": {
+        "family": "Lestari",
+        "tahun": "2025"
+      },
       "keterangan": "Judul terpotong (\"... Berbasis IoT Dengan\"); nama jurnal dan halaman belum ada.",
       "bukti": {
         "title, container-title, DOI": "https://rumahjurnal.or.id/index.php/JEKIN/article/view/1644",
@@ -246,7 +547,10 @@
     },
     {
       "kunci": "maukar2023",
-      "cocok": {"family": "Maukar", "tahun": "2023"},
+      "cocok": {
+        "family": "Maukar",
+        "tahun": "2023"
+      },
       "keterangan": "Nama jurnal dan DOI belum ada.",
       "bukti": {
         "container-title, DOI": "https://api.crossref.org/works/10.25139/inform.v8i2.5138"
@@ -258,19 +562,64 @@
     },
     {
       "kunci": "nazli2024",
-      "cocok": {"family": "Nazli", "tahun": "2024"},
+      "cocok": {
+        "family": "Nazli",
+        "tahun": "2024"
+      },
       "keterangan": "Penulis enam orang (Mendeley hanya Nazli dan Sly); nama jurnal, volume, nomor, dan nomor artikel belum ada.",
       "bukti": {
         "author, container-title, volume, issue, number": "https://api.crossref.org/works/10.1002/tqem.22297"
       },
       "itemData": {
         "author": [
-          {"dropping-particle": "", "family": "Nazli", "given": "Siti Nurshahida", "non-dropping-particle": "", "parse-names": false, "suffix": ""},
-          {"dropping-particle": "", "family": "Vilcins", "given": "Dwan", "non-dropping-particle": "", "parse-names": false, "suffix": ""},
-          {"dropping-particle": "", "family": "Sly", "given": "Peter D.", "non-dropping-particle": "", "parse-names": false, "suffix": ""},
-          {"dropping-particle": "", "family": "Razak", "given": "Azli Abd", "non-dropping-particle": "", "parse-names": false, "suffix": ""},
-          {"dropping-particle": "", "family": "Sabri", "given": "Nurhidayah", "non-dropping-particle": "", "parse-names": false, "suffix": ""},
-          {"dropping-particle": "", "family": "Ibrahim", "given": "Tengku Nilam Baizura Tengku", "non-dropping-particle": "", "parse-names": false, "suffix": ""}
+          {
+            "dropping-particle": "",
+            "family": "Nazli",
+            "given": "Siti Nurshahida",
+            "non-dropping-particle": "",
+            "parse-names": false,
+            "suffix": ""
+          },
+          {
+            "dropping-particle": "",
+            "family": "Vilcins",
+            "given": "Dwan",
+            "non-dropping-particle": "",
+            "parse-names": false,
+            "suffix": ""
+          },
+          {
+            "dropping-particle": "",
+            "family": "Sly",
+            "given": "Peter D.",
+            "non-dropping-particle": "",
+            "parse-names": false,
+            "suffix": ""
+          },
+          {
+            "dropping-particle": "",
+            "family": "Razak",
+            "given": "Azli Abd",
+            "non-dropping-particle": "",
+            "parse-names": false,
+            "suffix": ""
+          },
+          {
+            "dropping-particle": "",
+            "family": "Sabri",
+            "given": "Nurhidayah",
+            "non-dropping-particle": "",
+            "parse-names": false,
+            "suffix": ""
+          },
+          {
+            "dropping-particle": "",
+            "family": "Ibrahim",
+            "given": "Tengku Nilam Baizura Tengku",
+            "non-dropping-particle": "",
+            "parse-names": false,
+            "suffix": ""
+          }
         ],
         "container-title": "Environmental Quality Management",
         "volume": "34",
@@ -280,29 +629,144 @@
     },
     {
       "kunci": "pedregosa2011",
-      "cocok": {"family": "Pedregosa", "tahun": "2011"},
+      "cocok": {
+        "family": "Pedregosa",
+        "tahun": "2011"
+      },
       "keterangan": "Penulis 16 orang (Mendeley hanya tiga); nama jurnal, nomor, dan URL (JMLR tanpa DOI).",
       "bukti": {
         "author, container-title, issue, URL": "https://jmlr.org/papers/v12/pedregosa11a.html"
       },
       "itemData": {
         "author": [
-          {"dropping-particle": "", "family": "Pedregosa", "given": "Fabian", "non-dropping-particle": "", "parse-names": false, "suffix": ""},
-          {"dropping-particle": "", "family": "Varoquaux", "given": "Gaël", "non-dropping-particle": "", "parse-names": false, "suffix": ""},
-          {"dropping-particle": "", "family": "Gramfort", "given": "Alexandre", "non-dropping-particle": "", "parse-names": false, "suffix": ""},
-          {"dropping-particle": "", "family": "Michel", "given": "Vincent", "non-dropping-particle": "", "parse-names": false, "suffix": ""},
-          {"dropping-particle": "", "family": "Thirion", "given": "Bertrand", "non-dropping-particle": "", "parse-names": false, "suffix": ""},
-          {"dropping-particle": "", "family": "Grisel", "given": "Olivier", "non-dropping-particle": "", "parse-names": false, "suffix": ""},
-          {"dropping-particle": "", "family": "Blondel", "given": "Mathieu", "non-dropping-particle": "", "parse-names": false, "suffix": ""},
-          {"dropping-particle": "", "family": "Prettenhofer", "given": "Peter", "non-dropping-particle": "", "parse-names": false, "suffix": ""},
-          {"dropping-particle": "", "family": "Weiss", "given": "Ron", "non-dropping-particle": "", "parse-names": false, "suffix": ""},
-          {"dropping-particle": "", "family": "Dubourg", "given": "Vincent", "non-dropping-particle": "", "parse-names": false, "suffix": ""},
-          {"dropping-particle": "", "family": "Vanderplas", "given": "Jake", "non-dropping-particle": "", "parse-names": false, "suffix": ""},
-          {"dropping-particle": "", "family": "Passos", "given": "Alexandre", "non-dropping-particle": "", "parse-names": false, "suffix": ""},
-          {"dropping-particle": "", "family": "Cournapeau", "given": "David", "non-dropping-particle": "", "parse-names": false, "suffix": ""},
-          {"dropping-particle": "", "family": "Brucher", "given": "Matthieu", "non-dropping-particle": "", "parse-names": false, "suffix": ""},
-          {"dropping-particle": "", "family": "Perrot", "given": "Matthieu", "non-dropping-particle": "", "parse-names": false, "suffix": ""},
-          {"dropping-particle": "", "family": "Duchesnay", "given": "Édouard", "non-dropping-particle": "", "parse-names": false, "suffix": ""}
+          {
+            "dropping-particle": "",
+            "family": "Pedregosa",
+            "given": "Fabian",
+            "non-dropping-particle": "",
+            "parse-names": false,
+            "suffix": ""
+          },
+          {
+            "dropping-particle": "",
+            "family": "Varoquaux",
+            "given": "Gaël",
+            "non-dropping-particle": "",
+            "parse-names": false,
+            "suffix": ""
+          },
+          {
+            "dropping-particle": "",
+            "family": "Gramfort",
+            "given": "Alexandre",
+            "non-dropping-particle": "",
+            "parse-names": false,
+            "suffix": ""
+          },
+          {
+            "dropping-particle": "",
+            "family": "Michel",
+            "given": "Vincent",
+            "non-dropping-particle": "",
+            "parse-names": false,
+            "suffix": ""
+          },
+          {
+            "dropping-particle": "",
+            "family": "Thirion",
+            "given": "Bertrand",
+            "non-dropping-particle": "",
+            "parse-names": false,
+            "suffix": ""
+          },
+          {
+            "dropping-particle": "",
+            "family": "Grisel",
+            "given": "Olivier",
+            "non-dropping-particle": "",
+            "parse-names": false,
+            "suffix": ""
+          },
+          {
+            "dropping-particle": "",
+            "family": "Blondel",
+            "given": "Mathieu",
+            "non-dropping-particle": "",
+            "parse-names": false,
+            "suffix": ""
+          },
+          {
+            "dropping-particle": "",
+            "family": "Prettenhofer",
+            "given": "Peter",
+            "non-dropping-particle": "",
+            "parse-names": false,
+            "suffix": ""
+          },
+          {
+            "dropping-particle": "",
+            "family": "Weiss",
+            "given": "Ron",
+            "non-dropping-particle": "",
+            "parse-names": false,
+            "suffix": ""
+          },
+          {
+            "dropping-particle": "",
+            "family": "Dubourg",
+            "given": "Vincent",
+            "non-dropping-particle": "",
+            "parse-names": false,
+            "suffix": ""
+          },
+          {
+            "dropping-particle": "",
+            "family": "Vanderplas",
+            "given": "Jake",
+            "non-dropping-particle": "",
+            "parse-names": false,
+            "suffix": ""
+          },
+          {
+            "dropping-particle": "",
+            "family": "Passos",
+            "given": "Alexandre",
+            "non-dropping-particle": "",
+            "parse-names": false,
+            "suffix": ""
+          },
+          {
+            "dropping-particle": "",
+            "family": "Cournapeau",
+            "given": "David",
+            "non-dropping-particle": "",
+            "parse-names": false,
+            "suffix": ""
+          },
+          {
+            "dropping-particle": "",
+            "family": "Brucher",
+            "given": "Matthieu",
+            "non-dropping-particle": "",
+            "parse-names": false,
+            "suffix": ""
+          },
+          {
+            "dropping-particle": "",
+            "family": "Perrot",
+            "given": "Matthieu",
+            "non-dropping-particle": "",
+            "parse-names": false,
+            "suffix": ""
+          },
+          {
+            "dropping-particle": "",
+            "family": "Duchesnay",
+            "given": "Édouard",
+            "non-dropping-particle": "",
+            "parse-names": false,
+            "suffix": ""
+          }
         ],
         "container-title": "Journal of Machine Learning Research",
         "issue": "85",
@@ -311,7 +775,10 @@
     },
     {
       "kunci": "pratrian2026",
-      "cocok": {"family": "Pratrian", "tahun": "2026"},
+      "cocok": {
+        "family": "Pratrian",
+        "tahun": "2026"
+      },
       "keterangan": "Nama jurnal, halaman, dan DOI belum ada.",
       "bukti": {
         "container-title, page, DOI": "https://api.crossref.org/works/10.31294/co-science.v6i1.10072"
@@ -324,7 +791,10 @@
     },
     {
       "kunci": "rivangga2024",
-      "cocok": {"family": "Rivangga", "tahun": "2024"},
+      "cocok": {
+        "family": "Rivangga",
+        "tahun": "2024"
+      },
       "keterangan": "Judul terbit berbahasa Indonesia (judul Mendeley adalah terjemahan abstrak); halaman 77-86 (bukan 0-7); nama jurnal dan DOI dilengkapi.",
       "bukti": {
         "title, container-title, page, DOI": "https://ejurnal.unmuhjember.ac.id/index.php/JUSTINDO/article/view/1574 ; https://api.crossref.org/works/10.32528/justindo.v9i2.1574"
@@ -338,7 +808,10 @@
     },
     {
       "kunci": "rohim2025",
-      "cocok": {"family": "Rohim", "tahun": "2025"},
+      "cocok": {
+        "family": "Rohim",
+        "tahun": "2025"
+      },
       "keterangan": "Nama jurnal dan DOI belum ada.",
       "bukti": {
         "container-title, DOI": "https://api.crossref.org/works/10.30871/jaic.v9i4.9876"
@@ -350,7 +823,10 @@
     },
     {
       "kunci": "sung2021",
-      "cocok": {"family": "Sung", "tahun": "2021"},
+      "cocok": {
+        "family": "Sung",
+        "tahun": "2021"
+      },
       "keterangan": "Halaman \"1-41\" keliru: artikel bernomor 153 (jurnal daring tanpa halaman).",
       "bukti": {
         "number, container-title": "https://api.crossref.org/works/10.1186/s13638-021-02030-1"
@@ -363,7 +839,10 @@
     },
     {
       "kunci": "truong2021",
-      "cocok": {"family": "Truong", "tahun": "2021"},
+      "cocok": {
+        "family": "Truong",
+        "tahun": "2021"
+      },
       "keterangan": "Nama jurnal belum ada.",
       "bukti": {
         "container-title": "http://www.ijesd.org/show-168-1851-1.html ; https://api.crossref.org/works/10.18178/ijesd.2021.12.5.1331"
@@ -374,7 +853,10 @@
     },
     {
       "kunci": "ullo2020",
-      "cocok": {"family": "Ullo", "tahun": "2020"},
+      "cocok": {
+        "family": "Ullo",
+        "tahun": "2020"
+      },
       "keterangan": "Nama jurnal, volume, nomor, nomor artikel, dan DOI belum ada.",
       "bukti": {
         "container-title, volume, issue, number, DOI": "https://api.crossref.org/works/10.3390/s20113113"
@@ -389,17 +871,48 @@
     },
     {
       "kunci": "wahyudi2025",
-      "cocok": {"family": "Wahyudi", "tahun": "2025"},
+      "cocok": {
+        "family": "Wahyudi",
+        "tahun": "2025"
+      },
       "keterangan": "Penulis keempat Jeffry belum ada; nama jurnal dan DOI dilengkapi.",
       "bukti": {
         "author, container-title, DOI": "https://journal.unpacti.ac.id/index.php/JSCE/article/view/1466 ; https://api.crossref.org/works/10.61628/jsce.v6i1.1466"
       },
       "itemData": {
         "author": [
-          {"dropping-particle": "", "family": "Wahyudi", "given": "Abdi Enal", "non-dropping-particle": "", "parse-names": false, "suffix": ""},
-          {"dropping-particle": "", "family": "Sari", "given": "Sri Kurniyan", "non-dropping-particle": "", "parse-names": false, "suffix": ""},
-          {"dropping-particle": "", "family": "Aziz", "given": "Firman", "non-dropping-particle": "", "parse-names": false, "suffix": ""},
-          {"dropping-particle": "", "family": "Jeffry", "given": "", "non-dropping-particle": "", "parse-names": false, "suffix": ""}
+          {
+            "dropping-particle": "",
+            "family": "Wahyudi",
+            "given": "Abdi Enal",
+            "non-dropping-particle": "",
+            "parse-names": false,
+            "suffix": ""
+          },
+          {
+            "dropping-particle": "",
+            "family": "Sari",
+            "given": "Sri Kurniyan",
+            "non-dropping-particle": "",
+            "parse-names": false,
+            "suffix": ""
+          },
+          {
+            "dropping-particle": "",
+            "family": "Aziz",
+            "given": "Firman",
+            "non-dropping-particle": "",
+            "parse-names": false,
+            "suffix": ""
+          },
+          {
+            "dropping-particle": "",
+            "family": "Jeffry",
+            "given": "",
+            "non-dropping-particle": "",
+            "parse-names": false,
+            "suffix": ""
+          }
         ],
         "container-title": "Journal of System and Computer Engineering",
         "DOI": "10.61628/jsce.v6i1.1466"
@@ -407,112 +920,911 @@
     },
     {
       "kunci": "who2026",
-      "cocok": {"family": "WHO", "tahun": "2026"},
+      "cocok": {
+        "family": "WHO",
+        "tahun": "2026"
+      },
       "keterangan": "URL belum ada; penulis lembaga ditulis lengkap (APA 7).",
       "bukti": {
         "URL, title": "https://www.who.int/teams/environment-climate-change-and-health/air-quality-and-health/health-impacts/exposure-air-pollution"
       },
       "itemData": {
         "author": [
-          {"dropping-particle": "", "family": "World Health Organization", "given": "", "non-dropping-particle": "", "parse-names": false, "suffix": ""}
+          {
+            "dropping-particle": "",
+            "family": "World Health Organization",
+            "given": "",
+            "non-dropping-particle": "",
+            "parse-names": false,
+            "suffix": ""
+          }
         ],
         "URL": "https://www.who.int/teams/environment-climate-change-and-health/air-quality-and-health/health-impacts/exposure-air-pollution"
       },
-      "alias": ["WHO"]
+      "alias": [
+        "WHO"
+      ]
     }
   ],
   "baru": [
     {
       "id": "epa2026a_co",
-      "alias": ["U.S. EPA", "EPA"],
-      "itemData": {"type": "webpage", "author": [{"family": "U.S. Environmental Protection Agency", "given": ""}],
-                   "issued": {"date-parts": [[2026, 7, 15]]}, "title": "Carbon monoxide's impact on indoor air quality",
-                   "URL": "https://www.epa.gov/indoor-air-quality-iaq/carbon-monoxides-impact-indoor-air-quality"}
+      "alias": [
+        "U.S. EPA",
+        "EPA"
+      ],
+      "itemData": {
+        "type": "webpage",
+        "author": [
+          {
+            "family": "U.S. Environmental Protection Agency",
+            "given": ""
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2026,
+              7,
+              15
+            ]
+          ]
+        },
+        "title": "Carbon monoxide's impact on indoor air quality",
+        "URL": "https://www.epa.gov/indoor-air-quality-iaq/carbon-monoxides-impact-indoor-air-quality"
+      }
     },
     {
       "id": "epa2026b_iaq",
-      "alias": ["U.S. EPA", "EPA"],
-      "itemData": {"type": "webpage", "author": [{"family": "U.S. Environmental Protection Agency", "given": ""}],
-                   "issued": {"date-parts": [[2026, 8, 3]]}, "title": "Improving indoor air quality",
-                   "URL": "https://www.epa.gov/indoor-air-quality-iaq/improving-indoor-air-quality"}
+      "alias": [
+        "U.S. EPA",
+        "EPA"
+      ],
+      "itemData": {
+        "type": "webpage",
+        "author": [
+          {
+            "family": "U.S. Environmental Protection Agency",
+            "given": ""
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2026,
+              8,
+              3
+            ]
+          ]
+        },
+        "title": "Improving indoor air quality",
+        "URL": "https://www.epa.gov/indoor-air-quality-iaq/improving-indoor-air-quality"
+      }
     },
     {
       "id": "epa2026c_aqi_tad",
-      "alias": ["U.S. EPA", "EPA"],
-      "itemData": {"type": "report", "author": [{"family": "U.S. Environmental Protection Agency", "given": ""}],
-                   "issued": {"date-parts": [[2026]]},
-                   "title": "Technical assistance document for the reporting of daily air quality – the Air Quality Index (AQI)",
-                   "number": "EPA-403/B-26-003", "publisher": "Office of Air Quality Planning and Standards",
-                   "URL": "https://document.airnow.gov/technical-assistance-document-for-the-reporting-of-daily-air-quailty.pdf"}
+      "alias": [
+        "U.S. EPA",
+        "EPA"
+      ],
+      "itemData": {
+        "type": "report",
+        "author": [
+          {
+            "family": "U.S. Environmental Protection Agency",
+            "given": ""
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2026
+            ]
+          ]
+        },
+        "title": "Technical assistance document for the reporting of daily air quality – the Air Quality Index (AQI)",
+        "number": "EPA-403/B-26-003",
+        "publisher": "Office of Air Quality Planning and Standards",
+        "URL": "https://document.airnow.gov/technical-assistance-document-for-the-reporting-of-daily-air-quailty.pdf"
+      }
     },
     {
       "id": "atsdr2011_amonia",
-      "alias": ["Agency for Toxic Substances and Disease Registry [ATSDR]", "ATSDR"],
-      "itemData": {"type": "report", "author": [{"family": "Agency for Toxic Substances and Disease Registry", "given": ""}],
-                   "issued": {"date-parts": [[2011]]}, "title": "ToxFAQs™ for ammonia",
-                   "publisher": "U.S. Department of Health and Human Services",
-                   "URL": "https://wwwn.cdc.gov/TSP/ToxFAQs/ToxFAQsDetails.aspx?faqid=10&toxid=2"}
+      "alias": [
+        "Agency for Toxic Substances and Disease Registry [ATSDR]",
+        "ATSDR"
+      ],
+      "itemData": {
+        "type": "report",
+        "author": [
+          {
+            "family": "Agency for Toxic Substances and Disease Registry",
+            "given": ""
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2011
+            ]
+          ]
+        },
+        "title": "ToxFAQs™ for ammonia",
+        "publisher": "U.S. Department of Health and Human Services",
+        "URL": "https://wwwn.cdc.gov/TSP/ToxFAQs/ToxFAQsDetails.aspx?faqid=10&toxid=2"
+      }
     },
     {
       "id": "persily2017",
-      "itemData": {"type": "article-journal",
-                   "author": [{"family": "Persily", "given": "A."}, {"family": "Jonge", "non-dropping-particle": "de", "given": "L."}],
-                   "issued": {"date-parts": [[2017]]}, "title": "Carbon dioxide generation rates for building occupants",
-                   "container-title": "Indoor Air", "volume": "27", "issue": "5", "page": "868-879", "DOI": "10.1111/ina.12383"}
+      "itemData": {
+        "type": "article-journal",
+        "author": [
+          {
+            "family": "Persily",
+            "given": "A."
+          },
+          {
+            "family": "Jonge",
+            "non-dropping-particle": "de",
+            "given": "L."
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2017
+            ]
+          ]
+        },
+        "title": "Carbon dioxide generation rates for building occupants",
+        "container-title": "Indoor Air",
+        "volume": "27",
+        "issue": "5",
+        "page": "868-879",
+        "DOI": "10.1111/ina.12383"
+      }
     },
     {
       "id": "laugwitz2008",
-      "itemData": {"type": "paper-conference",
-                   "author": [{"family": "Laugwitz", "given": "B."}, {"family": "Held", "given": "T."}, {"family": "Schrepp", "given": "M."}],
-                   "editor": [{"family": "Holzinger", "given": "A."}],
-                   "issued": {"date-parts": [[2008]]}, "title": "Construction and evaluation of a user experience questionnaire",
-                   "container-title": "HCI and usability for education and work: USAB 2008",
-                   "collection-title": "Lecture Notes in Computer Science", "volume": "5298", "page": "63-76",
-                   "publisher": "Springer", "DOI": "10.1007/978-3-540-89350-9_6"}
+      "itemData": {
+        "type": "paper-conference",
+        "author": [
+          {
+            "family": "Laugwitz",
+            "given": "B."
+          },
+          {
+            "family": "Held",
+            "given": "T."
+          },
+          {
+            "family": "Schrepp",
+            "given": "M."
+          }
+        ],
+        "editor": [
+          {
+            "family": "Holzinger",
+            "given": "A."
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2008
+            ]
+          ]
+        },
+        "title": "Construction and evaluation of a user experience questionnaire",
+        "container-title": "HCI and usability for education and work: USAB 2008",
+        "collection-title": "Lecture Notes in Computer Science",
+        "volume": "5298",
+        "page": "63-76",
+        "publisher": "Springer",
+        "DOI": "10.1007/978-3-540-89350-9_6"
+      }
     },
     {
       "id": "santoso2016",
-      "itemData": {"type": "article-journal",
-                   "author": [{"family": "Santoso", "given": "H. B."}, {"family": "Schrepp", "given": "M."}, {"family": "Isal", "given": "R. Y. K."},
-                              {"family": "Utomo", "given": "A. Y."}, {"family": "Priyogi", "given": "B."}],
-                   "issued": {"date-parts": [[2016]]}, "title": "Measuring user experience of the student-centered e-learning environment",
-                   "container-title": "The Journal of Educators Online", "volume": "13", "issue": "1", "page": "58-79",
-                   "DOI": "10.9743/jeo.2016.1.5"}
+      "itemData": {
+        "type": "article-journal",
+        "author": [
+          {
+            "family": "Santoso",
+            "given": "H. B."
+          },
+          {
+            "family": "Schrepp",
+            "given": "M."
+          },
+          {
+            "family": "Isal",
+            "given": "R. Y. K."
+          },
+          {
+            "family": "Utomo",
+            "given": "A. Y."
+          },
+          {
+            "family": "Priyogi",
+            "given": "B."
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2016
+            ]
+          ]
+        },
+        "title": "Measuring user experience of the student-centered e-learning environment",
+        "container-title": "The Journal of Educators Online",
+        "volume": "13",
+        "issue": "1",
+        "page": "58-79",
+        "DOI": "10.9743/jeo.2016.1.5"
+      }
     },
     {
       "id": "schrepp2017",
-      "itemData": {"type": "article-journal",
-                   "author": [{"family": "Schrepp", "given": "M."}, {"family": "Hinderks", "given": "A."}, {"family": "Thomaschewski", "given": "J."}],
-                   "issued": {"date-parts": [[2017]]}, "title": "Construction of a benchmark for the User Experience Questionnaire (UEQ)",
-                   "container-title": "International Journal of Interactive Multimedia and Artificial Intelligence",
-                   "volume": "4", "issue": "4", "page": "40-44", "DOI": "10.9781/ijimai.2017.445"}
+      "itemData": {
+        "type": "article-journal",
+        "author": [
+          {
+            "family": "Schrepp",
+            "given": "M."
+          },
+          {
+            "family": "Hinderks",
+            "given": "A."
+          },
+          {
+            "family": "Thomaschewski",
+            "given": "J."
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2017
+            ]
+          ]
+        },
+        "title": "Construction of a benchmark for the User Experience Questionnaire (UEQ)",
+        "container-title": "International Journal of Interactive Multimedia and Artificial Intelligence",
+        "volume": "4",
+        "issue": "4",
+        "page": "40-44",
+        "DOI": "10.9781/ijimai.2017.445"
+      }
     },
     {
       "id": "winsen2015a_mq135",
-      "alias": ["Zhengzhou Winsen Electronics Technology Co., Ltd.", "Winsen"],
-      "itemData": {"type": "report", "author": [{"family": "Zhengzhou Winsen Electronics Technology", "given": ""}],
-                   "issued": {"date-parts": [[2015]]}, "title": "Air quality gas sensor (Model: MQ135) manual",
-                   "version": "1.4", "genre": "Lembar data",
-                   "URL": "https://www.winsen-sensor.com/d/files/PDF/Semiconductor%20Gas%20Sensor/MQ135%20(Ver1.4)%20-%20Manual.pdf"}
+      "alias": [
+        "Zhengzhou Winsen Electronics Technology Co., Ltd.",
+        "Winsen"
+      ],
+      "itemData": {
+        "type": "report",
+        "author": [
+          {
+            "family": "Zhengzhou Winsen Electronics Technology",
+            "given": ""
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2015
+            ]
+          ]
+        },
+        "title": "Air quality gas sensor (Model: MQ135) manual",
+        "version": "1.4",
+        "genre": "Lembar data",
+        "URL": "https://www.winsen-sensor.com/d/files/PDF/Semiconductor%20Gas%20Sensor/MQ135%20(Ver1.4)%20-%20Manual.pdf"
+      }
     },
     {
       "id": "winsen2015b_mq2",
-      "alias": ["Zhengzhou Winsen Electronics Technology Co., Ltd.", "Winsen"],
-      "itemData": {"type": "report", "author": [{"family": "Zhengzhou Winsen Electronics Technology", "given": ""}],
-                   "issued": {"date-parts": [[2015]]}, "title": "Smoke sensor (Model: MQ-2) manual",
-                   "version": "1.4", "genre": "Lembar data",
-                   "URL": "https://www.winsen-sensor.com/d/files/semiconductor/mq-2.pdf"}
+      "alias": [
+        "Zhengzhou Winsen Electronics Technology Co., Ltd.",
+        "Winsen"
+      ],
+      "itemData": {
+        "type": "report",
+        "author": [
+          {
+            "family": "Zhengzhou Winsen Electronics Technology",
+            "given": ""
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2015
+            ]
+          ]
+        },
+        "title": "Smoke sensor (Model: MQ-2) manual",
+        "version": "1.4",
+        "genre": "Lembar data",
+        "URL": "https://www.winsen-sensor.com/d/files/semiconductor/mq-2.pdf"
+      }
     },
     {
       "id": "mq2_datasheet_tt",
-      "itemData": {"type": "report", "title": "MQ-2 semiconductor sensor for combustible gas", "genre": "Lembar data",
-                   "publisher": "Pololu", "URL": "https://www.pololu.com/file/0J309/MQ2.pdf"}
+      "itemData": {
+        "type": "report",
+        "title": "MQ-2 semiconductor sensor for combustible gas",
+        "genre": "Lembar data",
+        "publisher": "Pololu",
+        "URL": "https://www.pololu.com/file/0J309/MQ2.pdf"
+      }
     },
     {
       "id": "mq135_datasheet_tt",
-      "itemData": {"type": "report", "title": "Technical data MQ-135 gas sensor", "genre": "Lembar data",
-                   "publisher": "Olimex",
-                   "URL": "https://www.olimex.com/Products/Components/Sensors/Gas/SNS-MQ135/resources/SNS-MQ135.pdf"}
+      "itemData": {
+        "type": "report",
+        "title": "Technical data MQ-135 gas sensor",
+        "genre": "Lembar data",
+        "publisher": "Olimex",
+        "URL": "https://www.olimex.com/Products/Components/Sensors/Gas/SNS-MQ135/resources/SNS-MQ135.pdf"
+      }
+    },
+    {
+      "id": "wang2010_mos",
+      "keterangan": "Subbab 2.5: prinsip sensor oksida logam.",
+      "bukti": "https://api.crossref.org/works/10.3390/s100302088 (judul, penulis, Sensors 10(3), 2088-2106, 2010)",
+      "itemData": {
+        "type": "article-journal",
+        "author": [
+          {
+            "family": "Wang",
+            "given": "C."
+          },
+          {
+            "family": "Yin",
+            "given": "L."
+          },
+          {
+            "family": "Zhang",
+            "given": "L."
+          },
+          {
+            "family": "Xiang",
+            "given": "D."
+          },
+          {
+            "family": "Gao",
+            "given": "R."
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2010
+            ]
+          ]
+        },
+        "title": "Metal oxide gas sensors: Sensitivity and influencing factors",
+        "container-title": "Sensors",
+        "volume": "10",
+        "issue": "3",
+        "page": "2088-2106",
+        "DOI": "10.3390/s100302088"
+      }
+    },
+    {
+      "id": "hayesroth1985",
+      "keterangan": "Subbab 2.11: sistem berbasis aturan IF-THEN.",
+      "bukti": "https://api.crossref.org/works/10.1145/4284.4286 (Communications of the ACM 28(9), 921-932, September 1985)",
+      "itemData": {
+        "type": "article-journal",
+        "author": [
+          {
+            "family": "Hayes-Roth",
+            "given": "F."
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              1985
+            ]
+          ]
+        },
+        "title": "Rule-based systems",
+        "container-title": "Communications of the ACM",
+        "volume": "28",
+        "issue": "9",
+        "page": "921-932",
+        "DOI": "10.1145/4284.4286"
+      }
+    },
+    {
+      "id": "iso1985_5807",
+      "alias": [
+        "ISO"
+      ],
+      "keterangan": "Subbab 2.12.1: simbol flowchart.",
+      "bukti": "https://www.iso.org/standard/11955.html (katalog ISO, edisi 1, 1985-02, dikonfirmasi ulang 2019); pratinjau teks: https://www.vde-verlag.de/iec-normen/preview-pdf/info_iso5807{ed1.0}en.pdf (definisi 3.3 flowchart, simbol data/proses/garis/khusus)",
+      "itemData": {
+        "type": "report",
+        "author": [
+          {
+            "family": "International Organization for Standardization",
+            "given": ""
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              1985
+            ]
+          ]
+        },
+        "title": "Information processing — Documentation symbols and conventions for data, program and system flowcharts, program network charts and system resources charts",
+        "number": "ISO 5807:1985",
+        "URL": "https://www.iso.org/standard/11955.html"
+      }
+    },
+    {
+      "id": "booch2005_uml",
+      "keterangan": "Subbab 2.12.2-2.12.4.",
+      "bukti": "https://www.schweitzer-online.de/en/buch/Booch/Unified-Modeling-Language-User-Guide/9780321267979/B231645/ (Addison-Wesley, edisi ke-2, 2005, ISBN 978-0-321-26797-9); https://vufind.lboro.ac.uk/Record/434751/Description",
+      "itemData": {
+        "type": "book",
+        "author": [
+          {
+            "family": "Booch",
+            "given": "G."
+          },
+          {
+            "family": "Rumbaugh",
+            "given": "J."
+          },
+          {
+            "family": "Jacobson",
+            "given": "I."
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2005
+            ]
+          ]
+        },
+        "title": "The Unified Modeling Language user guide",
+        "edition": "2",
+        "publisher": "Addison-Wesley"
+      }
+    },
+    {
+      "id": "omg2017_uml",
+      "alias": [
+        "OMG"
+      ],
+      "keterangan": "Subbab 2.12.2 dan 2.12.4: notasi activity diagram.",
+      "bukti": "https://www.omg.org/spec/UML/2.5.1/About-UML (versi 2.5.1, formal, Desember 2017, dokumen formal/17-12-05)",
+      "itemData": {
+        "type": "report",
+        "author": [
+          {
+            "family": "Object Management Group",
+            "given": ""
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2017,
+              12
+            ]
+          ]
+        },
+        "title": "OMG Unified Modeling Language (OMG UML)",
+        "version": "2.5.1",
+        "number": "formal/17-12-05",
+        "URL": "https://www.omg.org/spec/UML/2.5.1"
+      }
+    },
+    {
+      "id": "rosa2018_rpl",
+      "keterangan": "ISBN berbeda antarkatalog (978-602-1514-05-4 dan 978-602-6232-65-6); penulis sebaiknya mencocokkan dengan halaman hak cipta buku yang dimiliki.",
+      "bukti": "https://perpustakaan.binadarma.ac.id/opac/detail/2394 (Informatika, Bandung, 2018, edisi Revisi); https://www.gramedia.com/products/rekayasa-perangkat-lunak-edisi-revisi (Rosa A. S. dan M. Shalahuddin, Informatika, 1 April 2018, edisi revisi)",
+      "itemData": {
+        "type": "book",
+        "author": [
+          {
+            "family": "Rosa",
+            "given": "A. S."
+          },
+          {
+            "family": "Shalahuddin",
+            "given": "M."
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2018
+            ]
+          ]
+        },
+        "title": "Rekayasa perangkat lunak terstruktur dan berorientasi objek",
+        "edition": "Ed. revisi",
+        "publisher": "Informatika"
+      }
+    },
+    {
+      "id": "chen1976_er",
+      "keterangan": "Subbab 2.13.2.",
+      "bukti": "https://api.crossref.org/works/10.1145/320434.320440 (ACM TODS 1(1), 9-36, Maret 1976)",
+      "itemData": {
+        "type": "article-journal",
+        "author": [
+          {
+            "family": "Chen",
+            "given": "P. P.-S."
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              1976
+            ]
+          ]
+        },
+        "title": "The entity-relationship model—toward a unified view of data",
+        "container-title": "ACM Transactions on Database Systems",
+        "volume": "1",
+        "issue": "1",
+        "page": "9-36",
+        "DOI": "10.1145/320434.320440"
+      }
+    },
+    {
+      "id": "elmasri2016_db",
+      "keterangan": "Tahun 2016 mengikuti edisi ke-7 (Global Edition 2016, ISBN 978-1-292-09761-9).",
+      "bukti": "https://eld.bl.uk/catalog/018479957 (edisi ke-7, Pearson); https://www.ecampus.com/fundamentals-database-systems-7th-elmasri/bk/9780133970777 (ISBN 978-0-13-397077-7, hak cipta 2016/2015)",
+      "itemData": {
+        "type": "book",
+        "author": [
+          {
+            "family": "Elmasri",
+            "given": "R."
+          },
+          {
+            "family": "Navathe",
+            "given": "S. B."
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2016
+            ]
+          ]
+        },
+        "title": "Fundamentals of database systems",
+        "edition": "7",
+        "publisher": "Pearson"
+      }
+    },
+    {
+      "id": "hoffer2016_mdm",
+      "keterangan": "Subbab 2.13.2: notasi crow's foot.",
+      "bukti": "https://experts.bentley.edu/en/publications/modern-database-management-12th-edition-5/ ; https://www.elibrary.lu.edu.ph/students/catalog/2231 (edisi ke-12, Pearson, 2016, ISBN 978-0-13-354461-9)",
+      "itemData": {
+        "type": "book",
+        "author": [
+          {
+            "family": "Hoffer",
+            "given": "J. A."
+          },
+          {
+            "family": "Ramesh",
+            "given": "V."
+          },
+          {
+            "family": "Topi",
+            "given": "H."
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2016
+            ]
+          ]
+        },
+        "title": "Modern database management",
+        "edition": "12",
+        "publisher": "Pearson"
+      }
+    },
+    {
+      "id": "oracle_mysql84",
+      "alias": [
+        "Oracle"
+      ],
+      "keterangan": "Dokumentasi daring tanpa tanggal terbit (t.t.).",
+      "bukti": "https://dev.mysql.com/doc/refman/8.4/en/what-is-mysql.html (1.2.1 What is MySQL?: relational, Open Source SQL DBMS, dikembangkan Oracle Corporation)",
+      "itemData": {
+        "type": "webpage",
+        "author": [
+          {
+            "family": "Oracle Corporation",
+            "given": ""
+          }
+        ],
+        "title": "MySQL 8.4 reference manual",
+        "URL": "https://dev.mysql.com/doc/refman/8.4/en/"
+      }
+    },
+    {
+      "id": "fielding2000_rest",
+      "keterangan": "Subbab 2.8.1: gaya arsitektur REST.",
+      "bukti": "https://ics.uci.edu/~fielding/pubs/dissertation/top.htm ; https://www.proquest.com/docview/304591392 (PhD, University of California, Irvine, 2000)",
+      "itemData": {
+        "type": "thesis",
+        "author": [
+          {
+            "family": "Fielding",
+            "given": "R. T."
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2000
+            ]
+          ]
+        },
+        "title": "Architectural styles and the design of network-based software architectures",
+        "genre": "Disertasi doktoral",
+        "publisher": "University of California, Irvine",
+        "URL": "https://ics.uci.edu/~fielding/pubs/dissertation/top.htm"
+      }
+    },
+    {
+      "id": "fielding2022_http",
+      "keterangan": "Ketiga nama adalah penyunting (Ed.) RFC; dicatat sebagai penulis agar sitasi Fielding et al. (2022) terbentuk.",
+      "bukti": "https://www.rfc-editor.org/info/rfc9110 (STD 97, penyunting R. Fielding, M. Nottingham, J. Reschke); https://api.crossref.org/works/10.17487/RFC9110 (Juni 2022)",
+      "itemData": {
+        "type": "report",
+        "issued": {
+          "date-parts": [
+            [
+              2022,
+              6
+            ]
+          ]
+        },
+        "title": "HTTP semantics",
+        "number": "RFC 9110",
+        "publisher": "Internet Engineering Task Force",
+        "DOI": "10.17487/RFC9110",
+        "editor": [
+          {
+            "family": "Fielding",
+            "given": "R. T."
+          },
+          {
+            "family": "Nottingham",
+            "given": "M."
+          },
+          {
+            "family": "Reschke",
+            "given": "J."
+          }
+        ]
+      }
+    },
+    {
+      "id": "bray2017_json",
+      "keterangan": "T. Bray adalah penyunting (Ed.) RFC.",
+      "bukti": "https://www.rfc-editor.org/info/rfc8259 (STD 90, T. Bray, Ed., Desember 2017); https://api.crossref.org/works/10.17487/RFC8259",
+      "itemData": {
+        "type": "report",
+        "issued": {
+          "date-parts": [
+            [
+              2017,
+              12
+            ]
+          ]
+        },
+        "title": "The JavaScript Object Notation (JSON) data interchange format",
+        "number": "RFC 8259",
+        "publisher": "Internet Engineering Task Force",
+        "DOI": "10.17487/RFC8259",
+        "editor": [
+          {
+            "family": "Bray",
+            "given": "T."
+          }
+        ]
+      }
+    },
+    {
+      "id": "laravel_docs13",
+      "keterangan": "Dokumentasi daring tanpa tanggal terbit (t.t.).",
+      "bukti": "https://laravel.com/docs/13.x/eloquent (Eloquent ORM, satu model per tabel); https://laravel.com/docs/13.x/migrations (migration sebagai version control skema basis data); https://laravel.com/docs/13.x/controllers",
+      "itemData": {
+        "type": "webpage",
+        "author": [
+          {
+            "family": "Laravel",
+            "given": ""
+          }
+        ],
+        "title": "Laravel documentation",
+        "version": "13.x",
+        "URL": "https://laravel.com/docs/13.x"
+      }
+    },
+    {
+      "id": "livewire_docs4",
+      "keterangan": "Dokumentasi daring tanpa tanggal terbit (t.t.).",
+      "bukti": "https://livewire.laravel.com/docs/4.x/quickstart (full-stack framework untuk Laravel, antarmuka reaktif dengan PHP); https://livewire.laravel.com/docs/4.x/components ; https://livewire.laravel.com/docs/4.x/wire-poll (wire:poll, bawaan 2,5 detik, .5s)",
+      "itemData": {
+        "type": "webpage",
+        "author": [
+          {
+            "family": "Livewire",
+            "given": ""
+          }
+        ],
+        "title": "Livewire documentation",
+        "version": "4.x",
+        "URL": "https://livewire.laravel.com/docs/4.x"
+      }
+    },
+    {
+      "id": "tailwind_docs4",
+      "keterangan": "Dokumentasi daring tanpa tanggal terbit (t.t.).",
+      "bukti": "https://tailwindcss.com/docs/styling-with-utility-classes (utility classes langsung di markup; v4.3); footer: Copyright Tailwind Labs Inc.",
+      "itemData": {
+        "type": "webpage",
+        "author": [
+          {
+            "family": "Tailwind Labs",
+            "given": ""
+          }
+        ],
+        "title": "Tailwind CSS documentation",
+        "version": "4.3",
+        "URL": "https://tailwindcss.com/docs"
+      }
+    },
+    {
+      "id": "chartjs_docs",
+      "keterangan": "Dokumentasi daring tanpa tanggal terbit (t.t.).",
+      "bukti": "https://www.chartjs.org/docs/latest/ (open-source, lisensi MIT, menggambar grafik pada HTML5 canvas, jenis grafik bawaan)",
+      "itemData": {
+        "type": "webpage",
+        "author": [
+          {
+            "family": "Chart.js",
+            "given": ""
+          }
+        ],
+        "title": "Chart.js documentation",
+        "URL": "https://www.chartjs.org/docs/latest/"
+      }
+    },
+    {
+      "id": "sommerville2016_se",
+      "keterangan": "Pemodelan sistem (use case, activity diagram), pola MVC, dan pengujian partisi.",
+      "bukti": "https://librarysearch.aut.ac.nz/vufind/Record/1288219 (Boston: Pearson, [2016], edisi ke-10, ISBN 978-0-13-394303-0); https://tenlong.com.tw/products/9780133943030",
+      "itemData": {
+        "type": "book",
+        "author": [
+          {
+            "family": "Sommerville",
+            "given": "I."
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2016
+            ]
+          ]
+        },
+        "title": "Software engineering",
+        "edition": "10",
+        "publisher": "Pearson"
+      }
+    },
+    {
+      "id": "pressman2020_se",
+      "keterangan": "Edisi ke-9 terbit akhir 2019 dengan tahun hak cipta 2020.",
+      "bukti": "https://ci.nii.ac.jp/ncid/BB21365723 ; https://bookstore.uu.edu/ebook/9781260423297 (edisi ke-9, McGraw-Hill, ISBN 978-1-259-87297-6)",
+      "itemData": {
+        "type": "book",
+        "author": [
+          {
+            "family": "Pressman",
+            "given": "R. S."
+          },
+          {
+            "family": "Maxim",
+            "given": "B. R."
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2020
+            ]
+          ]
+        },
+        "title": "Software engineering: A practitioner's approach",
+        "edition": "9",
+        "publisher": "McGraw-Hill Education"
+      }
+    },
+    {
+      "id": "myers2012_testing",
+      "keterangan": "Subbab 2.15: equivalence partitioning dan boundary value analysis.",
+      "bukti": "https://www.ellibs.com/book/9781118031964/the-art-of-software-testing ; https://library.nlumeg.ac.in/bib/11696 (edisi ke-3, Wiley, 2012, ISBN 978-1-118-03196-4)",
+      "itemData": {
+        "type": "book",
+        "author": [
+          {
+            "family": "Myers",
+            "given": "G. J."
+          },
+          {
+            "family": "Sandler",
+            "given": "C."
+          },
+          {
+            "family": "Badgett",
+            "given": "T."
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2012
+            ]
+          ]
+        },
+        "title": "The art of software testing",
+        "edition": "3",
+        "publisher": "John Wiley & Sons"
+      }
+    },
+    {
+      "id": "schrepp2023_handbook",
+      "keterangan": "Subbab 2.16.",
+      "bukti": "https://www.ueq-online.org/Material/Handbook.pdf (Version 11, 12.09.2023; 26 butir, skala -3..+3, enam skala, interpretasi > 0,8 / < -0,8, kategori benchmark)",
+      "itemData": {
+        "type": "report",
+        "author": [
+          {
+            "family": "Schrepp",
+            "given": "M."
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2023,
+              9,
+              12
+            ]
+          ]
+        },
+        "title": "User Experience Questionnaire handbook",
+        "version": "11",
+        "URL": "https://www.ueq-online.org/Material/Handbook.pdf"
+      }
     }
   ]
 }

@@ -25,6 +25,12 @@
     "offline", "maintenance", "deployment", "requirement", "design", "implementation", "prototype",
     "update", "upload", "download", "device", "gateway", "microcontroller", "smartphone", "browser",
     "server", "Air Quality Index", "machine learning", "fuzzy", "benchmark", "pagination", "polling",
-    "chart", "error", "handler", "request", "response"
+    "chart", "error", "handler", "request", "response",
+    "Hypertext Transfer Protocol", "Representational State Transfer", "JavaScript Object Notation", "Model-View-Controller",
+    "object-relational mapper", "migration", "stateless", "utility classes", "semantic differential", "cross-sensitivity",
+    "Entity Relationship Diagram", "entity-relationship", "crow's foot", "primary key", "foreign key", "Structured Query Language",
+    "activity final node", "initial node", "decision node", "merge node", "swimlane", "guard", "time event", "extend",
+    "use case diagram", "activity diagram", "Unified Modeling Language", "equivalence partitioning", "boundary value analysis", "Attractiveness", "Perspicuity", "Efficiency",
+    "Dependability", "Stimulation", "Novelty"
   ]
 }
