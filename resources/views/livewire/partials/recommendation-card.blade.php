@@ -22,7 +22,7 @@
         <span class="text-xs font-semibold uppercase tracking-wide" style="color: {{ $style['color'] }}">{{ $recommendation['level'] }}</span>
     </div>
     <p @class(['text-slate-700', 'mt-1 text-xs' => $compact, 'text-sm leading-relaxed' => ! $compact])>{{ $recommendation['text'] }}</p>
-    <a href="{{ url('/rekomendasi') }}" wire:navigate @class([
+    <a href="{{ route('recommendations') }}" wire:navigate @class([
         'inline-flex items-center gap-1 self-start text-xs font-semibold text-accent-700 hover:text-accent-800',
         'mt-2' => $compact,
         'mt-auto' => ! $compact,

@@ -69,7 +69,7 @@ class PublicDashboardTest extends TestCase
             ->assertSee('Perlu Tindakan')
             ->assertSee(self::RECOMMENDATION_TEXTS['Tidak Sehat'])
             ->assertDontSee(self::RECOMMENDATION_TEXTS['Sedang'])
-            ->assertSee(url('/rekomendasi'))
+            ->assertSee(route('recommendations'))
             ->assertSee('Perangkat terhubung')
             ->assertSee(route('rooms.show', $room))
             ->assertDontSee('Kondisi per ruangan')

@@ -3,6 +3,8 @@
     $links = [
         ['route' => 'home', 'label' => 'Beranda', 'icon' => 'tabler-home-2', 'active' => ['home', 'rooms.show']],
         ['route' => 'history', 'label' => 'Riwayat', 'icon' => 'tabler-history', 'active' => ['history']],
+        ['route' => 'recommendations', 'label' => 'Rekomendasi', 'icon' => 'tabler-bulb', 'active' => ['recommendations']],
+        ['route' => 'devices', 'label' => 'Perangkat', 'icon' => 'tabler-cpu', 'active' => ['devices']],
         ['route' => 'guide', 'label' => 'Panduan', 'icon' => 'tabler-book-2', 'active' => ['guide']],
         ['route' => 'survey', 'label' => 'Kuesioner', 'icon' => 'tabler-clipboard-check', 'active' => ['survey']],
     ];
@@ -14,30 +16,30 @@
 </head>
 <body class="min-h-screen">
     <header x-data="{ open: false }" class="sticky top-0 z-40 border-b border-slate-200 bg-white/85 backdrop-blur">
-        <div class="mx-auto grid h-16 max-w-6xl grid-cols-[1fr_auto] items-center gap-4 px-4 sm:px-6 md:grid-cols-[1fr_auto_1fr]">
+        <div class="mx-auto grid h-16 max-w-6xl grid-cols-[1fr_auto] items-center gap-4 px-4 sm:px-6 lg:grid-cols-[1fr_auto_1fr]">
             <a href="{{ route('home') }}" wire:navigate class="justify-self-start">
                 <x-ui.brand />
             </a>
 
-            <nav class="hidden items-center gap-1 md:flex" aria-label="Navigasi utama">
+            <nav class="hidden items-center gap-1 lg:flex" aria-label="Navigasi utama">
                 @foreach ($links as $link)
                     <a href="{{ route($link['route']) }}" wire:navigate
                        @class(['nav-link', 'nav-link-active' => request()->routeIs(...$link['active'])])>
-                        <x-dynamic-component :component="$link['icon']" class="size-4" />
+                        <x-dynamic-component :component="$link['icon']" class="hidden size-4 xl:block" />
                         {{ $link['label'] }}
                     </a>
                 @endforeach
             </nav>
 
-            <div class="hidden md:block" aria-hidden="true"></div>
+            <div class="hidden lg:block" aria-hidden="true"></div>
 
-            <button type="button" class="btn btn-ghost btn-sm justify-self-end md:hidden" @click="open = !open" :aria-expanded="open" aria-label="Buka menu">
+            <button type="button" class="btn btn-ghost btn-sm justify-self-end lg:hidden" @click="open = !open" :aria-expanded="open" aria-label="Buka menu">
                 <x-tabler-menu-2 class="size-5" x-show="!open" />
                 <x-tabler-x class="size-5" x-show="open" x-cloak />
             </button>
         </div>
 
-        <nav x-show="open" x-cloak x-transition.opacity class="border-t border-slate-100 bg-white px-4 py-3 md:hidden" aria-label="Navigasi seluler">
+        <nav x-show="open" x-cloak x-transition.opacity class="border-t border-slate-100 bg-white px-4 py-3 lg:hidden" aria-label="Navigasi seluler">
             <div class="flex flex-col gap-1">
                 @foreach ($links as $link)
                     <a href="{{ route($link['route']) }}" wire:navigate
