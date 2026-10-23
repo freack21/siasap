@@ -1,6 +1,8 @@
 <?php
 
 use App\Livewire\AirQualityGuide;
+use App\Livewire\DeviceStatus;
+use App\Livewire\RecommendationPage;
 use App\Livewire\RoomDetail;
 use App\Livewire\SurveyForm;
 use App\Livewire\UserDashboard;
@@ -11,5 +13,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', UserDashboard::class)->name('home');
 Route::get('/ruangan/{room}', RoomDetail::class)->name('rooms.show');
 Route::get('/riwayat', UserHistory::class)->name('history');
+Route::get('/rekomendasi', RecommendationPage::class)->name('recommendations');
+Route::get('/perangkat', DeviceStatus::class)->name('devices');
 Route::get('/panduan', AirQualityGuide::class)->name('guide');
 Route::get('/kuesioner', SurveyForm::class)->name('survey');
