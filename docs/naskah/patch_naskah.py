@@ -21,6 +21,8 @@ Opsi lain:
   --pertama         bila teks ditemukan di beberapa tempat, pakai yang pertama
   --hanya ID,ID     terapkan butir tertentu saja
   --laporan F.csv   simpan laporan per butir
+  --tata-tulis F.json  rapikan tata tulis: miringkan istilah asing, jaga judul
+                    tabel/gambar tidak terpisah halaman, hapus spasi ganda
 
 Format JSON:
   {"revisi": [{"id": "2.9-01", "lokasi": "2.9 hlm. 30",
@@ -540,6 +542,274 @@ def apply_match(match: Match, revision: Revision, session: Session, with_comment
     return None
 
 
+PARAGRAPH_PROPERTY_ORDER = [
+    "pStyle", "keepNext", "keepLines", "pageBreakBefore", "framePr", "widowControl", "numPr",
+    "suppressLineNumbers", "pBdr", "shd", "tabs", "suppressAutoHyphens", "kinsoku", "wordWrap",
+    "overflowPunct", "topLinePunct", "autoSpaceDE", "autoSpaceDN", "bidi", "adjustRightInd",
+    "snapToGrid", "spacing", "ind", "contextualSpacing", "mirrorIndents", "suppressOverlap", "jc",
+    "textDirection", "textAlignment", "textboxTightWrap", "outlineLvl", "divId", "cnfStyle",
+    "rPr", "sectPr", "pPrChange",
+]
+RUN_PROPERTY_ORDER = [
+    "rStyle", "rFonts", "b", "bCs", "i", "iCs", "caps", "smallCaps", "strike", "dstrike", "outline",
+    "shadow", "emboss", "imprint", "noProof", "snapToGrid", "vanish", "webHidden", "color", "spacing",
+    "w", "kern", "position", "sz", "szCs", "highlight", "u", "effect", "bdr", "shd", "fitText",
+    "vertAlign", "rtl", "cs", "em", "lang", "eastAsianLayout", "specVanish", "oMath", "rPrChange",
+]
+SMALL_WORDS = {"of", "in", "and", "the", "for", "with", "on", "a", "an", "to", "using", "based", "at", "by", "&"}
+
+
+def place_in_order(parent: etree._Element, element: etree._Element, order: list[str]) -> None:
+    rank = {w(name): index for index, name in enumerate(order)}
+    target = rank[element.tag]
+    for index, child in enumerate(parent):
+        if rank.get(child.tag, -1) > target:
+            parent.insert(index, element)
+            return
+    parent.append(element)
+
+
+def is_on(element: etree._Element | None) -> bool | None:
+    if element is None:
+        return None
+    return element.get(w("val"), "true") not in ("0", "false", "off")
+
+
+class StyleBook:
+    """Sifat gaya (miring, keep with next) termasuk yang diwarisi lewat basedOn."""
+
+    def __init__(self, root: etree._Element | None) -> None:
+        self.styles: dict[str, etree._Element] = {}
+        self.default_paragraph: str | None = None
+        if root is None:
+            return
+        for style in root.iter(w("style")):
+            identifier = style.get(w("styleId"))
+            self.styles[identifier] = style
+            if style.get(w("type")) == "paragraph" and style.get(w("default")) in ("1", "true"):
+                self.default_paragraph = identifier
+
+    def lookup(self, style_id: str | None, path: str) -> bool:
+        seen = 0
+        while style_id and style_id in self.styles and seen < 15:
+            style = self.styles[style_id]
+            value = is_on(style.find(path))
+            if value is not None:
+                return value
+            based = style.find(w("basedOn"))
+            style_id = based.get(w("val")) if based is not None else None
+            seen += 1
+        return False
+
+    def paragraph_style(self, paragraph: etree._Element) -> str | None:
+        style = paragraph.find(f"{w('pPr')}/{w('pStyle')}")
+        return style.get(w("val")) if style is not None else self.default_paragraph
+
+    def keeps_with_next(self, paragraph: etree._Element) -> bool:
+        direct = is_on(paragraph.find(f"{w('pPr')}/{w('keepNext')}"))
+        if direct is not None:
+            return direct
+        return self.lookup(self.paragraph_style(paragraph), f"{w('pPr')}/{w('keepNext')}")
+
+    def is_italic(self, run: etree._Element, paragraph: etree._Element) -> bool:
+        direct = is_on(run.find(f"{w('rPr')}/{w('i')}"))
+        if direct is not None:
+            return direct
+        character_style = run.find(f"{w('rPr')}/{w('rStyle')}")
+        if character_style is not None and self.lookup(character_style.get(w("val")), f"{w('rPr')}/{w('i')}"):
+            return True
+        return self.lookup(self.paragraph_style(paragraph), f"{w('rPr')}/{w('i')}")
+
+
+def inside_insertion(element: etree._Element) -> bool:
+    return any(ancestor.tag == w("ins") for ancestor in element.iterancestors())
+
+
+def set_keep_next(paragraph: etree._Element, session: Session) -> None:
+    properties = paragraph.find(w("pPr"))
+    if properties is None:
+        properties = etree.Element(w("pPr"))
+        paragraph.insert(0, properties)
+    change = None
+    if session.tracked and properties.find(w("pPrChange")) is None:
+        previous = etree.Element(w("pPr"))
+        for child in properties:
+            if child.tag not in (w("rPr"), w("sectPr"), w("pPrChange")):
+                previous.append(deepcopy(child))
+        change = etree.Element(w("pPrChange"), revision_attributes(session))
+        change.append(previous)
+    for existing in properties.findall(w("keepNext")):
+        properties.remove(existing)
+    place_in_order(properties, etree.Element(w("keepNext")), PARAGRAPH_PROPERTY_ORDER)
+    if change is not None:
+        place_in_order(properties, change, PARAGRAPH_PROPERTY_ORDER)
+
+
+def set_italic(run: etree._Element, session: Session) -> None:
+    properties = run.find(w("rPr"))
+    if properties is None:
+        properties = etree.Element(w("rPr"))
+        run.insert(0, properties)
+    change = None
+    if session.tracked and not inside_insertion(run) and properties.find(w("rPrChange")) is None:
+        previous = etree.Element(w("rPr"))
+        for child in properties:
+            if child.tag != w("rPrChange"):
+                previous.append(deepcopy(child))
+        change = etree.Element(w("rPrChange"), revision_attributes(session))
+        change.append(previous)
+    for existing in properties.findall(w("i")):
+        properties.remove(existing)
+    place_in_order(properties, etree.Element(w("i")), RUN_PROPERTY_ORDER)
+    if change is not None:
+        place_in_order(properties, change, RUN_PROPERTY_ORDER)
+
+
+def delete_runs(runs: list[etree._Element], session: Session) -> None:
+    for run in runs:
+        if session.tracked and not inside_insertion(run):
+            mark_deleted(run, session)
+        else:
+            run.getparent().remove(run)
+
+
+def paragraph_plain_text(paragraph: etree._Element) -> str:
+    return "".join(element.text or "" for element in paragraph.iter(w("t")))
+
+
+def excluded_paragraphs(body: etree._Element, config: dict) -> set[int]:
+    """Paragraf yang tidak dimiringkan: daftar pustaka dan tabel tertentu (mis. Tabel 2.1)."""
+    excluded: set[int] = set()
+    after_heading = config.get("kecualikan_setelah_judul", "DAFTAR PUSTAKA").upper()
+    tables = [str(number) for number in config.get("kecualikan_tabel", [])]
+    children = list(body)
+    bibliography = False
+    for index, child in enumerate(children):
+        if child.tag == w("p"):
+            text = paragraph_plain_text(child).strip().upper()
+            if text == after_heading and not is_listing_paragraph(child):
+                bibliography = True
+        if bibliography:
+            excluded.update(id(paragraph) for paragraph in child.iter(w("p")))
+        elif child.tag == w("tbl") and index > 0 and children[index - 1].tag == w("p"):
+            caption = paragraph_plain_text(children[index - 1]).strip()
+            if any(re.match(rf"Tabel {re.escape(number)}\b", caption) for number in tables):
+                excluded.update(id(paragraph) for paragraph in child.iter(w("p")))
+    return excluded
+
+
+def in_english_title(text: str, start: int, end: int) -> bool:
+    """True bila istilah berada di judul berbahasa Inggris (Title Case) atau teks kapital semua."""
+    matched = text[start:end]
+    if matched.isupper() and len(matched) > 3:
+        return True
+    tokens = list(re.finditer(r"[^\s()\[\]\"',:;]+", text))
+    position = next((index for index, token in enumerate(tokens) if token.start() <= start < token.end()), None)
+    if position is None:
+        return False
+
+    def title_word(token: str) -> bool:
+        return token[:1].isupper() or token.lower() in SMALL_WORDS
+
+    left = position
+    while left > 0 and title_word(tokens[left - 1].group()):
+        left -= 1
+    right = position
+    while right + 1 < len(tokens) and title_word(tokens[right + 1].group()):
+        right += 1
+    capitalised = sum(1 for token in tokens[left:right + 1] if token.group()[:1].isupper())
+    return capitalised >= 4
+
+
+def italicise_terms(body: etree._Element, config: dict, styles: StyleBook, session: Session) -> int:
+    terms = sorted(config.get("istilah_asing", []), key=len, reverse=True)
+    if not terms:
+        return 0
+    pattern = re.compile(r"(?<![\w-])(" + "|".join(re.escape(term) for term in terms) + r")(?![\w-])", re.IGNORECASE)
+    excluded = excluded_paragraphs(body, config)
+    changed = 0
+    for paragraph in list(body.iter(w("p"))):
+        if id(paragraph) in excluded or is_listing_paragraph(paragraph):
+            continue
+        segments, text = paragraph_model(paragraph)
+        flags = []
+        for segment in segments:
+            italic = segment.kind == "text" and styles.is_italic(segment.run, paragraph)
+            flags.extend([italic] * len(segment.chars))
+        targets = [match for match in pattern.finditer(text)
+                   if not all(flags[match.start():match.end()]) and not in_english_title(text, match.start(), match.end())]
+        for match in reversed(targets):
+            segments, _ = paragraph_model(paragraph)
+            for run in isolate(segments, match.start(), match.end()):
+                if run.tag == w("r") and run_kind(run)[0] == "text" and not styles.is_italic(run, paragraph):
+                    set_italic(run, session)
+            changed += 1
+    return changed
+
+
+def keep_captions_with_objects(body: etree._Element, styles: StyleBook, session: Session) -> int:
+    children = list(body)
+    changed = 0
+    for index, child in enumerate(children):
+        if child.tag != w("p"):
+            continue
+        text = paragraph_plain_text(child).strip()
+        if re.match(r"Tabel \d+\.\d+", text) and index + 1 < len(children) and children[index + 1].tag == w("tbl"):
+            if not styles.keeps_with_next(child):
+                set_keep_next(child, session)
+                changed += 1
+        if re.match(r"Gambar \d+\.\d+", text) and not is_listing_paragraph(child):
+            previous = index - 1
+            while previous >= 0 and children[previous].tag == w("p") and not paragraph_plain_text(children[previous]).strip() \
+                    and children[previous].find(f".//{w('drawing')}") is None and children[previous].find(f".//{w('pict')}") is None:
+                previous -= 1
+            if previous >= 0 and children[previous].tag == w("p") and (
+                    children[previous].find(f".//{w('drawing')}") is not None or children[previous].find(f".//{w('pict')}") is not None):
+                for figure_index in range(previous, index):
+                    if not styles.keeps_with_next(children[figure_index]):
+                        set_keep_next(children[figure_index], session)
+                        changed += 1
+    return changed
+
+
+SPACE_RULES = [
+    re.compile(r"(?<=[^ \x00\x01\t]) (?P<hapus> +)(?=[^ \x00\x01\t])"),
+    re.compile(r"(?<=[\w\)\]\"'])(?P<hapus> +)(?=[,.;)](?:[ \t]|$|[,.;]))"),
+    re.compile(r"(?<=\()(?P<hapus> +)(?=\S)"),
+]
+
+
+def tidy_spaces(body: etree._Element, session: Session) -> int:
+    changed = 0
+    for paragraph in list(body.iter(w("p"))):
+        if is_listing_paragraph(paragraph):
+            continue
+        _, text = paragraph_model(paragraph)
+        if "{" in text or "\t" in text.strip():
+            continue
+        spans = set()
+        for rule in SPACE_RULES:
+            for match in rule.finditer(text):
+                spans.add((match.start("hapus"), match.end("hapus")))
+        for start, end in sorted(spans, reverse=True):
+            segments, current = paragraph_model(paragraph)
+            if current[start:end].strip(" "):
+                continue
+            delete_runs(isolate(segments, start, end), session)
+            changed += 1
+    return changed
+
+
+def apply_layout_rules(body: etree._Element, config: dict, styles: StyleBook, session: Session) -> dict[str, int]:
+    counts = {}
+    if config.get("jaga_judul", True):
+        counts["judul tabel/gambar dijaga"] = keep_captions_with_objects(body, styles, session)
+    counts["istilah asing dimiringkan"] = italicise_terms(body, config, styles, session)
+    if config.get("rapikan_spasi", True):
+        counts["spasi dirapikan"] = tidy_spaces(body, session)
+    return counts
+
+
 def max_numeric_id(roots: list[etree._Element], tags: tuple[str, ...]) -> int:
     highest = -1
     for root in roots:
@@ -695,6 +965,11 @@ def run(arguments: argparse.Namespace) -> int:
         revision.detail = "; ".join(dict.fromkeys(notes))
 
     report(revisions, arguments.laporan)
+    if arguments.tata_tulis:
+        config = json.loads(Path(arguments.tata_tulis).read_text(encoding="utf-8"))
+        styles = StyleBook(etree.fromstring(files["word/styles.xml"]) if "word/styles.xml" in files else None)
+        counts = apply_layout_rules(parts["word/document.xml"].find(w("body")), config, styles, session)
+        print("Tata tulis: " + ", ".join(f"{name} {count}" for name, count in counts.items()))
     if arguments.uji:
         print("\nMode uji: tidak ada file yang ditulis.")
         return 0
@@ -755,6 +1030,7 @@ def main() -> int:
     parser.add_argument("--pertama", action="store_true", help="bila ambigu, pakai kemunculan pertama")
     parser.add_argument("--hanya", help="id butir dipisah koma")
     parser.add_argument("--laporan", help="simpan laporan ke CSV")
+    parser.add_argument("--tata-tulis", help="file .json aturan tata tulis (miring, judul tabel/gambar, spasi)")
     parser.add_argument("--uji", action="store_true", help="cek saja tanpa menulis file")
     return run(parser.parse_args())
 

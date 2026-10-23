@@ -20,6 +20,34 @@
       "catatan": "Setelah tabel kedua bernomor 3.3 (Kategori Kualitas Udara Ruangan, subbab 3.9.3) dihapus, Tabel 3.3 hanya dipakai untuk Aturan Rekomendasi dan Tabel 3.4–3.10 tetap. Tambahkan Tabel 3.11 Pemetaan Butir UEQ ke Skala dan Tabel 3.12 Benchmark UEQ (subbab 3.12.6), lalu perbarui daftar ini (Update Field). Alasan: penyelarasan naskah dengan aplikasi."
     },
     {
+      "id": "1.1-10",
+      "lokasi": "1.1 Latar Belakang, paragraf 110",
+      "cari": "memahami kondisi kualitas udara ruangan secara cepat dan akurat.",
+      "ganti": "memahami kondisi kualitas udara ruangan secara cepat dan jelas.",
+      "catatan": "Penguji 1 no. 1 (hindari klaim berlebihan): nilai sensor adalah indikator relatif yang tidak dikalibrasi, sehingga naskah tidak mengklaim informasi yang akurat."
+    },
+    {
+      "id": "1.1-11",
+      "lokasi": "1.1 Latar Belakang, paragraf 112",
+      "cari": "tanpa alat ukur terkalibrasi laboratorium (Solihat et al., 2026). Perangkat mengirimkan",
+      "ganti": "tanpa alat ukur terkalibrasi laboratorium (Solihat et al., 2026). Keempat gas tersebut juga sesuai dengan studi kasus ruangan tertutup. CO₂ berasal dari pernapasan penghuni sehingga kenaikannya menandakan ventilasi yang kurang memadai, NH₃ dapat berasal dari bahan pembersih, sampah, atau sumber bau, CO berasal dari pembakaran yang tidak sempurna seperti asap (Solihat et al., 2026), sedangkan H₂ terbaca oleh sensor MQ-2 sebagai bagian dari gas mudah terbakar dan asap (cek sumber). Pemilihan dan kalibrasi sensor merupakan bagian dari penelitian IoT yang dikerjakan rekan satu proyek. Perangkat mengirimkan",
+      "catatan": "Penguji 2 no. 1 (penentuan gas disesuaikan dengan studi kasus): alasan pemilihan tiap gas untuk ruangan tertutup. Klaim bertanda (cek sumber) dan sumber CO₂ dari pernapasan serta NH₃ dari bahan pembersih belum didukung pustaka di Daftar Pustaka; tambahkan sumbernya atau hapus klaimnya. Penjelasan per gas yang lebih lengkap tersedia di Bagian E sisipan-bab3.docx (opsional, untuk subbab 3.3)."
+    },
+    {
+      "id": "1.1-12",
+      "lokasi": "1.1 Latar Belakang, paragraf 113",
+      "cari": "belum mencakup validasi sistem pada berbagai skenario kondisi ruangan nyata untuk membuktikan kemampuan sistem dalam merespons perubahan kualitas udara secara langsung.",
+      "ganti": "belum mencakup pengujian fungsional sistem pada beberapa skenario kondisi ruangan nyata untuk melihat respons sistem terhadap perubahan kualitas udara secara langsung.",
+      "catatan": "Penguji 1 no. 1 (hindari klaim berlebihan): \"validasi untuk membuktikan\" diganti dengan bahasa pengujian fungsional."
+    },
+    {
+      "id": "1.1-13",
+      "lokasi": "1.1 Latar Belakang, paragraf 113",
+      "cari": "tetapi juga diuji dan divalidasi pada beberapa kondisi ruangan nyata untuk membuktikan fungsionalitas dan kemampuannya dalam memantau perubahan kualitas udara.",
+      "ganti": "tetapi juga diuji secara fungsional dengan metode *black-box* pada empat skenario kondisi di satu ruangan uji untuk memeriksa apakah data diterima, kategori ditampilkan, dan rekomendasi diberikan sesuai perubahan kondisi udara.",
+      "catatan": "Penguji 1 no. 1 (hindari klaim berlebihan): aplikasi diuji fungsional dengan black-box pada empat kondisi ruangan (Tabel 3.10), bukan divalidasi untuk membuktikan kemampuannya."
+    },
+    {
       "id": "1.4-01",
       "lokasi": "1.4 Batasan Masalah, butir 7 (paragraf 136)",
       "cari": "Sistem hanya memantau data real-time yang dikirim perangkat IoT secara berkala dengan interval 5–10 detik.",
@@ -44,6 +72,13 @@
       "cari": "Lebih lanjut, Atzori et al. (2025) menyatakan",
       "ganti": "Lebih lanjut, Atzori et al. (2010) menyatakan",
       "catatan": "Penyelarasan naskah dengan aplikasi (tahun Atzori 2010). Perbaiki juga format manual sitasi Mendeley ini."
+    },
+    {
+      "id": "2.4-10",
+      "lokasi": "2.4 Sistem Monitoring Kualitas Udara Ruangan Berbasis IoT, paragraf 275",
+      "cari": "pengguna dapat mengetahui kondisi kualitas udara secara cepat dan akurat,",
+      "ganti": "pengguna dapat mengetahui perubahan kondisi kualitas udara secara cepat,",
+      "catatan": "Penguji 1 no. 1 (hindari klaim berlebihan): sensor gas berbiaya rendah memberi indikator relatif, sehingga kata \"akurat\" dihapus."
     },
     {
       "id": "2.7-01",
@@ -155,6 +190,12 @@
       "catatan": "Ruang lingkup penelitian (fungsi sistem dan validitas sensor), sama dengan Batasan Masalah butir 4 dan 7."
     },
     {
+      "id": "3.3-10",
+      "lokasi": "3.3 Sumber Data, paragraf 392",
+      "cari": "Sumber data dalam penelitian ini berasal dari perangkat Internet of Things (IoT)",
+      "catatan": "Opsional (Penguji 2 no. 1): sisipkan Bagian E (Dasar Pemilihan Parameter Gas) dari sisipan-bab3.docx di sini, sesudah paragraf ini. Versi ringkasnya sudah ada di 1.1 (butir 1.1-11)."
+    },
+    {
       "id": "3.3-01",
       "lokasi": "3.3, Tabel 3.2 baris Timestamp, kolom Sumber Data (paragraf 413)",
       "cari": "Sistem IoT / server",
@@ -195,6 +236,20 @@
       "catatan": "Sesudah butir 4) Dokumentasi Data Pengujian, tambahkan butir baru \"5). Kuesioner UEQ\" dengan isi: \"Kuesioner User Experience Questionnaire (UEQ) 26 butir versi Bahasa Indonesia diberikan kepada responden setelah mereka menggunakan aplikasi. Setiap butir berupa pasangan kata berlawanan dengan skala 7 titik. Kuesioner diisi melalui halaman Kuesioner pada aplikasi, dan nama responden bersifat opsional. Jumlah responden: (cek).\" Lengkapi jumlah responden sebelum dimasukkan. Alasan: evaluasi UEQ dan penyelarasan naskah dengan aplikasi."
     },
     {
+      "id": "3.5-10",
+      "lokasi": "3.5 Metode Pengembangan Sistem, tahap Requirement Analysis (paragraf 438)",
+      "cari": "serta penyajian informasi melalui dashboard aplikasi web.",
+      "ganti": "serta penyajian informasi melalui dashboard aplikasi web, dan kebutuhan non-fungsional seperti aksesibilitas, pembaruan data, dan keamanan. Rincian kebutuhan disajikan pada subbab 3.5.1.",
+      "catatan": "Penguji 2 no. 5 (penulisan RPL): keluaran tahap analisis kebutuhan dirinci pada subbab baru 3.5.1."
+    },
+    {
+      "id": "3.5-11",
+      "lokasi": "3.5 Metode Pengembangan Sistem, tahap System Design (paragraf 440)",
+      "cari": "perancangan alur sistem menggunakan diagram seperti flowchart dan use case diagram.",
+      "ganti": "perancangan alur sistem menggunakan diagram seperti flowchart, use case diagram beserta skenarionya, dan *activity diagram*, serta perancangan basis data menggunakan *Entity Relationship Diagram* (ERD).",
+      "catatan": "Penguji 2 no. 5 (penulisan RPL): menyebut skenario use case, activity diagram, dan ERD yang ditambahkan pada 3.7.3–3.7.5."
+    },
+    {
       "id": "3.5-01",
       "lokasi": "3.5, tahap 3) Implementation (paragraf 442)",
       "cari": "serta menampilkan informasi monitoring dan prediksi kualitas udara melalui dashboard web.",
@@ -207,6 +262,12 @@
       "cari": "Hasil dari tahap pengujian digunakan untuk mengetahui apakah sistem telah berjalan dengan baik dan bebas dari kesalahan fungsional.",
       "ganti": "Pengujian tersebut dilakukan dengan metode *black-box testing* (Tabel 3.5–3.10). Hasil dari tahap pengujian digunakan untuk mengetahui apakah sistem telah berjalan dengan baik dan bebas dari kesalahan fungsional. Selain itu, pengalaman pengguna dievaluasi dengan *User Experience Questionnaire* (UEQ) 26 butir untuk mengetahui penilaian pengguna terhadap aplikasi.",
       "catatan": "Penyelarasan naskah dengan aplikasi: tahap Testing terdiri atas black-box testing dan evaluasi pengguna dengan UEQ."
+    },
+    {
+      "id": "3.5-12",
+      "lokasi": "3.5 Metode Pengembangan Sistem, akhir tahap Maintenance (paragraf 446)",
+      "cari": "Tahap pemeliharaan bertujuan untuk memastikan sistem dapat terus berjalan dengan baik dan dapat digunakan dalam jangka waktu yang lebih lama.",
+      "catatan": "Penguji 2 no. 5: sisipkan Bagian A (3.5.1 Analisis Kebutuhan Sistem, Tabel 3.3–3.4) dari sisipan-bab3.docx di sini, sesudah paragraf ini dan sebelum 3.6 Arsitektur Sistem. Nomor tabel sesudahnya bergeser; lihat petunjuk di awal sisipan-bab3.docx."
     },
     {
       "id": "3.6-01",
@@ -265,6 +326,13 @@
       "catatan": "Aturan klasifikasi ambang: penyebab utama ditentukan dan disimpan bersama kategori."
     },
     {
+      "id": "3.7-10",
+      "lokasi": "3.7 Perancangan Sistem, paragraf 478",
+      "cari": "Perancangan sistem dalam penelitian ini digambarkan menggunakan flowchart dan use case diagram. Flowchart digunakan untuk menjelaskan alur kerja sistem mulai dari penerimaan data hingga penyajian informasi pada dashboard. Use case diagram digunakan untuk menggambarkan interaksi antara pengguna dengan fitur-fitur utama yang tersedia pada aplikasi web.",
+      "ganti": "Perancangan sistem dalam penelitian ini digambarkan menggunakan flowchart, use case diagram beserta skenario *use case*, *activity diagram*, dan *Entity Relationship Diagram* (ERD). Flowchart digunakan untuk menjelaskan alur kerja sistem mulai dari penerimaan data hingga penyajian informasi pada dashboard. Use case diagram digunakan untuk menggambarkan interaksi antara pengguna dengan fitur-fitur utama yang tersedia pada aplikasi web. Skenario *use case* merinci alur setiap *use case*, *activity diagram* menggambarkan urutan aktivitas pada alur utama, dan ERD menggambarkan rancangan basis data.",
+      "catatan": "Penguji 2 no. 5 (penulisan RPL: system, use case, design): pengantar 3.7 menyebut sub-subbab baru 3.7.3–3.7.5."
+    },
+    {
       "id": "3.7-01",
       "lokasi": "3.7.1 Flowchart Sistem, paragraf 481",
       "cari": "Apabila data tidak valid, sistem mencatat kesalahan pada error handler, menolak data tersebut, dan menunggu pengiriman data berikutnya.",
@@ -297,6 +365,12 @@
       "lokasi": "3.7.2 Use Case Diagram, paragraf 491–492 dan Gambar 3.2",
       "cari": "Dengan use case diagram ini, hubungan antara aktor dan fungsi utama sistem dapat digambarkan lebih jelas.",
       "catatan": "Gambar ulang Gambar 3.2: aktor Pengguna dan Perangkat IoT; use case Pengguna menjadi Melihat Dashboard Real-Time (halaman Beranda), Melihat Grafik Sensor, Melihat dan Mengekspor Riwayat, Melihat Rekomendasi Tindakan Preventif, Melihat Status Perangkat, Membaca Panduan, dan Mengisi Kuesioner UEQ. Relasi «include» ke Menerima dan Memvalidasi Data, Menentukan Kategori, dan Menghasilkan Rekomendasi tetap dipakai. Sesuaikan juga paragraf sebelumnya: \"Melihat Grafik dan Data Historis\" dipecah menjadi Melihat Grafik Sensor serta Melihat dan Mengekspor Riwayat, lalu tambahkan satu kalimat untuk setiap use case baru. Alasan: ruang lingkup penelitian dan halaman aplikasi."
+    },
+    {
+      "id": "3.7-11",
+      "lokasi": "3.7.2 Use Case Diagram, judul Gambar 3.2 (paragraf 494)",
+      "cari": "Gambar 3.2 Use Case Diagram Sistem Monitoring",
+      "catatan": "Penguji 2 no. 5: sisipkan Bagian B (3.7.3 Skenario Use Case, Tabel 3.5–3.14), Bagian C (3.7.4 Activity Diagram, Gambar 3.3–3.5), dan Bagian D (3.7.5 Perancangan Basis Data, Gambar 3.6 dan Tabel 3.15–3.19) dari sisipan-bab3.docx di sini, sesudah Gambar 3.2 dan sebelum 3.8 Perancangan Aplikasi Web. Sesudah itu geser nomor gambar wireframe (+4) dan nomor tabel lama mulai Tabel 3.3 (+17), lalu Update Field pada Daftar Isi, Daftar Tabel, dan Daftar Gambar."
     },
     {
       "id": "3.8-01",
@@ -799,6 +873,13 @@
       "cari": "Segera tingkatkan ventilasi, hentikan sumber polutan, dan pertimbangkan meninggalkan ruangan sementara.",
       "ganti": "Segera tingkatkan ventilasi, hentikan sumber polutan, dan pertimbangkan meninggalkan ruangan sementara sampai kondisi udara membaik.",
       "catatan": "Aturan rekomendasi: teks harus persis sama dengan Tabel 3.3; pengujian membandingkan teks secara utuh."
+    },
+    {
+      "id": "3.12-30",
+      "lokasi": "3.12.5 Pengujian pada Beberapa Kondisi Ruangan, paragraf 826",
+      "cari": "Pengujian ini dilakukan untuk membuktikan bahwa sistem mampu memantau perubahan kondisi kualitas udara pada situasi ruangan yang berbeda.",
+      "ganti": "Pengujian ini merupakan pengujian fungsional dengan metode *black-box* untuk memeriksa apakah sistem menerima data, menampilkan kategori, dan memberikan rekomendasi sesuai perubahan kondisi udara pada empat situasi di satu ruangan uji.",
+      "catatan": "Penguji 1 no. 1 (hindari klaim berlebihan): tujuan pengujian dirumuskan sebagai pemeriksaan fungsional, bukan pembuktian."
     },
     {
       "id": "3.12-23",

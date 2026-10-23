@@ -1,0 +1,18 @@
+{
+  "keterangan": "Aturan tata tulis untuk patch_naskah.py --tata-tulis: istilah asing dimiringkan, judul tabel/gambar dijaga tidak terpisah halaman, spasi ganda dan spasi sebelum tanda baca dihapus. Akronim (IoT, API, JSON) dan nama produk (Laravel, ESP32) sengaja tidak dimiringkan.",
+  "jaga_judul": true,
+  "rapikan_spasi": true,
+  "kecualikan_setelah_judul": "DAFTAR PUSTAKA",
+  "kecualikan_tabel": ["2.1"],
+  "istilah_asing": [
+    "Internet of Things", "real-time", "real time", "monitoring", "dashboard", "website", "web",
+    "wireframe", "flowchart", "use case", "waterfall", "black-box", "testing", "framework",
+    "frontend", "front-end", "backend", "back-end", "database", "layer", "Processing", "Presentation",
+    "threshold", "baseline", "endpoint", "payload", "timestamp", "rule-based", "user experience",
+    "User Experience Questionnaire", "user", "interface", "software", "hardware", "cloud", "online",
+    "offline", "maintenance", "deployment", "requirement", "design", "implementation", "prototype",
+    "update", "upload", "download", "device", "gateway", "microcontroller", "smartphone", "browser",
+    "server", "Air Quality Index", "machine learning", "fuzzy", "benchmark", "pagination", "polling",
+    "chart", "error", "handler", "request", "response"
+  ]
+}
