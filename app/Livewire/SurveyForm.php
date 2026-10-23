@@ -2,8 +2,8 @@
 
 namespace App\Livewire;
 
-use App\Models\SurveyResponse;
-use App\Support\Sus;
+use App\Models\UeqResponse;
+use App\Support\Ueq;
 use Illuminate\Support\Facades\RateLimiter;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
@@ -18,24 +18,19 @@ class SurveyForm extends Component
 
     public string $respondentName = '';
 
-    /** @var array<int|string, int|string|null> Jawaban butir 1..10 */
+    /** @var array<int|string, int|string|null> Jawaban butir 1..26 (1 = istilah kiri, 7 = istilah kanan) */
     public array $answers = [];
 
-    public string $comment = '';
-
     public bool $submitted = false;
-
-    public ?float $resultScore = null;
 
     protected function rules(): array
     {
         $rules = [
             'respondentName' => ['nullable', 'string', 'max:100'],
-            'comment' => ['nullable', 'string', 'max:1000'],
         ];
 
-        foreach (array_keys(Sus::ITEMS) as $i) {
-            $rules["answers.{$i}"] = ['required', 'integer', 'between:'.Sus::MIN.','.Sus::MAX];
+        foreach (array_keys(config('ueq.items')) as $i) {
+            $rules["answers.{$i}"] = ['required', 'integer', 'between:'.Ueq::MIN.','.Ueq::MAX];
         }
 
         return $rules;
@@ -44,11 +39,10 @@ class SurveyForm extends Component
     protected function messages(): array
     {
         return [
-            'answers.*.required' => 'Pilih salah satu jawaban untuk pernyataan ini.',
+            'answers.*.required' => 'Pilih salah satu lingkaran pada baris ini.',
             'answers.*.integer' => 'Jawaban tidak valid.',
-            'answers.*.between' => 'Jawaban harus bernilai 1 sampai 5.',
+            'answers.*.between' => 'Jawaban harus bernilai 1 sampai 7.',
             'respondentName.max' => 'Nama maksimal 100 karakter.',
-            'comment.max' => 'Komentar maksimal 1000 karakter.',
         ];
     }
 
@@ -56,7 +50,8 @@ class SurveyForm extends Component
     {
         $validated = $this->validate();
 
-        $key = 'survey-submit:'.(SurveyResponse::hashIp(request()->ip()) ?? 'unknown');
+        $ipHash = UeqResponse::hashIp(request()->ip());
+        $key = 'survey-submit:'.($ipHash ?? 'unknown');
 
         if (RateLimiter::tooManyAttempts($key, self::MAX_PER_HOUR)) {
             $minutes = (int) ceil(RateLimiter::availableIn($key) / 60);
@@ -67,31 +62,26 @@ class SurveyForm extends Component
 
         RateLimiter::hit($key, 3600);
 
-        $data = [
-            'respondent_name' => filled($validated['respondentName'] ?? null) ? trim($validated['respondentName']) : null,
-            'respondent_group' => Sus::DEFAULT_GROUP,
-            'comment' => filled($validated['comment'] ?? null) ? trim($validated['comment']) : null,
-            'ip_hash' => SurveyResponse::hashIp(request()->ip()),
-        ];
-
-        foreach (array_keys(Sus::ITEMS) as $i) {
-            $data["q{$i}"] = (int) $validated['answers'][$i];
+        $answers = [];
+        foreach (array_keys(config('ueq.items')) as $i) {
+            $answers[$i] = (int) $validated['answers'][$i];
         }
 
-        $response = SurveyResponse::create($data);
+        UeqResponse::create([
+            'respondent_name' => filled($validated['respondentName'] ?? null) ? trim($validated['respondentName']) : null,
+            'answers' => $answers,
+            'ip_hash' => $ipHash,
+        ]);
 
-        $this->resultScore = $response->sus_score;
         $this->submitted = true;
-        $this->reset('respondentName', 'answers', 'comment');
+        $this->reset('respondentName', 'answers');
     }
 
     public function render()
     {
         return view('livewire.survey-form', [
-            'items' => Sus::ITEMS,
-            'scale' => Sus::SCALE,
-            'grade' => $this->resultScore !== null ? Sus::grade($this->resultScore) : null,
-            'acceptability' => $this->resultScore !== null ? Sus::acceptability($this->resultScore) : null,
+            'items' => config('ueq.items'),
+            'points' => range(Ueq::MIN, Ueq::MAX),
         ]);
     }
 }

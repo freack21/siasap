@@ -1,8 +1,8 @@
 <div class="mx-auto max-w-3xl space-y-6">
     <x-ui.page-header
         :icon="'tabler-clipboard-check'"
-        title="Kuesioner Kegunaan Website"
-        description="Bantu kami menilai seberapa mudah website SIASAP digunakan. Penilaian ini merupakan bagian dari uji coba produk penelitian skripsi.">
+        title="Kuesioner Pengalaman Pengguna"
+        description="Bantu kami menilai pengalaman Anda menggunakan website SIASAP dengan User Experience Questionnaire (UEQ). Penilaian ini merupakan bagian dari penelitian skripsi.">
         <x-slot:eyebrow>Uji Coba Produk</x-slot:eyebrow>
     </x-ui.page-header>
 
@@ -16,19 +16,6 @@
                 Jawaban Anda sudah tersimpan dan akan membantu kami menyempurnakan website ini.
             </p>
 
-            <div class="mx-auto mt-6 grid max-w-sm grid-cols-2 divide-x divide-slate-100 rounded-2xl border border-slate-200">
-                <div class="px-4 py-4">
-                    <p class="eyebrow inline-flex items-center gap-1"><x-tabler-star class="size-3.5" /> Skor kegunaan</p>
-                    <p class="mt-1 text-3xl font-bold tracking-tight text-slate-900 num">{{ number_format($resultScore, 1, ',', '.') }}</p>
-                    <p class="text-xs text-slate-400">dari 100</p>
-                </div>
-                <div class="px-4 py-4">
-                    <p class="eyebrow inline-flex items-center gap-1"><x-tabler-award class="size-3.5" /> Penilaian</p>
-                    <p class="mt-1 text-3xl font-bold tracking-tight text-accent-700">{{ $grade['grade'] }}</p>
-                    <p class="text-xs text-slate-500">{{ $grade['label'] }}</p>
-                </div>
-            </div>
-
             <div class="mt-6">
                 <a href="{{ route('home') }}" wire:navigate class="btn btn-secondary">
                     <x-tabler-home-2 class="size-4" /> Kembali ke Beranda
@@ -40,7 +27,7 @@
             <x-tabler-info-circle class="size-5 shrink-0 text-slate-500" />
             <div class="space-y-0.5">
                 <p>Kuesioner bersifat <strong class="font-semibold text-slate-900">anonim</strong> (nama boleh dikosongkan) dan hanya membutuhkan sekitar <strong class="font-semibold text-slate-900">2 menit</strong>.</p>
-                <p class="text-slate-500">Tidak ada jawaban benar atau salah. Pilih yang paling sesuai dengan pengalaman Anda.</p>
+                <p class="text-slate-500">Setiap baris berisi dua istilah yang berlawanan makna. Pilih lingkaran yang paling dekat dengan kesan Anda, dan putuskan secara spontan tanpa berpikir terlalu lama. Tidak ada jawaban benar atau salah, dan mohon setiap baris diisi walaupun Anda kurang yakin.</p>
             </div>
         </div>
 
@@ -60,58 +47,51 @@
                 </div>
             </x-ui.card>
 
-            <x-ui.card :icon="'tabler-list-check'" title="Pernyataan" description="Beri tanda pada skala 1 (Sangat Tidak Setuju) sampai 5 (Sangat Setuju)." :padded="false">
+            <x-ui.card :icon="'tabler-list-check'" title="Penilaian" description="Pilih satu lingkaran pada tiap baris, dari 1 (dekat istilah kiri) sampai 7 (dekat istilah kanan)." :padded="false">
                 <ol class="divide-y divide-slate-100">
-                    @foreach ($items as $number => $statement)
-                        <li wire:key="item-{{ $number }}" class="px-5 py-5 sm:px-6">
-                            <fieldset>
-                                <legend class="flex gap-3 text-sm text-slate-800">
-                                    <span class="flex size-6 shrink-0 items-center justify-center rounded-full bg-slate-100 text-xs font-semibold text-slate-600 num">{{ $number }}</span>
-                                    <span class="pt-0.5">{{ $statement }}</span>
-                                </legend>
-
-                                <div class="mt-3 sm:pl-9">
+                    @foreach ($items as $number => [$left, $right])
+                        <li wire:key="item-{{ $number }}" class="px-5 py-4 sm:px-6">
+                            <fieldset class="flex items-center gap-3">
+                                <legend class="sr-only">Butir {{ $number }}: {{ $left }} atau {{ $right }}</legend>
+                                <span class="hidden size-6 shrink-0 items-center justify-center rounded-full bg-slate-100 text-xs font-semibold text-slate-600 num sm:flex" aria-hidden="true">{{ $number }}</span>
+                                <span class="hidden w-36 shrink-0 text-right text-sm font-medium text-slate-800 sm:block" aria-hidden="true">{{ $left }}</span>
+                                <div class="min-w-0 flex-1">
+                                    <div class="mb-1.5 flex justify-between gap-3 text-sm font-medium text-slate-800 sm:hidden" aria-hidden="true">
+                                        <span><span class="num mr-1.5 text-xs text-slate-400">{{ $number }}.</span>{{ $left }}</span>
+                                        <span class="text-right">{{ $right }}</span>
+                                    </div>
                                     <div @class([
-                                        'grid grid-cols-5 overflow-hidden rounded-xl border bg-white',
+                                        'grid grid-cols-7 overflow-hidden rounded-xl border bg-white',
                                         'border-rose-300' => $errors->has('answers.'.$number),
                                         'border-slate-200' => ! $errors->has('answers.'.$number),
                                     ])>
-                                        @foreach ($scale as $value => $option)
+                                        @foreach ($points as $value)
                                             <label class="relative cursor-pointer border-slate-200 not-first:border-l">
                                                 <input type="radio"
                                                        name="answers-{{ $number }}"
                                                        value="{{ $value }}"
                                                        wire:model="answers.{{ $number }}"
                                                        class="peer sr-only"
-                                                       aria-label="{{ $value }} — {{ $option['label'] }}">
-                                                <span class="flex h-11 flex-col items-center justify-center text-sm font-semibold text-slate-600 transition hover:bg-slate-50 peer-checked:bg-accent-600 peer-checked:text-white peer-focus-visible:ring-2 peer-focus-visible:ring-inset peer-focus-visible:ring-accent-500 num">
+                                                       aria-label="{{ $value }} dari 7 ({{ $value < 4 ? 'lebih dekat ke '.$left : ($value > 4 ? 'lebih dekat ke '.$right : 'netral') }})">
+                                                <span class="flex h-11 items-center justify-center text-sm font-semibold text-slate-600 transition hover:bg-slate-50 peer-checked:bg-accent-600 peer-checked:text-white peer-focus-visible:ring-2 peer-focus-visible:ring-inset peer-focus-visible:ring-accent-500 num">
                                                     {{ $value }}
                                                 </span>
                                             </label>
                                         @endforeach
                                     </div>
-                                    <div class="mt-1.5 flex justify-between text-[11px] text-slate-400" aria-hidden="true">
-                                        <span>Sangat Tidak Setuju</span>
-                                        <span>Sangat Setuju</span>
-                                    </div>
                                     @error('answers.'.$number) <p class="mt-1 text-xs text-rose-600">{{ $message }}</p> @enderror
                                 </div>
+                                <span class="hidden w-36 shrink-0 text-sm font-medium text-slate-800 sm:block" aria-hidden="true">{{ $right }}</span>
                             </fieldset>
                         </li>
                     @endforeach
                 </ol>
             </x-ui.card>
 
-            <x-ui.card :icon="'tabler-message-circle'" title="Saran atau komentar" description="Opsional. Ceritakan hal yang menurut Anda perlu diperbaiki.">
-                <label for="comment" class="sr-only">Komentar</label>
-                <textarea id="comment" wire:model="comment" rows="4" maxlength="1000" class="input" placeholder="Tulis saran Anda di sini..."></textarea>
-                @error('comment') <p class="mt-1 text-xs text-rose-600">{{ $message }}</p> @enderror
-            </x-ui.card>
-
             @if ($errors->any() && ! $errors->has('rateLimit'))
                 <div class="alert alert-error" role="alert">
                     <x-tabler-alert-triangle class="size-5 shrink-0" />
-                    <span>Masih ada pernyataan yang belum dijawab. Silakan periksa kembali isian yang ditandai.</span>
+                    <span>Masih ada baris yang belum dijawab. Silakan periksa kembali isian yang ditandai.</span>
                 </div>
             @endif
 
