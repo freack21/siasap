@@ -74,7 +74,12 @@
                         <x-tabler-bulb class="size-4" style="color: {{ $currentCategory['color'] }}" />
                         Rekomendasi
                     </p>
-                    <p class="mt-0.5 text-sm text-slate-700">{{ $currentCategory['advice'] }}</p>
+                    <p class="mt-0.5 text-sm text-slate-700">
+                        {{ $preventive['all_good'] ? $preventive['maintenance'][0] : ($preventive['items'][0]['actions'][0] ?? $currentCategory['advice']) }}
+                    </p>
+                    <a href="#tindakan-preventif" class="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-slate-700 hover:text-slate-900">
+                        Lihat tindakan preventif <x-tabler-arrow-down class="size-3.5" />
+                    </a>
                 </div>
             </div>
 
@@ -109,6 +114,9 @@
                 @endforeach
             </div>
         </section>
+
+        {{-- Tindakan preventif --}}
+        <x-ui.preventive-actions id="tindakan-preventif" class="scroll-mt-24" :recommendation="$preventive" />
     @endif
 
     {{-- Tren --}}

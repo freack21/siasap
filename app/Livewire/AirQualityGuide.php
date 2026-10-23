@@ -56,6 +56,52 @@ class AirQualityGuide extends Component
         return null;
     }
 
+    /**
+     * Level AQI EPA untuk CO beserta rentang indeks dan kategori KU aplikasi
+     * pada rentang yang sama (dipakai untuk warna penanda).
+     *
+     * @return list<array{key: string, label: string, epa_label: string, cautionary: string, range: string, ku_status: string}>
+     */
+    public static function coAqiLevels(): array
+    {
+        $levels = [];
+        $previousMax = null;
+
+        foreach (config('preventive_actions.co_aqi_levels', []) as $level) {
+            $min = $previousMax === null ? 0 : $previousMax + 1;
+
+            $levels[] = [
+                'key' => $level['key'],
+                'label' => $level['label'],
+                'epa_label' => $level['epa_label'],
+                'cautionary' => $level['cautionary'],
+                'range' => $level['max'] === null ? '≥ '.$min : $min.' – '.$level['max'],
+                'ku_status' => SensorLog::computeKuStatus((float) $min),
+            ];
+
+            $previousMax = $level['max'];
+        }
+
+        return $levels;
+    }
+
+    /**
+     * Contoh langkah preventif untuk tingkat paling serius setiap gas.
+     *
+     * @return array<string, list<string>> [gas => langkah]
+     */
+    public static function preventiveExamples(int $limit = 3): array
+    {
+        $examples = [];
+
+        foreach (array_keys(AirQuality::gases()) as $gas) {
+            $key = $gas === 'co' ? 'hazardous' : 'Berbahaya';
+            $examples[$gas] = array_slice(config("preventive_actions.actions.{$gas}.{$key}", []), 0, $limit);
+        }
+
+        return $examples;
+    }
+
     public function render()
     {
         $example = self::EXAMPLE;
@@ -73,6 +119,9 @@ class AirQualityGuide extends Component
             'result' => $result,
             'onlineSeconds' => AirQuality::onlineThresholdSeconds(),
             'sendInterval' => (int) config('air_quality.send_interval_seconds', 5),
+            'coAqiLevels' => self::coAqiLevels(),
+            'preventiveExamples' => self::preventiveExamples(),
+            'preventiveSources' => config('preventive_actions.sources', []),
         ]);
     }
 }

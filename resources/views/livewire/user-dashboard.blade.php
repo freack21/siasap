@@ -30,7 +30,24 @@
                                 <span class="text-sm text-slate-500">Kondisi terburuk di <span class="font-medium text-slate-700">{{ $worstRoom->name }}</span></span>
                             @endif
                         </div>
-                        <p class="max-w-xl text-sm text-slate-600">{{ $overallCategory['advice'] }}</p>
+                        @if ($worstPreventive)
+                            <div class="max-w-xl space-y-2">
+                                <ul class="space-y-1.5">
+                                    @foreach ($worstPreventive['all_good'] ? array_slice($worstPreventive['maintenance'], 0, 1) : array_slice($worstPreventive['items'][0]['actions'], 0, 2) as $action)
+                                        <li class="flex items-start gap-2 text-sm text-slate-600">
+                                            <x-tabler-circle-check class="mt-0.5 size-4 shrink-0 text-accent-600" />
+                                            <span>{{ $action }}</span>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                                <a href="{{ route('rooms.show', $worstRoom) }}#tindakan-preventif"
+                                   class="inline-flex items-center gap-1 text-sm font-semibold text-accent-700 hover:text-accent-800">
+                                    Lihat tindakan preventif <x-tabler-arrow-right class="size-4" />
+                                </a>
+                            </div>
+                        @else
+                            <p class="max-w-xl text-sm text-slate-600">{{ $overallCategory['advice'] }}</p>
+                        @endif
                     </div>
                 </div>
 

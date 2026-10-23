@@ -206,6 +206,108 @@
         </div>
     </section>
 
+    {{-- Tindakan preventif --}}
+    <section class="space-y-4">
+        <div class="flex items-start gap-3">
+            <span class="icon-chip">
+                <x-tabler-shield-check class="size-5" />
+            </span>
+            <div>
+                <h2 class="text-lg font-semibold tracking-tight text-slate-900">Tindakan preventif</h2>
+                <div class="mt-1 max-w-3xl space-y-2 text-sm leading-relaxed text-slate-500">
+                    <p>
+                        Untuk CO, SIASAP memakai AQI resmi U.S. EPA yang terdiri atas 6 level. Sub-indeks CO di aplikasi memakai
+                        breakpoint yang sama, sehingga level EPA dan anjurannya dapat ditampilkan langsung. EPA menulis anjuran
+                        ini untuk udara luar, jadi SIASAP menyesuaikannya untuk ruangan dan menambahkan langkah pengendalian sumber CO
+                        dari panduan EPA Indoor Air Quality.
+                    </p>
+                    <p>
+                        CO₂, NH₃, dan H₂ tidak termasuk AQI EPA. Langkahnya mengikuti strategi EPA Indoor Air Quality
+                        (kendalikan sumber, perbaiki ventilasi) sesuai kategori KU aplikasi. Untuk H₂, langkahnya berfokus pada
+                        keselamatan dari kebakaran karena gas ini mudah terbakar mulai kadar 4% di udara (LEL).
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <x-ui.card :icon="'tabler-table'" title="Level AQI EPA untuk CO" description="Titik warna menunjukkan kategori KU aplikasi untuk rentang indeks yang sama." :padded="false">
+            <div class="overflow-x-auto">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th class="whitespace-nowrap">Rentang indeks</th>
+                            <th>Level</th>
+                            <th>Anjuran EPA</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($coAqiLevels as $level)
+                            @php $levelCategory = $categories[$level['ku_status']]; @endphp
+                            <tr>
+                                <td class="whitespace-nowrap align-top num text-slate-500">{{ $level['range'] }}</td>
+                                <td class="min-w-48 align-top">
+                                    <span class="flex items-start gap-2">
+                                        <span class="mt-1.5 size-2 shrink-0 rounded-full {{ $levelCategory['dot'] }}" title="Kategori KU: {{ $levelCategory['label'] }}"></span>
+                                        <span>
+                                            <span class="block font-medium text-slate-900">{{ $level['label'] }}</span>
+                                            <span class="block text-xs text-slate-500" lang="en">{{ $level['epa_label'] }}</span>
+                                        </span>
+                                    </span>
+                                </td>
+                                <td class="min-w-64 align-top text-slate-600">{{ $level['cautionary'] }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </x-ui.card>
+
+        <div>
+            <h3 class="text-sm font-semibold text-slate-900">Contoh langkah pada tingkat paling serius</h3>
+            <p class="mt-0.5 text-sm text-slate-500">Rekomendasi pada halaman ruangan menyesuaikan level setiap gas; berikut contoh untuk level tertinggi.</p>
+        </div>
+
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            @foreach ($gases as $key => $gas)
+                <article class="card card-body">
+                    <div class="flex items-center gap-2.5">
+                        <span class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-slate-100" style="color: {{ $gas['color'] }}">
+                            <x-dynamic-component :component="$gas['icon']" class="size-4.5" />
+                        </span>
+                        <div>
+                            <h4 class="text-sm font-semibold text-slate-900">{{ $gas['symbol'] }}</h4>
+                            <p class="text-xs text-slate-500">{{ $key === 'co' ? 'Level EPA: Berbahaya' : 'Kategori KU: Berbahaya' }}</p>
+                        </div>
+                    </div>
+                    <ul class="mt-3 space-y-2 text-sm text-slate-600">
+                        @foreach ($preventiveExamples[$key] as $step)
+                            <li class="flex gap-2">
+                                <x-tabler-check class="mt-0.5 size-4 shrink-0 text-slate-400" />
+                                <span>{{ $step }}</span>
+                            </li>
+                        @endforeach
+                    </ul>
+                </article>
+            @endforeach
+        </div>
+
+        <div class="card card-body">
+            <p class="eyebrow">Sumber rujukan</p>
+            <ul class="mt-3 space-y-2 text-sm">
+                @foreach ($preventiveSources as $source)
+                    <li class="flex gap-2">
+                        <x-tabler-external-link class="mt-0.5 size-4 shrink-0 text-slate-400" />
+                        <a href="{{ $source['url'] }}" target="_blank" rel="noopener" class="text-slate-700 underline decoration-slate-300 underline-offset-2 hover:text-slate-900">{{ $source['label'] }}</a>
+                    </li>
+                @endforeach
+            </ul>
+            <p class="mt-4 flex gap-2 border-t border-slate-100 pt-4 text-xs text-slate-500">
+                <x-tabler-info-circle class="mt-px size-4 shrink-0 text-slate-400" />
+                Rekomendasi bersifat informatif dan bukan diagnosis medis.
+            </p>
+        </div>
+    </section>
+
     {{-- FAQ --}}
     <section class="space-y-4">
         <h2 class="text-lg font-semibold tracking-tight text-slate-900">Pertanyaan umum</h2>

@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Models\Room;
 use App\Models\SensorLog;
 use App\Support\AirQuality;
+use App\Support\PreventiveActions;
 use Illuminate\Support\Collection;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
@@ -44,6 +45,7 @@ class UserDashboard extends Component
             'overallStatus' => $worst?->ku_status,
             'overallCategory' => AirQuality::category($worst?->ku_status),
             'worstRoom' => $worstCard['room'] ?? null,
+            'worstPreventive' => $worst ? PreventiveActions::forLog($worst) : null,
             'lastUpdate' => $lastUpdate,
             'devicesTotal' => $devicesTotal,
             'devicesOnline' => $devicesOnline,

@@ -176,4 +176,25 @@ class PublicHistoryGuideTest extends TestCase
         $this->assertEqualsWithDelta(4.4, AirQualityGuide::thresholds('co')['Baik'], 1e-9);
         $this->assertEqualsWithDelta(30.4, AirQualityGuide::thresholds('co')['Tidak Sehat'], 1e-9);
     }
+
+    public function test_guide_explains_preventive_actions_with_epa_levels_and_sources(): void
+    {
+        Livewire::test(AirQualityGuide::class)
+            ->assertSee('Tindakan preventif')
+            ->assertSee(['Good', 'Moderate', 'Unhealthy for Sensitive Groups', 'Unhealthy', 'Very Unhealthy', 'Hazardous'])
+            ->assertSee(['Tidak Sehat bagi Kelompok Sensitif', 'Sangat Tidak Sehat'])
+            ->assertSee(config('preventive_actions.co_aqi_levels.2.cautionary'))
+            ->assertSee(['0 – 50', '101 – 150', '≥ 301'])
+            ->assertSee(config('preventive_actions.actions.h2.Berbahaya.0'))
+            ->assertSee(config('preventive_actions.sources.epa_aqi.url'))
+            ->assertSee('Rekomendasi bersifat informatif dan bukan diagnosis medis.');
+    }
+
+    public function test_guide_co_aqi_levels_derive_ranges_and_ku_category(): void
+    {
+        $levels = AirQualityGuide::coAqiLevels();
+
+        $this->assertSame(['0 – 50', '51 – 100', '101 – 150', '151 – 200', '201 – 300', '≥ 301'], array_column($levels, 'range'));
+        $this->assertSame(['Baik', 'Sedang', 'Sedang', 'Tidak Sehat', 'Tidak Sehat', 'Berbahaya'], array_column($levels, 'ku_status'));
+    }
 }
