@@ -3,8 +3,6 @@
 namespace App\Console\Commands;
 
 use App\Models\Node;
-use App\Models\Permission;
-use App\Models\Role;
 use App\Models\Room;
 use App\Models\SensorLog;
 use App\Models\TestingSession;
@@ -41,7 +39,7 @@ class ClearTransactionDataCommand extends Command
         $logCount = SensorLog::count();
         $sessionCount = TestingSession::count();
 
-        $this->line("Ditemukan data transaksi saat ini:");
+        $this->line('Ditemukan data transaksi saat ini:');
         $this->line(" - Log Data Sensor Telemetri : <comment>{$logCount}</comment> baris");
         $this->line(" - Sesi Pengujian Jaringan   : <comment>{$sessionCount}</comment> sesi");
         $this->newLine();
@@ -49,12 +47,14 @@ class ClearTransactionDataCommand extends Command
         if ($logCount === 0 && $sessionCount === 0) {
             $this->info('[INFO] Data transaksi sudah dalam keadaan kosong.');
             $this->displayMasterDataSummary();
+
             return Command::SUCCESS;
         }
 
-        if (!$this->option('force')) {
-            if (!$this->confirm('Apakah Anda yakin ingin mengosongkan seluruh data transaksi di atas?', false)) {
+        if (! $this->option('force')) {
+            if (! $this->confirm('Apakah Anda yakin ingin mengosongkan seluruh data transaksi di atas?', false)) {
                 $this->warn('Operasi pembersihan dibatalkan oleh pengguna.');
+
                 return Command::SUCCESS;
             }
         }
@@ -89,10 +89,9 @@ class ClearTransactionDataCommand extends Command
         $this->table(
             ['Komponen Master Data', 'Jumlah Data Terdaftar', 'Status'],
             [
-                ['Master Ruangan (rooms)', Room::count() . ' Ruangan', 'AMAN (Utuh)'],
-                ['Master Node Perangkat (nodes)', Node::count() . ' Perangkat Node', 'AMAN (Utuh)'],
-                ['Pengguna Terdaftar (users)', User::count() . ' Akun', 'AMAN (Utuh)'],
-                ['Hak Akses & Role (RBAC)', Role::count() . ' Role / ' . Permission::count() . ' Perms', 'AMAN (Utuh)'],
+                ['Master Ruangan (rooms)', Room::count().' Ruangan', 'AMAN (Utuh)'],
+                ['Master Node Perangkat (nodes)', Node::count().' Perangkat Node', 'AMAN (Utuh)'],
+                ['Pengguna Terdaftar (users)', User::count().' Akun', 'AMAN (Utuh)'],
             ]
         );
         $this->newLine();
