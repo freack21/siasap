@@ -36,6 +36,13 @@ return [
         ],
     ],
 
+    // Label tampilan untuk kunci `strategies` di atas.
+    'strategy_labels' => [
+        'kendali_sumber' => 'Kendali sumber',
+        'ventilasi' => 'Peningkatan ventilasi',
+        'pembersihan_udara' => 'Pembersihan udara',
+    ],
+
     'sources' => [
         'epa_iaq' => [
             'label' => 'U.S. EPA. Improving Indoor Air Quality.',
