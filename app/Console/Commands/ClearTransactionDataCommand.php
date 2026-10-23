@@ -5,8 +5,7 @@ namespace App\Console\Commands;
 use App\Models\Node;
 use App\Models\Room;
 use App\Models\SensorLog;
-use App\Models\TestingSession;
-use App\Models\User;
+use App\Models\TelemetryRejection;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Schema;
 
@@ -24,7 +23,7 @@ class ClearTransactionDataCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Kosongkan seluruh data transaksi (log sensor & sesi pengujian) dan sisakan data master';
+    protected $description = 'Kosongkan seluruh data transaksi (log sensor & penolakan data) dan sisakan data master';
 
     /**
      * Execute the console command.
@@ -37,14 +36,14 @@ class ClearTransactionDataCommand extends Command
         $this->info('====================================================================');
 
         $logCount = SensorLog::count();
-        $sessionCount = TestingSession::count();
+        $rejectionCount = TelemetryRejection::count();
 
         $this->line('Ditemukan data transaksi saat ini:');
         $this->line(" - Log Data Sensor Telemetri : <comment>{$logCount}</comment> baris");
-        $this->line(" - Sesi Pengujian Jaringan   : <comment>{$sessionCount}</comment> sesi");
+        $this->line(" - Catatan Data Ditolak      : <comment>{$rejectionCount}</comment> baris");
         $this->newLine();
 
-        if ($logCount === 0 && $sessionCount === 0) {
+        if ($logCount === 0 && $rejectionCount === 0) {
             $this->info('[INFO] Data transaksi sudah dalam keadaan kosong.');
             $this->displayMasterDataSummary();
 
@@ -64,7 +63,7 @@ class ClearTransactionDataCommand extends Command
         // Nonaktifkan foreign key checks sementara untuk menghindari constraint error
         Schema::disableForeignKeyConstraints();
         SensorLog::truncate();
-        TestingSession::truncate();
+        TelemetryRejection::truncate();
         Schema::enableForeignKeyConstraints();
 
         $this->newLine();
@@ -91,7 +90,6 @@ class ClearTransactionDataCommand extends Command
             [
                 ['Master Ruangan (rooms)', Room::count().' Ruangan', 'AMAN (Utuh)'],
                 ['Master Node Perangkat (nodes)', Node::count().' Perangkat Node', 'AMAN (Utuh)'],
-                ['Pengguna Terdaftar (users)', User::count().' Akun', 'AMAN (Utuh)'],
             ]
         );
         $this->newLine();

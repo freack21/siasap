@@ -30,20 +30,10 @@
                                 <span class="text-sm text-slate-500">Kondisi terburuk di <span class="font-medium text-slate-700">{{ $worstRoom->name }}</span></span>
                             @endif
                         </div>
-                        @if ($worstPreventive)
-                            <div class="max-w-xl space-y-2">
-                                <ul class="space-y-1.5">
-                                    @foreach ($worstPreventive['all_good'] ? array_slice($worstPreventive['maintenance'], 0, 1) : array_slice($worstPreventive['items'][0]['actions'], 0, 2) as $action)
-                                        <li class="flex items-start gap-2 text-sm text-slate-600">
-                                            <x-tabler-circle-check class="mt-0.5 size-4 shrink-0 text-accent-600" />
-                                            <span>{{ $action }}</span>
-                                        </li>
-                                    @endforeach
-                                </ul>
-                                <a href="{{ route('rooms.show', $worstRoom) }}#tindakan-preventif"
-                                   class="inline-flex items-center gap-1 text-sm font-semibold text-accent-700 hover:text-accent-800">
-                                    Lihat tindakan preventif <x-tabler-arrow-right class="size-4" />
-                                </a>
+                        @if ($worstRecommendation)
+                            <div class="max-w-xl space-y-1">
+                                <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">{{ $worstRecommendation['level'] }}</p>
+                                <p class="text-sm text-slate-600">{{ $worstRecommendation['text'] }}</p>
                             </div>
                         @else
                             <p class="max-w-xl text-sm text-slate-600">{{ $overallCategory['advice'] }}</p>
@@ -103,24 +93,20 @@
                                     </p>
                                 </div>
                             </div>
-                            <x-ui.ku-badge :status="$log?->ku_status" size="sm" :icon="true" />
+                            <x-ui.ku-badge :status="$log?->overall_category" size="sm" :icon="true" />
                         </div>
 
                         @if ($log)
                             <div class="mt-5 flex items-end justify-between gap-3">
                                 <div>
-                                    <p class="text-xs text-slate-500">Indeks KU</p>
-                                    <p class="num text-4xl font-bold tracking-tight text-slate-900">{{ number_format($log->ku_value, 0) }}</p>
+                                    <p class="text-xs text-slate-500">Kategori keseluruhan</p>
+                                    <p class="text-2xl font-bold tracking-tight text-slate-900">{{ $log->overall_category }}</p>
                                 </div>
-                                @if ($card['dominant'])
-                                    @php($dominantGas = $gases[$card['dominant']] ?? null)
+                                @if ($card['dominant'] !== [])
                                     <div class="text-right text-xs text-slate-500">
                                         <p>Penyebab utama</p>
-                                        <p class="mt-0.5 inline-flex items-center gap-1.5 text-sm font-semibold text-slate-800">
-                                            @if ($dominantGas)
-                                                <x-dynamic-component :component="$dominantGas['icon']" class="size-4" style="color: {{ $dominantGas['color'] }}" />
-                                            @endif
-                                            {{ $dominantGas['symbol'] ?? strtoupper($card['dominant']) }}
+                                        <p class="mt-0.5 text-sm font-semibold text-slate-800">
+                                            {{ collect($card['dominant'])->map(fn ($key) => $gases[$key]['symbol'] ?? strtoupper($key))->implode(', ') }}
                                         </p>
                                     </div>
                                 @endif
@@ -168,7 +154,6 @@
                         </span>
                         <div class="leading-tight">
                             <p class="text-xs font-semibold text-slate-800">{{ $category['label'] }}</p>
-                            <p class="num text-[11px] text-slate-500">{{ $category['range'] }}</p>
                         </div>
                     </div>
                 @endforeach

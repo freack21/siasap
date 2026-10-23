@@ -2,27 +2,25 @@
 
 namespace App\Support;
 
+use InvalidArgumentException;
+
 /**
- * Metadata tampilan kualitas udara: kategori KU dan parameter gas.
+ * Metadata tampilan kualitas udara: kategori dan parameter gas.
  *
  * Satu sumber kebenaran untuk label, warna, deskripsi, dan rekomendasi agar
- * halaman pengguna, panduan, dan panel admin konsisten.
+ * halaman dashboard, riwayat, rekomendasi, dan panduan konsisten.
  */
 class AirQuality
 {
     /**
-     * @return array<string, array{label: string, icon: string, range: string, color: string, badge: string, dot: string, soft: string, description: string, advice: string}>
+     * @return array<string, array{label: string, icon: string, color: string, badge: string, dot: string, soft: string, description: string, advice: string}>
      */
     public static function categories(): array
     {
-        $limits = config('air_quality.categories', ['Baik' => 50, 'Sedang' => 150, 'Tidak Sehat' => 300]);
-        $max = config('air_quality.max_index', 500);
-
         return [
             'Baik' => [
                 'label' => 'Baik',
                 'icon' => 'tabler-mood-smile',
-                'range' => '0 – '.$limits['Baik'],
                 'color' => '#16a34a',
                 'badge' => 'bg-emerald-50 text-emerald-700 ring-emerald-600/20',
                 'dot' => 'bg-emerald-500',
@@ -33,7 +31,6 @@ class AirQuality
             'Sedang' => [
                 'label' => 'Sedang',
                 'icon' => 'tabler-mood-empty',
-                'range' => ($limits['Baik'] + 1).' – '.$limits['Sedang'],
                 'color' => '#d97706',
                 'badge' => 'bg-amber-50 text-amber-700 ring-amber-600/20',
                 'dot' => 'bg-amber-500',
@@ -44,7 +41,6 @@ class AirQuality
             'Tidak Sehat' => [
                 'label' => 'Tidak Sehat',
                 'icon' => 'tabler-mood-sad',
-                'range' => ($limits['Sedang'] + 1).' – '.$limits['Tidak Sehat'],
                 'color' => '#ea580c',
                 'badge' => 'bg-orange-50 text-orange-700 ring-orange-600/20',
                 'dot' => 'bg-orange-500',
@@ -55,7 +51,6 @@ class AirQuality
             'Berbahaya' => [
                 'label' => 'Berbahaya',
                 'icon' => 'tabler-alert-octagon',
-                'range' => ($limits['Tidak Sehat'] + 1).' – '.$max,
                 'color' => '#dc2626',
                 'badge' => 'bg-rose-50 text-rose-700 ring-rose-600/20',
                 'dot' => 'bg-rose-500',
@@ -69,14 +64,13 @@ class AirQuality
     /**
      * Metadata kategori; status tak dikenal (mis. belum ada data) mendapat gaya netral.
      *
-     * @return array{label: string, icon: string, range: string, color: string, badge: string, dot: string, soft: string, description: string, advice: string}
+     * @return array{label: string, icon: string, color: string, badge: string, dot: string, soft: string, description: string, advice: string}
      */
     public static function category(?string $status): array
     {
         return self::categories()[$status] ?? [
             'label' => 'Belum ada data',
             'icon' => 'tabler-clock-pause',
-            'range' => '-',
             'color' => '#94a3b8',
             'badge' => 'bg-slate-100 text-slate-600 ring-slate-500/20',
             'dot' => 'bg-slate-400',
@@ -84,6 +78,27 @@ class AirQuality
             'description' => 'Belum ada data yang diterima dari sensor.',
             'advice' => 'Pastikan perangkat sensor menyala dan terhubung ke jaringan.',
         ];
+    }
+
+    /**
+     * Rentang ppm suatu kategori untuk satu gas, mis. "50 – < 100 ppm".
+     * Batas bawah termasuk, batas atas tidak (sesuai klasifikasi).
+     */
+    public static function thresholdLabel(string $gas, string $category): string
+    {
+        $limits = config("air_quality.thresholds.$gas");
+        $order = config('air_quality.category_order');
+        $index = array_search($category, $order, true);
+
+        if (! is_array($limits) || $index === false) {
+            throw new InvalidArgumentException("Gas atau kategori tidak dikenal: $gas / $category");
+        }
+
+        return match (true) {
+            $index === 0 => '0 – < '.$limits[0].' ppm',
+            $index === count($limits) => '≥ '.$limits[$index - 1].' ppm',
+            default => $limits[$index - 1].' – < '.$limits[$index].' ppm',
+        };
     }
 
     /**

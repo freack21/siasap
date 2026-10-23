@@ -2,27 +2,29 @@
 
 namespace App\Models;
 
+use App\Support\Recommendation;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class SensorLog extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'testing_session_id',
         'node_id',
         'co2',
         'nh3',
         'co',
         'h2',
-        'ku_value',
-        'ku_status',
-        'ku_dominant',
-        'rssi',
-        'seq_number',
-        'hop_count',
-        'topology_type',
+        'recorded_at',
+        'co2_category',
+        'nh3_category',
+        'co_category',
+        'h2_category',
+        'overall_category',
+        'dominant_gases',
+        'recommendation_level',
     ];
 
     protected $casts = [
@@ -30,119 +32,48 @@ class SensorLog extends Model
         'nh3' => 'float',
         'co' => 'float',
         'h2' => 'float',
-        'ku_value' => 'float',
-        'rssi' => 'integer',
-        'seq_number' => 'integer',
-        'hop_count' => 'integer',
+        'recorded_at' => 'datetime',
     ];
 
-    public function testingSession()
-    {
-        return $this->belongsTo(TestingSession::class);
-    }
-
-    public function node()
+    public function node(): BelongsTo
     {
         return $this->belongsTo(Node::class, 'node_id', 'id');
     }
 
     /**
-     * Daftar parameter gas yang dihitung sub-indeksnya (urutan = prioritas
-     * saat terjadi nilai sub-indeks yang sama).
-     */
-    public const GASES = ['co2', 'nh3', 'co', 'h2'];
-
-    /**
-     * Hitung sub-indeks (0–500) satu parameter gas dengan interpolasi linier
-     * sepotong-sepotong pada breakpoint di config/air_quality.php.
-     * Konsentrasi di atas breakpoint terakhir dibatasi pada indeks maksimum.
-     */
-    public static function computeSubIndex(string $gas, float $ppm): float
-    {
-        $breakpoints = config("air_quality.breakpoints.{$gas}");
-
-        if (empty($breakpoints)) {
-            throw new \InvalidArgumentException("Breakpoint untuk gas '{$gas}' tidak ditemukan.");
-        }
-
-        $ppm = max(0.0, $ppm);
-        $maxIndex = (float) config('air_quality.max_index', 500);
-
-        for ($i = 1; $i < count($breakpoints); $i++) {
-            [$cLow, $iLow] = $breakpoints[$i - 1];
-            [$cHigh, $iHigh] = $breakpoints[$i];
-
-            if ($ppm <= $cHigh) {
-                if ($cHigh == $cLow) {
-                    return (float) $iHigh;
-                }
-
-                return $iLow + ($iHigh - $iLow) * ($ppm - $cLow) / ($cHigh - $cLow);
-            }
-        }
-
-        return $maxIndex;
-    }
-
-    /**
-     * Hitung Kualitas Udara (KU) lengkap: nilai KU = sub-indeks tertinggi,
-     * status kategori, parameter dominan, dan seluruh sub-indeks.
+     * Kategori tiap gas hasil klasifikasi saat data diterima.
      *
-     * @return array{value: float, status: string, dominant: string, sub_indices: array<string, float>}
+     * @return array{co2: string, nh3: string, co: string, h2: string}
      */
-    public static function computeKu(float $co2, float $nh3, float $co, float $h2): array
+    public function categories(): array
     {
-        $concentrations = compact('co2', 'nh3', 'co', 'h2');
-
-        $subIndices = [];
-        foreach (self::GASES as $gas) {
-            $subIndices[$gas] = round(self::computeSubIndex($gas, $concentrations[$gas]), 1);
-        }
-
-        // Gas dengan sub-indeks tertinggi menjadi parameter dominan
-        $dominant = self::GASES[0];
-        foreach ($subIndices as $gas => $index) {
-            if ($index > $subIndices[$dominant]) {
-                $dominant = $gas;
-            }
-        }
-
-        $value = $subIndices[$dominant];
-
         return [
-            'value' => $value,
-            'status' => self::computeKuStatus($value),
-            'dominant' => $dominant,
-            'sub_indices' => $subIndices,
+            'co2' => $this->co2_category,
+            'nh3' => $this->nh3_category,
+            'co' => $this->co_category,
+            'h2' => $this->h2_category,
         ];
     }
 
     /**
-     * Hitung nilai KU (indeks 0–500) sebagai sub-indeks tertinggi dari 4 gas.
-     * Dipertahankan untuk kompatibilitas; gunakan computeKu() untuk detail.
+     * Gas penyebab utama (kategori terburuk); kosong bila seluruh gas Baik.
+     *
+     * @return list<string>
      */
-    public static function computeKuValue(float $co2, float $nh3, float $co, float $h2): float
+    public function dominantGases(): array
     {
-        return self::computeKu($co2, $nh3, $co, $h2)['value'];
+        return $this->dominant_gases === null || $this->dominant_gases === ''
+            ? []
+            : explode(',', $this->dominant_gases);
     }
 
     /**
-     * Tentukan kategori status berdasarkan nilai indeks KU
+     * Rekomendasi tindakan untuk kategori keseluruhan pembacaan ini.
+     *
+     * @return array{category: string, level: string, text: string, strategies: list<string>}
      */
-    public static function computeKuStatus(float $kuValue): string
+    public function recommendation(): array
     {
-        $categories = config('air_quality.categories', [
-            'Baik' => 50,
-            'Sedang' => 150,
-            'Tidak Sehat' => 300,
-        ]);
-
-        foreach ($categories as $status => $upperLimit) {
-            if ($kuValue <= $upperLimit) {
-                return $status;
-            }
-        }
-
-        return config('air_quality.fallback_category', 'Berbahaya');
+        return Recommendation::forCategory($this->overall_category);
     }
 }

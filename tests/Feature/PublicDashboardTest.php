@@ -25,21 +25,12 @@ class PublicDashboardTest extends TestCase
 
     protected function log(Node $node, array $gases, $at = null): SensorLog
     {
-        $ku = SensorLog::computeKu($gases['co2'], $gases['nh3'], $gases['co'], $gases['h2']);
-
-        $log = SensorLog::create([
-            'node_id' => $node->id,
-            ...$gases,
-            'ku_value' => $ku['value'],
-            'ku_status' => $ku['status'],
-            'ku_dominant' => $ku['dominant'],
-            'seq_number' => 1,
-            'hop_count' => 1,
-            'topology_type' => 'star',
-        ]);
+        $log = SensorLog::factory()
+            ->withGases($gases['co2'], $gases['nh3'], $gases['co'], $gases['h2'])
+            ->create(['node_id' => $node->id]);
 
         if ($at) {
-            $log->forceFill(['created_at' => $at, 'updated_at' => $at])->save();
+            $log->forceFill(['created_at' => $at, 'updated_at' => $at, 'recorded_at' => $at])->save();
         }
 
         return $log;
@@ -50,8 +41,8 @@ class PublicDashboardTest extends TestCase
         [, $kelas] = $this->makeRoom('Ruang Kelas A', 'RKA');
         [, $dapur] = $this->makeRoom('Dapur Umum', 'DPR');
 
-        $this->log($kelas, ['co2' => 600, 'nh3' => 2, 'co' => 1, 'h2' => 10]);   // Baik
-        $this->log($dapur, ['co2' => 1500, 'nh3' => 3, 'co' => 2, 'h2' => 20]);  // Sedang (CO2)
+        $this->log($kelas, ['co2' => 30, 'nh3' => 20, 'co' => 10, 'h2' => 5]);   // Baik
+        $this->log($dapur, ['co2' => 70, 'nh3' => 20, 'co' => 10, 'h2' => 5]);  // Sedang (CO2)
 
         $this->assertGuest();
 
@@ -63,13 +54,15 @@ class PublicDashboardTest extends TestCase
             ->assertSee('Sedang')
             ->assertSee('Penyebab utama')
             ->assertSee('CO₂')
+            ->assertSee('Tingkatkan sirkulasi udara, misalnya dengan membuka jendela atau pintu.')
+            ->assertDontSee('Indeks KU')
             ->assertSee(route('rooms.show', $kelas->room_id));
     }
 
     public function test_home_hides_rooms_without_active_nodes(): void
     {
         [, $node] = $this->makeRoom('Gudang Tertutup', 'GDG', active: false);
-        $this->log($node, ['co2' => 600, 'nh3' => 2, 'co' => 1, 'h2' => 10]);
+        $this->log($node, ['co2' => 30, 'nh3' => 20, 'co' => 10, 'h2' => 5]);
 
         $this->get(route('home'))
             ->assertOk()
@@ -99,8 +92,8 @@ class PublicDashboardTest extends TestCase
         [, $online] = $this->makeRoom('Ruang Aktif', 'AKT');
         [, $stale] = $this->makeRoom('Ruang Lama', 'LMA');
 
-        $this->log($online, ['co2' => 600, 'nh3' => 2, 'co' => 1, 'h2' => 10]);
-        $this->log($stale, ['co2' => 600, 'nh3' => 2, 'co' => 1, 'h2' => 10], now()->subMinutes(10));
+        $this->log($online, ['co2' => 30, 'nh3' => 20, 'co' => 10, 'h2' => 5]);
+        $this->log($stale, ['co2' => 30, 'nh3' => 20, 'co' => 10, 'h2' => 5], now()->subMinutes(10));
 
         Livewire::test(UserDashboard::class)
             ->assertSeeInOrder(['Ruang Aktif', 'Sensor terhubung'])
@@ -112,23 +105,25 @@ class PublicDashboardTest extends TestCase
     public function test_room_detail_shows_current_values_and_chart_data(): void
     {
         [$room, $node] = $this->makeRoom('Laboratorium', 'LAB');
-        $this->log($node, ['co2' => 820.5, 'nh3' => 4.25, 'co' => 1.5, 'h2' => 30], now()->subHours(2));
-        $this->log($node, ['co2' => 1500, 'nh3' => 3, 'co' => 2, 'h2' => 20]);
+        $this->log($node, ['co2' => 30.5, 'nh3' => 20, 'co' => 10, 'h2' => 5], now()->subHours(2));
+        $this->log($node, ['co2' => 70, 'nh3' => 20, 'co' => 10, 'h2' => 5]);
 
         $this->get(route('rooms.show', $room))
             ->assertOk()
             ->assertSee('Laboratorium')
             ->assertSee('Ruang uji Laboratorium')
             ->assertSee('Karbon Dioksida')
-            ->assertSee('1.500,00')
-            ->assertSee('Sub-indeks')
+            ->assertSee('70,00')
+            ->assertSee('50 – < 100 ppm')
             ->assertSee('Rekomendasi')
+            ->assertSee('Waspada')
+            ->assertDontSee('Sub-indeks')
             ->assertSee('data-chart', false)
             ->assertSee('10 pembacaan terakhir');
 
         Livewire::test(RoomDetail::class, ['room' => $room])
             ->assertSet('range', '24h')
-            ->assertViewHas('kuChart', function (array $chart) {
+            ->assertViewHas('gasChart', function (array $chart) {
                 $points = array_values(array_filter($chart['datasets'][0]['data'], fn ($v) => $v !== null));
 
                 return count($chart['labels']) <= 120 && count($points) === 2;
@@ -140,21 +135,21 @@ class PublicDashboardTest extends TestCase
     public function test_room_detail_range_switching(): void
     {
         [$room, $node] = $this->makeRoom('Laboratorium', 'LAB');
-        $this->log($node, ['co2' => 600, 'nh3' => 2, 'co' => 1, 'h2' => 10], now()->subDays(3));
-        $this->log($node, ['co2' => 700, 'nh3' => 2, 'co' => 1, 'h2' => 10], now()->subHours(3));
-        $this->log($node, ['co2' => 800, 'nh3' => 2, 'co' => 1, 'h2' => 10]);
+        $this->log($node, ['co2' => 30, 'nh3' => 20, 'co' => 10, 'h2' => 5], now()->subDays(3));
+        $this->log($node, ['co2' => 31, 'nh3' => 20, 'co' => 10, 'h2' => 5], now()->subHours(3));
+        $this->log($node, ['co2' => 32, 'nh3' => 20, 'co' => 10, 'h2' => 5]);
 
         $component = Livewire::test(RoomDetail::class, ['room' => $room]);
 
         $component->call('setRange', '1h')
             ->assertSet('range', '1h')
             ->assertViewHas('stats', fn ($stats) => $stats['count'] === 1)
-            ->assertViewHas('kuChart', fn ($chart) => count($chart['labels']) <= 120);
+            ->assertViewHas('gasChart', fn ($chart) => count($chart['labels']) <= 120);
 
         $component->call('setRange', '7d')
             ->assertSet('range', '7d')
             ->assertViewHas('stats', fn ($stats) => $stats['count'] === 3)
-            ->assertViewHas('kuChart', fn ($chart) => count($chart['labels']) <= 120);
+            ->assertViewHas('gasChart', fn ($chart) => count($chart['labels']) <= 120);
 
         $component->call('setRange', 'bogus')->assertSet('range', '24h');
     }

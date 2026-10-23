@@ -25,7 +25,7 @@ class UserHistory extends Component
     #[Url(as: 'ruangan', except: '')]
     public string $room = '';
 
-    /** Kategori KU ('' = semua kategori). */
+    /** Kategori keseluruhan ('' = semua kategori). */
     #[Url(as: 'kategori', except: '')]
     public string $category = '';
 
@@ -66,19 +66,28 @@ class UserHistory extends Component
             $out = fopen('php://output', 'w');
             fwrite($out, "\xEF\xBB\xBF"); // BOM agar terbaca rapi di Excel
 
-            fputcsv($out, ['waktu', 'ruangan', 'indeks_ku', 'kategori', 'parameter_dominan', 'co2_ppm', 'nh3_ppm', 'co_ppm', 'h2_ppm']);
+            fputcsv($out, [
+                'waktu', 'ruangan',
+                'co2_ppm', 'nh3_ppm', 'co_ppm', 'h2_ppm',
+                'kategori_co2', 'kategori_nh3', 'kategori_co', 'kategori_h2',
+                'kategori_keseluruhan', 'penyebab_utama', 'rekomendasi',
+            ]);
 
             foreach ($query->lazy(1000) as $log) {
                 fputcsv($out, [
-                    $log->created_at?->format('Y-m-d H:i:s'),
+                    ($log->recorded_at ?? $log->created_at)?->format('Y-m-d H:i:s'),
                     $this->roomName($log),
-                    $log->ku_value,
-                    $log->ku_status,
-                    $log->ku_dominant ?? '',
                     $log->co2,
                     $log->nh3,
                     $log->co,
                     $log->h2,
+                    $log->co2_category,
+                    $log->nh3_category,
+                    $log->co_category,
+                    $log->h2_category,
+                    $log->overall_category,
+                    implode(',', $log->dominantGases()),
+                    $log->recommendation()['text'],
                 ]);
             }
 
@@ -103,7 +112,7 @@ class UserHistory extends Component
         }
 
         if ($this->category !== '' && array_key_exists($this->category, AirQuality::categories())) {
-            $query->where('ku_status', $this->category);
+            $query->where('overall_category', $this->category);
         }
 
         if ($from = $this->parseDate($this->from)) {
@@ -136,21 +145,20 @@ class UserHistory extends Component
     }
 
     /**
-     * Ringkasan data terfilter: jumlah, rata-rata indeks, kategori terburuk, sebaran.
+     * Ringkasan data terfilter: jumlah, kategori terburuk, sebaran.
      *
-     * @return array{count: int, average: ?float, worst: ?string, distribution: array<string, array{count: int, percent: float}>}
+     * @return array{count: int, worst: ?string, distribution: array<string, array{count: int, percent: float}>}
      */
     protected function summary(): array
     {
         $base = $this->filteredQuery();
 
         $count = (clone $base)->count();
-        $average = $count > 0 ? (float) (clone $base)->avg('ku_value') : null;
 
         $counts = (clone $base)
-            ->selectRaw('ku_status, COUNT(*) as total')
-            ->groupBy('ku_status')
-            ->pluck('total', 'ku_status');
+            ->selectRaw('overall_category, COUNT(*) as total')
+            ->groupBy('overall_category')
+            ->pluck('total', 'overall_category');
 
         $distribution = [];
         $worst = null;
@@ -165,7 +173,7 @@ class UserHistory extends Component
             }
         }
 
-        return compact('count', 'average', 'worst', 'distribution');
+        return compact('count', 'worst', 'distribution');
     }
 
     protected function periodLabel(): string

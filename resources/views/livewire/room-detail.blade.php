@@ -8,7 +8,7 @@
         <x-ui.page-header :icon="'tabler-door'" :title="$room->name" :description="$room->description">
             <x-slot:eyebrow>Detail ruangan</x-slot:eyebrow>
             <x-slot:actions>
-                <x-ui.ku-badge :status="$current?->ku_status" size="lg" :icon="true" />
+                <x-ui.ku-badge :status="$current?->overall_category" size="lg" :icon="true" />
             </x-slot:actions>
         </x-ui.page-header>
 
@@ -52,19 +52,15 @@
                             <x-dynamic-component :component="$currentCategory['icon']" class="size-6" />
                         </span>
                         <div>
-                            <p class="text-xs font-medium text-slate-500">Indeks KU</p>
-                            <p class="num mt-1 text-5xl font-bold tracking-tight text-slate-900">{{ number_format($current->ku_value, 0) }}</p>
+                            <p class="text-xs font-medium text-slate-500">Kategori keseluruhan</p>
+                            <p class="mt-1 text-3xl font-bold tracking-tight text-slate-900">{{ $current->overall_category }}</p>
                         </div>
                     </div>
-                    @if ($dominant)
-                        @php $dominantGas = $gases[$dominant] ?? null; @endphp
+                    @if ($dominant !== [])
                         <div class="text-right text-xs text-slate-500">
                             <p>Penyebab utama</p>
-                            <p class="mt-0.5 inline-flex items-center gap-1.5 text-sm font-semibold text-slate-800">
-                                @if ($dominantGas)
-                                    <x-dynamic-component :component="$dominantGas['icon']" class="size-4" style="color: {{ $dominantGas['color'] }}" />
-                                @endif
-                                {{ $dominantGas['symbol'] ?? strtoupper($dominant) }}
+                            <p class="mt-0.5 text-sm font-semibold text-slate-800">
+                                {{ collect($dominant)->map(fn ($key) => $gases[$key]['symbol'] ?? strtoupper($key))->implode(', ') }}
                             </p>
                         </div>
                     @endif
@@ -74,12 +70,8 @@
                         <x-tabler-bulb class="size-4" style="color: {{ $currentCategory['color'] }}" />
                         Rekomendasi
                     </p>
-                    <p class="mt-0.5 text-sm text-slate-700">
-                        {{ $preventive['all_good'] ? $preventive['maintenance'][0] : ($preventive['items'][0]['actions'][0] ?? $currentCategory['advice']) }}
-                    </p>
-                    <a href="#tindakan-preventif" class="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-slate-700 hover:text-slate-900">
-                        Lihat tindakan preventif <x-tabler-arrow-down class="size-3.5" />
-                    </a>
+                    <p class="mt-0.5 text-xs font-semibold uppercase tracking-wide text-slate-500">{{ $recommendation['level'] }}</p>
+                    <p class="mt-0.5 text-sm text-slate-700">{{ $recommendation['text'] }}</p>
                 </div>
             </div>
 
@@ -87,8 +79,8 @@
                 @foreach ($gases as $key => $gas)
                     @php
                         $ppm = (float) $current->{$key};
-                        $sub = \App\Models\SensorLog::computeSubIndex($key, $ppm);
-                        $subCategory = \App\Support\AirQuality::category(\App\Models\SensorLog::computeKuStatus($sub));
+                        $gasCategory = $current->categories()[$key];
+                        $subCategory = \App\Support\AirQuality::category($gasCategory);
                     @endphp
                     <div class="card card-body" wire:key="gas-{{ $key }}">
                         <div class="flex items-start justify-between gap-2">
@@ -107,16 +99,13 @@
                             {{ number_format($ppm, 2, ',', '.') }}<span class="ml-1 text-sm font-medium text-slate-400">ppm</span>
                         </p>
                         <p class="mt-1 text-xs text-slate-500">
-                            Sub-indeks <span class="num font-medium text-slate-700">{{ number_format($sub, 0) }}</span>
-                            · <span class="font-medium" style="color: {{ $subCategory['color'] }}">{{ $subCategory['label'] }}</span>
+                            <span class="font-medium" style="color: {{ $subCategory['color'] }}">{{ $subCategory['label'] }}</span>
+                            · <span class="num">{{ \App\Support\AirQuality::thresholdLabel($key, $gasCategory) }}</span>
                         </p>
                     </div>
                 @endforeach
             </div>
         </section>
-
-        {{-- Tindakan preventif --}}
-        <x-ui.preventive-actions id="tindakan-preventif" class="scroll-mt-24" :recommendation="$preventive" />
     @endif
 
     {{-- Tren --}}
@@ -142,22 +131,13 @@
         </div>
 
         <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
-            <x-ui.card :icon="'tabler-chart-area-line'" title="Indeks KU" description="Semakin rendah semakin baik">
-                <x-ui.line-chart :chart="$kuChart" height="h-64" />
-            </x-ui.card>
-            <x-ui.card :icon="'tabler-chart-line'" title="Konsentrasi gas" description="Satuan ppm">
+            <x-ui.card class="lg:col-span-2" :icon="'tabler-chart-line'" title="Konsentrasi gas" description="Satuan ppm">
                 <x-ui.line-chart :chart="$gasChart" height="h-64" />
             </x-ui.card>
         </div>
 
         {{-- Ringkasan rentang --}}
         <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
-            <div class="grid grid-cols-3 gap-4 lg:col-span-1 lg:grid-cols-1">
-                <x-ui.stat :icon="'tabler-chart-bar'" label="Rata-rata Indeks KU" :value="$stats['avg'] !== null ? number_format($stats['avg'], 0) : '–'" />
-                <x-ui.stat :icon="'tabler-trending-down'" label="Terendah" :value="$stats['min'] !== null ? number_format($stats['min'], 0) : '–'" />
-                <x-ui.stat :icon="'tabler-trending-up'" label="Tertinggi" :value="$stats['max'] !== null ? number_format($stats['max'], 0) : '–'" />
-            </div>
-
             <x-ui.card class="lg:col-span-2" :icon="'tabler-chart-pie-2'" title="Proporsi waktu per kategori"
                        :description="$stats['count'] ? 'Berdasarkan '.number_format($stats['count'], 0, ',', '.').' pembacaan dalam '.$ranges[$range]['label'].' terakhir' : 'Belum ada pembacaan dalam rentang ini'">
                 @if ($stats['count'])
@@ -197,8 +177,7 @@
                             <th>Waktu</th>
                             @if ($multiNode)<th>Sensor</th>@endif
                             <th>Status</th>
-                            <th class="text-right">Indeks KU</th>
-                            @foreach ($gases as $gas)
+                                                        @foreach ($gases as $gas)
                                 <th class="text-right">{{ $gas['symbol'] }} <span class="normal-case">(ppm)</span></th>
                             @endforeach
                         </tr>
@@ -206,10 +185,9 @@
                     <tbody>
                         @foreach ($recent as $log)
                             <tr wire:key="log-{{ $log->id }}">
-                                <td class="num whitespace-nowrap">{{ $log->created_at->locale('id')->translatedFormat('d M H:i:s') }}</td>
+                                <td class="num whitespace-nowrap">{{ ($log->recorded_at ?? $log->created_at)->locale('id')->translatedFormat('d M H:i:s') }}</td>
                                 @if ($multiNode)<td class="whitespace-nowrap">{{ $log->node?->name }}</td>@endif
-                                <td><x-ui.ku-badge :status="$log->ku_status" size="sm" /></td>
-                                <td class="num text-right font-medium text-slate-900">{{ number_format($log->ku_value, 0) }}</td>
+                                <td><x-ui.ku-badge :status="$log->overall_category" size="sm" /></td>
                                 @foreach ($gases as $key => $gas)
                                     <td class="num text-right">{{ number_format($log->{$key}, 2, ',', '.') }}</td>
                                 @endforeach
