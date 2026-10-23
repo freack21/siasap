@@ -127,7 +127,7 @@ class DeviceStatusTest extends TestCase
             TelemetryRejection::create([
                 'device_id' => 'AIR-001',
                 'payload' => [],
-                'errors' => ['co2_ppm' => ['The co2 ppm field must be a number.']],
+                'errors' => ['co2_ppm' => ['co2_ppm (CO₂) harus berupa angka.']],
                 'created_at' => now()->subMinutes($i),
             ]);
         }
@@ -136,8 +136,8 @@ class DeviceStatusTest extends TestCase
             'device_id' => 'AIR-999',
             'payload' => ['device_id' => 'AIR-999'],
             'errors' => [
-                'device_id' => ['The selected device id is invalid.'],
-                'timestamp' => ['The timestamp field is required.'],
+                'device_id' => ['device_id tidak terdaftar atau tidak aktif.'],
+                'timestamp' => ['timestamp wajib diisi.'],
             ],
             'created_at' => now(),
         ]);
@@ -145,8 +145,8 @@ class DeviceStatusTest extends TestCase
         Livewire::test(DeviceStatus::class)
             ->assertSee('Penolakan data terakhir')
             ->assertSee('AIR-999')
-            ->assertSee('The selected device id is invalid.')
-            ->assertSee('The timestamp field is required.')
+            ->assertSee('device_id tidak terdaftar atau tidak aktif.')
+            ->assertSee('timestamp wajib diisi.')
             ->assertDontSee('AIR-OLD')
             ->assertViewHas('rejections', fn ($rejections) => $rejections->count() === 10
                 && $rejections->first()->device_id === 'AIR-999');
@@ -157,11 +157,11 @@ class DeviceStatusTest extends TestCase
         TelemetryRejection::create([
             'device_id' => null,
             'payload' => [],
-            'errors' => ['device_id' => ['The device id field is required.']],
+            'errors' => ['device_id' => ['device_id wajib diisi.']],
         ]);
 
         Livewire::test(DeviceStatus::class)
-            ->assertSee('The device id field is required.')
+            ->assertSee('device_id wajib diisi.')
             ->assertSee('Tidak ada');
     }
 

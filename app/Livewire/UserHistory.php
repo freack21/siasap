@@ -75,7 +75,7 @@ class UserHistory extends Component
 
             foreach ($query->lazy(1000) as $log) {
                 fputcsv($out, [
-                    ($log->recorded_at ?? $log->created_at)?->format('Y-m-d H:i:s'),
+                    $log->created_at?->format('Y-m-d H:i:s'), // waktu server: sama dengan urutan & filter
                     $this->roomName($log),
                     $log->co2,
                     $log->nh3,

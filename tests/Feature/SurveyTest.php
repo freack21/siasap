@@ -129,6 +129,28 @@ class SurveyTest extends TestCase
         File::delete($path);
     }
 
+    public function test_report_command_neutralizes_formula_in_respondent_name(): void
+    {
+        $names = ['=HYPERLINK("http://x")', '+1', '-1', '@SUM(A1)', "\tTab", 'Budi'];
+        foreach ($names as $name) {
+            UeqResponse::factory()->uniform(4)->create(['respondent_name' => $name]);
+        }
+        $path = storage_path('framework/testing/ueq-formula.csv');
+
+        $this->artisan('ueq:report', ['--csv' => $path])->assertSuccessful();
+
+        $handle = fopen($path, 'r');
+        fgetcsv($handle, escape: '');
+        $exported = [];
+        while (($row = fgetcsv($handle, escape: '')) !== false) {
+            $exported[] = $row[2];
+        }
+        fclose($handle);
+        File::delete($path);
+
+        $this->assertSame(["'=HYPERLINK(\"http://x\")", "'+1", "'-1", "'@SUM(A1)", "'\tTab", 'Budi'], $exported);
+    }
+
     public function test_report_command_handles_no_responses(): void
     {
         $path = storage_path('framework/testing/ueq-empty.csv');

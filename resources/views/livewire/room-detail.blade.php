@@ -47,6 +47,10 @@
                               description="Perangkat belum mengirim pembacaan. Halaman diperbarui otomatis setiap 5 detik begitu data pertama masuk." />
         </div>
     @else
+        @if (! $devices->contains('online', true) && $lastUpdate)
+            @include('livewire.partials.stale-data-banner', ['updatedAt' => $lastUpdate])
+        @endif
+
         {{-- Nilai terkini --}}
         <section class="grid grid-cols-1 gap-4 lg:grid-cols-3">
             <div class="card card-body flex flex-col gap-4">
@@ -200,7 +204,12 @@
                     <tbody>
                         @foreach ($recent as $log)
                             <tr wire:key="log-{{ $log->id }}">
-                                <td class="num">{{ ($log->recorded_at ?? $log->created_at)->locale('id')->translatedFormat('d M H:i:s') }}</td>
+                                <td class="num">
+                                    {{ $log->created_at->locale('id')->translatedFormat('d M H:i:s') }}
+                                    @if ($log->recorded_at && ! $log->recorded_at->equalTo($log->created_at))
+                                        <span class="block text-[11px] text-slate-400">waktu perangkat {{ $log->recorded_at->locale('id')->translatedFormat('d M H:i:s') }}</span>
+                                    @endif
+                                </td>
                                 @if ($multiNode)<td>{{ $log->node?->name }}</td>@endif
                                 <td><x-ui.ku-badge :status="$log->overall_category" size="sm" /></td>
                                 @foreach ($gases as $key => $g)
