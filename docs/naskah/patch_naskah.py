@@ -94,6 +94,12 @@ mengubah teks; sisipan berikutnya ke sasaran yang sama diletakkan berurutan.
     nomornya; "Normal" = paragraf tanpa gaya). *miring* didukung. Setiap entri
     boleh berupa objek:
       {"teks": "...", "gaya": "Heading3"}          gaya per paragraf
+      {"teks": "...", "gaya": "Heading3", "nomor": "2.8.%1"}
+                                                   judul bernomor otomatis dengan format
+                                                   sendiri (daftar baru meniru judul bernomor
+                                                   bergaya sama; format sama = daftar sama)
+    "pindah_pemisah_halaman": true (pada butir) memindahkan pemisah halaman di akhir
+    paragraf "cari" ke akhir sisipan (terlacak), untuk sisipan di akhir bab.
       {"teks": "...", "seperti": "<cari>"}         salin pPr paragraf itu
       {"tabel": [["sel", ...], ...], "seperti": "<judul atau isi tabel contoh>",
        "lebar": [1, 4, 5]}                         tabel baru (baris tersisip),
@@ -1959,6 +1965,7 @@ class Workspace:
     session: Session
     sources: dict[str, dict] = field(default_factory=dict)
     markers: dict[str, list[str]] = field(default_factory=dict)
+    heading_lists: dict[tuple[str, str], str] = field(default_factory=dict)
 
     @property
     def body(self) -> etree._Element:
@@ -2051,13 +2058,107 @@ def op_insert_paragraphs(revision: Revision, workspace: Workspace) -> tuple[list
                 source = anchor
             element = build_paragraph(source, entry.get("teks", ""), session,
                                       style=style if source is anchor and style else None)
+            if entry.get("nomor"):
+                number_heading(element, style or "", entry["nomor"], workspace)
         created.append(element)
     insert_elements(anchor, created, session, before=before)
     for element in created:
         if element.tag == w("p"):
             normalise_caption(element, workspace.body, workspace.styles, session)
+    if revision.extra.get("pindah_pemisah_halaman") and not before:
+        move_page_break(anchor, [element for element in created if element.tag == w("p")], session)
     paragraphs = len(created) - tables
     return created, f"{paragraphs} paragraf" + (f" dan {tables} tabel" if tables else "") + " disisipkan"
+
+
+def move_page_break(anchor: etree._Element, created: list[etree._Element], session: Session) -> None:
+    """Pemisah halaman di akhir paragraf jangkar dipindah ke akhir sisipan (dihapus/disisipkan terlacak).
+
+    Dipakai bila bagian baru disisipkan di akhir bab yang paragraf terakhirnya memuat pemisah halaman
+    sebelum bab berikutnya, agar bab berikutnya tetap mulai di halaman baru.
+    """
+    if not created:
+        raise ValueError("pindah_pemisah_halaman butuh paragraf sisipan")
+    runs = [child for child in anchor if child.tag == w("r")]
+    trailing = []
+    for run in reversed(runs):
+        content = [child for child in run if child.tag != w("rPr")]
+        if content and all(child.tag == w("br") and child.get(w("type")) == "page" for child in content):
+            trailing.append(run)
+        elif "".join(run.itertext()).strip() or content:
+            break
+    if not trailing:
+        raise ValueError("paragraf jangkar tidak diakhiri pemisah halaman")
+    for run in trailing:
+        if session.tracked:
+            mark_deleted(run, session)
+        else:
+            run.getparent().remove(run)
+    page_break = etree.Element(w("r"))
+    etree.SubElement(page_break, w("br")).set(w("type"), "page")
+    target = created[-1]
+    if session.tracked:
+        wrapper = etree.SubElement(target, w("ins"), revision_attributes(session))
+        wrapper.append(page_break)
+    else:
+        target.append(page_break)
+
+
+def number_heading(paragraph: etree._Element, style: str, level_format: str, workspace: Workspace) -> None:
+    """Judul sisipan bernomor otomatis dengan format sendiri (mis. "2.8.%1"), meniru judul bernomor bergaya sama.
+
+    Definisi daftar disalin dari judul bergaya sama pertama di naskah yang bernomor otomatis; level 0
+    diberi format baru. Judul lain dengan gaya dan format yang sama memakai daftar yang sama sehingga
+    nomornya berurutan (2.8.1, 2.8.2, ...).
+    """
+    template = next((candidate for candidate in workspace.body.iter(w("p"))
+                     if style_matches(workspace, candidate, style)
+                     and candidate.find(f"{w('pPr')}/{w('numPr')}/{w('numId')}") is not None), None)
+    if template is None:
+        raise ValueError(f"tidak ada judul bergaya {style} bernomor otomatis untuk dicontoh")
+    key = (style, level_format)
+    if key not in workspace.heading_lists:
+        numbering = workspace.package.numbering()
+        old_id = template.find(f"{w('pPr')}/{w('numPr')}/{w('numId')}").get(w("val"))
+        num = next(item for item in numbering.findall(w("num")) if item.get(w("numId")) == old_id)
+        abstract_id = num.find(w("abstractNumId")).get(w("val"))
+        abstract = next(item for item in numbering.findall(w("abstractNum")) if item.get(w("abstractNumId")) == abstract_id)
+        new_abstract = deepcopy(abstract)
+        new_abstract_id = str(max(int(item.get(w("abstractNumId"))) for item in numbering.findall(w("abstractNum"))) + 1)
+        new_abstract.set(w("abstractNumId"), new_abstract_id)
+        fresh_nsid(new_abstract, f"{style}{level_format}")
+        for element in new_abstract.findall(w("tmpl")):
+            new_abstract.remove(element)
+        level = next(item for item in new_abstract.findall(w("lvl")) if item.get(w("ilvl")) == "0")
+        level.find(w("lvlText")).set(w("val"), level_format)
+        start = level.find(w("start"))
+        if start is not None:
+            start.set(w("val"), "1")
+        numbering.findall(w("abstractNum"))[-1].addnext(new_abstract)
+        new_num_id = str(max(int(item.get(w("numId"))) for item in numbering.findall(w("num"))) + 1)
+        new_num = etree.SubElement(numbering, w("num"))
+        new_num.set(w("numId"), new_num_id)
+        etree.SubElement(new_num, w("abstractNumId")).set(w("val"), new_abstract_id)
+        numbering.findall(w("num"))[-2].addnext(new_num)
+        workspace.heading_lists[key] = new_num_id
+    properties = paragraph.find(w("pPr"))
+    if properties is None:
+        properties = etree.Element(w("pPr"))
+        paragraph.insert(0, properties)
+    for child in list(properties):
+        if child.tag not in (w("rPr"), w("pPrChange")):
+            properties.remove(child)
+    template_properties = template.find(w("pPr"))
+    for child in template_properties:
+        if child.tag in (w("rPr"), w("pPrChange"), w("sectPr")):
+            continue
+        copied = deepcopy(child)
+        if copied.tag == w("numPr"):
+            for item in list(copied):
+                copied.remove(item)
+            etree.SubElement(copied, w("ilvl")).set(w("val"), "0")
+            etree.SubElement(copied, w("numId")).set(w("val"), workspace.heading_lists[key])
+        place_in_order(properties, copied, PARAGRAPH_PROPERTY_ORDER)
 
 
 def op_insert_rows(revision: Revision, workspace: Workspace) -> tuple[list[etree._Element], str]:
@@ -2794,14 +2895,19 @@ def render_reference(work: Work, config: dict) -> list[tuple[str, bool]]:
     title_italic = not (kind in JENIS_BAB or kind.startswith("article"))
     title_part: list[tuple[str, bool]] = [(title, title_italic)]
     details = []
+    edition = str(item.get("edition") or "").strip()
+    if edition:
+        details.append(f"Ed. ke-{edition}" if edition.isdigit() else edition)
     if item.get("version"):
         details.append(f"Versi {item['version']}")
     if item.get("number") and kind not in JENIS_BAB and not kind.startswith("article"):
         details.append(str(item["number"]))
     if details:
         title_part.append((f" ({'; '.join(details)})", False))
+    publisher = (item.get("publisher") or "").strip()
     if item.get("genre"):
-        title_part.append((f" [{item['genre']}]", False))
+        genre = item["genre"] + (f", {publisher}" if kind == "thesis" and publisher else "")
+        title_part.append((f" [{genre}]", False))
     closing = "" if re.search(r"[?!]$", pieces_text(title_part)) else "."
     date = f"({date_label(item, work.suffix)})."
     pieces: list[tuple[str, bool]] = []
@@ -2816,7 +2922,8 @@ def render_reference(work: Work, config: dict) -> list[tuple[str, bool]]:
 
     volume, issue = str(item.get("volume") or "").strip(), str(item.get("issue") or "").strip()
     pages = str(item.get("page") or "").strip().replace("-", "–")
-    publisher = (item.get("publisher") or "").strip()
+    if kind == "thesis" and item.get("genre"):
+        publisher = ""
     if kind.startswith("article"):
         source: list[tuple[str, bool]] = []
         if container:
@@ -3494,9 +3601,9 @@ PLAIN_CITATION_RE = re.compile(
 # ---------------------------------------------------------------------------
 
 RIS_TYPES = {"article-journal": "JOUR", "paper-conference": "CONF", "chapter": "CHAP", "report": "RPRT",
-             "webpage": "ELEC", "book": "BOOK"}
+             "webpage": "ELEC", "book": "BOOK", "thesis": "THES"}
 BIBTEX_TYPES = {"article-journal": "article", "paper-conference": "inproceedings", "chapter": "incollection",
-                "report": "techreport", "webpage": "misc", "book": "book"}
+                "report": "techreport", "webpage": "misc", "book": "book", "thesis": "phdthesis"}
 
 
 def export_ris(works: list[Work]) -> str:
@@ -3521,7 +3628,7 @@ def export_ris(works: list[Work]) -> str:
             lines.append(f"{'JO' if item.get('type') == 'article-journal' else 'T2'}  - {item['container-title']}")
         if item.get("collection-title"):
             lines.append(f"T3  - {item['collection-title']}")
-        for key, tag in (("volume", "VL"), ("issue", "IS"), ("publisher", "PB"), ("number", "SN"), ("version", "ET"),
+        for key, tag in (("volume", "VL"), ("issue", "IS"), ("publisher", "PB"), ("number", "SN"), ("edition", "ET"), ("version", "ET"),
                          ("genre", "M3"), ("DOI", "DO"), ("URL", "UR")):
             if item.get(key):
                 lines.append(f"{tag}  - {item[key]}")
@@ -3574,7 +3681,7 @@ def export_bibtex(works: list[Work], config: dict | None = None) -> str:
             if len(parts) > 2:
                 fields.append(("day", str(parts[2])))
         mapping = (("collection-title", "series"), ("volume", "volume"), ("issue", "number"), ("page", "pages"),
-                   ("version", "edition"), ("genre", "type"), ("DOI", "doi"), ("URL", "url"))
+                   ("edition", "edition"), ("version", "edition"), ("genre", "type"), ("DOI", "doi"), ("URL", "url"))
         for key, name in mapping:
             if item.get(key):
                 value = str(item[key]).replace("-", "--") if key == "page" else item[key]
@@ -3582,7 +3689,7 @@ def export_bibtex(works: list[Work], config: dict | None = None) -> str:
         if kind and kind.startswith("article") and item.get("number") and not item.get("page"):
             fields.append(("pages", str(item["number"])))
         if item.get("publisher"):
-            fields.append(("institution" if kind == "report" else "publisher", item["publisher"]))
+            fields.append(({"report": "institution", "thesis": "school"}.get(kind, "publisher"), item["publisher"]))
         if item.get("number") and kind == "report":
             fields = [(name, value) for name, value in fields if name != "number"] + [("number", item["number"])]
         body = ",\n".join(f"  {name} = {{{bibtex_escape(value) if name not in ('url', 'doi') else value}}}" for name, value in fields)
@@ -3806,7 +3913,7 @@ def load_revisions(path: Path, only: set[str] | None) -> list[Revision]:
         if not item.get("cari"):
             sys.exit(f"butir {identifier}: 'cari' wajib diisi")
         extra = {key: value for key, value in item.items()
-                 if key in STRUCTURAL_KEYS or key in ("sebelum", "gaya", "tegak", "komentar_bersih")}
+                 if key in STRUCTURAL_KEYS or key in ("sebelum", "gaya", "tegak", "komentar_bersih", "pindah_pemisah_halaman")}
         if item.get("ganti") is None and not item.get("catatan") and not any(key in extra for key in STRUCTURAL_KEYS):
             sys.exit(f"butir {identifier}: isi 'ganti', 'catatan', atau salah satu dari {', '.join(STRUCTURAL_KEYS)}")
         if item.get("ganti") is not None and "\n" in item["ganti"]:

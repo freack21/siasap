@@ -150,10 +150,457 @@
       "catatan": "Gambar 2.1 dibuat ulang dalam resolusi tinggi."
     },
     {
+      "id": "LT-2.5",
+      "lokasi": "Subbab 2.5 baru (sesudah 2.4, paragraf 278)",
+      "cari": "Hal ini menunjukkan bahwa sistem monitoring berbasis IoT tidak hanya berperan sebagai penyedia informasi",
+      "catatan": "Landasan teori baru: prinsip kerja sensor MQ-135 dan MQ-2 yang dipakai di Bab III.",
+      "sisip_paragraf": [
+        {
+          "teks": "Sensor Gas MQ-135 dan MQ-2",
+          "gaya": "Heading2"
+        },
+        "Sensor MQ-135 dan MQ-2 merupakan sensor gas jenis semikonduktor yang banyak dipakai pada sistem pemantauan kualitas udara berbiaya rendah. Bahan peka gas pada kedua sensor adalah timah dioksida (SnO₂), yaitu oksida logam yang memiliki konduktivitas rendah pada udara bersih. Ketika gas sasaran hadir, konduktivitas sensor meningkat seiring naiknya konsentrasi gas, dan perubahan konduktivitas tersebut diubah menjadi sinyal tegangan keluaran melalui rangkaian sederhana yang terdiri atas sensor dan resistor beban (Zhengzhou Winsen Electronics Technology, 2015a, 2015b). Wang et al. (2010) menjelaskan bahwa kepekaan sensor gas oksida logam berasal dari interaksi molekul gas dengan oksigen yang teradsorpsi pada permukaan bahan semikonduktor, sehingga jumlah pembawa muatan dan resistansi lapisan peka gas berubah. Interaksi tersebut memerlukan suhu kerja tertentu sehingga sensor dilengkapi elemen pemanas (*heater*), dan karakteristik sensor dipengaruhi oleh suhu serta kelembapan lingkungan (Zhengzhou Winsen Electronics Technology, 2015a).",
+        "Karakteristik sensor pada lembar data dinyatakan dengan rasio resistansi Rs/R0, dengan Rs adalah resistansi sensor pada gas sasaran dengan konsentrasi tertentu dan R0 adalah resistansi sensor pada udara bersih. Kurva sensitivitas menggambarkan hubungan rasio tersebut terhadap konsentrasi gas: makin tinggi konsentrasi gas, makin kecil resistansi sensor sehingga rasio Rs/R0 menurun. Sensor MQ-135 ditujukan untuk amonia, sulfida, dan uap senyawa benzena, serta dapat memantau asap dan gas beracun lain, dengan rentang deteksi 10–1.000 ppm untuk amonia, toluena, hidrogen, dan asap (Zhengzhou Winsen Electronics Technology, 2015a). Sensor MQ-2 ditujukan untuk gas mudah terbakar dan asap, dengan kepekaan tinggi terhadap propana dan asap serta mampu mendeteksi gas alam dan uap mudah terbakar lain pada rentang 300–10.000 ppm (Zhengzhou Winsen Electronics Technology, 2015b). Lembar data kedua sensor juga mensyaratkan pemanasan awal lebih dari 48 jam sebelum sensor digunakan.",
+        "Sensor jenis ini tidak selektif terhadap satu jenis gas (*cross-sensitivity*). Kurva sensitivitas pada lembar data memperlihatkan bahwa resistansi satu sensor berubah terhadap beberapa gas sekaligus, yaitu MQ-135 terhadap H₂, NH₃, dan toluena, sedangkan MQ-2 terhadap propana, metana, alkohol, dan asap (Zhengzhou Winsen Electronics Technology, 2015a, 2015b). Akibatnya, perubahan keluaran sensor tidak dapat dipastikan berasal dari satu gas tertentu. Nilai yang diberi label CO₂, NH₃, CO, atau H₂ lebih tepat dibaca sebagai indikator perubahan kondisi gas di sekitar sensor daripada sebagai konsentrasi satu jenis gas yang terukur secara spesifik.",
+        "Untuk memperoleh nilai dalam satuan ppm, keluaran sensor perlu dikonversi menggunakan kurva atau rumus kalibrasi. Solihat et al. (2026) memakai MQ-135 untuk membaca CO₂ dan NH₃ serta MQ-2 untuk membaca CO dan H₂, lalu menghitung nilai ppm setiap gas dari selisih pembacaan ADC terhadap nilai acuan (baseline) yang diukur saat perangkat dinyalakan. Rumus konversi tersebut dijabarkan pada subbab 2.9. Karena dihitung relatif terhadap baseline, nilai ppm yang dihasilkan merupakan indikator relatif terhadap kondisi udara awal, bukan konsentrasi absolut hasil alat ukur terkalibrasi.",
+        "Dalam penelitian ini, sensor MQ-135 dan MQ-2 terpasang pada perangkat IoT yang dikembangkan dalam penelitian IoT oleh rekan satu proyek. Pemilihan sensor, pemanasan awal, kalibrasi, dan rumus konversi menjadi tanggung jawab penelitian tersebut, sedangkan aplikasi web hanya menerima nilai ppm yang dikirim perangkat dan memvalidasi formatnya. Pemahaman prinsip kerja sensor tetap diperlukan agar nilai yang ditampilkan aplikasi ditafsirkan secara tepat, yaitu sebagai indikator perubahan kualitas udara ruangan, bukan sebagai hasil pengukuran polutan yang terkalibrasi."
+      ]
+    },
+    {
+      "id": "LT-2.8",
+      "lokasi": "Subbab 2.8 baru (sesudah Dashboard Monitoring, paragraf 290)",
+      "cari": "Dalam penelitian ini, dashboard monitoring digunakan sebagai media untuk menampilkan informasi",
+      "catatan": "Landasan teori baru: HTTP/REST, JSON, Laravel, Livewire, Tailwind CSS, dan Chart.js (Tabel 3.21).",
+      "sisip_paragraf": [
+        {
+          "teks": "Teknologi Aplikasi Web",
+          "gaya": "Heading2"
+        },
+        "Aplikasi web pada penelitian ini dibangun dengan beberapa teknologi yang saling melengkapi. Komunikasi antara perangkat IoT dan server memakai protokol HTTP dengan gaya arsitektur REST dan format data JSON. Sisi server dibangun dengan framework Laravel, sedangkan antarmuka pengguna memakai Livewire, Tailwind CSS, dan Chart.js. Subbab ini menjelaskan konsep dasar setiap teknologi tersebut beserta perannya dalam sistem.",
+        {
+          "teks": "HTTP dan REST API",
+          "gaya": "Heading3",
+          "nomor": "2.8.%1"
+        },
+        "Hypertext Transfer Protocol (HTTP) merupakan protokol tingkat aplikasi yang bersifat stateless untuk sistem informasi hipermedia terdistribusi. Komunikasi HTTP berupa pesan permintaan (request) dari klien dan pesan tanggapan (response) dari server. Setiap permintaan memuat metode yang menyatakan maksud klien, misalnya GET untuk mengambil representasi suatu sumber daya dan POST untuk meminta server memproses data yang dikirim dalam permintaan. Setiap tanggapan memuat kode status tiga digit, misalnya 201 (*Created*) bila permintaan berhasil dan sumber daya baru dibuat, 401 (*Unauthorized*) bila permintaan tidak disertai kredensial autentikasi yang sah, dan 422 (*Unprocessable Content*) bila server memahami format permintaan tetapi tidak dapat memproses isinya (Fielding et al., 2022).",
+        "Representational State Transfer (REST) adalah gaya arsitektur untuk sistem hipermedia terdistribusi yang diperkenalkan oleh Fielding (2000). REST disusun dari sejumlah batasan, antara lain pemisahan klien dan server (*client-server*), komunikasi tanpa status (stateless), dukungan *cache*, antarmuka yang seragam (*uniform interface*), dan sistem berlapis. Dalam REST, setiap sumber daya diidentifikasi dengan pengenal sumber daya (URI), dan klien berinteraksi dengan sumber daya melalui representasinya. Antarmuka pemrograman aplikasi yang mengikuti prinsip tersebut lazim disebut REST API. Pada penelitian ini, perangkat IoT berperan sebagai klien yang mengirim data pembacaan melalui permintaan POST ke endpoint /api/telemetry. Server memvalidasi data tersebut, lalu menjawab dengan kode status 201 bila data diterima atau 422 bila data ditolak.",
+        {
+          "teks": "JavaScript Object Notation (JSON)",
+          "gaya": "Heading3",
+          "nomor": "2.8.%1"
+        },
+        "JavaScript Object Notation (JSON) adalah format pertukaran data berbasis teks yang ringan dan tidak bergantung pada bahasa pemrograman tertentu (Bray, 2017). JSON dapat merepresentasikan empat tipe primitif, yaitu *string*, *number*, *boolean*, dan *null*, serta dua tipe terstruktur, yaitu objek dan *array*. Objek adalah kumpulan tidak berurutan berisi nol atau lebih pasangan nama dan nilai, dengan nama berupa *string*, sedangkan *array* adalah deretan nilai yang berurutan (Bray, 2017). Pada penelitian ini, perangkat IoT mengirim satu objek JSON untuk setiap pembacaan, berisi device_id dan timestamp bertipe *string* serta co2_ppm, nh3_ppm, co_ppm, dan h2_ppm bertipe *number*. Server juga memakai JSON untuk tanggapan kepada perangkat dan untuk menyimpan isi data yang ditolak beserta alasan penolakannya.",
+        {
+          "teks": "Framework Laravel",
+          "gaya": "Heading3",
+          "nomor": "2.8.%1"
+        },
+        "Framework atau kerangka kerja adalah kumpulan pustaka dan aturan struktur yang menyediakan komponen siap pakai sehingga pengembang tidak perlu membangun fungsi umum aplikasi dari awal. Laravel merupakan framework aplikasi web berbahasa PHP yang menyediakan, antara lain, perutean (*routing*), kelas *controller*, templat Blade, validasi data, dan akses basis data (Laravel, t.t.). Pembagian komponen tersebut sejalan dengan pola Model-View-Controller (MVC). Sommerville (2016) menjelaskan bahwa pola MVC memisahkan penyajian dan interaksi dari data sistem: *model* mengelola data dan operasi terhadap data, *view* mengatur cara data ditampilkan kepada pengguna, dan *controller* menangani interaksi pengguna lalu meneruskannya ke *model* dan *view*. Pada Laravel, peran tersebut dijalankan oleh model Eloquent, templat Blade, dan kelas *controller*.",
+        "Eloquent adalah object-relational mapper (ORM) bawaan Laravel. Pada Eloquent, setiap tabel basis data memiliki model yang digunakan untuk berinteraksi dengan tabel tersebut, sehingga pengambilan, penambahan, pengubahan, dan penghapusan data dilakukan melalui model (Laravel, t.t.). Laravel juga menyediakan migration, yaitu berkas kode yang mendefinisikan skema basis data dan berfungsi seperti *version control* bagi basis data, sehingga definisi skema dapat dibagikan dan diterapkan ulang secara konsisten (Laravel, t.t.). Pada penelitian ini, Laravel 13 dengan PHP 8.3 digunakan untuk membangun endpoint API, validasi data, logika klasifikasi dan rekomendasi, serta model Eloquent untuk tabel rooms, nodes, sensor_logs, telemetry_rejections, dan ueq_responses, sedangkan skema basis datanya dibuat melalui migration.",
+        {
+          "teks": "Livewire",
+          "gaya": "Heading3",
+          "nomor": "2.8.%1"
+        },
+        "Livewire adalah *full-stack framework* untuk Laravel yang memungkinkan antarmuka dinamis dan reaktif dibangun hanya dengan PHP, tanpa menulis JavaScript secara langsung (Livewire, t.t.). Antarmuka disusun dari komponen, yaitu kelas PHP yang memiliki properti dan *method* serta dipasangkan dengan templat Blade. Properti publik komponen menyimpan *state* yang otomatis tersedia di templat, dan tampilan komponen dibentuk ulang setiap kali komponen diperbarui. Livewire juga menyediakan polling melalui direktif wire:poll, yaitu permintaan berkala dari peramban ke server untuk memperbarui komponen. Secara bawaan pembaruan dilakukan setiap 2,5 detik, dan intervalnya dapat diatur, misalnya wire:poll.5s untuk setiap 5 detik (Livewire, t.t.). Pada penelitian ini, polling 5 detik dipakai pada halaman Beranda, Detail Ruangan, Riwayat, Rekomendasi, dan Status Perangkat sehingga tampilan mengikuti data terbaru sesuai interval kirim perangkat uji tanpa pengguna memuat ulang halaman.",
+        {
+          "teks": "Tailwind CSS dan Chart.js",
+          "gaya": "Heading3",
+          "nomor": "2.8.%1"
+        },
+        "Tailwind CSS adalah framework CSS yang menata tampilan dengan menggabungkan banyak kelas utilitas (utility classes), yaitu kelas bertujuan tunggal yang ditulis langsung pada *markup* HTML. Tailwind memindai berkas templat untuk menemukan nama kelas yang dipakai, lalu menghasilkan gaya yang sesuai ke dalam satu berkas CSS statis (Tailwind Labs, t.t.). Chart.js adalah pustaka JavaScript sumber terbuka berlisensi MIT untuk membuat grafik yang digambar pada elemen *canvas* HTML5 dan menyediakan sejumlah jenis grafik bawaan, seperti grafik garis dan grafik batang (Chart.js, t.t.). Pada penelitian ini, Tailwind CSS digunakan untuk tata letak responsif dan warna kategori kualitas udara yang konsisten di semua halaman, sedangkan Chart.js digunakan untuk grafik nilai ppm per gas beserta garis ambang kategori pada halaman Detail Ruangan."
+      ]
+    },
+    {
+      "id": "LT-2.11",
+      "lokasi": "Subbab 2.11 baru (sesudah Klasifikasi Berbasis Ambang Batas, paragraf 339)",
+      "cari": "Berdasarkan uraian tersebut, dalam penelitian ini klasifikasi kualitas udara digunakan sebagai acuan",
+      "catatan": "Landasan teori baru: strategi EPA, prinsip gradasi AQI, dan sistem berbasis aturan untuk rekomendasi.",
+      "sisip_paragraf": [
+        {
+          "teks": "Rekomendasi Tindakan Preventif Kualitas Udara dalam Ruangan",
+          "gaya": "Heading2"
+        },
+        "Rekomendasi tindakan preventif adalah saran tindakan yang diberikan kepada penghuni ruangan untuk mencegah atau mengurangi paparan polutan sebelum kondisi udara makin memburuk. U.S. Environmental Protection Agency (2026b) menyebut tiga strategi dasar untuk memperbaiki kualitas udara dalam ruangan, yaitu pengendalian sumber (*source control*), peningkatan ventilasi (*improved ventilation*), dan pembersihan atau penyaringan udara (*air cleaners/filtration*). Pengendalian sumber, yaitu menghilangkan sumber polutan atau mengurangi emisinya, umumnya merupakan cara yang paling efektif. Peningkatan ventilasi dilakukan dengan memasukkan lebih banyak udara luar, misalnya membuka jendela dan pintu atau menyalakan kipas bila cuaca memungkinkan, dan terutama penting saat berlangsung aktivitas singkat yang menghasilkan polutan dalam kadar tinggi. Adapun efektivitas pembersih udara bergantung pada kemampuannya menangkap polutan, dan pembersih udara umumnya tidak dirancang untuk menghilangkan polutan berbentuk gas (U.S. Environmental Protection Agency, 2026b).",
+        "Penyampaian informasi kualitas udara kepada masyarakat juga dapat disusun secara bertingkat. Pedoman Air Quality Index (AQI) dari U.S. Environmental Protection Agency (2026c) memuat pernyataan kehati-hatian (*cautionary statements*) untuk setiap kategori AQI, dengan anjuran yang makin tegas seiring memburuknya kategori, mulai dari kondisi tanpa anjuran khusus, peringatan bagi kelompok sensitif, hingga anjuran bagi semua orang untuk menghindari aktivitas fisik di luar ruangan pada kategori *Hazardous*. Penelitian ini hanya mengadopsi prinsip gradasi tersebut, bukan angka maupun kategori AQI, karena kategori kualitas udara pada penelitian ini merupakan kategori internal hasil pengolahan pembacaan sensor (subbab 2.10).",
+        "Untuk memetakan kategori ke dalam saran tindakan, penelitian ini menggunakan sistem berbasis aturan (rule-based system). Hayes-Roth (1985) menjelaskan bahwa sistem berbasis aturan menyimpan pengetahuan dalam bentuk aturan IF–THEN, yaitu pasangan kondisi dan tindakan: bila kondisi suatu aturan terpenuhi oleh fakta yang sedang diolah, tindakan pada bagian THEN dijalankan. Sistem ini terdiri atas kumpulan aturan, memori kerja yang berisi fakta, dan mekanisme inferensi (*inference engine*) yang mencocokkan fakta dengan kondisi aturan. Karena setiap keputusan dapat ditelusuri ke aturan yang memicunya, sistem berbasis aturan bersifat transparan serta mudah diperiksa dan diubah.",
+        "Pada penelitian ini, masukan aturan hanya berupa kategori kualitas udara keseluruhan (KU), dan setiap kategori memiliki tepat satu aturan, misalnya IF KU = Tidak Sehat THEN tampilkan tingkat Perlu Tindakan beserta saran meningkatkan ventilasi dan mengurangi sumber polutan. Jenis tindakan pada setiap aturan diambil dari strategi pengendalian sumber dan peningkatan ventilasi, sedangkan pembersih udara tidak dipakai karena umumnya tidak dirancang untuk polutan berbentuk gas. Aturan lengkapnya dijelaskan pada Bab III. Rekomendasi yang dihasilkan bersifat informatif dan preventif umum, bukan diagnosis maupun saran medis, dan pemetaan tindakan ke setiap kategori merupakan rancangan peneliti, bukan standar kesehatan."
+      ]
+    },
+    {
+      "id": "LT-2.12",
+      "lokasi": "Subbab 2.12 baru (sesudah 2.11 baru)",
+      "cari": "Berdasarkan uraian tersebut, dalam penelitian ini klasifikasi kualitas udara digunakan sebagai acuan",
+      "catatan": "Landasan teori baru: flowchart, use case diagram, skenario use case, dan activity diagram.",
+      "sisip_paragraf": [
+        {
+          "teks": "Flowchart dan Unified Modeling Language (UML)",
+          "gaya": "Heading2"
+        },
+        "Pemodelan sistem adalah proses menyusun model abstrak dari suatu sistem, dengan setiap model menyajikan sudut pandang yang berbeda terhadap sistem tersebut. Model membantu analis memahami fungsi sistem dan menjadi sarana komunikasi dengan pengguna maupun pengembang (Sommerville, 2016). Penelitian ini memakai flowchart untuk menggambarkan alur kerja sistem secara keseluruhan, serta tiga bentuk pemodelan UML, yaitu use case diagram, skenario use case, dan activity diagram.",
+        {
+          "teks": "Flowchart",
+          "gaya": "Heading3",
+          "nomor": "2.12.%1"
+        },
+        "Flowchart atau diagram alir adalah representasi grafis dari definisi, analisis, atau cara penyelesaian suatu masalah, yang menggunakan simbol untuk menggambarkan operasi, data, aliran, dan peralatan. Standar ISO 5807 menetapkan simbol dan konvensi flowchart yang dikelompokkan menjadi simbol data, simbol proses, simbol garis untuk menunjukkan aliran, dan simbol khusus untuk memudahkan pembacaan, misalnya *terminator* dan penghubung (International Organization for Standardization, 1985). Simbol yang umum dipakai ditunjukkan pada Tabel 2.3. Flowchart bukan bagian dari UML, melainkan notasi yang lebih dahulu ada dan berdiri sendiri. Pada penelitian ini, flowchart dipakai untuk menggambarkan alur aplikasi web dari penerimaan data perangkat IoT sampai penyajian hasil pada dashboard.",
+        {
+          "teks": "Tabel 2.3 Simbol Flowchart",
+          "gaya": "Heading4"
+        },
+        {
+          "tabel": [
+            [
+              "No",
+              "Bentuk Simbol",
+              "Nama",
+              "Keterangan"
+            ],
+            [
+              "1",
+              "Persegi panjang bersudut bulat (oval)",
+              "*Terminator*",
+              "Menandai awal dan akhir alur"
+            ],
+            [
+              "2",
+              "Persegi panjang",
+              "Proses",
+              "Operasi atau pengolahan data"
+            ],
+            [
+              "3",
+              "Belah ketupat",
+              "Keputusan",
+              "Pemilihan satu dari beberapa jalur keluar berdasarkan suatu kondisi"
+            ],
+            [
+              "4",
+              "Jajaran genjang",
+              "Data (masukan/keluaran)",
+              "Data yang masuk ke atau keluar dari proses"
+            ],
+            [
+              "5",
+              "Garis berpanah",
+              "Garis alir",
+              "Arah urutan proses atau aliran data"
+            ],
+            [
+              "6",
+              "Lingkaran kecil",
+              "Penghubung",
+              "Penyambung alur ke bagian lain diagram"
+            ]
+          ],
+          "seperti": "Tabel 3.5 Rencana Pengujian Sistem",
+          "lebar": [
+            1,
+            4.5,
+            3.5,
+            6
+          ]
+        },
+        {
+          "teks": "Sumber : International Organization for Standardization, 1985",
+          "seperti": "Sumber : Kafidhah"
+        },
+        {
+          "teks": "Unified Modeling Language (UML)",
+          "gaya": "Heading3",
+          "nomor": "2.12.%1"
+        },
+        "Unified Modeling Language (UML) adalah bahasa pemodelan standar untuk memvisualisasikan, menspesifikasikan, membangun, dan mendokumentasikan artefak sistem perangkat lunak (Booch et al., 2005). UML dikelola oleh Object Management Group (OMG), dan versi formal yang berlaku saat ini adalah UML 2.5.1 yang terbit pada tahun 2017 (Object Management Group, 2017). Diagram UML terbagi menjadi diagram struktur, yang menggambarkan bagian statis sistem, dan diagram perilaku, yang menggambarkan perilaku dinamis sistem. Use case diagram dan activity diagram termasuk diagram perilaku. Rosa dan Shalahuddin (2018) menempatkan UML sebagai bahasa pemodelan pada analisis dan perancangan perangkat lunak berorientasi objek.",
+        {
+          "teks": "Use Case Diagram dan Skenario Use Case",
+          "gaya": "Heading3",
+          "nomor": "2.12.%1"
+        },
+        "Use case diagram menggambarkan fungsi yang disediakan sistem dari sudut pandang pihak yang berinteraksi dengannya, tanpa menjelaskan cara fungsi tersebut dijalankan (Rosa & Shalahuddin, 2018; Sommerville, 2016). Unsur utamanya adalah aktor, use case, dan relasi. Aktor adalah orang, sistem lain, atau perangkat di luar sistem yang berinteraksi dengan sistem dan digambarkan dengan simbol orang. Use case adalah satu fungsi atau layanan yang memberikan hasil bernilai bagi aktor dan digambarkan dengan elips berisi nama berupa frasa kerja. Aktor dan use case dihubungkan dengan garis asosiasi. Relasi «include» menyatakan bahwa sebuah use case selalu menjalankan perilaku use case lain yang disertakan, sedangkan relasi «extend» menyatakan perilaku tambahan yang hanya dijalankan pada kondisi tertentu (Booch et al., 2005).",
+        "Use case diagram hanya menunjukkan fungsi secara garis besar, sehingga setiap use case perlu dilengkapi skenario use case berupa uraian tekstual tentang urutan interaksi antara aktor dan sistem. Skenario umumnya memuat nama use case, aktor, prakondisi, alur utama, serta alur alternatif atau pengecualian (Pressman & Maxim, 2020). Pada penelitian ini terdapat dua aktor, yaitu Pengguna dan Perangkat IoT. Use case Menerima dan Memvalidasi Data ppm menyertakan use case Menentukan Kategori Kualitas Udara dan Menghasilkan Rekomendasi Tindakan Preventif melalui relasi «include». Skenario setiap use case juga menjadi acuan penyusunan kasus uji black-box.",
+        {
+          "teks": "Activity Diagram",
+          "gaya": "Heading3",
+          "nomor": "2.12.%1"
+        },
+        "Activity diagram menggambarkan aliran kendali dari satu aktivitas ke aktivitas lain dalam suatu proses, sehingga pada dasarnya serupa dengan flowchart tetapi menggunakan notasi UML (Booch et al., 2005). Diagram ini dipakai untuk memodelkan alur kerja maupun langkah pengolahan data di dalam sistem (Sommerville, 2016). Unsur activity diagram menurut spesifikasi UML meliputi initial node yang menandai awal alur, activity final node yang mengakhiri seluruh alur, *action* yang menyatakan satu langkah kerja, decision node yang memilih satu jalur keluar berdasarkan syarat (guard) yang ditulis di dalam kurung siku, dan merge node yang menggabungkan beberapa jalur kembali menjadi satu. *Action* dapat dikelompokkan ke dalam partisi atau swimlane sesuai pihak yang menjalankannya, dan kejadian waktu (time event) dapat dipakai untuk menyatakan aktivitas yang dipicu oleh berlalunya waktu tertentu (Object Management Group, 2017). Notasi use case diagram dan activity diagram yang digunakan pada penelitian ini dirangkum pada Tabel 2.4.",
+        {
+          "teks": "Tabel 2.4 Notasi Use Case Diagram dan Activity Diagram",
+          "gaya": "Heading4"
+        },
+        {
+          "tabel": [
+            [
+              "No",
+              "Notasi",
+              "Bentuk",
+              "Keterangan"
+            ],
+            [
+              "1",
+              "Aktor",
+              "Gambar orang",
+              "Pihak di luar sistem yang berinteraksi dengan sistem"
+            ],
+            [
+              "2",
+              "Use case",
+              "Elips berisi nama fungsi",
+              "Fungsi atau layanan yang disediakan sistem"
+            ],
+            [
+              "3",
+              "Asosiasi",
+              "Garis lurus",
+              "Hubungan antara aktor dan use case"
+            ],
+            [
+              "4",
+              "«include»",
+              "Panah garis putus-putus berlabel «include»",
+              "Use case dasar selalu menjalankan use case yang disertakan"
+            ],
+            [
+              "5",
+              "«extend»",
+              "Panah garis putus-putus berlabel «extend»",
+              "Perilaku tambahan yang dijalankan pada kondisi tertentu"
+            ],
+            [
+              "6",
+              "Initial node",
+              "Lingkaran hitam penuh",
+              "Awal alur aktivitas"
+            ],
+            [
+              "7",
+              "Activity final node",
+              "Lingkaran hitam berbingkai",
+              "Akhir seluruh alur aktivitas"
+            ],
+            [
+              "8",
+              "*Action*",
+              "Persegi panjang bersudut tumpul",
+              "Satu langkah kerja"
+            ],
+            [
+              "9",
+              "Decision node dan merge node",
+              "Belah ketupat",
+              "Percabangan berdasarkan guard [kondisi] atau penggabungan jalur"
+            ],
+            [
+              "10",
+              "Swimlane (partisi)",
+              "Lajur berjudul",
+              "Pengelompokan *action* menurut pihak yang menjalankannya"
+            ],
+            [
+              "11",
+              "Time event",
+              "Jam pasir",
+              "Kejadian yang dipicu oleh waktu"
+            ]
+          ],
+          "seperti": "Tabel 3.5 Rencana Pengujian Sistem",
+          "lebar": [
+            1,
+            4,
+            4.5,
+            6
+          ]
+        },
+        {
+          "teks": "Sumber : Object Management Group, 2017",
+          "seperti": "Sumber : Kafidhah"
+        }
+      ]
+    },
+    {
+      "id": "LT-2.13",
+      "lokasi": "Subbab 2.13 baru (sesudah 2.12 baru, sebelum Metode Waterfall)",
+      "cari": "Berdasarkan uraian tersebut, dalam penelitian ini klasifikasi kualitas udara digunakan sebagai acuan",
+      "catatan": "Landasan teori baru: basis data relasional, ERD crow's foot, dan MySQL.",
+      "sisip_paragraf": [
+        {
+          "teks": "Basis Data dan Entity Relationship Diagram (ERD)",
+          "gaya": "Heading2"
+        },
+        {
+          "teks": "Basis Data Relasional",
+          "gaya": "Heading3",
+          "nomor": "2.13.%1"
+        },
+        "Basis data adalah kumpulan data yang saling berhubungan, sedangkan sistem manajemen basis data (*database management system*, DBMS) adalah perangkat lunak yang dipakai untuk membuat, memelihara, dan mengakses basis data tersebut (Elmasri & Navathe, 2016). Model relasional merepresentasikan basis data sebagai kumpulan relasi atau tabel. Setiap baris tabel mewakili satu rekaman data, dan setiap kolom mewakili satu atribut dengan tipe data tertentu.",
+        "Setiap tabel memiliki kunci primer (primary key), yaitu atribut atau gabungan atribut yang nilainya unik untuk setiap baris dan tidak boleh kosong. Hubungan antartabel dibentuk dengan kunci tamu (foreign key), yaitu atribut pada satu tabel yang merujuk kunci primer tabel lain. Aturan integritas referensial mensyaratkan nilai kunci tamu sama dengan nilai kunci primer yang ada pada tabel rujukan, atau bernilai kosong (NULL) bila diperbolehkan (Elmasri & Navathe, 2016). Pada penelitian ini, kolom sensor_logs.node_id merupakan kunci tamu yang merujuk nodes.id sehingga basis data menolak data pembacaan yang merujuk perangkat yang tidak ada, sedangkan nodes.room_id merupakan kunci tamu yang boleh kosong.",
+        {
+          "teks": "Entity Relationship Diagram (ERD)",
+          "gaya": "Heading3",
+          "nomor": "2.13.%1"
+        },
+        "Model entity-relationship diperkenalkan oleh Chen (1976) untuk memandang data sebagai entitas dan hubungan antarentitas. Entitas adalah sesuatu yang dapat dibedakan secara jelas, misalnya orang, benda, atau kejadian; relasi (*relationship*) adalah keterkaitan antara entitas; dan atribut adalah sifat yang menjelaskan entitas atau relasi. Chen (1976) juga memperkenalkan diagram entity-relationship sebagai teknik untuk menggambarkan model tersebut. Batasan jumlah keterlibatan entitas dalam suatu relasi disebut kardinalitas, yang umumnya berbentuk satu ke satu (1:1), satu ke banyak (1:N), atau banyak ke banyak (M:N) (Elmasri & Navathe, 2016).",
+        "Selain notasi Chen, ERD sering digambarkan dengan notasi crow's foot. Pada notasi ini, entitas digambarkan sebagai kotak berisi nama dan daftar atribut, relasi digambarkan sebagai garis antarentitas, dan kardinalitas dinyatakan dengan simbol di ujung garis: garis tegak berarti satu, lingkaran berarti nol atau opsional, dan cabang menyerupai kaki gagak berarti banyak (Hoffer et al., 2016). Kombinasi simbol tersebut ditunjukkan pada Tabel 2.5. ERD pada penelitian ini memakai notasi crow's foot untuk menggambarkan tabel rooms, nodes, sensor_logs, telemetry_rejections, dan ueq_responses beserta relasinya.",
+        {
+          "teks": "Tabel 2.5 Notasi Kardinalitas Crow's Foot",
+          "gaya": "Heading4"
+        },
+        {
+          "tabel": [
+            [
+              "No",
+              "Simbol di Ujung Garis",
+              "Makna"
+            ],
+            [
+              "1",
+              "Dua garis tegak",
+              "Tepat satu"
+            ],
+            [
+              "2",
+              "Lingkaran dan garis tegak",
+              "Nol atau satu"
+            ],
+            [
+              "3",
+              "Garis tegak dan kaki gagak",
+              "Satu atau banyak"
+            ],
+            [
+              "4",
+              "Lingkaran dan kaki gagak",
+              "Nol atau banyak"
+            ]
+          ],
+          "seperti": "Tabel 3.7 Pengujian Validasi Data",
+          "lebar": [
+            1,
+            6,
+            5
+          ]
+        },
+        {
+          "teks": "Sumber : Hoffer et al., 2016",
+          "seperti": "Sumber : Kafidhah"
+        },
+        {
+          "teks": "MySQL",
+          "gaya": "Heading3",
+          "nomor": "2.13.%1"
+        },
+        "MySQL adalah sistem manajemen basis data relasional bersumber terbuka yang dikembangkan, didistribusikan, dan didukung oleh Oracle Corporation. MySQL menyimpan data dalam tabel-tabel terpisah yang dihubungkan melalui relasi, dan mengakses data menggunakan Structured Query Language (SQL), yaitu bahasa terstandar yang paling umum dipakai untuk mengakses basis data (Oracle Corporation, t.t.). Pada penelitian ini, MySQL dipakai sebagai basis data aplikasi pada tahap pengujian dan penerapan, dengan struktur tabel yang dibuat melalui migration Laravel."
+      ]
+    },
+    {
+      "id": "LT-2.15",
+      "lokasi": "Subbab 2.15 dan 2.16 baru (sesudah Metode Waterfall, paragraf 356)",
+      "cari": "Berdasarkan penjelasan tersebut, metode Waterfall digunakan dalam penelitian ini",
+      "catatan": "Landasan teori baru: pengujian black-box dan UEQ. Pemisah halaman sebelum Bab III dipindah ke akhir sisipan.",
+      "pindah_pemisah_halaman": true,
+      "sisip_paragraf": [
+        {
+          "teks": "Pengujian Black-Box",
+          "gaya": "Heading2"
+        },
+        "Pengujian perangkat lunak bertujuan memperlihatkan bahwa program melakukan apa yang dimaksudkan dan menemukan cacat program sebelum program digunakan (Sommerville, 2016). Pengujian black-box, yang juga disebut pengujian perilaku atau pengujian fungsional, berfokus pada kebutuhan fungsional perangkat lunak. Penguji memandang program sebagai kotak hitam: kasus uji disusun dari spesifikasi kebutuhan, lalu keluaran yang dihasilkan untuk setiap masukan dibandingkan dengan keluaran yang diharapkan tanpa memperhatikan struktur kode program (Myers et al., 2012; Pressman & Maxim, 2020). Pengujian ini dapat menemukan kesalahan seperti fungsi yang salah atau tidak ada, kesalahan antarmuka, kesalahan struktur data atau akses basis data eksternal, kesalahan perilaku atau kinerja, serta kesalahan inisialisasi dan penghentian (Pressman & Maxim, 2020).",
+        "Menguji seluruh kemungkinan masukan tidak mungkin dilakukan, sehingga kasus uji dipilih dengan teknik tertentu. Teknik pembagian kelas ekuivalen (equivalence partitioning) membagi ranah masukan ke dalam sejumlah kelas, dengan anggapan bahwa pengujian satu nilai wakil dari suatu kelas setara dengan pengujian nilai lain di kelas yang sama. Kelas tersebut terdiri atas kelas valid dan kelas tidak valid (Myers et al., 2012). Pada penelitian ini, nilai CO₂ 0 sampai kurang dari 50 ppm, 50 sampai kurang dari 100 ppm, 100 sampai kurang dari 150 ppm, dan 150 ppm atau lebih merupakan empat kelas valid yang masing-masing menghasilkan kategori Baik, Sedang, Tidak Sehat, dan Berbahaya, sedangkan nilai negatif atau bukan angka merupakan kelas tidak valid yang harus ditolak.",
+        "Teknik analisis nilai batas (boundary value analysis) melengkapi teknik tersebut dengan memilih kasus uji tepat pada batas kelas serta tepat di atas dan di bawahnya, karena kesalahan program cenderung terjadi di sekitar batas (Myers et al., 2012). Pada penelitian ini, batas kategori bersifat eksklusif (subbab 2.10), sehingga CO₂ = 50 ppm harus menghasilkan kategori Sedang dan CO₂ = 150 ppm harus menghasilkan kategori Berbahaya, sedangkan nilai sedikit di bawah batas tersebut tetap berada pada kategori sebelumnya.",
+        "Dalam penelitian ini, pengujian black-box dipakai untuk menguji fungsionalitas aplikasi web. Kasus uji disusun dari kebutuhan fungsional dan skenario use case, meliputi ketujuh halaman aplikasi, validasi data pada endpoint API, klasifikasi kualitas udara, rekomendasi tindakan preventif, dan respons sistem pada empat kondisi di satu ruangan uji. Suatu kasus uji dinyatakan berhasil apabila keluaran sistem sama dengan hasil yang diharapkan.",
+        {
+          "teks": "User Experience Questionnaire (UEQ)",
+          "gaya": "Heading2"
+        },
+        "User Experience Questionnaire (UEQ) adalah kuesioner untuk mengukur pengalaman pengguna (user experience) terhadap produk interaktif secara cepat dan langsung. Laugwitz et al. (2008) menyusun UEQ agar dapat mengukur aspek kegunaan klasik, yaitu efisiensi, kejelasan, dan ketepatan, sekaligus aspek pengalaman pengguna, yaitu kebaruan dan stimulasi. Subbab ini menjelaskan struktur UEQ, cara pengolahan skornya, serta pembanding yang dipakai untuk menafsirkan hasilnya.",
+        {
+          "teks": "Struktur dan Skala UEQ",
+          "gaya": "Heading3",
+          "nomor": "2.16.%1"
+        },
+        "Versi asli UEQ disusun dalam bahasa Jerman pada tahun 2005 dengan pendekatan analisis data. Sebanyak 229 butir awal hasil curah pendapat para ahli kegunaan disaring menjadi 80 butir, lalu 80 butir tersebut dinilai oleh 153 responden dalam evaluasi beberapa produk perangkat lunak. Dari data tersebut, enam skala beserta butir pembentuknya diperoleh melalui analisis komponen utama. Konsistensi dan validitas skala kemudian diuji dalam sebelas pengujian kegunaan dengan 144 peserta dan satu survei daring dengan 722 peserta (Laugwitz et al., 2008; Schrepp, 2023).",
+        "UEQ terdiri atas 26 butir berbentuk diferensial semantik (semantic differential), yaitu pasangan dua kata yang maknanya berlawanan, misalnya menyusahkan dan menyenangkan, dengan tujuh pilihan jawaban di antara keduanya. Skala tujuh titik dipakai untuk mengurangi kecenderungan responden memilih nilai tengah. Urutan kata positif dan negatif diacak, sehingga separuh butir pada setiap skala diawali kata positif dan separuh lainnya diawali kata negatif (Schrepp, 2023). Ke-26 butir tersebut membentuk enam skala sebagaimana ditunjukkan pada Tabel 2.6.",
+        {
+          "teks": "Tabel 2.6 Skala User Experience Questionnaire",
+          "gaya": "Heading4"
+        },
+        {
+          "tabel": [
+            [
+              "No",
+              "Skala",
+              "Kelompok Kualitas",
+              "Aspek yang Diukur"
+            ],
+            [
+              "1",
+              "Attractiveness (daya tarik)",
+              "Daya tarik",
+              "Kesan keseluruhan terhadap produk, yaitu apakah pengguna menyukai produk"
+            ],
+            [
+              "2",
+              "Perspicuity (kejelasan)",
+              "Kualitas pragmatis",
+              "Kemudahan mengenal dan mempelajari cara menggunakan produk"
+            ],
+            [
+              "3",
+              "Efficiency (efisiensi)",
+              "Kualitas pragmatis",
+              "Kemampuan menyelesaikan tugas tanpa usaha yang tidak perlu"
+            ],
+            [
+              "4",
+              "Dependability (ketepatan)",
+              "Kualitas pragmatis",
+              "Rasa memegang kendali atas interaksi dengan produk"
+            ],
+            [
+              "5",
+              "Stimulation (stimulasi)",
+              "Kualitas hedonis",
+              "Rasa senang dan termotivasi saat menggunakan produk"
+            ],
+            [
+              "6",
+              "Novelty (kebaruan)",
+              "Kualitas hedonis",
+              "Kesan inovatif dan kreatif serta kemampuan produk menarik minat pengguna"
+            ]
+          ],
+          "seperti": "Tabel 3.5 Rencana Pengujian Sistem",
+          "lebar": [
+            1,
+            4.5,
+            3.5,
+            6.5
+          ]
+        },
+        {
+          "teks": "Sumber : Schrepp, 2023",
+          "seperti": "Sumber : Kafidhah"
+        },
+        "Skala Attractiveness merupakan dimensi valensi murni yang menggambarkan kesan suka atau tidak suka secara keseluruhan dan terdiri atas enam butir, sedangkan lima skala lainnya masing-masing terdiri atas empat butir. Perspicuity, Efficiency, dan Dependability merupakan aspek kualitas pragmatis yang berorientasi pada tujuan, sedangkan Stimulation dan Novelty merupakan aspek kualitas hedonis yang tidak berorientasi pada tujuan (Schrepp, 2023).",
+        {
+          "teks": "Pengolahan dan Interpretasi Skor",
+          "gaya": "Heading3",
+          "nomor": "2.16.%1"
+        },
+        "Jawaban setiap butir diubah ke rentang −3 sampai +3, dengan −3 sebagai jawaban paling negatif, 0 sebagai jawaban netral, dan +3 sebagai jawaban paling positif. Karena posisi kata positif diacak, nilai butir yang kata positifnya berada di sisi kiri dibalik sebelum dihitung. Nilai suatu skala adalah rata-rata nilai butir pembentuknya. Menurut interpretasi standar UEQ, rata-rata antara −0,8 dan 0,8 menunjukkan penilaian netral, nilai lebih dari 0,8 menunjukkan penilaian positif, dan nilai kurang dari −0,8 menunjukkan penilaian negatif. Dalam praktik, rata-rata di atas +2 atau di bawah −2 jarang diperoleh karena nilai tersebut merupakan rata-rata dari banyak responden dengan pendapat dan kecenderungan menjawab yang berbeda. Konsistensi butir dalam setiap skala diperiksa dengan koefisien *Cronbach's alpha* (Schrepp, 2023).",
+        {
+          "teks": "Benchmark dan UEQ Versi Bahasa Indonesia",
+          "gaya": "Heading3",
+          "nomor": "2.16.%1"
+        },
+        "Rata-rata skala sulit ditafsirkan tanpa pembanding. Oleh karena itu, Schrepp et al. (2017) menyusun benchmark UEQ dari 246 evaluasi produk dengan total 9.905 responden. Benchmark tersebut mengelompokkan hasil setiap skala ke dalam lima kategori, yaitu *Excellent* (termasuk 10% hasil terbaik), *Good* (10% hasil dalam benchmark lebih baik dan 75% lebih buruk), *Above Average* (25% lebih baik dan 50% lebih buruk), *Below Average* (50% lebih baik dan 25% lebih buruk), dan *Bad* (termasuk 25% hasil terburuk). Data benchmark diperbarui secara berkala (Schrepp, 2023), sedangkan penelitian ini memakai batas kategori yang dipublikasikan oleh Schrepp et al. (2017).",
+        "UEQ telah tersedia dalam berbagai bahasa. Versi bahasa Indonesia dikembangkan oleh Santoso et al. (2016) melalui proses penerjemahan dan penerjemahan balik, lalu digunakan untuk mengukur pengalaman pengguna lingkungan *e-learning* yang berpusat pada mahasiswa. Pada penelitian ini, UEQ versi bahasa Indonesia dengan 26 butir tersebut disajikan melalui halaman Kuesioner pada aplikasi, kemudian skor setiap skala dihitung dan dibandingkan dengan benchmark untuk mengevaluasi pengalaman pengguna terhadap sistem monitoring kualitas udara yang dikembangkan."
+      ]
+    },
+    {
       "id": "3.1-01",
       "lokasi": "3.1 Metode Penelitian, paragraf 363",
       "cari": "yang dikirimkan perangkat IoT setiap 30 detik. Nilai ppm tersebut merupakan estimasi dari perangkat dan tidak dikalibrasi",
-      "ganti": "yang dikirimkan perangkat IoT secara berkala dengan interval 5–10 detik (perangkat uji dikonfigurasi setiap 5 detik). Nilai ppm tersebut merupakan estimasi dari perangkat yang dihitung relatif terhadap *baseline* saat perangkat dinyalakan (lihat subbab 2.7) dan tidak dikalibrasi",
+      "ganti": "yang dikirimkan perangkat IoT secara berkala dengan interval 5–10 detik (perangkat uji dikonfigurasi setiap 5 detik). Nilai ppm tersebut merupakan estimasi dari perangkat yang dihitung relatif terhadap *baseline* saat perangkat dinyalakan (lihat subbab 2.9) dan tidak dikalibrasi",
       "catatan": "Penyelarasan naskah dengan aplikasi: interval kirim 5–10 detik, perangkat uji 5 detik (sama dengan Batasan Masalah butir 7); ppm sebagai indikator relatif berbasis baseline."
     },
     {
@@ -665,7 +1112,7 @@
       "id": "3.9-01",
       "lokasi": "3.9, paragraf 542",
       "cari": "dan tidak dinyatakan sebagai nilai Air Quality Index (AQI) resmi.",
-      "ganti": "dan tidak dinyatakan sebagai nilai Air Quality Index (AQI) resmi. Nilai tersebut dihitung oleh perangkat relatif terhadap *baseline* saat perangkat dinyalakan dengan rumus Solihat et al. (2026) yang dijelaskan pada subbab 2.7. Rumus ini diterapkan oleh penelitian IoT; aplikasi web tidak bergantung pada rumus tersebut, hanya pada ambang Tabel 2.2.",
+      "ganti": "dan tidak dinyatakan sebagai nilai Air Quality Index (AQI) resmi. Nilai tersebut dihitung oleh perangkat relatif terhadap *baseline* saat perangkat dinyalakan dengan rumus Solihat et al. (2026) yang dijelaskan pada subbab 2.9. Rumus ini diterapkan oleh penelitian IoT; aplikasi web tidak bergantung pada rumus tersebut, hanya pada ambang Tabel 2.2.",
       "catatan": "Aturan klasifikasi ambang dan penyelarasan naskah dengan aplikasi (ppm relatif berbasis baseline; konversi menjadi tanggung jawab penelitian IoT)."
     },
     {
@@ -1208,7 +1655,7 @@
       "cari": "DAFTAR PUSTAKA",
       "utuh": true,
       "komentar_bersih": true,
-      "catatan": "Semua sitasi dan daftar pustaka sudah berupa field Mendeley berformat APA 7, dan daftar pustaka hanya memuat karya yang disitasi. Ada dua berkas untuk Mendeley Anda. (A) referensi-baru.bib (atau referensi-baru.ris): dua belas karya baru yang belum ada di pustaka Mendeley: Agency for Toxic Substances and Disease Registry (2011), Laugwitz et al. (2008), MQ-2 Semiconductor Sensor for Combustible Gas (t.t.), Persily dan de Jonge (2017), Santoso et al. (2016), Schrepp et al. (2017), Technical Data MQ-135 Gas Sensor (t.t.), U.S. Environmental Protection Agency (2026a, 2026b, 2026c), dan Zhengzhou Winsen Electronics Technology (2015a, 2015b). (B) koreksi-pustaka-mendeley.bib: 25 karya yang sudah ada di Mendeley tetapi datanya kurang atau salah (nama jurnal/prosiding, volume, nomor, halaman, DOI, URL, dan nama penulis), dilengkapi dari Crossref dan halaman penerbit. Beberapa penulis ikut berubah: B et al. (2023) menjadi Fajar B et al. (2023), Hananta et al. (2024) menjadi Wibowo et al. (2024), Candra (2026) menjadi Candra dan Hazimah (2026), Nazli dan Sly (2024) menjadi Nazli et al. (2024), Kafidhah dan Alamin (2026) menjadi Kafidhah et al. (2026), WHO (2026) menjadi World Health Organization (2026), dan Anist et al. terbit 2025 sebagai makalah prosiding. Langkah: (1) di Mendeley pilih File > Import, lalu impor referensi-baru.bib (disarankan, karena nama lembaga seperti U.S. Environmental Protection Agency terbaca utuh) atau referensi-baru.ris; (2) impor juga koreksi-pustaka-mendeley.bib, lalu untuk setiap karya di berkas itu gabungkan (Merge) entri hasil impor dengan entri lama yang sama, dengan memakai data dari entri impor, agar sitasi yang sudah tertaut tetap tertaut dan datanya lengkap (bila tidak memakai Merge, salin kolomnya ke entri lama lalu hapus entri impor); (3) di Word, pada setiap sitasi karya baru pilih Edit Citation lalu pilih karya yang sama dari pustaka agar sitasi tertaut; (4) klik Refresh. Refresh menyusun ulang daftar pustaka dari data Mendeley, jadi data yang belum diperbarui di Mendeley akan kembali tampil seperti datanya. Tiga karya belum dapat dilengkapi karena sumber terbitnya tidak ditemukan: Kamran et al. (2024), Prajapati et al. (2023), dan Shinde dan Karode (2017); mohon lengkapi nama jurnal (dan halaman Kamran et al.) dari PDF yang Anda miliki."
+      "catatan": "Semua sitasi dan daftar pustaka sudah berupa field Mendeley berformat APA 7, dan daftar pustaka hanya memuat karya yang disitasi. Ada dua berkas untuk Mendeley Anda. (A) referensi-baru.bib (atau referensi-baru.ris): tiga puluh tiga karya baru yang belum ada di pustaka Mendeley: Agency for Toxic Substances and Disease Registry (2011), Booch et al. (2005), Bray (2017), Chart.js (t.t.), Chen (1976), Elmasri dan Navathe (2016), Fielding (2000), Fielding et al. (2022), Hayes-Roth (1985), Hoffer et al. (2016), International Organization for Standardization (1985), Laravel (t.t.), Laugwitz et al. (2008), Livewire (t.t.), MQ-2 Semiconductor Sensor for Combustible Gas (t.t.), Myers et al. (2012), Object Management Group (2017), Oracle Corporation (t.t.), Persily dan de Jonge (2017), Pressman dan Maxim (2020), Rosa dan Shalahuddin (2018), Santoso et al. (2016), Schrepp (2023), Schrepp et al. (2017), Sommerville (2016), Tailwind Labs (t.t.), Technical Data MQ-135 Gas Sensor (t.t.), U.S. Environmental Protection Agency (2026a, 2026b, 2026c), Wang et al. (2010), dan Zhengzhou Winsen Electronics Technology (2015a, 2015b). Untuk buku, periksa edisi dan tahun pada halaman hak cipta buku yang Anda miliki (khususnya Rosa dan Shalahuddin, 2018, yang tercatat dengan dua ISBN berbeda). (B) koreksi-pustaka-mendeley.bib: 25 karya yang sudah ada di Mendeley tetapi datanya kurang atau salah (nama jurnal/prosiding, volume, nomor, halaman, DOI, URL, dan nama penulis), dilengkapi dari Crossref dan halaman penerbit. Beberapa penulis ikut berubah: B et al. (2023) menjadi Fajar B et al. (2023), Hananta et al. (2024) menjadi Wibowo et al. (2024), Candra (2026) menjadi Candra dan Hazimah (2026), Nazli dan Sly (2024) menjadi Nazli et al. (2024), Kafidhah dan Alamin (2026) menjadi Kafidhah et al. (2026), WHO (2026) menjadi World Health Organization (2026), dan Anist et al. terbit 2025 sebagai makalah prosiding. Langkah: (1) di Mendeley pilih File > Import, lalu impor referensi-baru.bib (disarankan, karena nama lembaga seperti U.S. Environmental Protection Agency terbaca utuh) atau referensi-baru.ris; (2) impor juga koreksi-pustaka-mendeley.bib, lalu untuk setiap karya di berkas itu gabungkan (Merge) entri hasil impor dengan entri lama yang sama, dengan memakai data dari entri impor, agar sitasi yang sudah tertaut tetap tertaut dan datanya lengkap (bila tidak memakai Merge, salin kolomnya ke entri lama lalu hapus entri impor); (3) di Word, pada setiap sitasi karya baru pilih Edit Citation lalu pilih karya yang sama dari pustaka agar sitasi tertaut; (4) klik Refresh. Refresh menyusun ulang daftar pustaka dari data Mendeley, jadi data yang belum diperbarui di Mendeley akan kembali tampil seperti datanya. Tiga karya belum dapat dilengkapi karena sumber terbitnya tidak ditemukan: Kamran et al. (2024), Prajapati et al. (2023), dan Shinde dan Karode (2017); mohon lengkapi nama jurnal (dan halaman Kamran et al.) dari PDF yang Anda miliki."
     },
     {
       "id": "2.4-11",
