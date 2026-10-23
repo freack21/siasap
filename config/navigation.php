@@ -40,11 +40,4 @@ return [
         'permission' => 'qos.view',
         'section' => 'Pengujian',
     ],
-    [
-        'title' => 'Hasil Kuesioner',
-        'route' => 'admin.survey',
-        'icon' => 'tabler-clipboard-check',
-        'permission' => 'survey.view',
-        'section' => 'Pengujian',
-    ],
 ];

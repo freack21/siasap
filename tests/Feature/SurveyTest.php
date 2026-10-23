@@ -3,26 +3,15 @@
 namespace Tests\Feature;
 
 use App\Livewire\SurveyForm;
-use App\Livewire\SurveyResults;
-use App\Models\Permission;
-use App\Models\Role;
-use App\Models\SurveyResponse;
-use App\Models\User;
-use Database\Seeders\SetupRbacSeeder;
+use App\Models\UeqResponse;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\File;
 use Livewire\Livewire;
 use Tests\TestCase;
 
 class SurveyTest extends TestCase
 {
     use RefreshDatabase;
-
-    private function admin(): User
-    {
-        $this->seed(SetupRbacSeeder::class);
-
-        return User::where('email', 'admin@siasap.test')->firstOrFail();
-    }
 
     private function fillAnswers($component, array $answers)
     {
@@ -33,55 +22,50 @@ class SurveyTest extends TestCase
         return $component;
     }
 
-    public function test_guest_can_open_survey_page(): void
+    public function test_guest_can_open_survey_page_with_26_items(): void
     {
-        $this->get(route('survey'))
+        $response = $this->get(route('survey'))
             ->assertOk()
-            ->assertSee('Kuesioner Kegunaan Website')
-            ->assertSee('Saya merasa website ini mudah digunakan.')
-            ->assertSee('Sangat Tidak Setuju')
-            ->assertDontSee('Kelompok responden');
+            ->assertSee('Kuesioner Pengalaman Pengguna')
+            ->assertSee('menyusahkan')
+            ->assertSee('konservatif')
+            ->assertSee('Tidak ada jawaban benar atau salah');
+
+        $this->assertSame(26 * 7, substr_count($response->getContent(), 'type="radio"'));
+        $this->assertSame(26, substr_count($response->getContent(), '<legend'));
     }
 
-    public function test_guest_can_submit_and_score_is_stored(): void
+    public function test_guest_can_submit_complete_answers(): void
     {
-        $component = Livewire::test(SurveyForm::class)
-            ->set('respondentName', 'Budi')
-            ->set('comment', 'Tampilannya jelas.');
+        $answers = range(1, 7);
+        $answers = array_slice(array_merge($answers, $answers, $answers, $answers), 0, 26);
 
-        $this->fillAnswers($component, [4, 2, 5, 1, 4, 2, 3, 2, 4, 3])
+        $this->fillAnswers(Livewire::test(SurveyForm::class)->set('respondentName', 'Budi'), $answers)
             ->call('submit')
             ->assertHasNoErrors()
             ->assertSet('submitted', true)
-            ->assertSet('resultScore', 75.0)
-            ->assertSee('Terima kasih')
-            ->assertSee('B/C');
+            ->assertSee('Terima kasih');
 
-        $response = SurveyResponse::sole();
+        $response = UeqResponse::sole();
         $this->assertSame('Budi', $response->respondent_name);
-        $this->assertSame('pengguna', $response->respondent_group);
-        $this->assertSame(4, $response->q1);
-        $this->assertSame(3, $response->q10);
-        $this->assertEquals(75.0, $response->sus_score);
+        $this->assertCount(26, $response->answers);
+        $this->assertSame(1, $response->answers[1]);
+        $this->assertSame($answers[25], $response->answers[26]);
         $this->assertSame(64, strlen($response->ip_hash));
     }
 
-    public function test_name_and_comment_are_optional(): void
+    public function test_name_is_optional(): void
     {
-        $this->fillAnswers(Livewire::test(SurveyForm::class), array_fill(0, 10, 3))
+        $this->fillAnswers(Livewire::test(SurveyForm::class), array_fill(0, 26, 4))
             ->call('submit')
             ->assertHasNoErrors();
 
-        $response = SurveyResponse::sole();
-        $this->assertNull($response->respondent_name);
-        $this->assertNull($response->comment);
-        $this->assertEquals(50.0, $response->sus_score);
+        $this->assertNull(UeqResponse::sole()->respondent_name);
     }
 
     public function test_all_items_are_required(): void
     {
-        $component = Livewire::test(SurveyForm::class);
-        $this->fillAnswers($component, [4, 2, 5, 1, 4, 2, 3, 2, 4, 3])
+        $this->fillAnswers(Livewire::test(SurveyForm::class), array_fill(0, 26, 4))
             ->set('answers.7', null)
             ->call('submit')
             ->assertHasErrors(['answers.7' => 'required'])
@@ -90,123 +74,69 @@ class SurveyTest extends TestCase
 
         Livewire::test(SurveyForm::class)
             ->call('submit')
-            ->assertHasErrors(['answers.1', 'answers.10']);
+            ->assertHasErrors(['answers.1', 'answers.26']);
 
-        $this->assertDatabaseCount('survey_responses', 0);
+        $this->assertDatabaseCount('ueq_responses', 0);
     }
 
-    public function test_answers_must_be_between_one_and_five(): void
+    public function test_answers_must_be_between_one_and_seven(): void
     {
-        $component = Livewire::test(SurveyForm::class);
-        $this->fillAnswers($component, [6, 2, 5, 1, 4, 2, 3, 0, 4, 3])
+        $answers = array_fill(0, 26, 4);
+        $answers[0] = 8;
+        $answers[7] = 0;
+
+        $this->fillAnswers(Livewire::test(SurveyForm::class), $answers)
             ->call('submit')
             ->assertHasErrors(['answers.1' => 'between', 'answers.8' => 'between']);
 
-        $this->assertDatabaseCount('survey_responses', 0);
+        $this->assertDatabaseCount('ueq_responses', 0);
     }
 
     public function test_submissions_are_rate_limited_per_ip(): void
     {
         for ($i = 0; $i < SurveyForm::MAX_PER_HOUR; $i++) {
-            $this->fillAnswers(Livewire::test(SurveyForm::class), array_fill(0, 10, 4))
+            $this->fillAnswers(Livewire::test(SurveyForm::class), array_fill(0, 26, 4))
                 ->call('submit')
                 ->assertHasNoErrors();
         }
 
-        $this->fillAnswers(Livewire::test(SurveyForm::class), array_fill(0, 10, 4))
+        $this->fillAnswers(Livewire::test(SurveyForm::class), array_fill(0, 26, 4))
             ->call('submit')
             ->assertHasErrors('rateLimit')
             ->assertSet('submitted', false)
             ->assertSee('Silakan coba lagi');
 
-        $this->assertDatabaseCount('survey_responses', SurveyForm::MAX_PER_HOUR);
+        $this->assertDatabaseCount('ueq_responses', SurveyForm::MAX_PER_HOUR);
     }
 
-    public function test_guest_cannot_view_results(): void
+    public function test_report_command_prints_summary_and_writes_csv(): void
     {
-        $this->get(route('admin.survey'))->assertRedirect(route('login'));
+        UeqResponse::factory()->uniform(4)->create(['respondent_name' => 'Siti']);
+        UeqResponse::factory()->uniform(5)->create(['respondent_name' => null]);
+        $path = storage_path('framework/testing/ueq-export.csv');
+
+        $this->artisan('ueq:report', ['--csv' => $path])
+            ->expectsOutputToContain('Jumlah responden: 2')
+            ->expectsOutputToContain('Attractiveness')
+            ->expectsOutputToContain('Novelty')
+            ->assertSuccessful();
+
+        $lines = file($path, FILE_IGNORE_NEW_LINES);
+        $this->assertSame('id,waktu,nama,'.implode(',', array_map(fn ($i) => "i{$i}", range(1, 26))), $lines[0]);
+        $this->assertCount(3, $lines);
+        $this->assertStringContainsString(',Siti,'.implode(',', array_fill(0, 26, 4)), $lines[1]);
+
+        File::delete($path);
     }
 
-    public function test_user_without_survey_permission_gets_403(): void
+    public function test_report_command_handles_no_responses(): void
     {
-        $this->seed(SetupRbacSeeder::class);
+        $path = storage_path('framework/testing/ueq-empty.csv');
 
-        $role = Role::create(['name' => 'tanpa-survei', 'display_name' => 'Tanpa Survei']);
-        $role->permissions()->sync(Permission::where('name', 'telemetry.view')->pluck('id'));
-        $user = User::factory()->create();
-        $user->roles()->sync([$role->id]);
+        $this->artisan('ueq:report', ['--csv' => $path])
+            ->expectsOutputToContain('Jumlah responden: 0')
+            ->assertSuccessful();
 
-        $this->actingAs($user)->get(route('admin.survey'))->assertForbidden();
-
-        $response = SurveyResponse::factory()->create();
-        Livewire::actingAs($user)->test(SurveyResults::class)->assertForbidden();
-        $this->assertDatabaseHas('survey_responses', ['id' => $response->id]);
-    }
-
-    public function test_admin_sees_averages_and_grade(): void
-    {
-        SurveyResponse::factory()->answers([5, 1, 5, 1, 5, 1, 5, 1, 5, 1])->create(['respondent_group' => 'pengguna']); // 100
-        SurveyResponse::factory()->uniform(3)->create(['respondent_group' => 'pengguna', 'respondent_name' => null]); // 50
-        SurveyResponse::factory()->answers([4, 2, 5, 1, 4, 2, 3, 2, 4, 3])->create(['respondent_group' => 'pengguna', 'respondent_name' => 'Pakar']); // 75
-
-        $this->actingAs($this->admin())
-            ->get(route('admin.survey'))
-            ->assertOk()
-            ->assertSee('Hasil Kuesioner SUS')
-            ->assertSee('75,00')   // rata-rata (100 + 50 + 75) / 3
-            ->assertSee('25,00')   // standar deviasi sampel
-            ->assertSee('Good')
-            ->assertSee('Acceptable')
-            ->assertSee('Anonim')
-            ->assertSee('Pakar')
-            ->assertSee('Unduh CSV')
-            ->assertDontSee('Semua kelompok')
-            ->assertDontSee('Filter kelompok responden');
-    }
-
-    public function test_admin_sees_empty_state(): void
-    {
-        $this->actingAs($this->admin())
-            ->get(route('admin.survey'))
-            ->assertOk()
-            ->assertSee('Belum ada respons');
-    }
-
-    public function test_admin_can_export_csv(): void
-    {
-        SurveyResponse::factory()->answers([4, 2, 5, 1, 4, 2, 3, 2, 4, 3])->create([
-            'respondent_name' => 'Siti',
-            'respondent_group' => 'pengguna',
-            'comment' => 'Mantap',
-        ]);
-
-        $component = Livewire::actingAs($this->admin())
-            ->test(SurveyResults::class)
-            ->call('export')
-            ->assertFileDownloaded();
-
-        $csv = base64_decode($component->effects['download']['content']);
-
-        $this->assertStringContainsString('no,waktu,nama,kelompok,q1,q2,q3,q4,q5,q6,q7,q8,q9,q10,skor_sus,grade', $csv);
-        $this->assertStringContainsString('Siti,"Penghuni / Pengguna Ruangan",4,2,5,1,4,2,3,2,4,3,75.00,B/C,Good,Acceptable,Mantap', $csv);
-    }
-
-    public function test_admin_can_delete_response(): void
-    {
-        $response = SurveyResponse::factory()->create();
-
-        Livewire::actingAs($this->admin())
-            ->test(SurveyResults::class)
-            ->call('delete', $response->id)
-            ->assertHasNoErrors();
-
-        $this->assertDatabaseMissing('survey_responses', ['id' => $response->id]);
-    }
-
-    public function test_model_recomputes_score_from_answers(): void
-    {
-        $response = SurveyResponse::factory()->uniform(3)->create(['sus_score' => 99]);
-
-        $this->assertEquals(50.0, $response->fresh()->sus_score);
+        File::delete($path);
     }
 }

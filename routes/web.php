@@ -7,7 +7,6 @@ use App\Livewire\QosAnalytics;
 use App\Livewire\RoomDetail;
 use App\Livewire\RoomManagement;
 use App\Livewire\SurveyForm;
-use App\Livewire\SurveyResults;
 use App\Livewire\TelemetryDashboard;
 use App\Livewire\UserDashboard;
 use App\Livewire\UserHistory;
@@ -40,5 +39,4 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::get('/data-sensor', TelemetryDashboard::class)->name('data');
     Route::get('/ruangan', RoomManagement::class)->name('rooms');
     Route::get('/pengujian-jaringan', QosAnalytics::class)->name('qos');
-    Route::get('/kuesioner', SurveyResults::class)->name('survey');
 });

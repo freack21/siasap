@@ -40,8 +40,7 @@ class NavigationTest extends TestCase
             ->assertSee('Navigasi admin')
             ->assertSee(route('admin.data'))
             ->assertSee(route('admin.rooms'))
-            ->assertSee(route('admin.qos'))
-            ->assertSee(route('admin.survey'));
+            ->assertSee(route('admin.qos'));
     }
 
     public function test_sidebar_hides_links_without_permission(): void
@@ -56,8 +55,7 @@ class NavigationTest extends TestCase
         $this->actingAs($researcher)
             ->get(route('admin.overview'))
             ->assertOk()
-            ->assertSee(route('admin.qos'))
-            ->assertDontSee(route('admin.survey'));
+            ->assertSee(route('admin.qos'));
     }
 
     public function test_admin_pages_require_login(): void
