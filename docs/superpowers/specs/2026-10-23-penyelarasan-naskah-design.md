@@ -44,7 +44,14 @@ Aturan:
 - **Penyebab utama** = semua gas yang kategorinya sama dengan KU (bisa lebih dari satu); bila KU = Baik, tidak ditampilkan.
 - Ambang disimpan di `config/air_quality.php` dengan satu entri `source` (sitasi di atas). Tidak ada sumber lain untuk ambang.
 
-**Risiko yang harus diketahui (bukan bagian implementasi):** firmware saat ini menghitung CO₂ ≈ 400 ppm pada udara bersih. Dengan ambang CO₂ < 50 ppm, ruangan normal akan selalu Berbahaya. Rumus konversi ppm di firmware harus disamakan dengan metode Solihat et al. oleh rekan IoT. Teks lengkap paper belum dapat diverifikasi (situs jurnal menolak akses otomatis); angka ambang diambil dari Tabel 2.2 naskah dan perlu dicocokkan dengan PDF paper.
+**Verifikasi terhadap paper (PDF Solihat et al., 2026, hlm. 1596–1597):**
+- Ambang di atas **sama persis** dengan fungsi `evaluateAirQuality()` dan daftar ambang pada paper.
+- Logika paper: Baik bila *semua* gas di bawah ambang Baik, jika tidak Sedang bila *semua* di bawah ambang Sedang, dst. Ini **ekuivalen** dengan `KU = kategori terburuk` di naskah.
+- Paper menulis daftar kategori sebagai "Sedang/Tidak Sehat" (satu LED kuning), tetapi kodenya mengembalikan 4 kategori terpisah dengan ambang `< 150 / < 120 / < 80 / < 60` untuk Tidak Sehat. Aplikasi mengikuti kode (4 kategori), sesuai naskah.
+- **Nilai "ppm" di paper bukan ppm absolut.** Rumusnya `ppm = (ADC − baseline) × (5,0 / 4096) × k`, dengan `k` = 100 (CO₂), 80 (NH₃), 50 (CO), 30 (H₂), dan `baseline` = rata-rata 50 pembacaan ADC saat perangkat menyala. Jadi nilainya adalah **indikator relatif terhadap kondisi udara saat perangkat dinyalakan** (≈ 0 pada udara awal; hasil uji paper CO₂ 13–18). Hal ini sejalan dengan naskah yang memperlakukan ppm sebagai "indikator relatif".
+- Konsekuensi: ambang hanya bermakna bila perangkat IoT memakai **rumus konversi yang sama** dengan paper. Firmware saat ini memakai kurva datasheet (CO₂ ≈ 400 pada udara bersih) sehingga tidak kompatibel. Penyesuaian rumus dikoordinasikan dengan rekan IoT (tanggung jawab penelitian IoT); aplikasi web tidak bergantung pada rumus, hanya pada ambang.
+- Paper tidak mencantumkan dasar penetapan ambangnya; dicatat sebagai keterbatasan di naskah (Bab I batasan & Bab III).
+- Interval kirim paper 10 detik, sejalan dengan rentang 5–10 detik penelitian ini.
 
 ## 3. Rekomendasi tindakan preventif (rule-based)
 
@@ -123,12 +130,12 @@ Interval polling halaman disesuaikan dengan interval kirim (5 detik).
 
 ## 9. Daftar revisi naskah (dokumen terpisah)
 
-`docs/revisi-naskah.md`, per subbab: judul & prakata (hapus "prediksi"/"deteksi dini"), penelitian terdahulu (hapus kritik "belum ada prediksi"), interval 30 → 5–10 detik, 3.1 metode evaluasi UEQ, 3.4–3.5 tahap Testing, use case (2 aktor), 3.8 (selaraskan dengan 7 halaman), 3.9.1 contoh payload, 3.12 + UEQ, penomoran tabel/subbab ganda, Gambar 3.1/3.6/3.7, referensi yang tidak dipakai (Makridakis, MinMaxScaler, ExpoBox, Turban, Power), tahun Solihat & Atzori, catatan risiko ambang CO₂.
+`docs/revisi-naskah.md`, per subbab: judul & prakata (hapus "prediksi"/"deteksi dini"), penelitian terdahulu (hapus kritik "belum ada prediksi"), interval 30 → 5–10 detik, 3.1 metode evaluasi UEQ, 3.4–3.5 tahap Testing, use case (2 aktor), 3.8 (selaraskan dengan 7 halaman), 3.9.1 contoh payload, 3.12 + UEQ, penomoran tabel/subbab ganda, Gambar 3.1/3.6/3.7, referensi yang tidak dipakai (Makridakis, MinMaxScaler, ExpoBox, Turban, Power), tahun Solihat (2026) & Atzori (2010), penjelasan bahwa nilai ppm adalah indikator relatif berbasis baseline sesuai metode Solihat, serta keterbatasan dasar ambang.
 
 ## 10. Urutan kerja (branch dari `v2`)
 
 1. `refactor/hapus-admin-qos` — hapus admin, RBAC, QoS, sesi, SUS, layout admin.
-2. `feat/klasifikasi-ambang-solihat` — config ambang, klasifikasi, rekomendasi 4 aturan, migration `sensor_logs`, API format baru + pencatatan penolakan, seeder 1 ruangan/1 perangkat, firmware payload.
+2. `feat/klasifikasi-ambang-solihat` — config ambang, klasifikasi, rekomendasi 4 aturan, migration `sensor_logs`, API format baru + pencatatan penolakan, seeder 1 ruangan/1 perangkat, firmware: format payload baru + usulan rumus konversi Solihat (ditandai untuk ditinjau rekan IoT).
 3. `feat/halaman-sesuai-naskah` — 7 halaman publik (bergantung pada 2).
 4. `feat/kuesioner-ueq` — UEQ + `ueq:report` (independen dari 2–3).
 5. `docs/revisi-naskah-dan-pengujian` — black-box, daftar revisi naskah, wireframe.
