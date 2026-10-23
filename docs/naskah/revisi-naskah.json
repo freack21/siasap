@@ -30,8 +30,8 @@
       "id": "1.1-11",
       "lokasi": "1.1 Latar Belakang, paragraf 112",
       "cari": "tanpa alat ukur terkalibrasi laboratorium (Solihat et al., 2026). Perangkat mengirimkan",
-      "ganti": "tanpa alat ukur terkalibrasi laboratorium (Solihat et al., 2026). Keempat gas tersebut juga sesuai dengan studi kasus ruangan tertutup. CO₂ berasal dari pernapasan penghuni sehingga kenaikannya menandakan ventilasi yang kurang memadai, NH₃ dapat berasal dari bahan pembersih, sampah, atau sumber bau, CO berasal dari pembakaran yang tidak sempurna seperti asap (Solihat et al., 2026), sedangkan H₂ terbaca oleh sensor MQ-2 sebagai bagian dari gas mudah terbakar dan asap (cek sumber). Pemilihan dan kalibrasi sensor merupakan bagian dari penelitian IoT yang dikerjakan rekan satu proyek. Perangkat mengirimkan",
-      "catatan": "Penguji 2 no. 1 (penentuan gas disesuaikan dengan studi kasus): alasan pemilihan tiap gas untuk ruangan tertutup. Klaim bertanda (cek sumber) dan sumber CO₂ dari pernapasan serta NH₃ dari bahan pembersih belum didukung pustaka di Daftar Pustaka; tambahkan sumbernya atau hapus klaimnya. Penjelasan per gas yang lebih lengkap tersedia di Bagian E sisipan-bab3.docx (opsional, untuk subbab 3.3)."
+      "ganti": "tanpa alat ukur terkalibrasi laboratorium (Solihat et al., 2026). Keempat gas tersebut juga sesuai dengan studi kasus ruangan tertutup. CO₂ dihasilkan oleh penghuni melalui pernapasan dan konsentrasinya telah lama dipakai untuk menilai ventilasi ruangan (Persily & de Jonge, 2017), NH₃ dapat berasal dari produk pembersih rumah tangga yang mengandung amonia (Agency for Toxic Substances and Disease Registry [ATSDR], 2011), CO berasal dari pembakaran yang tidak sempurna, misalnya kompor gas dan asap rokok (U.S. Environmental Protection Agency, 2026a; Solihat et al., 2026), sedangkan H₂ terbaca oleh sensor MQ-2 yang dirancang untuk mendeteksi gas mudah terbakar dan asap (*MQ-2 Semiconductor Sensor for Combustible Gas*, t.t.; Zhengzhou Winsen Electronics Technology, 2015b). Pemilihan dan kalibrasi sensor merupakan bagian dari penelitian IoT yang dikerjakan rekan satu proyek. Perangkat mengirimkan",
+      "catatan": "Penguji 2 no. 1 (penentuan gas disesuaikan dengan studi kasus): alasan pemilihan tiap gas untuk ruangan tertutup, dengan sumber yang sudah diverifikasi. Penjelasan per gas yang lebih lengkap ada pada Bagian E di subbab 3.3."
     },
     {
       "id": "1.1-12",
@@ -46,6 +46,13 @@
       "cari": "tetapi juga diuji dan divalidasi pada beberapa kondisi ruangan nyata untuk membuktikan fungsionalitas dan kemampuannya dalam memantau perubahan kualitas udara.",
       "ganti": "tetapi juga diuji secara fungsional dengan metode *black-box* pada empat skenario kondisi di satu ruangan uji untuk memeriksa apakah data diterima, kategori ditampilkan, dan rekomendasi diberikan sesuai perubahan kondisi udara.",
       "catatan": "Penguji 1 no. 1 (hindari klaim berlebihan): aplikasi diuji fungsional dengan black-box pada empat kondisi ruangan (Tabel 3.10), bukan divalidasi untuk membuktikan kemampuannya."
+    },
+    {
+      "id": "1.1-14",
+      "lokasi": "1.1 Latar Belakang, paragraf 255",
+      "cari": "strategi perbaikan kualitas udara dalam ruangan dari U.S. EPA.",
+      "ganti": "strategi perbaikan kualitas udara dalam ruangan dari U.S. Environmental Protection Agency (2026b).",
+      "catatan": "Sitasi untuk strategi perbaikan kualitas udara dalam ruangan EPA."
     },
     {
       "id": "1.4-01",
@@ -228,13 +235,12 @@
       "id": "3.3-10",
       "lokasi": "3.3 Sumber Data, paragraf 392",
       "cari": "Sumber data dalam penelitian ini berasal dari perangkat Internet of Things (IoT)",
-      "catatan": "Bagian E sisipan-bab3.docx (dasar pemilihan parameter gas, Penguji 2 no. 1). Klaim bertanda (cek sumber) belum didukung pustaka di Daftar Pustaka; tambahkan sumbernya atau hapus klaimnya.",
+      "catatan": "Bagian E sisipan-bab3.docx (dasar pemilihan parameter gas, Penguji 2 no. 1), dengan sumber yang sudah diverifikasi.",
       "sisip_dokumen": {
         "file": "../sisipan/sisipan-bab3.docx",
         "bagian": "Bagian E",
         "tanpa_penanda": true
-      },
-      "tetap_komentar": true
+      }
     },
     {
       "id": "3.3-01",
@@ -621,7 +627,7 @@
       "id": "3.8-22",
       "lokasi": "3.8.5, paragraf 532",
       "cari": "tindakan yang disarankan pada tiap tingkat kondisi udara.",
-      "ganti": "tindakan yang disarankan pada tiap tingkat kondisi udara. Halaman ini menampilkan pula dasar penyusunan rekomendasi, yaitu tiga strategi U.S. EPA (kendali sumber, peningkatan ventilasi, dan pembersihan udara) serta prinsip gradasi urgensi penyampaian AQI EPA (lihat subbab 3.10.1).",
+      "ganti": "tindakan yang disarankan pada tiap tingkat kondisi udara. Halaman ini menampilkan pula dasar penyusunan rekomendasi, yaitu tiga strategi perbaikan kualitas udara dalam ruangan, yaitu kendali sumber, peningkatan ventilasi, dan pembersihan udara (U.S. Environmental Protection Agency, 2026b), serta prinsip gradasi urgensi penyampaian AQI (U.S. Environmental Protection Agency, 2026c) (lihat subbab 3.10.1).",
       "catatan": "Aturan rekomendasi dan halaman aplikasi: halaman Rekomendasi memuat dasar rekomendasi."
     },
     {
@@ -750,14 +756,15 @@
       "id": "3.10-02",
       "lokasi": "3.10.1, paragraf 593, sitasi EPA",
       "cari": "U.S. Environmental Protection Agency (2026)",
-      "catatan": "Sitasi ini belum punya entri di daftar pustaka (entri EPA yang ada adalah Appendix G to Part 58, 2024). Tambahkan entri \"U.S. Environmental Protection Agency. ((cek) tahun). Improving Indoor Air Quality. https://www.epa.gov/indoor-air-quality-iaq/improving-indoor-air-quality\" dan sesuaikan tahun sitasi dengan entri tersebut. Bila tahunnya sama dengan entri EPA lain, beri huruf a/b."
+      "catatan": "Sitasi EPA tahun 2026 diberi huruf a/b/c karena ada tiga karya EPA tahun 2026; tiga strategi kualitas udara dalam ruangan bersumber dari halaman Improving Indoor Air Quality (2026b).",
+      "ganti": "U.S. Environmental Protection Agency (2026b)"
     },
     {
       "id": "3.10-03",
       "lokasi": "3.10.1, paragraf 593",
       "cari": "terutama saat berlangsung aktivitas yang melepaskan polutan.",
-      "ganti": "terutama saat berlangsung aktivitas yang melepaskan polutan. Setiap aturan memakai satu atau lebih strategi tersebut. Kategori Baik dan Sedang memakai peningkatan ventilasi, sedangkan Tidak Sehat dan Berbahaya memakai peningkatan ventilasi dan kendali sumber. Tingkat urgensi (Normal, Waspada, Perlu Tindakan, Segera Bertindak) mengikuti prinsip penyampaian AQI U.S. EPA (EPA-403/B-26-003, Tabel 5): anjuran makin tegas seiring kategori memburuk. Penelitian ini hanya mengadopsi prinsip bertingkat tersebut, bukan angka AQI.",
-      "catatan": "Aturan rekomendasi (dasar rekomendasi). Tambahkan entri EPA-403/B-26-003 ke daftar pustaka."
+      "ganti": "terutama saat berlangsung aktivitas yang melepaskan polutan. Setiap aturan memakai satu atau lebih strategi tersebut. Kategori Baik dan Sedang memakai peningkatan ventilasi, sedangkan Tidak Sehat dan Berbahaya memakai peningkatan ventilasi dan kendali sumber. Tingkat urgensi (Normal, Waspada, Perlu Tindakan, Segera Bertindak) mengikuti prinsip penyampaian AQI (U.S. Environmental Protection Agency, 2026c, Tabel 5): anjuran makin tegas seiring kategori memburuk. Penelitian ini hanya mengadopsi prinsip bertingkat tersebut, bukan angka AQI.",
+      "catatan": "Aturan rekomendasi (dasar rekomendasi): gradasi urgensi mengikuti pernyataan kehati-hatian AQI (EPA-403/B-26-003)."
     },
     {
       "id": "3.10-04",
@@ -1061,14 +1068,14 @@
       "id": "3.12-24",
       "lokasi": "3.12.6 baru dan Tabel 3.11–3.12 baru (sesudah paragraf 853)",
       "cari": "Pada setiap skenario, sistem juga dicek",
-      "catatan": "Tambahkan jumlah dan kriteria responden UEQ. Nilai benchmark disalin dari konfigurasi aplikasi (config/ueq.php) dan sedang dicocokkan dengan UEQ Handbook (Schrepp et al., 2017); periksa kembali sebelum naskah diserahkan.",
+      "catatan": "Tambahkan jumlah dan kriteria responden UEQ. Catatan: UEQ Data Analysis Tool versi terbaru memakai nilai benchmark yang lebih baru, sedangkan naskah ini sengaja memakai benchmark terbitan Schrepp et al. (2017), sama dengan perhitungan di aplikasi; kategori dari tool tersebut bisa sedikit berbeda.",
       "tetap_komentar": true,
       "sisip_paragraf": [
         {
           "teks": "Evaluasi Pengguna dengan UEQ",
           "gaya": "Heading3"
         },
-        "Evaluasi pengguna memakai *User Experience Questionnaire* (UEQ) 26 butir (Laugwitz et al., 2008) versi Bahasa Indonesia (Santoso et al., 2016). Setiap butir berupa pasangan kata berlawanan dengan skala 1–7. Jawaban diubah ke rentang −3 sampai +3, dan nilai butir 3, 4, 5, 9, 10, 12, 17, 18, 19, 21, 23, 24, dan 25 dibalik karena istilah positifnya berada di sisi kiri. Butir dikelompokkan ke dalam enam skala (Tabel 3.11). Untuk setiap skala dihitung rata-rata, simpangan baku, dan *Cronbach's alpha*, lalu rata-rata skala dibandingkan dengan *benchmark* UEQ (Schrepp et al., 2017) untuk memperoleh kategori *Excellent*, *Good*, *Above Average*, *Below Average*, atau *Bad* (Tabel 3.12). Data mentah dapat diekspor ke format yang kompatibel dengan UEQ *Data Analysis Tool*.",
+        "Evaluasi pengguna memakai *User Experience Questionnaire* (UEQ) 26 butir (Laugwitz et al., 2008) versi Bahasa Indonesia (Santoso et al., 2016). Setiap butir berupa pasangan kata berlawanan dengan skala 1–7. Jawaban diubah ke rentang −3 sampai +3, dan nilai butir 3, 4, 5, 9, 10, 12, 17, 18, 19, 21, 23, 24, dan 25 dibalik karena istilah positifnya berada di sisi kiri. Butir dikelompokkan ke dalam enam skala (Tabel 3.11). Untuk setiap skala dihitung rata-rata, simpangan baku, dan *Cronbach's alpha*, lalu rata-rata skala dibandingkan dengan *benchmark* UEQ yang dipublikasikan oleh Schrepp et al. (2017) untuk memperoleh kategori *Excellent*, *Good*, *Above Average*, *Below Average*, atau *Bad* (Tabel 3.12). Data mentah dapat diekspor ke format yang kompatibel dengan UEQ *Data Analysis Tool*.",
         {
           "teks": "Tabel 3.11 Pemetaan Butir UEQ ke Skala",
           "gaya": "Heading4"
@@ -1119,7 +1126,7 @@
           ]
         },
         {
-          "teks": "Tabel 3.12 Benchmark UEQ",
+          "teks": "Tabel 3.12 *Benchmark* UEQ (Schrepp et al., 2017)",
           "gaya": "Heading4"
         },
         {
@@ -1191,7 +1198,7 @@
             3.5
           ]
         },
-        "Nilai pada Tabel 3.12 merupakan batas bawah rata-rata skala untuk setiap kategori. Rata-rata skala yang berada di bawah batas *Below Average* termasuk kategori *Bad*."
+        "Nilai pada Tabel 3.12 merupakan batas bawah rata-rata skala untuk setiap kategori menurut Schrepp et al. (2017). Rata-rata skala yang berada di bawah batas *Below Average* termasuk kategori *Bad*."
       ]
     },
     {
@@ -1224,17 +1231,100 @@
     },
     {
       "id": "DP-01",
-      "lokasi": "Daftar Pustaka, entri yang perlu ditambahkan (paragraf 863)",
+      "lokasi": "Daftar Pustaka",
       "cari": "Adisti, K. P., & Nugraha, I. (2025).",
-      "catatan": "Tambahkan entri berikut ke daftar pustaka (urut abjad): (1) U.S. Environmental Protection Agency. ((cek) tahun). Improving Indoor Air Quality. https://www.epa.gov/indoor-air-quality-iaq/improving-indoor-air-quality (tanggal akses: cek); (2) U.S. Environmental Protection Agency. ((cek) tahun). Technical Assistance Document for the Reporting of Daily Air Quality – the Air Quality Index (AQI) (EPA-403/B-26-003) (judul lengkap dan tahun: cek); (3) Laugwitz, B., Held, T., & Schrepp, M. (2008). Construction and evaluation of a user experience questionnaire (prosiding, halaman, DOI: cek); (4) Schrepp, M., Hinderks, A., & Thomaschewski, J. (2017). Construction of a benchmark for the User Experience Questionnaire (UEQ) (jurnal, volume, halaman, DOI: cek); (5) Santoso, H. B., Schrepp, M., Isal, R. Y. K., Utomo, A. Y., & Priyogi, B. (2016). Measuring user experience of the student-centered e-learning environment (jurnal, volume, halaman, DOI: cek); (6) Schrepp, M. ((cek) tahun). User Experience Questionnaire Handbook. ueq-online.org (versi dan tahun: cek)."
+      "catatan": "Daftar pustaka ini adalah field Mendeley. Entri berikut diketik langsung sebagai Track Changes dan belum ada di Mendeley: ATSDR (2011); Laugwitz et al. (2008); MQ-2 Semiconductor Sensor for Combustible Gas (t.t.); Persily & de Jonge (2017); Santoso et al. (2016); Schrepp et al. (2017); Technical Data MQ-135 Gas Sensor (t.t.); U.S. Environmental Protection Agency (2026a, 2026b, 2026c); Zhengzhou Winsen Electronics Technology (2015a, 2015b). Tambahkan juga ke pustaka Mendeley (data lengkapnya sama dengan entri yang diketik), lalu sisipkan sitasinya lewat Mendeley; bila daftar pustaka diperbarui Mendeley sebelum itu, entri ketikan ini akan hilang. Perbaiki juga data Solihat et al. (2026) dan Atzori et al. (2010) di Mendeley agar sama dengan entri yang sudah dikoreksi di sini (penulis ketiga Solihat adalah Susilawati, bukan \"Si, M.\").",
+      "tetap_komentar": true
     },
     {
       "id": "DP-02",
       "lokasi": "Daftar Pustaka, entri Solihat (paragraf 887)",
       "cari": "Solihat, S. M., Salsabila, S., & Si, M. (2026). SISTEM PEMANTAUAN KUALITAS UDARA BERBASIS ESP32 MENGGUNAKAN SENSOR GAS MQ-135 DAN MQ-2. 14(1), 1592–1599.",
-      "ganti": "Solihat, S. M., Salsabila, S., & Susilawati. (2026). SISTEM PEMANTAUAN KUALITAS UDARA BERBASIS ESP32 MENGGUNAKAN SENSOR GAS MQ-135 DAN MQ-2. *Jurnal Informatika dan Teknik Elektro Terapan*, 14(1), 1592–1599. https://doi.org/10.23960/jitet.v14i1.5568",
-      "catatan": "Entri ini dibuat Mendeley. Perbaiki juga data referensinya di Mendeley (penulis ketiga Susilawati, bukan \"Si, M.\"; nama jurnal; DOI; judul artikel huruf kapital di awal kata dan tidak miring) agar perbaikan ini tidak hilang saat daftar pustaka diperbarui.",
-      "tetap_komentar": true
+      "ganti": "Solihat, S. M., Salsabila, S., & Susilawati. (2026). Sistem pemantauan kualitas udara berbasis ESP32 menggunakan sensor gas MQ-135 dan MQ-2. *Jurnal Informatika dan Teknik Elektro Terapan*, *14*(1), 1592–1599. https://doi.org/10.23960/jitet.v14i1.5568",
+      "catatan": "Entri Solihat disamakan dengan data terbitan (penulis ketiga Susilawati, judul sentence case, nama jurnal, DOI)."
+    },
+    {
+      "id": "DP-03",
+      "lokasi": "Daftar Pustaka, entri Atzori",
+      "cari": "Atzori, L., Iera, A., & Morabito, G. (2010). The Internet of Things : A survey.",
+      "ganti": "Atzori, L., Iera, A., & Morabito, G. (2010). The Internet of Things: A survey.",
+      "catatan": "Spasi sebelum titik dua pada judul."
+    },
+    {
+      "id": "DP-04",
+      "lokasi": "Daftar Pustaka, entri baru (urut abjad)",
+      "cari": "Adisti, K. P., & Nugraha, I. (2025).",
+      "sisip_paragraf": [
+        "Agency for Toxic Substances and Disease Registry. (2011). *ToxFAQs™ for ammonia*. U.S. Department of Health and Human Services. https://wwwn.cdc.gov/TSP/ToxFAQs/ToxFAQsDetails.aspx?faqid=10&toxid=2"
+      ],
+      "catatan": "Entri baru dari sumber terverifikasi."
+    },
+    {
+      "id": "DP-05",
+      "lokasi": "Daftar Pustaka, entri baru (urut abjad)",
+      "cari": "Khoeriah Utami, B., Rizqi Fajri, M., & Dwi Chaerani, A. (2025).",
+      "sisip_paragraf": [
+        "Laugwitz, B., Held, T., & Schrepp, M. (2008). Construction and evaluation of a user experience questionnaire. Dalam A. Holzinger (Ed.), *HCI and usability for education and work: USAB 2008* (Lecture Notes in Computer Science, Vol. 5298, hlm. 63–76). Springer. https://doi.org/10.1007/978-3-540-89350-9_6"
+      ],
+      "catatan": "Entri baru dari sumber terverifikasi."
+    },
+    {
+      "id": "DP-06",
+      "lokasi": "Daftar Pustaka, entri baru (urut abjad)",
+      "cari": "Maukar, A. L., Kesuma, D. A., & Widodo, A. A. (2023).",
+      "sisip_paragraf": [
+        "*MQ-2 semiconductor sensor for combustible gas* [Lembar data]. (t.t.). Pololu. https://www.pololu.com/file/0J309/MQ2.pdf"
+      ],
+      "catatan": "Entri baru dari sumber terverifikasi."
+    },
+    {
+      "id": "DP-07",
+      "lokasi": "Daftar Pustaka, entri baru (urut abjad)",
+      "cari": "Pedregosa, F., Weiss, R., & Brucher, M. (2011).",
+      "sisip_paragraf": [
+        "Persily, A., & de Jonge, L. (2017). Carbon dioxide generation rates for building occupants. *Indoor Air*, *27*(5), 868–879. https://doi.org/10.1111/ina.12383"
+      ],
+      "catatan": "Entri baru dari sumber terverifikasi."
+    },
+    {
+      "id": "DP-08",
+      "lokasi": "Daftar Pustaka, entri baru (urut abjad)",
+      "cari": "Rohim, S. N., & Saputro, U. A. (2025).",
+      "sisip_paragraf": [
+        "Santoso, H. B., Schrepp, M., Isal, R. Y. K., Utomo, A. Y., & Priyogi, B. (2016). Measuring user experience of the student-centered e-learning environment. *The Journal of Educators Online*, *13*(1), 58–79. https://doi.org/10.9743/jeo.2016.1.5",
+        "Schrepp, M., Hinderks, A., & Thomaschewski, J. (2017). Construction of a benchmark for the User Experience Questionnaire (UEQ). *International Journal of Interactive Multimedia and Artificial Intelligence*, *4*(4), 40–44. https://doi.org/10.9781/ijimai.2017.445"
+      ],
+      "catatan": "Entri baru dari sumber terverifikasi."
+    },
+    {
+      "id": "DP-09",
+      "lokasi": "Daftar Pustaka, entri baru (urut abjad)",
+      "cari": "Sung, W. T., & Hsiao, S. J. (2021).",
+      "sisip_paragraf": [
+        "*Technical data MQ-135 gas sensor* [Lembar data]. (t.t.). Olimex. https://www.olimex.com/Products/Components/Sensors/Gas/SNS-MQ135/resources/SNS-MQ135.pdf"
+      ],
+      "catatan": "Entri baru dari sumber terverifikasi."
+    },
+    {
+      "id": "DP-10",
+      "lokasi": "Daftar Pustaka, entri baru (urut abjad)",
+      "cari": "U.S. Environmental Protection Agency. (2024).",
+      "sisip_paragraf": [
+        "U.S. Environmental Protection Agency. (2026a, 15 Juli). *Carbon monoxide's impact on indoor air quality*. https://www.epa.gov/indoor-air-quality-iaq/carbon-monoxides-impact-indoor-air-quality",
+        "U.S. Environmental Protection Agency. (2026b, 3 Agustus). *Improving indoor air quality*. https://www.epa.gov/indoor-air-quality-iaq/improving-indoor-air-quality",
+        "U.S. Environmental Protection Agency. (2026c). *Technical assistance document for the reporting of daily air quality – the Air Quality Index (AQI)* (EPA-403/B-26-003). Office of Air Quality Planning and Standards. https://document.airnow.gov/technical-assistance-document-for-the-reporting-of-daily-air-quailty.pdf"
+      ],
+      "catatan": "Entri baru dari sumber terverifikasi."
+    },
+    {
+      "id": "DP-11",
+      "lokasi": "Daftar Pustaka, entri baru (urut abjad)",
+      "cari": "WHO. (2026). Exposure & health impacts of air pollution.",
+      "sisip_paragraf": [
+        "Zhengzhou Winsen Electronics Technology Co., Ltd. (2015a). *Air quality gas sensor (Model: MQ135) manual* (Versi 1.4) [Lembar data]. https://www.winsen-sensor.com/d/files/PDF/Semiconductor%20Gas%20Sensor/MQ135%20(Ver1.4)%20-%20Manual.pdf",
+        "Zhengzhou Winsen Electronics Technology Co., Ltd. (2015b). *Smoke sensor (Model: MQ-2) manual* (Versi 1.4) [Lembar data]. https://www.winsen-sensor.com/d/files/semiconductor/mq-2.pdf"
+      ],
+      "catatan": "Entri baru dari sumber terverifikasi."
     }
   ]
 }
