@@ -2,7 +2,7 @@
     <x-ui.page-header
         :icon="'tabler-history'"
         title="Riwayat Kualitas Udara"
-        description="Catatan hasil pengukuran sensor di setiap ruangan. Gunakan filter untuk melihat ruangan, kategori, atau tanggal tertentu.">
+        description="Catatan hasil pengukuran perangkat IoT di setiap ruangan. Gunakan filter untuk melihat ruangan, kategori, atau tanggal tertentu.">
         <x-slot:eyebrow>Riwayat</x-slot:eyebrow>
         <x-slot:actions>
             <button type="button" wire:click="downloadCsv" wire:loading.attr="disabled" wire:target="downloadCsv" class="btn btn-secondary">
@@ -26,7 +26,7 @@
                 </select>
             </div>
             <div>
-                <label for="filter-category" class="label inline-flex items-center gap-1.5"><x-tabler-category class="size-3.5 text-slate-400" /> Kategori</label>
+                <label for="filter-category" class="label inline-flex items-center gap-1.5"><x-tabler-category class="size-3.5 text-slate-400" /> Kategori keseluruhan</label>
                 <select id="filter-category" wire:model.live="category" class="input">
                     <option value="">Semua kategori</option>
                     @foreach ($categories as $key => $cat)
@@ -98,7 +98,7 @@
     </x-ui.card>
 
     {{-- Tabel riwayat (diperbarui otomatis) --}}
-    <section wire:poll.10s class="card overflow-hidden">
+    <section wire:poll.5s class="card overflow-hidden">
         <header class="card-header">
             <div class="flex min-w-0 items-center gap-3">
                 <span class="icon-chip">
@@ -106,7 +106,7 @@
                 </span>
                 <div class="min-w-0">
                     <h2 class="card-title">Data pengukuran</h2>
-                    <p class="mt-0.5 text-xs text-slate-500">Diperbarui otomatis setiap 10 detik. Nilai gas dalam ppm.</p>
+                    <p class="mt-0.5 text-xs text-slate-500">Diperbarui otomatis setiap 5 detik. Nilai gas dalam ppm (indikator relatif); titik warna menunjukkan kategori tiap gas.</p>
                 </div>
             </div>
         </header>
@@ -132,6 +132,7 @@
                             @foreach ($gases as $gas)
                                 <th class="text-right">{{ $gas['symbol'] }}</th>
                             @endforeach
+                            <th>Rekomendasi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -147,9 +148,15 @@
                                         <span class="text-slate-400">—</span>
                                     @endif
                                 </td>
-                                @foreach ($gases as $key => $gas)
-                                    <td class="text-right num">{{ number_format($log->{$key}, 2, ',', '.') }}</td>
+                                @foreach ($log->categories() as $key => $gasCategory)
+                                    <td class="text-right num">
+                                        <span class="inline-flex items-center gap-1.5" title="{{ $gases[$key]['symbol'] }}: {{ $gasCategory }}">
+                                            <span class="size-1.5 rounded-full {{ \App\Support\AirQuality::category($gasCategory)['dot'] }}"></span>
+                                            {{ number_format($log->{$key}, 2, ',', '.') }}
+                                        </span>
+                                    </td>
                                 @endforeach
+                                <td class="text-slate-600" title="{{ $log->recommendation()['text'] }}">{{ $log->recommendation()['level'] }}</td>
                             </tr>
                         @endforeach
                     </tbody>
