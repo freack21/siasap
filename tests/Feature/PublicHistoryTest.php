@@ -171,4 +171,25 @@ class PublicHistoryTest extends TestCase
         $this->assertCount(2, $lines);
         $this->assertStringStartsWith('"2026-10-03 10:15:00","Kamar Tidur",70,', $lines[1]);
     }
+
+    public function test_history_and_csv_use_server_receive_time(): void
+    {
+        SensorLog::query()->delete();
+        SensorLog::factory()->withGases(30, 20, 10, 5)->create([
+            'node_id' => Node::where('code', 'N-DPR')->value('id'),
+            'recorded_at' => Carbon::parse('2026-01-01 00:00:00'),
+            'created_at' => Carbon::parse('2026-10-05 07:45:00'),
+            'updated_at' => Carbon::parse('2026-10-05 07:45:00'),
+        ]);
+
+        $component = Livewire::test(UserHistory::class)
+            ->assertSee('05 Okt 2026 07:45:00')
+            ->assertDontSee('01 Jan 2026')
+            ->call('downloadCsv');
+
+        $lines = explode("\n", trim(preg_replace('/^\xEF\xBB\xBF/', '', base64_decode($component->effects['download']['content']))));
+
+        $this->assertSame(self::CSV_HEADER, $lines[0]);
+        $this->assertStringStartsWith('"2026-10-05 07:45:00","Dapur Utama",', $lines[1]);
+    }
 }

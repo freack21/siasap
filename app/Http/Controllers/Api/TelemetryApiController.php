@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class TelemetryApiController extends Controller
 {
@@ -20,6 +21,49 @@ class TelemetryApiController extends Controller
      * Format timestamp perangkat (naskah 3.9.1).
      */
     private const TIMESTAMP_FORMAT = 'Y-m-d H:i:s';
+
+    /**
+     * Kunci payload yang disimpan saat data ditolak (format utama + format lama).
+     */
+    private const REJECTION_KEYS = [
+        'device_id', 'timestamp', 'co2_ppm', 'nh3_ppm', 'co_ppm', 'h2_ppm',
+        'node_id', 'co2', 'nh3', 'co', 'h2',
+    ];
+
+    /**
+     * Panjang maksimum tiap nilai payload yang disimpan saat data ditolak.
+     */
+    private const REJECTION_VALUE_LENGTH = 255;
+
+    /**
+     * Panjang maksimum isi mentah JSON rusak yang disimpan.
+     */
+    private const REJECTION_RAW_LENGTH = 1000;
+
+    /**
+     * Pesan validasi berbahasa Indonesia (juga tampil di kolom Galat halaman Perangkat).
+     */
+    private const VALIDATION_MESSAGES = [
+        'required' => ':attribute wajib diisi.',
+        'string' => ':attribute harus berupa teks.',
+        'numeric' => ':attribute harus berupa angka.',
+        'min' => ':attribute minimal :min.',
+        'max' => ':attribute maksimal :max.',
+        'date_format' => ':attribute harus berformat :format.',
+        'device_id.exists' => ':attribute tidak terdaftar atau tidak aktif.',
+    ];
+
+    /**
+     * Nama field yang mudah dibaca pada pesan validasi.
+     */
+    private const VALIDATION_ATTRIBUTES = [
+        'device_id' => 'device_id',
+        'timestamp' => 'timestamp',
+        'co2_ppm' => 'co2_ppm (CO₂)',
+        'nh3_ppm' => 'nh3_ppm (NH₃)',
+        'co_ppm' => 'co_ppm (CO)',
+        'h2_ppm' => 'h2_ppm (H₂)',
+    ];
 
     /**
      * Terima data telemetri dari perangkat IoT.
@@ -33,27 +77,36 @@ class TelemetryApiController extends Controller
             return $unauthorized;
         }
 
+        if ($request->isJson() && ! json_validate($request->getContent())) {
+            return $this->rejectPayload(
+                ['_raw' => mb_substr(mb_scrub($request->getContent(), 'UTF-8'), 0, self::REJECTION_RAW_LENGTH)],
+                ['payload' => ['Payload bukan JSON yang valid.']],
+            );
+        }
+
         $input = $this->normalizeLegacyPayload($request->all());
 
         $validator = Validator::make($input, [
-            'device_id' => 'required|string|exists:nodes,code',
+            'device_id' => ['required', 'string', Rule::exists('nodes', 'code')->where('is_active', true)],
             'timestamp' => 'required|date_format:'.self::TIMESTAMP_FORMAT,
             'co2_ppm' => 'required|numeric|min:0|max:999999.99',
             'nh3_ppm' => 'required|numeric|min:0|max:999999.99',
             'co_ppm' => 'required|numeric|min:0|max:999999.99',
             'h2_ppm' => 'required|numeric|min:0|max:999999.99',
-        ]);
+        ], self::VALIDATION_MESSAGES, self::VALIDATION_ATTRIBUTES);
 
         if ($validator->fails()) {
-            return $this->rejectPayload($request->all(), $validator->errors()->toArray());
+            return $this->rejectPayload($this->boundedPayload($request->all()), $validator->errors()->toArray());
         }
 
         $node = Node::where('code', $input['device_id'])->firstOrFail();
 
-        $co2 = (float) $input['co2_ppm'];
-        $nh3 = (float) $input['nh3_ppm'];
-        $co = (float) $input['co_ppm'];
-        $h2 = (float) $input['h2_ppm'];
+        // Dibulatkan 2 desimal (sesuai kolom decimal) sebelum klasifikasi agar
+        // kategori konsisten dengan nilai yang tersimpan.
+        $co2 = round((float) $input['co2_ppm'], 2);
+        $nh3 = round((float) $input['nh3_ppm'], 2);
+        $co = round((float) $input['co_ppm'], 2);
+        $h2 = round((float) $input['h2_ppm'], 2);
 
         $result = AirQualityClassifier::classify($co2, $nh3, $co, $h2);
         $recommendation = Recommendation::forCategory($result['overall']);
@@ -137,6 +190,36 @@ class TelemetryApiController extends Controller
         }
 
         return $input;
+    }
+
+    /**
+     * Batasi payload yang disimpan saat ditolak: hanya kunci yang dikenal, dan
+     * tiap nilai dipotong agar permintaan berukuran besar tidak membanjiri basis data/log.
+     *
+     * @param  array<string, mixed>  $payload
+     * @return array<string, mixed>
+     */
+    private function boundedPayload(array $payload): array
+    {
+        $bounded = [];
+
+        foreach (self::REJECTION_KEYS as $key) {
+            if (! array_key_exists($key, $payload)) {
+                continue;
+            }
+
+            $value = $payload[$key];
+
+            if (! is_scalar($value) && $value !== null) {
+                $value = (string) json_encode($value, JSON_PARTIAL_OUTPUT_ON_ERROR);
+            }
+
+            $bounded[$key] = is_string($value)
+                ? mb_substr(mb_scrub($value, 'UTF-8'), 0, self::REJECTION_VALUE_LENGTH)
+                : $value;
+        }
+
+        return $bounded;
     }
 
     /**

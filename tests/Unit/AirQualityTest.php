@@ -25,6 +25,11 @@ class AirQualityTest extends TestCase
         AirQuality::thresholdLabel('o3', 'Baik');
     }
 
+    public function test_category_keys_follow_configured_order(): void
+    {
+        $this->assertSame(config('air_quality.category_order'), array_keys(AirQuality::categories()));
+    }
+
     public function test_categories_have_no_index_range(): void
     {
         foreach (AirQuality::categories() as $category) {

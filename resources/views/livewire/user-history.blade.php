@@ -138,7 +138,7 @@
                     <tbody>
                         @foreach ($logs as $log)
                             <tr wire:key="log-{{ $log->id }}">
-                                <td class="num text-slate-600">{{ ($log->recorded_at ?? $log->created_at)->translatedFormat('d M Y H:i:s') }}</td>
+                                <td class="num text-slate-600">{{ $log->created_at->translatedFormat('d M Y H:i:s') }}</td>
                                 <td class="font-medium text-slate-900">{{ $log->node?->room?->name ?? $log->node?->name ?? 'Perangkat #'.$log->node_id }}</td>
                                 <td><x-ui.ku-badge :status="$log->overall_category" size="sm" /></td>
                                 <td>
