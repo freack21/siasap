@@ -219,6 +219,97 @@ class TelemetryApiTest extends TestCase
         $this->assertDatabaseCount('telemetry_rejections', 1);
     }
 
+    public function test_validation_messages_are_in_indonesian(): void
+    {
+        $payload = $this->payload(['co_ppm' => 'abc']);
+        unset($payload['timestamp']);
+
+        $this->postJson('/api/telemetry', $payload)
+            ->assertStatus(422)
+            ->assertJsonPath('errors.co_ppm.0', 'co_ppm (CO) harus berupa angka.')
+            ->assertJsonPath('errors.timestamp.0', 'timestamp wajib diisi.');
+
+        $this->postJson('/api/telemetry', $this->payload(['timestamp' => '01-05-2026', 'h2_ppm' => -1]))
+            ->assertStatus(422)
+            ->assertJsonPath('errors.timestamp.0', 'timestamp harus berformat Y-m-d H:i:s.')
+            ->assertJsonPath('errors.h2_ppm.0', 'h2_ppm (H₂) minimal 0.');
+    }
+
+    public function test_inactive_device_is_rejected(): void
+    {
+        $this->node->update(['is_active' => false]);
+
+        $this->postJson('/api/telemetry', $this->payload())
+            ->assertStatus(422)
+            ->assertJsonPath('errors.device_id.0', 'device_id tidak terdaftar atau tidak aktif.');
+
+        $this->postJson('/api/telemetry', ['node_id' => $this->node->id, 'co2' => 30, 'nh3' => 20, 'co' => 10, 'h2' => 5])
+            ->assertStatus(422)
+            ->assertJsonPath('errors.device_id.0', 'device_id tidak terdaftar atau tidak aktif.');
+
+        $this->assertDatabaseCount('sensor_logs', 0);
+        $this->assertDatabaseCount('telemetry_rejections', 2);
+    }
+
+    public function test_ppm_is_rounded_to_two_decimals_before_classification(): void
+    {
+        $this->postJson('/api/telemetry', $this->payload(['co2_ppm' => 49.995]))
+            ->assertStatus(201)
+            ->assertJsonPath('data.categories.co2', 'Sedang')
+            ->assertJsonPath('data.overall_category', 'Sedang');
+
+        $this->assertDatabaseHas('sensor_logs', ['co2' => 50.00, 'co2_category' => 'Sedang']);
+        $this->assertDatabaseMissing('sensor_logs', ['co2' => 49.995]);
+    }
+
+    public function test_rejected_payload_keeps_only_known_keys_with_bounded_values(): void
+    {
+        Log::shouldReceive('channel')->once()->with('telemetry')->andReturnSelf();
+        Log::shouldReceive('warning')->once()->withArgs(function (string $message, array $context): bool {
+            return array_keys($context['payload']) === ['device_id', 'timestamp', 'co2_ppm', 'nh3_ppm', 'co_ppm', 'h2_ppm']
+                && mb_strlen($context['payload']['co2_ppm']) === 255;
+        });
+
+        $this->postJson('/api/telemetry', $this->payload([
+            'co2_ppm' => str_repeat('x', 5000),
+            'nh3_ppm' => ['nested' => str_repeat('y', 5000)],
+            'junk' => str_repeat('z', 5000),
+        ]))->assertStatus(422);
+
+        $rejection = TelemetryRejection::firstOrFail();
+        $this->assertSame(['device_id', 'timestamp', 'co2_ppm', 'nh3_ppm', 'co_ppm', 'h2_ppm'], array_keys($rejection->payload));
+        $this->assertSame(255, mb_strlen($rejection->payload['co2_ppm']));
+        $this->assertSame(255, mb_strlen($rejection->payload['nh3_ppm']));
+        $this->assertSame(10, $rejection->payload['co_ppm']);
+    }
+
+    public function test_malformed_json_is_rejected_with_truncated_raw_content(): void
+    {
+        $raw = '{"device_id": "AIR-001", "co2_ppm": '.str_repeat('9', 3000);
+
+        $this->call('POST', '/api/telemetry', [], [], [], [
+            'CONTENT_TYPE' => 'application/json',
+            'HTTP_ACCEPT' => 'application/json',
+        ], $raw)->assertStatus(422)->assertJsonPath('errors.payload.0', 'Payload bukan JSON yang valid.');
+
+        $rejection = TelemetryRejection::firstOrFail();
+        $this->assertSame(['_raw'], array_keys($rejection->payload));
+        $this->assertSame(mb_substr($raw, 0, 1000), $rejection->payload['_raw']);
+        $this->assertDatabaseCount('sensor_logs', 0);
+    }
+
+    public function test_telemetry_endpoint_is_throttled_to_sixty_requests_per_minute(): void
+    {
+        for ($i = 0; $i < 60; $i++) {
+            $this->postJson('/api/telemetry', $this->payload())->assertStatus(201);
+        }
+
+        $this->postJson('/api/telemetry', $this->payload())->assertStatus(429);
+
+        $this->assertDatabaseCount('sensor_logs', 60);
+        $this->assertDatabaseCount('telemetry_rejections', 0);
+    }
+
     public function test_device_timestamp_is_kept_while_created_at_is_server_time(): void
     {
         $this->travelTo(now()->setDate(2026, 10, 23)->setTime(12, 0, 0));

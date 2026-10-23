@@ -165,6 +165,10 @@
         @apply border-rose-200 bg-rose-50 text-rose-800;
     }
 
+    .alert-warning {
+        @apply border-amber-200 bg-amber-50 text-amber-800;
+    }
+
     .alert-info {
         @apply border-slate-200 bg-slate-50 text-slate-700;
     }

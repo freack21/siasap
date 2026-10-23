@@ -151,6 +151,51 @@ class PublicDashboardTest extends TestCase
             ->assertSeeInOrder(['Ruang Lama', 'Perangkat terputus']);
     }
 
+    public function test_single_room_home_warns_when_data_is_stale(): void
+    {
+        [, $node] = $this->makeRoom('Ruang Uji', 'R01');
+        $this->log($node, ['co2' => 30, 'nh3' => 20, 'co' => 10, 'h2' => 5], now()->subMinutes(5));
+
+        Livewire::test(UserDashboard::class)
+            ->assertSee('Data terakhir diterima')
+            ->assertSee('5 menit yang lalu')
+            ->assertSee('bukan kondisi terkini. Periksa perangkat IoT.');
+    }
+
+    public function test_single_room_home_has_no_stale_warning_when_online(): void
+    {
+        [, $node] = $this->makeRoom('Ruang Uji', 'R01');
+        $this->log($node, ['co2' => 30, 'nh3' => 20, 'co' => 10, 'h2' => 5]);
+
+        Livewire::test(UserDashboard::class)
+            ->assertDontSee('bukan kondisi terkini');
+    }
+
+    public function test_room_detail_warns_when_data_is_stale(): void
+    {
+        [$room, $node] = $this->makeRoom('Laboratorium', 'LAB');
+        $this->log($node, ['co2' => 30, 'nh3' => 20, 'co' => 10, 'h2' => 5], now()->subMinutes(5));
+
+        Livewire::test(RoomDetail::class, ['room' => $room])
+            ->assertSee('Data terakhir diterima')
+            ->assertSee('bukan kondisi terkini. Periksa perangkat IoT.');
+
+        $this->log($node, ['co2' => 30, 'nh3' => 20, 'co' => 10, 'h2' => 5]);
+
+        Livewire::test(RoomDetail::class, ['room' => $room])
+            ->assertDontSee('bukan kondisi terkini');
+    }
+
+    public function test_room_detail_shows_server_time_with_device_time_secondary(): void
+    {
+        [$room, $node] = $this->makeRoom('Laboratorium', 'LAB');
+        $log = $this->log($node, ['co2' => 30, 'nh3' => 20, 'co' => 10, 'h2' => 5]);
+        $log->forceFill(['created_at' => '2026-10-05 07:45:00', 'recorded_at' => '2026-01-01 00:00:00'])->save();
+
+        Livewire::test(RoomDetail::class, ['room' => $room])
+            ->assertSeeInOrder(['05 Okt 07:45:00', 'waktu perangkat 01 Jan 00:00:00']);
+    }
+
     public function test_room_detail_defaults_to_co2_chart_with_threshold_lines(): void
     {
         [$room, $node] = $this->makeRoom('Laboratorium', 'LAB');

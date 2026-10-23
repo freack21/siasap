@@ -39,6 +39,10 @@
                                   description="Perangkat di ruangan ini belum mengirim pembacaan. Halaman diperbarui otomatis setiap 5 detik begitu data pertama masuk." />
             </div>
         @else
+            @if (! $focus['online'] && $focus['updated_at'])
+                @include('livewire.partials.stale-data-banner', ['updatedAt' => $focus['updated_at']])
+            @endif
+
             <section class="grid grid-cols-1 gap-4 lg:grid-cols-5">
                 {{-- Kategori keseluruhan --}}
                 <div class="card card-body flex flex-col gap-5 lg:col-span-3">

@@ -7,8 +7,10 @@ use InvalidArgumentException;
 /**
  * Metadata tampilan kualitas udara: kategori dan parameter gas.
  *
- * Satu sumber kebenaran untuk label, warna, deskripsi, dan rekomendasi agar
- * halaman dashboard, riwayat, rekomendasi, dan panduan konsisten.
+ * Satu sumber kebenaran untuk label, warna, ikon, dan deskripsi agar halaman
+ * dashboard, riwayat, rekomendasi, dan panduan konsisten. Urutan kategori
+ * mengikuti config('air_quality.category_order'); teks rekomendasi ada di
+ * App\Support\Recommendation.
  */
 class AirQuality
 {

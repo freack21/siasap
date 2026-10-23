@@ -43,7 +43,7 @@ class UeqReportCommand extends Command
             fputcsv($handle, [
                 $response->id,
                 $response->created_at?->format('Y-m-d H:i:s'),
-                $response->respondent_name,
+                $this->csvSafe($response->respondent_name),
                 ...array_values($response->answers),
             ], escape: '');
         }
@@ -53,6 +53,19 @@ class UeqReportCommand extends Command
         $this->info("CSV ditulis ke {$path}");
 
         return self::SUCCESS;
+    }
+
+    /**
+     * Cegah formula injection: sel teks dari formulir publik yang diawali
+     * karakter formula diberi awalan petik tunggal agar dibaca sebagai teks.
+     */
+    private function csvSafe(?string $value): ?string
+    {
+        if ($value !== null && $value !== '' && in_array($value[0], ['=', '+', '-', '@', "\t", "\r"], true)) {
+            return "'".$value;
+        }
+
+        return $value;
     }
 
     private function csvPath(string $path): string
