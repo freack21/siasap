@@ -7,7 +7,9 @@ use App\Models\Room;
 use App\Models\SensorLog;
 use App\Models\TelemetryRejection;
 use App\Support\AirQualityClassifier;
+use App\Support\Recommendation;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Log;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 use Tests\Unit\AirQualityClassifierTest;
@@ -116,13 +118,20 @@ class TelemetryApiTest extends TestCase
         $this->assertDatabaseCount('telemetry_rejections', 1);
 
         $rejection = TelemetryRejection::first();
-        $this->assertSame($expectedDeviceId === '' ? '' : $expectedDeviceId, (string) $rejection->device_id);
+        if ($expectedDeviceId === '') {
+            $this->assertNull($rejection->device_id);
+        } else {
+            $this->assertSame($expectedDeviceId, $rejection->device_id);
+        }
         $this->assertSame($payload['timestamp'], $rejection->payload['timestamp']);
         $this->assertArrayHasKey($failedFields[0], $rejection->errors);
     }
 
     public function test_negative_ppm_is_rejected(): void
     {
+        Log::shouldReceive('channel')->once()->with('telemetry')->andReturnSelf();
+        Log::shouldReceive('warning')->once();
+
         $this->postJson('/api/telemetry', $this->payload(['nh3_ppm' => -1]))
             ->assertStatus(422)
             ->assertJsonValidationErrors('nh3_ppm', 'errors');
@@ -152,7 +161,7 @@ class TelemetryApiTest extends TestCase
 
         $log = SensorLog::firstOrFail();
         $this->assertSame($expected, $log->overall_category);
-        $this->assertSame($log->recommendation()['level'], $log->recommendation_level);
+        $this->assertSame(Recommendation::forCategory($expected)['level'], $log->recommendation_level);
         $this->assertSame(
             AirQualityClassifier::classify($co2, $nh3, $co, $h2)['categories'],
             $log->categories(),

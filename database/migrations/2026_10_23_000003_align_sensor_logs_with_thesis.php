@@ -20,8 +20,8 @@ return new class extends Migration
         DB::table('sensor_logs')->delete();
 
         Schema::table('sensor_logs', function (Blueprint $table) {
-            $table->dropIndex(['testing_session_id', 'node_id', 'created_at']);
             $table->dropForeign(['testing_session_id']);
+            $table->dropIndex(['testing_session_id', 'node_id', 'created_at']);
         });
 
         Schema::table('sensor_logs', function (Blueprint $table) {
