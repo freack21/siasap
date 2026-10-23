@@ -39,14 +39,14 @@ class SurveyTest extends TestCase
             ->assertOk()
             ->assertSee('Kuesioner Kegunaan Website')
             ->assertSee('Saya merasa website ini mudah digunakan.')
-            ->assertSee('Sangat Tidak Setuju');
+            ->assertSee('Sangat Tidak Setuju')
+            ->assertDontSee('Kelompok responden');
     }
 
     public function test_guest_can_submit_and_score_is_stored(): void
     {
         $component = Livewire::test(SurveyForm::class)
             ->set('respondentName', 'Budi')
-            ->set('respondentGroup', 'ahli_media')
             ->set('comment', 'Tampilannya jelas.');
 
         $this->fillAnswers($component, [4, 2, 5, 1, 4, 2, 3, 2, 4, 3])
@@ -59,7 +59,7 @@ class SurveyTest extends TestCase
 
         $response = SurveyResponse::sole();
         $this->assertSame('Budi', $response->respondent_name);
-        $this->assertSame('ahli_media', $response->respondent_group);
+        $this->assertSame('pengguna', $response->respondent_group);
         $this->assertSame(4, $response->q1);
         $this->assertSame(3, $response->q10);
         $this->assertEquals(75.0, $response->sus_score);
@@ -99,9 +99,8 @@ class SurveyTest extends TestCase
     {
         $component = Livewire::test(SurveyForm::class);
         $this->fillAnswers($component, [6, 2, 5, 1, 4, 2, 3, 0, 4, 3])
-            ->set('respondentGroup', 'tidak-ada')
             ->call('submit')
-            ->assertHasErrors(['answers.1' => 'between', 'answers.8' => 'between', 'respondentGroup' => 'in']);
+            ->assertHasErrors(['answers.1' => 'between', 'answers.8' => 'between']);
 
         $this->assertDatabaseCount('survey_responses', 0);
     }
@@ -148,7 +147,7 @@ class SurveyTest extends TestCase
     {
         SurveyResponse::factory()->answers([5, 1, 5, 1, 5, 1, 5, 1, 5, 1])->create(['respondent_group' => 'pengguna']); // 100
         SurveyResponse::factory()->uniform(3)->create(['respondent_group' => 'pengguna', 'respondent_name' => null]); // 50
-        SurveyResponse::factory()->answers([4, 2, 5, 1, 4, 2, 3, 2, 4, 3])->create(['respondent_group' => 'ahli_media', 'respondent_name' => 'Pakar']); // 75
+        SurveyResponse::factory()->answers([4, 2, 5, 1, 4, 2, 3, 2, 4, 3])->create(['respondent_group' => 'pengguna', 'respondent_name' => 'Pakar']); // 75
 
         $this->actingAs($this->admin())
             ->get(route('admin.survey'))
@@ -160,14 +159,9 @@ class SurveyTest extends TestCase
             ->assertSee('Acceptable')
             ->assertSee('Anonim')
             ->assertSee('Pakar')
-            ->assertSee('Unduh CSV');
-
-        Livewire::actingAs($this->admin())
-            ->test(SurveyResults::class)
-            ->set('group', 'pengguna')
-            ->assertSee('75,00')
-            ->assertSee('35,36')
-            ->assertDontSee('Pakar');
+            ->assertSee('Unduh CSV')
+            ->assertDontSee('Semua kelompok')
+            ->assertDontSee('Filter kelompok responden');
     }
 
     public function test_admin_sees_empty_state(): void

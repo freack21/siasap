@@ -9,13 +9,6 @@
         description="Rekap uji coba produk menggunakan System Usability Scale untuk mengukur tingkat kegunaan website.">
         <x-slot:eyebrow>Uji Coba Produk</x-slot:eyebrow>
         <x-slot:actions>
-            <label for="group-filter" class="sr-only">Filter kelompok responden</label>
-            <select id="group-filter" wire:model.live="group" class="input w-auto py-1.5">
-                <option value="">Semua kelompok</option>
-                @foreach ($groups as $value => $label)
-                    <option value="{{ $value }}">{{ $label }}</option>
-                @endforeach
-            </select>
             <button type="button" wire:click="export" class="btn btn-primary btn-sm" @disabled($summary['count'] === 0)>
                 <x-tabler-download class="size-4" /> Unduh CSV
             </button>
@@ -26,7 +19,7 @@
 
     <div class="grid grid-cols-2 gap-4 lg:grid-cols-4">
         <x-ui.stat label="Jumlah responden" :value="$summary['count']" unit="orang" icon="tabler-users"
-                   :hint="$group !== '' ? $groups[$group] : 'Semua kelompok'" />
+                   :hint="'Responden pengguna'" />
         <x-ui.stat label="Rata-rata skor SUS" :value="$fmt($summary['mean'], 2)" icon="tabler-star"
                    :hint="'Acuan rata-rata global: '.$fmt($benchmark, 0)" />
         <x-ui.stat label="Grade" :value="$summary['grade']['grade'] ?? '–'" icon="tabler-award"
@@ -119,7 +112,6 @@
                         <tr>
                             <th>Waktu</th>
                             <th>Nama</th>
-                            <th>Kelompok</th>
                             <th class="text-right">Skor</th>
                             <th>Grade</th>
                             <th>Komentar</th>
@@ -138,7 +130,6 @@
                                         <span class="text-slate-400">Anonim</span>
                                     @endif
                                 </td>
-                                <td class="whitespace-nowrap text-xs">{{ $response->groupLabel() }}</td>
                                 <td class="num text-right font-semibold text-slate-900">{{ $fmt($response->sus_score, 1) }}</td>
                                 <td class="whitespace-nowrap">
                                     <span class="inline-flex items-center rounded-md bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-700">{{ $rowGrade['grade'] }}</span>

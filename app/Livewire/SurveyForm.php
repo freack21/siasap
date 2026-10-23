@@ -5,7 +5,6 @@ namespace App\Livewire;
 use App\Models\SurveyResponse;
 use App\Support\Sus;
 use Illuminate\Support\Facades\RateLimiter;
-use Illuminate\Validation\Rule;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -18,8 +17,6 @@ class SurveyForm extends Component
     public const MAX_PER_HOUR = 3;
 
     public string $respondentName = '';
-
-    public string $respondentGroup = 'pengguna';
 
     /** @var array<int|string, int|string|null> Jawaban butir 1..10 */
     public array $answers = [];
@@ -34,7 +31,6 @@ class SurveyForm extends Component
     {
         $rules = [
             'respondentName' => ['nullable', 'string', 'max:100'],
-            'respondentGroup' => ['required', Rule::in(array_keys(Sus::GROUPS))],
             'comment' => ['nullable', 'string', 'max:1000'],
         ];
 
@@ -51,8 +47,6 @@ class SurveyForm extends Component
             'answers.*.required' => 'Pilih salah satu jawaban untuk pernyataan ini.',
             'answers.*.integer' => 'Jawaban tidak valid.',
             'answers.*.between' => 'Jawaban harus bernilai 1 sampai 5.',
-            'respondentGroup.required' => 'Pilih kelompok responden.',
-            'respondentGroup.in' => 'Kelompok responden tidak valid.',
             'respondentName.max' => 'Nama maksimal 100 karakter.',
             'comment.max' => 'Komentar maksimal 1000 karakter.',
         ];
@@ -75,7 +69,7 @@ class SurveyForm extends Component
 
         $data = [
             'respondent_name' => filled($validated['respondentName'] ?? null) ? trim($validated['respondentName']) : null,
-            'respondent_group' => $validated['respondentGroup'],
+            'respondent_group' => Sus::DEFAULT_GROUP,
             'comment' => filled($validated['comment'] ?? null) ? trim($validated['comment']) : null,
             'ip_hash' => SurveyResponse::hashIp(request()->ip()),
         ];
@@ -96,7 +90,6 @@ class SurveyForm extends Component
         return view('livewire.survey-form', [
             'items' => Sus::ITEMS,
             'scale' => Sus::SCALE,
-            'groups' => Sus::GROUPS,
             'grade' => $this->resultScore !== null ? Sus::grade($this->resultScore) : null,
             'acceptability' => $this->resultScore !== null ? Sus::acceptability($this->resultScore) : null,
         ]);

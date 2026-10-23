@@ -47,6 +47,9 @@ class Sus
     ];
 
     /** Kelompok responden uji coba produk. */
+    /** Kelompok responden yang dipakai saat ini: seluruh responden adalah pengguna. */
+    public const DEFAULT_GROUP = 'pengguna';
+
     public const GROUPS = [
         'pengguna' => 'Penghuni / Pengguna Ruangan',
         'ahli_media' => 'Ahli Media / Tampilan',

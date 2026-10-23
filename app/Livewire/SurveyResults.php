@@ -7,7 +7,6 @@ use App\Support\Sus;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
-use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -18,21 +17,9 @@ class SurveyResults extends Component
 {
     use WithPagination;
 
-    #[Url(as: 'kelompok', except: '')]
-    public string $group = '';
-
     public function mount(): void
     {
         $this->authorizeView();
-    }
-
-    public function updatedGroup(): void
-    {
-        if ($this->group !== '' && ! array_key_exists($this->group, Sus::GROUPS)) {
-            $this->group = '';
-        }
-
-        $this->resetPage();
     }
 
     public function delete(int $id): void
@@ -97,8 +84,7 @@ class SurveyResults extends Component
 
     protected function query(): Builder
     {
-        return SurveyResponse::query()
-            ->when($this->group !== '', fn (Builder $q) => $q->where('respondent_group', $this->group));
+        return SurveyResponse::query();
     }
 
     /**
@@ -153,7 +139,6 @@ class SurveyResults extends Component
         return view('livewire.survey-results', [
             'summary' => $this->summary(),
             'responses' => $this->query()->latest('id')->paginate(15),
-            'groups' => Sus::GROUPS,
             'benchmark' => Sus::AVERAGE_BENCHMARK,
         ]);
     }
