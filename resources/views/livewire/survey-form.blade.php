@@ -52,22 +52,11 @@
                 </div>
             @enderror
 
-            <x-ui.card :icon="'tabler-user'" title="Tentang Anda" description="Opsional, kecuali kelompok responden.">
-                <div class="grid gap-4 sm:grid-cols-2">
-                    <div>
+            <x-ui.card :icon="'tabler-user'" title="Tentang Anda" description="Opsional.">
+                <div class="max-w-sm">
                         <label for="respondentName" class="label">Nama (opsional)</label>
                         <input id="respondentName" type="text" wire:model="respondentName" class="input" placeholder="Boleh dikosongkan" maxlength="100" autocomplete="name">
                         @error('respondentName') <p class="mt-1 text-xs text-rose-600">{{ $message }}</p> @enderror
-                    </div>
-                    <div>
-                        <label for="respondentGroup" class="label">Kelompok responden</label>
-                        <select id="respondentGroup" wire:model="respondentGroup" class="input">
-                            @foreach ($groups as $value => $label)
-                                <option value="{{ $value }}">{{ $label }}</option>
-                            @endforeach
-                        </select>
-                        @error('respondentGroup') <p class="mt-1 text-xs text-rose-600">{{ $message }}</p> @enderror
-                    </div>
                 </div>
             </x-ui.card>
 
