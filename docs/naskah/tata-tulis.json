@@ -1,10 +1,22 @@
 {
-  "keterangan": "Aturan tata tulis untuk patch_naskah.py --tata-tulis: istilah asing dimiringkan, judul tabel/gambar dijaga tidak terpisah halaman, spasi ganda dan spasi sebelum tanda baca dihapus. Akronim (IoT, API, JSON) dan nama produk (Laravel, ESP32) sengaja tidak dimiringkan.",
+  "keterangan": "Aturan tata tulis untuk patch_naskah.py --tata-tulis: istilah asing dimiringkan, judul tabel/gambar dijaga tidak terpisah halaman, spasi ganda dan spasi sebelum tanda baca dihapus. Akronim (IoT, API, JSON) dan nama produk (Laravel, ESP32) sengaja tidak dimiringkan. \"pustaka\" menunjuk data sitasi Mendeley dan daftar pustaka APA 7 (pustaka.json). \"perbarui_field\" menyalakan w:updateFields di settings.xml agar Word memperbarui Daftar Isi/Tabel/Gambar dan nomor halaman rujukan saat dokumen dibuka. \"istilah_tegak\": kata Indonesia/akronim yang ditegakkan bila tercetak miring sendirian (judul artikel dalam tanda petik juga ditegakkan). \"kecualikan_kolom_tabel\"/\"tegakkan_kolom_tabel\": kolom Judul Tabel 2.1 (judul artikel) tidak dimiringkan dan ditulis tegak. \"hapus_paragraf_kosong\": paragraf kosong di antara dua paragraf isi dihapus.",
+  "pustaka": "pustaka.json",
+  "perbarui_field": true,
   "jaga_judul": true,
   "rapikan_spasi": true,
+  "hapus_paragraf_kosong": true,
   "kecualikan_setelah_judul": "DAFTAR PUSTAKA",
-  "kecualikan_tabel": ["2.1"],
+  "kecualikan_tabel": [],
+  "kecualikan_kolom_tabel": {"2.1": ["Judul"]},
+  "tegakkan_kolom_tabel": {"2.1": ["Judul"]},
+  "istilah_tegak": [
+    "Sensor-sensor", "sensor-sensor", "sensor", "Sensor", "mikrokontroler", "Mikrokontroler", "historis", "kontinu",
+    "ID", "ERD", "IoT", "UEQ", "AQI", "VOC"
+  ],
   "istilah_asing": [
+    "system development approach", "rule-based method", "threshold-based classification", "rule-based system", "parts per million",
+    "part per million", "applied research", "data provider", "data source", "discretization", "binning", "realtime",
+    "if-then", "include", "input", "output", "login", "file", "system",
     "Internet of Things", "real-time", "real time", "monitoring", "dashboard", "website", "web",
     "wireframe", "flowchart", "use case", "waterfall", "black-box", "testing", "framework",
     "frontend", "front-end", "backend", "back-end", "database", "layer", "Processing", "Presentation",

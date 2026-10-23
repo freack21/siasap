@@ -2,24 +2,6 @@
   "keterangan": "Daftar revisi naskah skripsi SIASAP yang diterapkan ke naskah Word terkini (naskah.docx) sebagai perubahan terlacak (Track Changes) dan komentar dengan docs/naskah/patch_naskah.py. Setiap \"cari\" disalin dari teks naskah terkini; \"ganti\" berisi teks lengkap rentang tersebut sesudah direvisi, sehingga hanya kata yang berubah yang ditandai. Butir yang sudah dikerjakan penulis tidak dicantumkan lagi. Butir yang hanya berisi \"catatan\" menjadi komentar untuk pekerjaan yang memang harus dikerjakan penulis (Mendeley, Update Field, data yang hanya diketahui penulis). Butir lain memakai sisip_paragraf, sisip_baris, hapus, sisip_dokumen, ganti_gambar, dan format_nomor (lihat docstring patch_naskah.py); jalur berkas relatif dibaca dari folder naskah.docx, lalu folder JSON ini. Acuan: docs/revisi-naskah.md dan docs/superpowers/specs/2026-10-23-penyelarasan-naskah-design.md (Spec).",
   "revisi": [
     {
-      "id": "0.1-01",
-      "lokasi": "Daftar Isi, paragraf 36",
-      "cari": "DAFTAR ISI",
-      "catatan": "Perbarui Daftar Isi (klik kanan > Update Field > Update entire table) setelah semua revisi diterima. Sub-subbab baru (3.5.1, 3.7.3–3.7.5, 3.8.7, 3.12.6) dan penomoran 3.11.x serta 3.12.x sudah diperbaiki di batang tubuh; daftar ini dibuat ulang oleh Word."
-    },
-    {
-      "id": "0.2-01",
-      "lokasi": "Daftar Gambar, paragraf 74",
-      "cari": "DAFTAR GAMBAR",
-      "catatan": "Perbarui Daftar Gambar (Update Field > Update entire table) setelah semua revisi diterima. Judul, gambar, dan nomor gambar di batang tubuh sudah diperbarui dan diurutkan ulang per bab (nomor memakai field SEQ, jadi hasil Update Field sama dengan nomor di teks)."
-    },
-    {
-      "id": "0.3-01",
-      "lokasi": "Daftar Tabel, paragraf 86",
-      "cari": "DAFTAR TABEL",
-      "catatan": "Perbarui Daftar Tabel (Update Field > Update entire table) setelah semua revisi diterima. Tabel baru dari sisipan dan subbab 3.12.6 sudah masuk, tabel ganda Kategori Kualitas Udara Ruangan dihapus, dan nomor tabel di batang tubuh sudah diurutkan ulang per bab."
-    },
-    {
       "id": "1.1-10",
       "lokasi": "1.1 Latar Belakang, paragraf 110",
       "cari": "memahami kondisi kualitas udara ruangan secara cepat dan akurat.",
@@ -71,22 +53,6 @@
       "sisip_paragraf": [
         "Aplikasi dapat diakses tanpa login dan tidak memiliki panel administrator. Aktor sistem hanya Pengguna dan Perangkat IoT."
       ]
-    },
-    {
-      "id": "2.3-01",
-      "lokasi": "2.3 Internet of Things, paragraf 265",
-      "cari": "Atzori et al. (2025) menjelaskan bahwa IoT",
-      "ganti": "Atzori et al. (2010) menjelaskan bahwa IoT",
-      "catatan": "Sitasi ini field Mendeley dengan format manual \"Atzori et al. (2025)\". Perbaiki juga lewat Mendeley (Edit Citation, hapus format manual) agar tahun tidak kembali menjadi 2025 saat sitasi diperbarui. Artikel: Computer Networks 54(15), DOI 10.1016/j.comnet.2010.05.010, terbit 2010.",
-      "tetap_komentar": true
-    },
-    {
-      "id": "2.3-02",
-      "lokasi": "2.3 Internet of Things, paragraf 265",
-      "cari": "Lebih lanjut, Atzori et al. (2025) menyatakan",
-      "ganti": "Lebih lanjut, Atzori et al. (2010) menyatakan",
-      "catatan": "Sitasi ini juga field Mendeley dengan format manual; perbaiki lewat Mendeley (Edit Citation, hapus format manual) agar tahun 2010 tidak kembali menjadi 2025.",
-      "tetap_komentar": true
     },
     {
       "id": "2.4-10",
@@ -215,14 +181,15 @@
       "id": "3.2-02",
       "lokasi": "3.2, Tabel 3.1 baris baru (dekat paragraf 381)",
       "cari": "Perangkat IoT dengan sensor MQ-135 dan MQ-2",
-      "catatan": "Lengkapi identitas ruangan uji (nama dan lokasi ruangan) pada sel ini. Alasan baris baru: ruang lingkup penelitian (satu ruangan) dan struktur data aplikasi (satu ruangan, satu perangkat).",
+      "catatan": "Lengkapi identitas ruangan uji (nama dan lokasi ruangan) pada sel bertanda [ISI: …].",
       "sisip_baris": [
         [
           "Lokasi uji",
-          "Satu ruangan uji dengan satu perangkat IoT (device_id AIR-001)"
+          "Satu ruangan uji, yaitu [ISI: nama dan lokasi ruangan], dengan satu perangkat IoT (device_id AIR-001)"
         ]
       ],
-      "tetap_komentar": true
+      "tetap_komentar": true,
+      "komentar_bersih": true
     },
     {
       "id": "3.2-03",
@@ -239,7 +206,8 @@
       "sisip_dokumen": {
         "file": "../sisipan/sisipan-bab3.docx",
         "bagian": "Bagian E",
-        "tanpa_penanda": true
+        "tanpa_penanda": true,
+        "tanpa_paragraf_kosong": true
       }
     },
     {
@@ -295,7 +263,8 @@
         },
         "Kuesioner *User Experience Questionnaire* (UEQ) 26 butir versi Bahasa Indonesia diberikan kepada responden setelah mereka menggunakan aplikasi. Setiap butir berupa pasangan kata berlawanan dengan skala 7 titik. Kuesioner diisi melalui halaman Kuesioner pada aplikasi, dan nama responden bersifat opsional."
       ],
-      "tetap_komentar": true
+      "tetap_komentar": true,
+      "komentar_bersih": true
     },
     {
       "id": "3.5-10",
@@ -308,8 +277,9 @@
       "id": "3.5-11",
       "lokasi": "3.5 Metode Pengembangan Sistem, tahap System Design (paragraf 440)",
       "cari": "perancangan alur sistem menggunakan diagram seperti flowchart dan use case diagram.",
-      "ganti": "perancangan alur sistem menggunakan diagram seperti flowchart, use case diagram beserta skenarionya, dan *activity diagram*, serta perancangan basis data menggunakan *Entity Relationship Diagram* (ERD).",
-      "catatan": "Penguji 2 no. 5 (penulisan RPL): menyebut skenario use case, activity diagram, dan ERD yang ditambahkan pada 3.7.3–3.7.5."
+      "ganti": "perancangan alur sistem menggunakan diagram seperti *flowchart*, *use case diagram* beserta skenarionya, dan *activity diagram*, serta perancangan basis data menggunakan *Entity Relationship Diagram* (ERD).",
+      "catatan": "Penguji 2 no. 5 (penulisan RPL): menyebut skenario use case, activity diagram, dan ERD yang ditambahkan pada 3.7.3–3.7.5.",
+      "tegak": true
     },
     {
       "id": "3.5-01",
@@ -333,7 +303,8 @@
       "sisip_dokumen": {
         "file": "../sisipan/sisipan-bab3.docx",
         "bagian": "3.5.1",
-        "judul_otomatis": true
+        "judul_otomatis": true,
+        "tanpa_paragraf_kosong": true
       }
     },
     {
@@ -454,7 +425,8 @@
           "3.7.4",
           "3.7.5"
         ],
-        "judul_otomatis": true
+        "judul_otomatis": true,
+        "tanpa_paragraf_kosong": true
       }
     },
     {
@@ -894,7 +866,8 @@
       "lokasi": "3.12.1, Tabel 3.5 baris 1 (paragraf 682)",
       "cari": "Dashboard, sensor charts, historical data, rekomendasi tindakan, dan IoT system",
       "ganti": "Beranda, detail ruangan (grafik sensor), riwayat, rekomendasi tindakan, status perangkat, panduan, dan kuesioner UEQ",
-      "catatan": "Halaman aplikasi (tujuh halaman)."
+      "catatan": "Halaman aplikasi (tujuh halaman).",
+      "tegak": true
     },
     {
       "id": "3.12-06",
@@ -976,7 +949,8 @@
       "lokasi": "3.12.2, Tabel 3.6 baris 7, Skenario (paragraf 730)",
       "cari": "Membuka halaman IoT system",
       "ganti": "Membuka halaman status perangkat",
-      "catatan": "Halaman aplikasi (nama halaman Status Perangkat)."
+      "catatan": "Halaman aplikasi (nama halaman Status Perangkat).",
+      "tegak": true
     },
     {
       "id": "3.12-31",
@@ -1069,7 +1043,6 @@
       "lokasi": "3.12.6 baru dan Tabel 3.11–3.12 baru (sesudah paragraf 853)",
       "cari": "Pada setiap skenario, sistem juga dicek",
       "catatan": "Tambahkan jumlah dan kriteria responden UEQ. Catatan: UEQ Data Analysis Tool versi terbaru memakai nilai benchmark yang lebih baru, sedangkan naskah ini sengaja memakai benchmark terbitan Schrepp et al. (2017), sama dengan perhitungan di aplikasi; kategori dari tool tersebut bisa sedikit berbeda.",
-      "tetap_komentar": true,
       "sisip_paragraf": [
         {
           "teks": "Evaluasi Pengguna dengan UEQ",
@@ -1231,100 +1204,25 @@
     },
     {
       "id": "DP-01",
-      "lokasi": "Daftar Pustaka",
-      "cari": "Adisti, K. P., & Nugraha, I. (2025).",
-      "catatan": "Daftar pustaka ini adalah field Mendeley. Entri berikut diketik langsung sebagai Track Changes dan belum ada di Mendeley: ATSDR (2011); Laugwitz et al. (2008); MQ-2 Semiconductor Sensor for Combustible Gas (t.t.); Persily & de Jonge (2017); Santoso et al. (2016); Schrepp et al. (2017); Technical Data MQ-135 Gas Sensor (t.t.); U.S. Environmental Protection Agency (2026a, 2026b, 2026c); Zhengzhou Winsen Electronics Technology (2015a, 2015b). Tambahkan juga ke pustaka Mendeley (data lengkapnya sama dengan entri yang diketik), lalu sisipkan sitasinya lewat Mendeley; bila daftar pustaka diperbarui Mendeley sebelum itu, entri ketikan ini akan hilang. Perbaiki juga data Solihat et al. (2026) dan Atzori et al. (2010) di Mendeley agar sama dengan entri yang sudah dikoreksi di sini (penulis ketiga Solihat adalah Susilawati, bukan \"Si, M.\").",
-      "tetap_komentar": true
+      "lokasi": "Daftar Pustaka (judul bab)",
+      "cari": "DAFTAR PUSTAKA",
+      "utuh": true,
+      "komentar_bersih": true,
+      "catatan": "Semua sitasi dan daftar pustaka sudah berupa field Mendeley berformat APA 7, dan daftar pustaka hanya memuat karya yang disitasi. Ada dua berkas untuk Mendeley Anda. (A) referensi-baru.bib (atau referensi-baru.ris): dua belas karya baru yang belum ada di pustaka Mendeley: Agency for Toxic Substances and Disease Registry (2011), Laugwitz et al. (2008), MQ-2 Semiconductor Sensor for Combustible Gas (t.t.), Persily dan de Jonge (2017), Santoso et al. (2016), Schrepp et al. (2017), Technical Data MQ-135 Gas Sensor (t.t.), U.S. Environmental Protection Agency (2026a, 2026b, 2026c), dan Zhengzhou Winsen Electronics Technology (2015a, 2015b). (B) koreksi-pustaka-mendeley.bib: 25 karya yang sudah ada di Mendeley tetapi datanya kurang atau salah (nama jurnal/prosiding, volume, nomor, halaman, DOI, URL, dan nama penulis), dilengkapi dari Crossref dan halaman penerbit. Beberapa penulis ikut berubah: B et al. (2023) menjadi Fajar B et al. (2023), Hananta et al. (2024) menjadi Wibowo et al. (2024), Candra (2026) menjadi Candra dan Hazimah (2026), Nazli dan Sly (2024) menjadi Nazli et al. (2024), Kafidhah dan Alamin (2026) menjadi Kafidhah et al. (2026), WHO (2026) menjadi World Health Organization (2026), dan Anist et al. terbit 2025 sebagai makalah prosiding. Langkah: (1) di Mendeley pilih File > Import, lalu impor referensi-baru.bib (disarankan, karena nama lembaga seperti U.S. Environmental Protection Agency terbaca utuh) atau referensi-baru.ris; (2) impor juga koreksi-pustaka-mendeley.bib, lalu untuk setiap karya di berkas itu gabungkan (Merge) entri hasil impor dengan entri lama yang sama, dengan memakai data dari entri impor, agar sitasi yang sudah tertaut tetap tertaut dan datanya lengkap (bila tidak memakai Merge, salin kolomnya ke entri lama lalu hapus entri impor); (3) di Word, pada setiap sitasi karya baru pilih Edit Citation lalu pilih karya yang sama dari pustaka agar sitasi tertaut; (4) klik Refresh. Refresh menyusun ulang daftar pustaka dari data Mendeley, jadi data yang belum diperbarui di Mendeley akan kembali tampil seperti datanya. Tiga karya belum dapat dilengkapi karena sumber terbitnya tidak ditemukan: Kamran et al. (2024), Prajapati et al. (2023), dan Shinde dan Karode (2017); mohon lengkapi nama jurnal (dan halaman Kamran et al.) dari PDF yang Anda miliki."
     },
     {
-      "id": "DP-02",
-      "lokasi": "Daftar Pustaka, entri Solihat (paragraf 887)",
-      "cari": "Solihat, S. M., Salsabila, S., & Si, M. (2026). SISTEM PEMANTAUAN KUALITAS UDARA BERBASIS ESP32 MENGGUNAKAN SENSOR GAS MQ-135 DAN MQ-2. 14(1), 1592–1599.",
-      "ganti": "Solihat, S. M., Salsabila, S., & Susilawati. (2026). Sistem pemantauan kualitas udara berbasis ESP32 menggunakan sensor gas MQ-135 dan MQ-2. *Jurnal Informatika dan Teknik Elektro Terapan*, *14*(1), 1592–1599. https://doi.org/10.23960/jitet.v14i1.5568",
-      "catatan": "Entri Solihat disamakan dengan data terbitan (penulis ketiga Susilawati, judul sentence case, nama jurnal, DOI)."
+      "id": "2.4-11",
+      "lokasi": "2.4 Sistem Monitoring Kualitas Udara Ruangan Berbasis IoT, judul penelitian B et al. (2023)",
+      "cari": "yang berjudul Prototype Sistem Monitoring Pendeteksi dan Penyaringan Udara pada Ruangan Berbasis Internet of Things (IoT) mengembangkan",
+      "ganti": "yang berjudul “Prototype Sistem Monitoring Pendeteksi dan Penyaringan Udara pada Ruangan Berbasis Internet of Things (IoT)” mengembangkan",
+      "catatan": "Tata tulis: judul artikel di teks ditulis dalam tanda petik dan tegak, sama dengan judul penelitian lain di subbab ini (APA 7)."
     },
     {
-      "id": "DP-03",
-      "lokasi": "Daftar Pustaka, entri Atzori",
-      "cari": "Atzori, L., Iera, A., & Morabito, G. (2010). The Internet of Things : A survey.",
-      "ganti": "Atzori, L., Iera, A., & Morabito, G. (2010). The Internet of Things: A survey.",
-      "catatan": "Spasi sebelum titik dua pada judul."
-    },
-    {
-      "id": "DP-04",
-      "lokasi": "Daftar Pustaka, entri baru (urut abjad)",
-      "cari": "Adisti, K. P., & Nugraha, I. (2025).",
-      "sisip_paragraf": [
-        "Agency for Toxic Substances and Disease Registry. (2011). *ToxFAQs™ for ammonia*. U.S. Department of Health and Human Services. https://wwwn.cdc.gov/TSP/ToxFAQs/ToxFAQsDetails.aspx?faqid=10&toxid=2"
-      ],
-      "catatan": "Entri baru dari sumber terverifikasi."
-    },
-    {
-      "id": "DP-05",
-      "lokasi": "Daftar Pustaka, entri baru (urut abjad)",
-      "cari": "Khoeriah Utami, B., Rizqi Fajri, M., & Dwi Chaerani, A. (2025).",
-      "sisip_paragraf": [
-        "Laugwitz, B., Held, T., & Schrepp, M. (2008). Construction and evaluation of a user experience questionnaire. Dalam A. Holzinger (Ed.), *HCI and usability for education and work: USAB 2008* (Lecture Notes in Computer Science, Vol. 5298, hlm. 63–76). Springer. https://doi.org/10.1007/978-3-540-89350-9_6"
-      ],
-      "catatan": "Entri baru dari sumber terverifikasi."
-    },
-    {
-      "id": "DP-06",
-      "lokasi": "Daftar Pustaka, entri baru (urut abjad)",
-      "cari": "Maukar, A. L., Kesuma, D. A., & Widodo, A. A. (2023).",
-      "sisip_paragraf": [
-        "*MQ-2 semiconductor sensor for combustible gas* [Lembar data]. (t.t.). Pololu. https://www.pololu.com/file/0J309/MQ2.pdf"
-      ],
-      "catatan": "Entri baru dari sumber terverifikasi."
-    },
-    {
-      "id": "DP-07",
-      "lokasi": "Daftar Pustaka, entri baru (urut abjad)",
-      "cari": "Pedregosa, F., Weiss, R., & Brucher, M. (2011).",
-      "sisip_paragraf": [
-        "Persily, A., & de Jonge, L. (2017). Carbon dioxide generation rates for building occupants. *Indoor Air*, *27*(5), 868–879. https://doi.org/10.1111/ina.12383"
-      ],
-      "catatan": "Entri baru dari sumber terverifikasi."
-    },
-    {
-      "id": "DP-08",
-      "lokasi": "Daftar Pustaka, entri baru (urut abjad)",
-      "cari": "Rohim, S. N., & Saputro, U. A. (2025).",
-      "sisip_paragraf": [
-        "Santoso, H. B., Schrepp, M., Isal, R. Y. K., Utomo, A. Y., & Priyogi, B. (2016). Measuring user experience of the student-centered e-learning environment. *The Journal of Educators Online*, *13*(1), 58–79. https://doi.org/10.9743/jeo.2016.1.5",
-        "Schrepp, M., Hinderks, A., & Thomaschewski, J. (2017). Construction of a benchmark for the User Experience Questionnaire (UEQ). *International Journal of Interactive Multimedia and Artificial Intelligence*, *4*(4), 40–44. https://doi.org/10.9781/ijimai.2017.445"
-      ],
-      "catatan": "Entri baru dari sumber terverifikasi."
-    },
-    {
-      "id": "DP-09",
-      "lokasi": "Daftar Pustaka, entri baru (urut abjad)",
-      "cari": "Sung, W. T., & Hsiao, S. J. (2021).",
-      "sisip_paragraf": [
-        "*Technical data MQ-135 gas sensor* [Lembar data]. (t.t.). Olimex. https://www.olimex.com/Products/Components/Sensors/Gas/SNS-MQ135/resources/SNS-MQ135.pdf"
-      ],
-      "catatan": "Entri baru dari sumber terverifikasi."
-    },
-    {
-      "id": "DP-10",
-      "lokasi": "Daftar Pustaka, entri baru (urut abjad)",
-      "cari": "U.S. Environmental Protection Agency. (2024).",
-      "sisip_paragraf": [
-        "U.S. Environmental Protection Agency. (2026a, 15 Juli). *Carbon monoxide's impact on indoor air quality*. https://www.epa.gov/indoor-air-quality-iaq/carbon-monoxides-impact-indoor-air-quality",
-        "U.S. Environmental Protection Agency. (2026b, 3 Agustus). *Improving indoor air quality*. https://www.epa.gov/indoor-air-quality-iaq/improving-indoor-air-quality",
-        "U.S. Environmental Protection Agency. (2026c). *Technical assistance document for the reporting of daily air quality – the Air Quality Index (AQI)* (EPA-403/B-26-003). Office of Air Quality Planning and Standards. https://document.airnow.gov/technical-assistance-document-for-the-reporting-of-daily-air-quailty.pdf"
-      ],
-      "catatan": "Entri baru dari sumber terverifikasi."
-    },
-    {
-      "id": "DP-11",
-      "lokasi": "Daftar Pustaka, entri baru (urut abjad)",
-      "cari": "WHO. (2026). Exposure & health impacts of air pollution.",
-      "sisip_paragraf": [
-        "Zhengzhou Winsen Electronics Technology Co., Ltd. (2015a). *Air quality gas sensor (Model: MQ135) manual* (Versi 1.4) [Lembar data]. https://www.winsen-sensor.com/d/files/PDF/Semiconductor%20Gas%20Sensor/MQ135%20(Ver1.4)%20-%20Manual.pdf",
-        "Zhengzhou Winsen Electronics Technology Co., Ltd. (2015b). *Smoke sensor (Model: MQ-2) manual* (Versi 1.4) [Lembar data]. https://www.winsen-sensor.com/d/files/semiconductor/mq-2.pdf"
-      ],
-      "catatan": "Entri baru dari sumber terverifikasi."
+      "id": "2.4-12",
+      "lokasi": "Salah ketik \"seluluer\"",
+      "cari": "aplikasi seluluer",
+      "ganti": "aplikasi seluler",
+      "catatan": "Salah ketik."
     }
   ]
 }

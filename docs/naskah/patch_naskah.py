@@ -28,6 +28,43 @@ Opsi lain:
   --nomori-ulang    setelah semua revisi, nomori ulang judul "Tabel B.N" dan
                     "Gambar B.N" per bab sesuai urutan dokumen dan sesuaikan
                     rujukannya di teks (juga lewat "nomori_ulang": true di F.json)
+  --bersih F.docx   tulis juga salinan bersih: semua perubahan diterima, komentar
+                    hanya dari butir bertanda "komentar_bersih": true
+  --referensi-baru P  tulis P.ris dan P.bib berisi karya baru (yang belum ada di
+                    pustaka Mendeley) untuk diimpor penulis ke Mendeley, dan
+                    koreksi-pustaka-mendeley.bib (di folder P) berisi karya Mendeley yang
+                    dikoreksi lewat "perbaikan" (kunci BibTeX dari "kunci"), agar penulis bisa
+                    memperbarui pustakanya sehingga Refresh tidak memunculkan data lama
+
+Pembangunan lengkap naskah skripsi (dari folder naskah.docx):
+  python3 -I patch_naskah.py naskah.docx revisi-naskah.json --tata-tulis tata-tulis.json \
+      --tanpa-alasan --penulis "Wan Salma Nurkhairin Fitri" --nomori-ulang \
+      -o naskah-revisi-final.docx --bersih naskah-final-bersih.docx --referensi-baru referensi-baru
+
+Kunci tata-tulis.json:
+  istilah_asing        istilah asing yang dimiringkan (frasa panjang didahulukan); judul berbahasa
+                       Inggris (dalam tanda petik, atau deret Title Case yang memuat kata tugas
+                       Inggris), kata kapital semua di luar baris judul, field, daftar pustaka,
+                       dan tabel/kolom yang dikecualikan tidak disentuh
+  istilah_tegak        kata Indonesia/akronim yang harus tegak walau tercetak miring; judul artikel
+                       dalam tanda petik juga ditegakkan (APA 7)
+  kecualikan_tabel, kecualikan_kolom_tabel ({"2.1": ["Judul"]}), tegakkan_kolom_tabel
+  hapus_paragraf_kosong  hapus paragraf kosong yang terselip di antara dua paragraf isi
+  perbarui_field       w:updateFields di settings.xml (Word memperbarui Daftar Isi/Tabel/Gambar)
+  pustaka              berkas data sitasi (pustaka.json): setiap sitasi di batang tubuh (paragraf,
+                       sel tabel, judul) menjadi field Mendeley ADDIN CSL_CITATION berformat APA 7
+                       (Track Changes: run field di w:ins, teks lama di w:del). Karya yang sudah ada
+                       di field Mendeley naskah memakai itemData dan uris-nya; "perbaikan" membetulkan
+                       data yang salah atau melengkapi yang kosong (nilai null menghapus kunci, "kunci" = kunci BibTeX
+                       koreksi, "bukti" = URL sumber per kolom); "baru" berisi itemData CSL karya baru (tanpa uris). Sitasi
+                       teks biasa "(Nama, 2020)", "Nama et al. (2020, hlm. 5)", "Sumber : Nama, 2020"
+                       dan sel tabel berisi nama penulis (tahun di kolom lain) dikenali; lokator
+                       halaman/tabel dihapus, "dan" untuk sitasi naratif dua penulis, beberapa karya
+                       diurutkan abjad, huruf a/b/c dihitung otomatis, "t.t." untuk tanpa tahun.
+                       Field CSL_BIBLIOGRAPHY disusun ulang dari itemData karya yang disitasi saja
+                       (urut abjad, DOI https://doi.org/..., judul sentence case, nama jurnal title
+                       case dan miring bersama volume; judul artikel/makalah prosiding tidak pernah
+                       miring; "number" artikel tanpa halaman ditulis "Artikel N").
 
 Format JSON:
   {"revisi": [{"id": "2.9-01", "lokasi": "2.9 hlm. 30",
@@ -43,6 +80,8 @@ Format JSON:
   - "tegak": true teks pengganti tidak ikut miring walaupun teks lama miring.
   - "tetap_komentar": true komentar tetap dipasang walaupun --tanpa-alasan
     (untuk hal yang masih harus dikerjakan atau diputuskan penulis).
+  - "komentar_bersih": true komentar ikut ke salinan bersih (--bersih); komentar
+    lain (alasan revisi, "Gambar diganti ...") hanya ada di berkas Track Changes.
 
 Butir struktural (boleh digabung dengan "ganti" pada paragraf yang sama).
 Paragraf sasaran ("cari") selalu ditetapkan pada naskah asli, sebelum butir lain
@@ -71,7 +110,8 @@ mengubah teks; sisipan berikutnya ke sasaran yang sama diletakkan berurutan.
     tabel sesudah judul "cari", atau keduanya (w:del pada tanda paragraf dan
     run; w:trPr/w:del pada baris).
   - "sisip_dokumen": {"file": "lain.docx", "bagian": "<penanda>" atau [...],
-    "tanpa_penanda": false, "judul_otomatis": false, "penanda": [...]}
+    "tanpa_penanda": false, "judul_otomatis": false, "penanda": [...],
+    "tanpa_paragraf_kosong": false}
     salin bagian dokumen lain (dari paragraf yang diawali penanda sampai
     penanda berikutnya milik berkas yang sama, atau akhir dokumen) sesudah
     paragraf "cari", sebagai Track Changes. Gaya dipetakan ke gaya naskah (id
@@ -79,7 +119,8 @@ mengubah teks; sisipan berikutnya ke sasaran yang sama diletakkan berurutan.
     disalin dengan id baru, gambar disalin dengan rId dan docPr id baru, judul
     tabel/gambar memakai gaya judul naskah. "judul_otomatis": judul bernomor
     ketikan ("3.7.3 Skenario") ikut penomoran otomatis judul setingkat di
-    subbab yang sama bila ada.
+    subbab yang sama bila ada. "tanpa_paragraf_kosong": paragraf kosong (jarak
+    ketikan) tidak ikut disalin, kecuali pemisah dua tabel.
   - "ganti_gambar": "berkas.png" ganti gambar di atas judul "cari": lebar tampil
     tetap, tinggi mengikuti rasio baru (maks. 80% tinggi halaman). Word tidak
     bisa melacak penggantian gambar, jadi dicatat dengan komentar "Gambar
@@ -215,6 +256,9 @@ class Session:
     origin: dict[int, tuple[str, etree._Element]] = field(default_factory=dict)
     next_drawing_id: int = 1
     base_dirs: list[Path] = field(default_factory=list)
+    clean_comment_ids: set[int] = field(default_factory=set)
+    cited_works: list = field(default_factory=list)
+    library_config: dict = field(default_factory=dict)
 
     def remember_inserted(self, element: etree._Element, context: str = "naskah") -> None:
         self.inserted[id(element)] = element
@@ -523,8 +567,11 @@ def replace_span(runs: list[etree._Element], pieces: list[tuple[str, bool]], ses
     return first, last
 
 
-def attach_comment(first: etree._Element, last: etree._Element, text: str, session: Session) -> None:
+def attach_comment(first: etree._Element, last: etree._Element, text: str, session: Session,
+                   keep_in_clean: bool = False) -> None:
     comment_id = str(session.next_comment_id)
+    if keep_in_clean:
+        session.clean_comment_ids.add(int(comment_id))
     session.next_comment_id += 1
     first.addprevious(etree.Element(w("commentRangeStart"), {w("id"): comment_id}))
     end = etree.Element(w("commentRangeEnd"), {w("id"): comment_id})
@@ -668,7 +715,8 @@ def apply_match(match: Match, revision: Revision, session: Session, with_comment
         first, last = placed_ranges[-1][0], placed_ranges[0][1]
     if with_comments and revision.catatan:
         if match.part == "word/document.xml":
-            attach_comment(first, last, f"[{revision.id}] {revision.catatan}", session)
+            attach_comment(first, last, f"[{revision.id}] {revision.catatan}", session,
+                           keep_in_clean=bool(revision.extra.get("komentar_bersih")))
         else:
             return "diterapkan; komentar dilewati karena berada di catatan kaki"
     return None
@@ -777,6 +825,31 @@ def set_keep_next(paragraph: etree._Element, session: Session) -> None:
         place_in_order(properties, change, PARAGRAPH_PROPERTY_ORDER)
 
 
+def set_alignment(paragraph: etree._Element, value: str, session: Session) -> bool:
+    """Ubah perataan paragraf (w:jc) sebagai Track Changes (pPrChange); False bila sudah sama."""
+    properties = paragraph.find(w("pPr"))
+    if properties is None:
+        properties = etree.Element(w("pPr"))
+        paragraph.insert(0, properties)
+    current = properties.find(w("jc"))
+    if current is not None and current.get(w("val")) == value:
+        return False
+    change = None
+    if session.tracked and not paragraph_inserted(paragraph) and properties.find(w("pPrChange")) is None:
+        previous = etree.Element(w("pPr"))
+        for child in properties:
+            if child.tag not in (w("rPr"), w("sectPr"), w("pPrChange")):
+                previous.append(deepcopy(child))
+        change = etree.Element(w("pPrChange"), revision_attributes(session))
+        change.append(previous)
+    if current is not None:
+        properties.remove(current)
+    place_in_order(properties, etree.Element(w("jc"), {w("val"): value}), PARAGRAPH_PROPERTY_ORDER)
+    if change is not None:
+        place_in_order(properties, change, PARAGRAPH_PROPERTY_ORDER)
+    return True
+
+
 def set_italic(run: etree._Element, session: Session) -> None:
     properties = run.find(w("rPr"))
     if properties is None:
@@ -818,6 +891,7 @@ def excluded_paragraphs(body: etree._Element, config: dict) -> set[etree._Elemen
     excluded: set[etree._Element] = set()
     after_heading = config.get("kecualikan_setelah_judul", "DAFTAR PUSTAKA").upper()
     tables = [str(number) for number in config.get("kecualikan_tabel", [])]
+    columns = {str(number): set(headers) for number, headers in config.get("kecualikan_kolom_tabel", {}).items()}
     children = list(body)
     bibliography = False
     for index, child in enumerate(children):
@@ -831,14 +905,61 @@ def excluded_paragraphs(body: etree._Element, config: dict) -> set[etree._Elemen
             caption = paragraph_plain_text(children[index - 1]).strip()
             if any(re.match(rf"Tabel {re.escape(number)}\b", caption) for number in tables):
                 excluded.update(child.iter(w("p")))
+            for number, headers in columns.items():
+                if re.match(rf"Tabel {re.escape(number)}\b", caption):
+                    excluded.update(column_paragraphs(child, headers))
     return excluded
 
 
+def column_paragraphs(table: etree._Element, headers: set[str]) -> list[etree._Element]:
+    """Paragraf di kolom tabel yang judul kolomnya (baris pertama) ada di headers."""
+    rows = table.findall(w("tr"))
+    if not rows:
+        return []
+    wanted = {index for index, cell in enumerate(rows[0].findall(w("tc")))
+              if paragraph_plain_text(cell).strip() in headers}
+    found = []
+    for row in rows:
+        for index, cell in enumerate(row.findall(w("tc"))):
+            if index in wanted:
+                found.extend(cell.iter(w("p")))
+    return found
+
+
+ENGLISH_FUNCTION_WORDS = {"of", "in", "and", "the", "for", "with", "on", "a", "an", "to", "using", "based", "at", "by",
+                          "from", "between", "into", "via"}
+
+
+def quoted_span(text: str, start: int, end: int) -> tuple[int, int] | None:
+    """Rentang isi tanda petik (“…” atau "…") yang memuat [start, end), bila ada."""
+    for opening, closing in (("“", "”"), ('"', '"')):
+        left = text.rfind(opening, 0, start)
+        if left < 0:
+            continue
+        right = text.find(closing, end)
+        if right < 0 or (opening == closing and text.count(opening, 0, left) % 2):
+            continue
+        if closing not in text[left + 1:start]:
+            return left + 1, right
+    return None
+
+
+def is_english_title(segment: str) -> bool:
+    """Judul berbahasa Inggris: paling sedikit dua kata tugas Inggris (of, the, in, ...) dan tiga kata berhuruf besar."""
+    words = re.findall(r"[A-Za-z][\w'’-]*", segment)
+    return sum(word.lower() in ENGLISH_FUNCTION_WORDS for word in words) >= 2 and sum(word[0].isupper() for word in words) >= 3
+
+
 def in_english_title(text: str, start: int, end: int) -> bool:
-    """True bila istilah berada di judul berbahasa Inggris (Title Case) atau teks kapital semua."""
-    matched = text[start:end]
-    if matched.isupper() and len(matched) > 3:
-        return True
+    """True bila istilah berada di judul berbahasa Inggris: judul dalam tanda petik, atau deret Title Case.
+
+    Deret Title Case (≥ 4 kata berhuruf besar) hanya dianggap judul bila memuat kata tugas Inggris di luar
+    istilah itu sendiri, jadi judul gambar/subbab berbahasa Indonesia ("Wireframe Halaman Beranda") dan
+    deret nama lapisan ("IoT Layer, Processing Layer") tetap dimiringkan.
+    """
+    quoted = quoted_span(text, start, end)
+    if quoted is not None:
+        return is_english_title(text[quoted[0]:quoted[1]])
     tokens = list(re.finditer(r"[^\s()\[\]\"',:;]+", text))
     position = next((index for index, token in enumerate(tokens) if token.start() <= start < token.end()), None)
     if position is None:
@@ -854,7 +975,18 @@ def in_english_title(text: str, start: int, end: int) -> bool:
     while right + 1 < len(tokens) and title_word(tokens[right + 1].group()):
         right += 1
     capitalised = sum(1 for token in tokens[left:right + 1] if token.group()[:1].isupper())
-    return capitalised >= 4
+    function_words = sum(1 for token in tokens[left:right + 1]
+                         if token.group().lower() in ENGLISH_FUNCTION_WORDS and not start <= token.start() < end)
+    return capitalised >= 4 and function_words >= 1
+
+
+def capitalised_code(text: str, start: int, end: int) -> bool:
+    """Kata kapital semua (mis. tipe data TIMESTAMP) tidak dimiringkan, kecuali di baris judul kapital semua."""
+    matched = text[start:end]
+    if not (matched.isupper() and len(matched) > 3):
+        return False
+    line = text.replace(FIELD, "").replace(BARRIER, "").strip()
+    return not (line == line.upper() and len(line.split()) >= 3)
 
 
 def italicise_terms(body: etree._Element, config: dict, styles: StyleBook, session: Session) -> int:
@@ -868,17 +1000,106 @@ def italicise_terms(body: etree._Element, config: dict, styles: StyleBook, sessi
         if paragraph in excluded or is_listing_paragraph(paragraph):
             continue
         segments, text = paragraph_model(paragraph)
+        _, inside_field = field_spans(segments)
         flags = []
         for segment in segments:
             italic = segment.kind == "text" and styles.is_italic(segment.run, paragraph)
             flags.extend([italic] * len(segment.chars))
         targets = [match for match in pattern.finditer(text)
-                   if not all(flags[match.start():match.end()]) and not in_english_title(text, match.start(), match.end())]
+                   if not all(flags[match.start():match.end()]) and not any(inside_field[match.start():match.end()])
+                   and not in_english_title(text, match.start(), match.end())
+                   and not capitalised_code(text, match.start(), match.end())]
         for match in reversed(targets):
             segments, _ = paragraph_model(paragraph)
             for run in isolate(segments, match.start(), match.end()):
                 if run.tag == w("r") and run_kind(run)[0] == "text" and not styles.is_italic(run, paragraph):
                     set_italic(run, session)
+            changed += 1
+    return changed
+
+
+def set_upright(run: etree._Element, styles: StyleBook, paragraph: etree._Element, session: Session) -> None:
+    properties = run.find(w("rPr"))
+    if properties is None:
+        properties = etree.Element(w("rPr"))
+        run.insert(0, properties)
+    change = None
+    if session.tracked and not inside_insertion(run) and properties.find(w("rPrChange")) is None:
+        previous = etree.Element(w("rPr"))
+        for child in properties:
+            if child.tag != w("rPrChange"):
+                previous.append(deepcopy(child))
+        change = etree.Element(w("rPrChange"), revision_attributes(session))
+        change.append(previous)
+    for tag in ("i", "iCs"):
+        for existing in properties.findall(w(tag)):
+            properties.remove(existing)
+    for style in properties.findall(w("rStyle")):
+        if style.get(w("val")) in ITALIC_CHARACTER_STYLES:
+            properties.remove(style)
+    if styles.is_italic(run, paragraph):
+        place_in_order(properties, etree.Element(w("i"), {w("val"): "0"}), RUN_PROPERTY_ORDER)
+    if change is not None:
+        place_in_order(properties, change, RUN_PROPERTY_ORDER)
+    if not len(properties):
+        run.remove(properties)
+
+
+def upright_terms(body: etree._Element, config: dict, styles: StyleBook, session: Session) -> int:
+    """Tegakkan kata Indonesia/akronim yang tercetak miring dan judul artikel berbahasa Inggris dalam tanda petik.
+
+    "istilah_tegak": akronim (huruf besar semua atau berhuruf besar di tengah) selalu ditegakkan; kata lain
+    hanya bila miringnya berdiri sendiri (bukan bagian frasa asing yang miring). Judul artikel dalam tanda
+    petik ditulis tegak (APA 7); istilah asing di judul berbahasa Indonesia dimiringkan lagi oleh
+    italicise_terms.
+    """
+    terms = sorted(config.get("istilah_tegak", []), key=len, reverse=True)
+    pattern = re.compile(r"(?<![\w-])(" + "|".join(re.escape(term) for term in terms) + r")(?![\w-])") if terms else None
+    excluded = excluded_paragraphs(body, config)
+    changed = 0
+    upright_cells = excluded_paragraphs(body, {"kecualikan_setelah_judul": "\x00", "kecualikan_kolom_tabel":
+                                               config.get("tegakkan_kolom_tabel", {})})
+    for paragraph in upright_cells:
+        segments, _ = paragraph_model(paragraph)
+        _, inside_field = field_spans(segments)
+        for segment in segments:
+            if segment.kind == "text" and not any(inside_field[segment.start:segment.end]) \
+                    and styles.is_italic(segment.run, paragraph):
+                set_upright(segment.run, styles, paragraph, session)
+                changed += 1
+    for paragraph in list(body.iter(w("p"))):
+        if paragraph in excluded or is_listing_paragraph(paragraph):
+            continue
+        segments, text = paragraph_model(paragraph)
+        _, inside_field = field_spans(segments)
+        flags = []
+        for segment in segments:
+            flags.extend([segment.kind == "text" and styles.is_italic(segment.run, paragraph)] * len(segment.chars))
+        spans: list[tuple[int, int]] = []
+        for quote in re.finditer(r"“([^”]+)”", text):
+            body_start, body_end = quote.span(1)
+            if any(flags[body_start:body_end]) and len(re.findall(r"\b[A-Z]", quote.group(1))) >= 4:
+                spans.append((body_start, body_end))
+        if pattern is not None:
+            for found in pattern.finditer(text):
+                start, end = found.span()
+                if not all(flags[start:end]) or any(inside_field[start:end]):
+                    continue
+                term = found.group()
+                acronym = term.isupper() or any(char.isupper() for char in term[1:])
+                left, right = start, end
+                while left > 0 and flags[left - 1]:
+                    left -= 1
+                while right < len(text) and flags[right]:
+                    right += 1
+                alone = not re.search(r"[A-Za-z]", text[left:start] + text[end:right])
+                if acronym or alone:
+                    spans.append((start, end))
+        for start, end in sorted(set(spans), reverse=True):
+            segments, _ = paragraph_model(paragraph)
+            for run in isolate(segments, start, end):
+                if run.tag == w("r") and run_kind(run)[0] == "text" and styles.is_italic(run, paragraph):
+                    set_upright(run, styles, paragraph, session)
             changed += 1
     return changed
 
@@ -927,19 +1148,66 @@ def tidy_spaces(body: etree._Element, session: Session) -> int:
         for rule in SPACE_RULES:
             for match in rule.finditer(text):
                 spans.add((match.start("hapus"), match.end("hapus")))
+        trailing = re.search(r"(?<=[^\s\x00\x01])[ \t]*\t[ \t]*$", text)
+        if trailing:
+            spans.add((trailing.start(), trailing.end()))
         for start, end in sorted(spans, reverse=True):
             segments, current = paragraph_model(paragraph)
-            if current[start:end].strip(" "):
+            if current[start:end].strip(" \t"):
                 continue
             delete_runs(isolate(segments, start, end), session)
             changed += 1
     return changed
 
 
+def remove_stray_empty_paragraphs(body: etree._Element, config: dict, styles: StyleBook, session: Session) -> int:
+    """Hapus paragraf kosong yang terselip di antara dua paragraf isi (bukan judul, judul tabel/gambar, atau gambar).
+
+    Hanya di batang tubuh: sesudah judul bab pertama ("BAB I") dan sebelum daftar pustaka; halaman judul,
+    jarak sebelum judul subbab, dan jarak sesudah gambar tidak disentuh.
+    """
+    start_text = config.get("isi_mulai", "BAB I").upper()
+    end_text = config.get("kecualikan_setelah_judul", "DAFTAR PUSTAKA").upper()
+    children = list(body)
+    inside = False
+    changed = 0
+
+    def is_text_paragraph(element: etree._Element | None) -> bool:
+        if element is None or element.tag != w("p") or has_drawing(element) or is_listing_paragraph(element):
+            return False
+        text = live_text(element).strip()
+        style = (styles.paragraph_style(element) or "").lower()
+        return bool(text) and not style.startswith("heading") and not CAPTION_RE.match(text) \
+            and element.find(f"{w('pPr')}/{w('numPr')}") is None
+
+    for index, child in enumerate(children):
+        if child.tag != w("p"):
+            continue
+        text = live_text(child).strip().upper()
+        if text.replace(" ", "").startswith(start_text.replace(" ", "")) and not is_listing_paragraph(child):
+            inside = True
+        if text == end_text and not is_listing_paragraph(child):
+            break
+        if not inside or text or has_drawing(child) or paragraph_deleted(child) or child.find(f".//{w('sectPr')}") is not None \
+                or child.find(f".//{w('br')}") is not None or child.find(f".//{w('fldChar')}") is not None:
+            continue
+        if (styles.paragraph_style(child) or "") != (styles.default_paragraph or ""):
+            continue
+        before = children[index - 1] if index else None
+        after = children[index + 1] if index + 1 < len(children) else None
+        if is_text_paragraph(before) and is_text_paragraph(after):
+            delete_paragraph(child, session)
+            changed += 1
+    return changed
+
+
 def apply_layout_rules(body: etree._Element, config: dict, styles: StyleBook, session: Session) -> dict[str, int]:
     counts = {}
+    if config.get("hapus_paragraf_kosong"):
+        counts["paragraf kosong di antara paragraf isi dihapus"] = remove_stray_empty_paragraphs(body, config, styles, session)
     if config.get("jaga_judul", True):
         counts["judul tabel/gambar dijaga"] = keep_captions_with_objects(body, styles, session)
+    counts["kata Indonesia/akronim/judul kutipan ditegakkan"] = upright_terms(body, config, styles, session)
     counts["istilah asing dimiringkan"] = italicise_terms(body, config, styles, session)
     if config.get("rapikan_spasi", True):
         counts["spasi dirapikan"] = tidy_spaces(body, session)
@@ -1332,7 +1600,7 @@ def insert_elements(anchor: etree._Element, elements: list[etree._Element], sess
         session.remember_inserted(element, context)
 
 
-def attach_comment_to_block(elements: list[etree._Element], text: str, session: Session) -> bool:
+def attach_comment_to_block(elements: list[etree._Element], text: str, session: Session, keep_in_clean: bool = False) -> bool:
     """Komentar yang mencakup sekumpulan paragraf/tabel hasil sisipan."""
     paragraphs = [paragraph for element in elements
                   for paragraph in ([element] if element.tag == w("p") else element.iter(w("p")))]
@@ -1341,7 +1609,7 @@ def attach_comment_to_block(elements: list[etree._Element], text: str, session: 
         return False
     first = [child for child in filled[0] if child.tag != w("pPr")][0]
     last = [child for child in filled[-1] if child.tag != w("pPr")][-1]
-    attach_comment(first, last, text, session)
+    attach_comment(first, last, text, session, keep_in_clean)
     return True
 
 # ---------------------------------------------------------------------------
@@ -2130,6 +2398,22 @@ def adopt_heading_numbering(paragraph: etree._Element, workspace: Workspace) -> 
     return True
 
 
+def without_empty_paragraphs(elements: list[etree._Element]) -> list[etree._Element]:
+    """Buang paragraf kosong (jarak ketikan) kecuali yang memisahkan dua tabel agar tidak menyatu."""
+    def empty(element: etree._Element) -> bool:
+        return (element.tag == w("p") and not paragraph_plain_text(element).strip() and not has_drawing(element)
+                and element.find(f".//{w('sectPr')}") is None and element.find(f".//{w('br')}") is None)
+
+    kept: list[etree._Element] = []
+    for index, element in enumerate(elements):
+        if empty(element):
+            following = next((other for other in elements[index + 1:] if not empty(other)), None)
+            if not (kept and kept[-1].tag == w("tbl") and following is not None and following.tag == w("tbl")):
+                continue
+        kept.append(element)
+    return kept
+
+
 def op_insert_document(revision: Revision, workspace: Workspace) -> tuple[list[etree._Element], str]:
     settings = revision.extra["sisip_dokumen"]
     path = workspace.session.resolve_path(settings["file"])
@@ -2140,7 +2424,10 @@ def op_insert_document(revision: Revision, workspace: Workspace) -> tuple[list[e
     markers = list(dict.fromkeys(settings.get("penanda", []) + workspace.markers.get(str(path.resolve()), []) + sections))
     created: list[etree._Element] = []
     for section in sections:
-        for element in section_elements(source, section, markers, bool(settings.get("tanpa_penanda"))):
+        elements = section_elements(source, section, markers, bool(settings.get("tanpa_penanda")))
+        if settings.get("tanpa_paragraf_kosong"):
+            elements = without_empty_paragraphs(elements)
+        for element in elements:
             created.append(prepare_imported(element, workspace, source))
     context = f"dokumen:{path.name}"
     insert_elements(revision.target.paragraph, created, workspace.session, before=bool(revision.extra.get("sebelum")), context=context)
@@ -2279,6 +2566,1030 @@ def renumber_captions(body: etree._Element, styles: StyleBook, session: Session,
     return lines
 
 
+# ---------------------------------------------------------------------------
+# Sitasi Mendeley (ADDIN CSL_CITATION) dan daftar pustaka APA 7.
+# ---------------------------------------------------------------------------
+
+CSL_SCHEMA = "https://github.com/citation-style-language/schema/raw/master/csl-citation.json"
+BULAN = ("Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober",
+         "November", "Desember")
+TAHUN_RE = r"(?:(?:19|20)\d\d[a-z]?|t\.t\.)"
+LOKATOR_RE = r"(?:hlm\.|hal\.|h\.|p\.|pp\.|para\.|Tabel|Table|Gambar|Figure|Bab|bab)\s*[^;()\x00\x01\x02]*?"
+MASKED = "\x02"
+KATA_KECIL = {
+    "a", "an", "the", "and", "but", "or", "nor", "for", "so", "yet", "as", "at", "by", "in", "of", "off", "on",
+    "per", "to", "up", "via", "dan", "atau", "di", "ke", "dari", "untuk", "yang", "pada", "dengan", "bagi", "serta",
+}
+JENIS_BAB = {"chapter", "paper-conference", "entry-encyclopedia", "entry-dictionary"}
+JENIS_TANGGAL_LENGKAP = {"webpage", "post-weblog", "post", "article-newspaper", "article-magazine"}
+
+
+@dataclass
+class Work:
+    """Satu karya di pustaka: itemData CSL beserta tautan pustaka Mendeley (uris) bila ada."""
+
+    key: str
+    item: dict
+    uris: list[str] = field(default_factory=list)
+    new: bool = False
+    fixed: bool = False
+    fix_id: str = ""
+    aliases: set[str] = field(default_factory=set)
+    suffix: str = ""
+
+
+@dataclass
+class CitationJob:
+    """Satu sitasi yang akan ditulis sebagai field CSL_CITATION di rentang [start, end) paragraf."""
+
+    paragraph: etree._Element
+    start: int
+    end: int
+    works: list[Work]
+    mode: str
+    data: dict | None = None
+    old_result: str = ""
+    locator: bool = False
+    converted: bool = False
+
+
+def csl_year(item: dict) -> str:
+    parts = (item.get("issued") or {}).get("date-parts") or []
+    if parts and parts[0] and str(parts[0][0]).strip():
+        return str(parts[0][0]).strip()
+    return "t.t."
+
+
+def name_family(name: dict) -> str:
+    family = (name.get("family") or name.get("literal") or "").strip()
+    particle = (name.get("non-dropping-particle") or "").strip()
+    return f"{particle} {family}" if particle and family else family
+
+
+def name_initials(given: str) -> str:
+    initials = []
+    for word in re.split(r"\s+", (given or "").replace(".", ". ").strip()):
+        pieces = [piece.strip(".") for piece in word.split("-") if piece.strip(".")]
+        if pieces:
+            initials.append("-".join(piece[0].upper() + "." for piece in pieces))
+    return " ".join(initials)
+
+
+def authors_of(item: dict) -> list[dict]:
+    return [name for name in item.get("author") or [] if name_family(name)]
+
+
+def short_authors(item: dict, connector: str = "&") -> str | None:
+    families = [name_family(name) for name in authors_of(item)]
+    if not families:
+        return None
+    if len(families) == 1:
+        return families[0]
+    if len(families) == 2:
+        return f"{families[0]} {connector} {families[1]}"
+    return f"{families[0]} et al."
+
+
+def reference_authors(names: list[dict]) -> str:
+    formatted = []
+    for name in names:
+        initials = name_initials(name.get("given", ""))
+        formatted.append(f"{name_family(name)}, {initials}" if initials else name_family(name))
+    if len(formatted) == 1:
+        text = formatted[0]
+    elif len(formatted) <= 20:
+        text = ", ".join(formatted[:-1]) + ", & " + formatted[-1]
+    else:
+        text = ", ".join(formatted[:19]) + ", . . . " + formatted[-1]
+    return text if text.endswith(".") else text + "."
+
+
+def protect_terms(text: str, config: dict, original: str | None = None) -> str:
+    """Kembalikan ejaan baku istilah (Internet of Things, IoT, ESP32, ...) tanpa melihat huruf besar/kecil.
+
+    Bila judul asli sudah menulis istilah itu dengan huruf kecil semua (mis. "a user experience
+    questionnaire" sebagai frasa umum), ejaan asli dipertahankan.
+    """
+    for term in sorted(config.get("ejaan_baku", []), key=len, reverse=True):
+        def restore(found: re.Match[str], term: str = term) -> str:
+            if original is not None and len(original) == len(text):
+                source = original[found.start():found.end()]
+                if source == source.lower() and source != term:
+                    return found.group(0)
+            return term
+        text = re.sub(rf"(?<!\w){re.escape(term)}(?!\w)", restore, text, flags=re.IGNORECASE)
+    return text
+
+
+def tidy_title(title: str, config: dict) -> str:
+    text = re.sub(r"\s+", " ", title or "").strip()
+    for old, new in config.get("ejaan_judul", {}).items():
+        text = text.replace(old, new)
+    text = re.sub(r"\s*‑\s*", "-", text)
+    text = re.sub(r"\s+([:;,.?!])", r"\1", text)
+    text = re.sub(r"([(\[])\s+", r"\1", text)
+    text = re.sub(r"\s+([)\]])", r"\1", text)
+    text = re.sub(r"\)\s+-(?=\w)", ")-", text)
+    return text
+
+
+def capitalise_first(token: str) -> str:
+    for index, char in enumerate(token):
+        if char.isalpha():
+            return token[:index] + char.upper() + token[index + 1:]
+    return token
+
+
+def sentence_case(title: str, config: dict) -> str:
+    """Judul artikel/buku APA 7: huruf besar hanya di awal, sesudah titik dua, nama diri dan akronim."""
+    text = tidy_title(title, config)
+    letters = [char for char in text if char.isalpha()]
+    shouting = bool(letters) and sum(char.isupper() for char in letters) / len(letters) > 0.8
+    output: list[str] = []
+    capitalise_next = True
+    for token in re.split(r"(\s+|-|/)", text):
+        if not token or token.isspace() or token in ("-", "/"):
+            output.append(token)
+            continue
+        core = token.strip("()[]{}\"'“”‘’.,;:!?")
+        if capitalise_next:
+            output.append(capitalise_first(token.lower() if shouting else token))
+        elif not shouting and (any(char.isdigit() for char in core) or (len(core) > 1 and core[1:] != core[1:].lower())
+                               or (len(core) == 1 and core.isupper() and core != "A")):
+            output.append(token)
+        else:
+            output.append(token.lower())
+        capitalise_next = bool(re.search(r"[:?!]$", token.rstrip("\"'”’)")))
+    return protect_terms("".join(output), config, text)
+
+
+def title_case(text: str, config: dict) -> str:
+    """Nama jurnal dan judul di teks (APA 7 title case): kata utama berhuruf besar, kata tugas pendek kecil."""
+    text = tidy_title(text, config)
+    output: list[str] = []
+    first = True
+    for token in re.split(r"(\s+)", text):
+        if not token or token.isspace():
+            output.append(token)
+            continue
+        parts = []
+        for index, part in enumerate(token.split("-")):
+            core = part.strip("()[]{}\"'“”‘’.,;:!?")
+            if not core:
+                parts.append(part)
+            elif core.lower() in KATA_KECIL and not first and index == 0 and core[1:] == core[1:].lower():
+                parts.append(part.lower())
+            else:
+                parts.append(capitalise_first(part))
+        output.append("-".join(parts))
+        first = token.endswith(":")
+    return protect_terms("".join(output), config, text)
+
+
+def merge_pieces(pieces: list[tuple[str, bool]]) -> list[tuple[str, bool]]:
+    merged: list[tuple[str, bool]] = []
+    for text, italic in pieces:
+        if not text:
+            continue
+        if merged and merged[-1][1] == italic:
+            merged[-1] = (merged[-1][0] + text, italic)
+        else:
+            merged.append((text, italic))
+    return merged
+
+
+def pieces_text(pieces: list[tuple[str, bool]]) -> str:
+    return "".join(text for text, _ in pieces)
+
+
+def pieces_html(pieces: list[tuple[str, bool]]) -> str:
+    return "".join(f"<i>{text}</i>" if italic else text for text, italic in merge_pieces(pieces))
+
+
+def date_label(item: dict, suffix: str) -> str:
+    year = csl_year(item)
+    label = year + (("-" if year == "t.t." else "") + suffix if suffix else "")
+    parts = ((item.get("issued") or {}).get("date-parts") or [[]])[0]
+    if item.get("type") in JENIS_TANGGAL_LENGKAP and year != "t.t." and len(parts) >= 2 and str(parts[1]).isdigit():
+        month = BULAN[int(parts[1]) - 1]
+        label += f", {int(parts[2])} {month}" if len(parts) >= 3 and str(parts[2]).isdigit() else f", {month}"
+    return label
+
+
+def link_of(item: dict) -> str | None:
+    doi = (item.get("DOI") or "").strip()
+    if doi:
+        doi = re.sub(r"^(?:https?://(?:dx\.)?doi\.org/|doi:\s*)", "", doi, flags=re.IGNORECASE)
+        return f"https://doi.org/{doi}"
+    url = (item.get("URL") or "").strip()
+    return url.replace(" ", "%20") if url else None
+
+
+def render_reference(work: Work, config: dict) -> list[tuple[str, bool]]:
+    """Entri daftar pustaka APA 7 dari itemData CSL (bahasa Indonesia: Dalam, hlm., t.t., Versi)."""
+    item = work.item
+    kind = item.get("type") or "article-journal"
+    container = (item.get("container-title") or "").strip()
+    title = sentence_case(item.get("title", ""), config)
+    title_italic = not (kind in JENIS_BAB or kind.startswith("article"))
+    title_part: list[tuple[str, bool]] = [(title, title_italic)]
+    details = []
+    if item.get("version"):
+        details.append(f"Versi {item['version']}")
+    if item.get("number") and kind not in JENIS_BAB and not kind.startswith("article"):
+        details.append(str(item["number"]))
+    if details:
+        title_part.append((f" ({'; '.join(details)})", False))
+    if item.get("genre"):
+        title_part.append((f" [{item['genre']}]", False))
+    closing = "" if re.search(r"[?!]$", pieces_text(title_part)) else "."
+    date = f"({date_label(item, work.suffix)})."
+    pieces: list[tuple[str, bool]] = []
+    authors = authors_of(item)
+    if authors:
+        pieces.append((f"{reference_authors(authors)} {date} ", False))
+        pieces.extend(title_part)
+        pieces.append((f"{closing} ", False))
+    else:
+        pieces.extend(title_part)
+        pieces.append((f"{closing} {date} ", False))
+
+    volume, issue = str(item.get("volume") or "").strip(), str(item.get("issue") or "").strip()
+    pages = str(item.get("page") or "").strip().replace("-", "–")
+    publisher = (item.get("publisher") or "").strip()
+    if kind.startswith("article"):
+        source: list[tuple[str, bool]] = []
+        if container:
+            source.append((title_case(container, config), True))
+        if volume:
+            source.append((", " if container else "", False))
+            source.append((volume, True))
+        if issue:
+            source.append((f"({issue})", False))
+        if pages:
+            source.append((", " if source else "", False))
+            source.append((pages, False))
+        elif item.get("number"):
+            source.append((", " if source else "", False))
+            source.append((f"Artikel {item['number']}", False))
+        if source:
+            pieces.extend(source)
+            pieces.append((". ", False))
+    elif kind in JENIS_BAB:
+        editors = [name for name in item.get("editor") or [] if name_family(name)]
+        if editors or container:
+            pieces.append(("Dalam ", False))
+            if editors:
+                names = [f"{name_initials(name.get('given', ''))} {name_family(name)}".strip() for name in editors]
+                joined = names[0] if len(names) == 1 else ", ".join(names[:-1]) + ", & " + names[-1]
+                pieces.append((f"{joined} ({'Ed.' if len(names) == 1 else 'Eds.'}), ", False))
+            pieces.append((sentence_case(container, config), True))
+            inside = [part for part in (item.get("collection-title"), f"Vol. {volume}" if volume else None,
+                                        f"hlm. {pages}" if pages else None) if part]
+            if inside:
+                pieces.append((f" ({', '.join(inside)})", False))
+            pieces.append((". ", False))
+        if publisher:
+            pieces.append((f"{publisher}. ", False))
+    elif publisher and publisher.rstrip(".") != (short_authors(item) or "").rstrip("."):
+        pieces.append((f"{publisher}. ", False))
+    link = link_of(item)
+    if link:
+        pieces.append((link, False))
+    pieces = merge_pieces(pieces)
+    if pieces and pieces[-1][0].endswith(" "):
+        pieces[-1] = (pieces[-1][0].rstrip(), pieces[-1][1])
+    return pieces
+
+
+def reference_sort_key(work: Work) -> tuple:
+    """Urutan Mendeley/APA: nama penulis (huruf demi huruf), tahun, huruf a/b/c, judul."""
+    authors = authors_of(work.item)
+    if authors:
+        names = tuple(f"{name_family(name)}, {name_initials(name.get('given', ''))}".lower() for name in authors)
+    else:
+        names = (re.sub(r"^(the|a|an)\s+", "", (work.item.get("title") or "").lower()),)
+    year = csl_year(work.item)
+    return (names, year if year != "t.t." else "0000", work.suffix, (work.item.get("title") or "").lower())
+
+
+def in_text_label(work: Work, connector: str, config: dict) -> tuple[str, bool]:
+    label = short_authors(work.item, connector)
+    if label:
+        return label, False
+    title = title_case(work.item.get("title", ""), config)
+    kind = work.item.get("type") or ""
+    if kind in JENIS_BAB or kind.startswith("article"):
+        return f"“{title}”", False
+    return title, True
+
+
+def citation_pieces(works: list[Work], mode: str, config: dict) -> list[tuple[str, bool]]:
+    """mode: "kurung" (Nama, 2020), "naratif" Nama (2020), "penulis" Nama (kolom tahun terpisah)."""
+    connector = "&" if mode == "kurung" else config.get("penghubung_naratif", "dan")
+    groups: list[tuple[tuple[str, bool], list[str]]] = []
+    for work in works:
+        label = in_text_label(work, connector, config)
+        year = csl_year(work.item) + (("-" if csl_year(work.item) == "t.t." else "") + work.suffix if work.suffix else "")
+        if groups and groups[-1][0] == label:
+            groups[-1][1].append(year)
+        else:
+            groups.append((label, [year]))
+    pieces: list[tuple[str, bool]] = []
+    if mode == "kurung":
+        pieces.append(("(", False))
+        for index, ((label, italic), years) in enumerate(groups):
+            if index:
+                pieces.append(("; ", False))
+            pieces.append((label, italic))
+            pieces.append((", " + ", ".join(years), False))
+        pieces.append((")", False))
+    else:
+        for index, ((label, italic), years) in enumerate(groups):
+            if index:
+                pieces.append(("; ", False))
+            pieces.append((label, italic))
+            if mode == "naratif":
+                pieces.append((" (" + ", ".join(years) + ")", False))
+    return merge_pieces(pieces)
+
+
+def work_key(item: dict) -> str:
+    title = re.sub(r"\W+", "", (item.get("title") or "").lower())
+    if not title:
+        title = re.sub(r"\W+", "", (short_authors(item) or "").lower())
+    return f"{title[:60]}|{csl_year(item)}"
+
+
+def mendeley_item(data: dict, identifier: str) -> dict:
+    """itemData dengan bentuk yang sama seperti tulisan Mendeley (kunci nama lengkap, tahun berupa teks, kunci urut)."""
+    item = deepcopy(data)
+    item["id"] = identifier
+    for role in ("author", "editor"):
+        if role in item:
+            item[role] = [dict(sorted({"dropping-particle": "", "given": "", "non-dropping-particle": "", "parse-names": False,
+                                       "suffix": "", **name}.items())) for name in item[role]]
+    if "issued" in item:
+        item["issued"] = {"date-parts": [[str(value) for value in parts] for parts in item["issued"]["date-parts"]]}
+    return dict(sorted(item.items()))
+
+
+class Library:
+    """Karya yang dikenal: dari field Mendeley di naskah (itemData + uris) dan dari data pustaka baru."""
+
+    def __init__(self, config: dict) -> None:
+        self.config = config
+        self.works: dict[str, Work] = {}
+
+    def add_from_field(self, data: dict) -> None:
+        for citation in data.get("citationItems", []):
+            item = citation.get("itemData") or {}
+            key = work_key(item)
+            if key not in self.works:
+                self.works[key] = Work(key=key, item=deepcopy(item), uris=list(citation.get("uris") or []))
+
+    def add_new(self, entry: dict) -> None:
+        item = mendeley_item(entry["itemData"], entry["id"])
+        key = work_key(item)
+        if key in self.works:
+            raise ValueError(f"karya baru {entry['id']} sudah ada di pustaka Mendeley naskah")
+        work = Work(key=key, item=item, new=True)
+        work.aliases.update(entry.get("alias", []))
+        self.works[key] = work
+
+    def matching(self, criteria: dict) -> list[Work]:
+        found = []
+        for work in self.works.values():
+            authors = authors_of(work.item)
+            family = name_family(authors[0]) if authors else None
+            if "family" in criteria and criteria["family"] != family:
+                continue
+            if "tahun" in criteria and str(criteria["tahun"]) != csl_year(work.item):
+                continue
+            if "judul" in criteria and criteria["judul"].lower() not in (work.item.get("title") or "").lower():
+                continue
+            found.append(work)
+        return found
+
+    def apply_fixes(self, fixes: list[dict]) -> list[str]:
+        notes = []
+        for fix in fixes:
+            works = self.matching(fix.get("cocok", {}))
+            if len(works) != 1:
+                notes.append(f"perbaikan {fix.get('cocok')} cocok dengan {len(works)} karya; dilewati")
+                continue
+            work = works[0]
+            if fix.get("itemData"):
+                old_key = work.key
+                work.item.update(deepcopy(fix["itemData"]))
+                for name in [name for name, value in fix["itemData"].items() if value is None]:
+                    del work.item[name]
+                work.fixed = True
+                work.fix_id = fix.get("kunci", "")
+                if work_key(work.item) != old_key:
+                    self.works[work_key(work.item)] = work
+                    work.aliases.add(f"__kunci_lama__{old_key}")
+            work.aliases.update(fix.get("alias", []))
+        return notes
+
+    def lookup(self, item: dict) -> Work | None:
+        key = work_key(item)
+        if key in self.works:
+            return self.works[key]
+        return next((work for work in self.works.values() if f"__kunci_lama__{key}" in work.aliases), None)
+
+    def unique(self) -> list[Work]:
+        return list({id(work): work for work in self.works.values()}.values())
+
+    def alias_index(self) -> dict[str, list[Work]]:
+        index: dict[str, list[Work]] = {}
+        for work in self.unique():
+            forms = {alias for alias in work.aliases if not alias.startswith("__")}
+            for connector in ("&", "dan", "and"):
+                label = short_authors(work.item, connector)
+                if label:
+                    forms.add(label)
+            if not authors_of(work.item) and work.item.get("title"):
+                forms.update({title_case(work.item["title"], self.config), work.item["title"],
+                              sentence_case(work.item["title"], self.config)})
+            for form in forms:
+                index.setdefault(form, []).append(work)
+        return index
+
+    def resolve(self, candidates: list[Work], token: str) -> Work | None:
+        """Karya untuk penanda tahun di teks ("2026", "2026b", "t.t."); huruf = urutan judul di kelompok."""
+        found = re.fullmatch(r"((?:19|20)\d\d|t\.t\.)-?([a-z]?)", token)
+        if not found:
+            return None
+        year, letter = found.groups()
+        same_year = [work for work in candidates if csl_year(work.item) == year]
+        if not letter:
+            return same_year[0] if len(same_year) == 1 else None
+        groups: dict[str, list[Work]] = {}
+        for work in self.unique():
+            label = short_authors(work.item) or work.item.get("title", "")
+            if csl_year(work.item) == year:
+                groups.setdefault(label, []).append(work)
+        for work in same_year:
+            group = sorted(groups.get(short_authors(work.item) or work.item.get("title", ""), []),
+                           key=lambda other: (other.item.get("title") or "").lower())
+            position = ord(letter) - ord("a")
+            if len(group) > 1 and position < len(group) and group[position] is work:
+                return work
+        return None
+
+
+def field_spans(segments: list[Segment]) -> tuple[list[tuple[int, int, str]], list[bool]]:
+    """Field utuh di paragraf [(awal, akhir, instruksi)] dan penanda karakter yang berada di dalam field."""
+    spans: list[tuple[int, int, str]] = []
+    total = segments[-1].end if segments else 0
+    inside = [False] * total
+    depth = 0
+    start = 0
+    instruction: list[str] = []
+    for segment in segments:
+        if segment.kind == "field":
+            for child in segment.run:
+                if child.tag == w("fldChar"):
+                    kind = child.get(w("fldCharType"))
+                    if kind == "begin":
+                        if depth == 0:
+                            start, instruction = segment.start, []
+                        depth += 1
+                    elif kind == "end":
+                        depth = max(0, depth - 1)
+                        if depth == 0:
+                            spans.append((start, segment.end, "".join(instruction)))
+                elif child.tag == w("instrText") and depth == 1:
+                    instruction.append(child.text or "")
+            for position in range(segment.start, segment.end):
+                inside[position] = True
+        elif depth > 0:
+            for position in range(segment.start, segment.end):
+                inside[position] = True
+    return spans, inside
+
+
+def masked_text(paragraph: etree._Element) -> tuple[str, list[tuple[int, int, str]]]:
+    segments, text = paragraph_model(paragraph)
+    spans, inside = field_spans(segments)
+    masked = "".join(MASKED if inside[index] else char for index, char in enumerate(text))
+    return masked, spans
+
+
+def parse_csl(instruction: str) -> dict | None:
+    if "CSL_CITATION" not in instruction or "{" not in instruction:
+        return None
+    try:
+        return json.loads(instruction[instruction.index("{"):])
+    except json.JSONDecodeError:
+        return None
+
+
+def field_runs(template: etree._Element, instruction: str, pieces: list[tuple[str, bool]]) -> list[etree._Element]:
+    def char_run(kind: str, lock: bool = False) -> etree._Element:
+        run = make_run(template, [], fresh=True)
+        attributes = {w("fldCharType"): kind}
+        if lock:
+            attributes[w("fldLock")] = "1"
+        run.append(etree.Element(w("fldChar"), attributes))
+        return run
+
+    instruction_run = make_run(template, [], fresh=True)
+    element = etree.SubElement(instruction_run, w("instrText"))
+    element.text = instruction
+    element.set(f"{{{XML_NS}}}space", "preserve")
+    result = [make_run(template, list(text), italic, fresh=True) for text, italic in merge_pieces(pieces)]
+    return [char_run("begin", lock=True), instruction_run, char_run("separate"), *result, char_run("end")]
+
+
+def place_runs(runs: list[etree._Element], new_runs: list[etree._Element], session: Session) -> tuple[etree._Element, etree._Element]:
+    """Ganti run lama dengan run baru: run lama ke w:del, run baru dalam satu w:ins (Track Changes)."""
+    if not session.tracked or all(inside_insertion(run) for run in runs):
+        # Tanpa Track Changes, atau teks sisipan sendiri: ganti di tempat (w:ins tidak boleh bersarang).
+        if not new_runs:
+            new_runs = [etree.Element(w("r"))]
+        for new_run in new_runs:
+            runs[0].addprevious(new_run)
+        for run in runs:
+            run.getparent().remove(run)
+        return new_runs[0], new_runs[-1]
+    first = last = None
+    anchor = runs[0]
+    marker = etree.Element(w("r"))
+    anchor.addprevious(marker)
+    for run in runs:
+        if inside_insertion(run):
+            run.getparent().remove(run)
+            continue
+        wrapper = mark_deleted(run, session)
+        first = first if first is not None else wrapper
+        last = wrapper
+    if new_runs:
+        inserted = etree.Element(w("ins"), revision_attributes(session))
+        inserted.extend(new_runs)
+        (last if last is not None else marker).addnext(inserted)
+        first = first if first is not None else inserted
+        last = inserted
+    marker.getparent().remove(marker)
+    return first, last
+
+
+def build_citation_data(works: list[Work], mode: str, config: dict, old: dict | None = None) -> tuple[dict, list[tuple[str, bool]]]:
+    """JSON CSL_CITATION (format Mendeley) dan isi tampilannya untuk karya terurut."""
+    parenthetical = citation_pieces(works, "kurung", config)
+    visible = parenthetical if mode == "kurung" else citation_pieces(works, mode, config)
+    if old is not None:
+        data = deepcopy(old)
+        by_key = {}
+        for citation in data.get("citationItems", []):
+            by_key.setdefault(work_key(citation.get("itemData") or {}), citation)
+        items = []
+        for work in works:
+            citation = by_key.get(work_key(work.item)) or next(
+                (value for key, value in by_key.items() if f"__kunci_lama__{key}" in work.aliases), None)
+            if work.fixed:
+                identifier = (citation.get("itemData") or {}).get("id", citation.get("id"))
+                citation["itemData"] = {**deepcopy(work.item), "id": identifier}
+            for key in ("locator", "label"):
+                citation.pop(key, None)
+            items.append(citation)
+        data["citationItems"] = items
+    else:
+        items = []
+        for number, work in enumerate(works, start=1):
+            identifier = work.item.get("id") if work.new else f"ITEM-{number}"
+            citation = {"id": identifier, "itemData": {**deepcopy(work.item), "id": identifier}}
+            if work.uris:
+                citation["uris"] = list(work.uris)
+            items.append(citation)
+        data = {"citationItems": items, "mendeley": {}, "properties": {"noteIndex": 0}, "schema": CSL_SCHEMA}
+    mendeley = dict(data.get("mendeley") or {})
+    html = pieces_html(parenthetical)
+    mendeley.update({"formattedCitation": html, "plainTextFormattedCitation": pieces_text(parenthetical),
+                     "previouslyFormattedCitation": html})
+    if mode == "kurung":
+        mendeley.pop("manualFormatting", None)
+    else:
+        mendeley["manualFormatting"] = pieces_text(visible)
+    data["mendeley"] = dict(sorted(mendeley.items()))
+    return data, visible
+
+
+def classify_manual(manual: str | None) -> str:
+    if not manual:
+        return "kurung"
+    if re.fullmatch(r".+ \(.+\)", manual.strip()):
+        return "naratif"
+    if re.search(TAHUN_RE, manual):
+        return "kurung"
+    return "penulis"
+
+
+def table_row_years(paragraph: etree._Element) -> list[str]:
+    cell = next((ancestor for ancestor in paragraph.iterancestors(w("tc"))), None)
+    row = cell.getparent() if cell is not None else None
+    if row is None:
+        return []
+    years = []
+    for other in row.iter(w("p")):
+        text = live_text(other).strip()
+        if re.fullmatch(TAHUN_RE, text):
+            years.append(text)
+    return years
+
+
+def citation_jobs(paragraph: etree._Element, library: Library, aliases: dict[str, list[Work]],
+                  patterns: dict[str, re.Pattern[str]], config: dict, notes: list[str]) -> list[CitationJob]:
+    masked, spans = masked_text(paragraph)
+    jobs: list[CitationJob] = []
+    _, raw = paragraph_model(paragraph)
+    for start, end, instruction in spans:
+        data = parse_csl(instruction)
+        if data is None:
+            continue
+        works = []
+        for citation in data.get("citationItems", []):
+            work = library.lookup(citation.get("itemData") or {})
+            if work is None:
+                notes.append(f"karya di field tidak dikenal: {(citation.get('itemData') or {}).get('title')}")
+                break
+            works.append(work)
+        else:
+            mode = classify_manual((data.get("mendeley") or {}).get("manualFormatting"))
+            locator = any("locator" in citation for citation in data.get("citationItems", []))
+            jobs.append(CitationJob(paragraph, start, end, works, mode, data=data,
+                                    old_result=raw[start:end].replace(FIELD, ""), locator=locator))
+
+    def works_for(alias: str, years: str) -> list[Work] | None:
+        found = []
+        for token in re.findall(TAHUN_RE, years):
+            work = library.resolve(aliases.get(alias, []), token)
+            if work is None:
+                return None
+            found.append(work)
+        return found or None
+
+    taken: list[tuple[int, int]] = []
+
+    def free(start: int, end: int) -> bool:
+        return all(end <= other_start or start >= other_end for other_start, other_end in taken)
+
+    for match in patterns["kurung"].finditer(masked):
+        works: list[Work] = []
+        locator = False
+        for part in match.group("isi").split(";"):
+            found = patterns["bagian"].fullmatch(part.strip())
+            resolved = works_for(found.group("alias"), found.group("tahun")) if found else None
+            if resolved is None:
+                works = []
+                break
+            works.extend(resolved)
+            locator = locator or bool(found.group("lokator"))
+        if works:
+            jobs.append(CitationJob(paragraph, match.start(), match.end(), works, "kurung", locator=locator, converted=True))
+            taken.append((match.start(), match.end()))
+        elif re.search(r"\b(?:19|20)\d\d[a-z]?\b|t\.t\.", match.group("isi")) and re.search(r"[A-Z]", match.group("isi")):
+            notes.append(f"sitasi dalam kurung tidak dikenali: {match.group(0)[:90]}")
+    for name in ("naratif", "sumber"):
+        for match in patterns[name].finditer(masked):
+            start, end = match.start("sitasi"), match.end("sitasi")
+            if not free(start, end):
+                continue
+            works = works_for(match.group("alias"), match.group("tahun"))
+            if works is None:
+                notes.append(f"sitasi naratif tidak dikenali: {match.group('sitasi')[:90]}")
+                continue
+            jobs.append(CitationJob(paragraph, start, end, works, "naratif" if name == "naratif" else "kurung",
+                                    locator=bool(match.group("lokator")), converted=True))
+            taken.append((start, end))
+    stripped = masked.strip()
+    if stripped in aliases and not spans:
+        years = table_row_years(paragraph)
+        works = works_for(stripped, years[0]) if len(years) == 1 else None
+        if works:
+            offset = masked.index(stripped)
+            jobs.append(CitationJob(paragraph, offset, offset + len(stripped), works, "penulis", converted=True))
+    return jobs
+
+
+def citation_patterns(aliases: dict[str, list[Work]], config: dict) -> dict[str, re.Pattern[str]]:
+    names = "|".join(re.escape(alias) for alias in sorted(aliases, key=len, reverse=True))
+    years = rf"{TAHUN_RE}(?:,\s*{TAHUN_RE})*"
+    prefixes = "|".join(re.escape(prefix) for prefix in config.get("awalan_sumber", ["Sumber"]))
+    return {
+        "kurung": re.compile(r"\((?P<isi>[^()\x00\x01\x02]*?(?:\d{4}[a-z]?|t\.t\.)[^()\x00\x01\x02]*?)\)"),
+        "bagian": re.compile(rf"(?P<alias>{names}),\s*(?P<tahun>{years})(?P<lokator>,\s*{LOKATOR_RE})?"),
+        "naratif": re.compile(rf"(?<![\w.])(?P<sitasi>(?P<alias>{names}) \((?P<tahun>{years})(?P<lokator>,\s*{LOKATOR_RE})?\))"),
+        "sumber": re.compile(rf"(?:{prefixes})\s*:\s*(?P<sitasi>(?P<alias>{names}),\s*(?P<tahun>{years})(?P<lokator>,\s*{LOKATOR_RE})?)\s*$"),
+    }
+
+
+def bibliography_field(body: etree._Element) -> tuple[list[etree._Element], etree._Element, etree._Element] | None:
+    """Paragraf entri daftar pustaka Mendeley, paragraf awal field, dan paragraf penutup field."""
+    paragraphs = list(body.iter(w("p")))
+    for index, paragraph in enumerate(paragraphs):
+        instruction = "".join(element.text or "" for run in iter_runs(paragraph) if run.tag == w("r")
+                              for element in run.findall(w("instrText")))
+        if "CSL_BIBLIOGRAPHY" not in instruction:
+            continue
+        for end_index in range(index, len(paragraphs)):
+            candidate = paragraphs[end_index]
+            ends = [char for run in iter_runs(candidate) if run.tag == w("r")
+                    for char in run.findall(w("fldChar")) if char.get(w("fldCharType")) == "end"]
+            if ends and end_index > index:
+                return paragraphs[index:end_index], paragraph, candidate
+        return None
+    return None
+
+
+def entry_runs(paragraph: etree._Element, first: bool) -> list[etree._Element]:
+    runs = [run for run in iter_runs(paragraph) if run.tag == w("r")]
+    if first:
+        separate = next((index for index, run in enumerate(runs)
+                         if any(char.get(w("fldCharType")) == "separate" for char in run.findall(w("fldChar")))), None)
+        runs = runs[separate + 1:] if separate is not None else []
+    return [run for run in runs if run_kind(run)[0] == "text"]
+
+
+def entry_key(runs: list[etree._Element], styles: StyleBook, paragraph: etree._Element) -> tuple:
+    pieces = [("".join(run_kind(run)[1]), styles.is_italic(run, paragraph)) for run in runs]
+    return tuple(merge_pieces(pieces))
+
+
+def rebuild_bibliography(body: etree._Element, works: list[Work], config: dict, styles: StyleBook,
+                         session: Session) -> tuple[list[str], list[str]] | None:
+    """Isi field CSL_BIBLIOGRAPHY = entri APA 7 karya yang disitasi; perubahan sebagai Track Changes."""
+    found = bibliography_field(body)
+    if found is None:
+        return None
+    paragraphs, first, closing = found
+    old = []
+    for paragraph in paragraphs:
+        if paragraph_deleted(paragraph) and paragraph is not first:
+            continue
+        runs = entry_runs(paragraph, paragraph is first)
+        old.append((paragraph, runs, entry_key(runs, styles, paragraph)))
+    new = [tuple(render_reference(work, config)) for work in works]
+    template_paragraph = first
+    template_run = plain_template(dominant_template(old[0][1])) if old and old[0][1] else etree.Element(w("r"))
+    removed = [pieces_text(list(key)) for _, _, key in old if key not in new and key]
+    added = [pieces_text(list(key)) for key in new if key not in [entry[2] for entry in old]]
+
+    def new_runs(pieces: tuple) -> list[etree._Element]:
+        return [make_run(template_run, list(text), italic, fresh=True) for text, italic in pieces]
+
+    def new_paragraph(pieces: tuple) -> etree._Element:
+        paragraph = etree.Element(w("p"))
+        properties = clean_properties(template_paragraph.find(w("pPr")))
+        if len(properties):
+            paragraph.append(properties)
+        paragraph.extend(new_runs(pieces))
+        mark_paragraph_inserted(paragraph, session)
+        return paragraph
+
+    start_old = 0
+    anchor = first
+    new_first_kept = new_first_written = False
+    if old and old[0][0] is first:
+        if not new or old[0][2] != new[0]:
+            if old[0][1]:
+                delete_runs(old[0][1], session)
+            if new:
+                runs = new_runs(new[0])
+                holder = runs
+                if session.tracked:
+                    inserted = etree.Element(w("ins"), revision_attributes(session))
+                    inserted.extend(runs)
+                    holder = [inserted]
+                last = next((run for run in reversed(list(first)) if run.tag in (w("r"), w("ins"), w("del"))), None)
+                for element in holder:
+                    (last.addnext(element) if last is not None else first.append(element))
+                    last = element
+                new = new[1:]
+                new_first_written = True
+            start_old = 1
+        else:
+            start_old, new = 1, new[1:]
+            new_first_kept = True
+    old_rest = old[start_old:]
+    matcher = difflib.SequenceMatcher(None, [entry[2] for entry in old_rest], new, autojunk=False)
+    kept = [first] if new_first_kept or new_first_written else []
+    for tag, old_from, old_to, new_from, new_to in matcher.get_opcodes():
+        if tag == "equal":
+            anchor = old_rest[old_to - 1][0]
+            kept.extend(entry[0] for entry in old_rest[old_from:old_to])
+            continue
+        for paragraph, _, _ in old_rest[old_from:old_to]:
+            delete_paragraph(paragraph, session)
+            anchor = paragraph
+        for pieces in new[new_from:new_to]:
+            paragraph = new_paragraph(pieces)
+            anchor.addnext(paragraph)
+            anchor = paragraph
+            kept.append(paragraph)
+    alignment = config.get("perataan_daftar_pustaka")
+    if alignment:
+        for paragraph in kept:
+            set_alignment(paragraph, alignment, session)
+    return added, removed
+
+
+def mendeley_citations(body: etree._Element, config: dict, styles: StyleBook, session: Session) -> list[str]:
+    """Jadikan setiap sitasi field Mendeley APA 7 dan susun ulang daftar pustakanya dari itemData."""
+    library = Library(config)
+    excluded = excluded_paragraphs(body, {"kecualikan_setelah_judul": config.get("judul_daftar_pustaka", "DAFTAR PUSTAKA")})
+    paragraphs = [paragraph for paragraph in body.iter(w("p"))
+                  if paragraph not in excluded and not is_listing_paragraph(paragraph)]
+    for paragraph in paragraphs:
+        _, spans = masked_text(paragraph)
+        for _, _, instruction in spans:
+            data = parse_csl(instruction)
+            if data is not None:
+                library.add_from_field(data)
+    for entry in config.get("baru", []):
+        library.add_new(entry)
+    notes = library.apply_fixes(config.get("perbaikan", []))
+    aliases = library.alias_index()
+    patterns = citation_patterns(aliases, config)
+
+    jobs: list[CitationJob] = []
+    for paragraph in paragraphs:
+        jobs.extend(citation_jobs(paragraph, library, aliases, patterns, config, notes))
+    cited = {id(work): work for job in jobs for work in job.works}
+    groups: dict[tuple[str, str], list[Work]] = {}
+    for work in cited.values():
+        work.suffix = ""
+        names = reference_authors(authors_of(work.item)) if authors_of(work.item) else work.item.get("title", "")
+        groups.setdefault((names, csl_year(work.item)), []).append(work)
+    for group in groups.values():
+        if len(group) > 1:
+            for index, work in enumerate(sorted(group, key=lambda item: (item.item.get("title") or "").lower())):
+                work.suffix = "abcdefghijklmnopqrstuvwxyz"[index]
+    ordered = sorted(cited.values(), key=reference_sort_key)
+    rank = {id(work): index for index, work in enumerate(ordered)}
+
+    counts = {"dikonversi": 0, "field diperbarui": 0, "manualFormatting diperbaiki": 0, "lokator dihapus": 0}
+    by_paragraph: dict[int, list[CitationJob]] = {}
+    for job in jobs:
+        by_paragraph.setdefault(id(job.paragraph), []).append(job)
+    for paragraph_jobs in by_paragraph.values():
+        for job in sorted(paragraph_jobs, key=lambda item: item.start, reverse=True):
+            works = sorted({id(work): work for work in job.works}.values(), key=lambda work: rank[id(work)])
+            data, visible = build_citation_data(works, job.mode, config, job.data)
+            if job.data is not None and data == job.data and pieces_text(visible) == job.old_result:
+                continue
+            instruction = "ADDIN CSL_CITATION " + json.dumps(data, ensure_ascii=False, separators=(",", ":"))
+            segments, _ = paragraph_model(job.paragraph)
+            runs = isolate(segments, job.start, job.end)
+            text_runs = [run for run in runs if run.tag == w("r") and run_kind(run)[0] == "text"]
+            template = plain_template(dominant_template(text_runs))
+            place_runs(runs, field_runs(template, instruction, visible), session)
+            counts["lokator dihapus"] += int(job.locator)
+            if job.converted:
+                counts["dikonversi"] += 1
+            else:
+                counts["field diperbarui"] += 1
+                old_manual = (job.data.get("mendeley") or {}).get("manualFormatting")
+                if old_manual is not None and old_manual != data["mendeley"].get("manualFormatting"):
+                    counts["manualFormatting diperbaiki"] += 1
+    lines = [f"  {name}: {count}" for name, count in counts.items()]
+    result = rebuild_bibliography(body, ordered, config, styles, session)
+    if result is None:
+        lines.append("  field CSL_BIBLIOGRAPHY tidak ditemukan")
+    else:
+        added, removed = result
+        lines.append(f"  daftar pustaka: {len(ordered)} entri; ditulis ulang/ditambah {len(added)}, dihapus/diganti {len(removed)}")
+        def entry_name(text: str) -> str:
+            year = re.search(r"\((\d{4}[a-z]?|t\.t\.)", text)
+            return f"{re.split(r',| \(| \[', text)[0].rstrip('.')} ({year.group(1) if year else 't.t.'})"
+
+        old_names = {entry_name(text) for text in removed}
+        new_names = {entry_name(text) for text in added}
+        for name in sorted(old_names - new_names):
+            lines.append(f"    entri dihapus (tidak disitasi): {name}")
+        for name in sorted(new_names - old_names):
+            lines.append(f"    entri baru: {name}")
+    for work in ordered:
+        if work.new:
+            lines.append(f"  karya baru tanpa tautan Mendeley (impor RIS/BibTeX): {work.item.get('id')}")
+    for note in dict.fromkeys(notes):
+        lines.append(f"  PERHATIKAN: {note}")
+    for paragraph in paragraphs:
+        masked, _ = masked_text(paragraph)
+        for found in PLAIN_CITATION_RE.finditer(masked):
+            lines.append(f"  PERHATIKAN sitasi teks biasa tersisa: {masked[max(0, found.start() - 30):found.end() + 10]!r}")
+    session.cited_works = ordered
+    session.library_config = config
+    return lines
+
+
+PLAIN_CITATION_RE = re.compile(
+    r"et al\.|\b[A-Z][\w.\-]+(?: (?:&|dan) [A-Za-z][\w\-]+(?: [A-Z][\w\-]+)?)? \((?:19|20)\d\d[a-z]?[),]"
+    r"|\([^()\x02]*?[A-Z][^()\x02]*?,? (?:19|20)\d\d[a-z]?(?:,[^()\x02]*)?\)|\bt\.t\.")
+
+
+# ---------------------------------------------------------------------------
+# Ekspor karya baru (RIS dan BibTeX) untuk diimpor ke Mendeley.
+# ---------------------------------------------------------------------------
+
+RIS_TYPES = {"article-journal": "JOUR", "paper-conference": "CONF", "chapter": "CHAP", "report": "RPRT",
+             "webpage": "ELEC", "book": "BOOK"}
+BIBTEX_TYPES = {"article-journal": "article", "paper-conference": "inproceedings", "chapter": "incollection",
+                "report": "techreport", "webpage": "misc", "book": "book"}
+
+
+def export_ris(works: list[Work]) -> str:
+    lines = []
+    for work in works:
+        item = work.item
+        lines.append(f"TY  - {RIS_TYPES.get(item.get('type'), 'GEN')}")
+        lines.append(f"ID  - {item.get('id')}")
+        for name in item.get("author") or []:
+            given = name.get("given", "")
+            lines.append(f"AU  - {name_family(name)}, {given}" if given else f"AU  - {name_family(name)}")
+        for name in item.get("editor") or []:
+            lines.append(f"A2  - {name_family(name)}, {name.get('given', '')}".rstrip(", "))
+        parts = ((item.get("issued") or {}).get("date-parts") or [[]])[0]
+        if parts:
+            lines.append(f"PY  - {parts[0]}")
+            if len(parts) > 1:
+                padded = [str(parts[0])] + [f"{int(value):02d}" for value in parts[1:]] + [""] * (3 - len(parts))
+                lines.append("DA  - " + "/".join(padded) + "/")
+        lines.append(f"TI  - {item.get('title', '')}")
+        if item.get("container-title"):
+            lines.append(f"{'JO' if item.get('type') == 'article-journal' else 'T2'}  - {item['container-title']}")
+        if item.get("collection-title"):
+            lines.append(f"T3  - {item['collection-title']}")
+        for key, tag in (("volume", "VL"), ("issue", "IS"), ("publisher", "PB"), ("number", "SN"), ("version", "ET"),
+                         ("genre", "M3"), ("DOI", "DO"), ("URL", "UR")):
+            if item.get(key):
+                lines.append(f"{tag}  - {item[key]}")
+        if item.get("page"):
+            first, _, last = str(item["page"]).partition("-")
+            lines.append(f"SP  - {first}")
+            if last:
+                lines.append(f"EP  - {last}")
+        lines.append("ER  - ")
+        lines.append("")
+    return "\n".join(lines)
+
+
+def bibtex_escape(text: str) -> str:
+    return re.sub(r"([&%#_$])", r"\\\1", str(text))
+
+
+def export_bibtex(works: list[Work], config: dict | None = None) -> str:
+    """BibTeX untuk Mendeley; dengan config, judul ditulis sentence case dan nama jurnal title case (APA 7)."""
+    entries = []
+    for work in works:
+        item = dict(work.item, id=work.fix_id) if work.fix_id else work.item
+        if config is not None:
+            item = dict(item, title=sentence_case(item.get("title", ""), config))
+            if item.get("container-title"):
+                rendered = sentence_case if item.get("type") in JENIS_BAB else title_case
+                item["container-title"] = rendered(item["container-title"], config)
+        fields: list[tuple[str, str]] = []
+        names = []
+        for name in item.get("author") or []:
+            if name.get("given"):
+                names.append(f"{name_family(name)}, {name['given']}")
+            else:
+                names.append("{" + name_family(name) + "}")
+        if names:
+            fields.append(("author", " and ".join(names)))
+        editors = [f"{name_family(name)}, {name.get('given', '')}".rstrip(", ") for name in item.get("editor") or []]
+        if editors:
+            fields.append(("editor", " and ".join(editors)))
+        fields.append(("title", "{" + item.get("title", "") + "}"))
+        kind = item.get("type")
+        container = {"article-journal": "journal", "paper-conference": "booktitle", "chapter": "booktitle"}.get(kind)
+        if container and item.get("container-title"):
+            fields.append((container, item["container-title"]))
+        parts = ((item.get("issued") or {}).get("date-parts") or [[]])[0]
+        if parts:
+            fields.append(("year", str(parts[0])))
+            if len(parts) > 1:
+                fields.append(("month", str(parts[1])))
+            if len(parts) > 2:
+                fields.append(("day", str(parts[2])))
+        mapping = (("collection-title", "series"), ("volume", "volume"), ("issue", "number"), ("page", "pages"),
+                   ("version", "edition"), ("genre", "type"), ("DOI", "doi"), ("URL", "url"))
+        for key, name in mapping:
+            if item.get(key):
+                value = str(item[key]).replace("-", "--") if key == "page" else item[key]
+                fields.append((name, value))
+        if kind and kind.startswith("article") and item.get("number") and not item.get("page"):
+            fields.append(("pages", str(item["number"])))
+        if item.get("publisher"):
+            fields.append(("institution" if kind == "report" else "publisher", item["publisher"]))
+        if item.get("number") and kind == "report":
+            fields = [(name, value) for name, value in fields if name != "number"] + [("number", item["number"])]
+        body = ",\n".join(f"  {name} = {{{bibtex_escape(value) if name not in ('url', 'doi') else value}}}" for name, value in fields)
+        entries.append(f"@{BIBTEX_TYPES.get(kind, 'misc')}{{{item.get('id')},\n{body}\n}}\n")
+    return "\n".join(entries)
+
+
 def max_numeric_id(roots: list[etree._Element], tags: tuple[str, ...]) -> int:
     highest = -1
     for root in roots:
@@ -2336,6 +3647,143 @@ def comments_part_name(files: dict[str, bytes]) -> str:
     return "word/comments.xml"
 
 
+SETTINGS_AFTER_UPDATE_FIELDS = {
+    "hdrShapeDefaults", "footnotePr", "endnotePr", "compat", "docVars", "rsids", "mathPr", "attachedSchema",
+    "themeFontLang", "clrSchemeMapping", "doNotIncludeSubdocsInStats", "doNotAutoCompressPictures", "forceUpgrade",
+    "captions", "readModeInkLockDown", "smartTagType", "schemaLibrary", "shapeDefaults", "doNotEmbedSmartTags",
+    "decimalSymbol", "listSeparator",
+}
+
+
+def set_update_fields(files: dict[str, bytes]) -> bool:
+    """w:updateFields di settings.xml: Word memperbarui Daftar Isi/Tabel/Gambar dan PAGEREF saat dibuka."""
+    name = "word/settings.xml"
+    if name not in files:
+        return False
+    root = etree.fromstring(files[name])
+    for existing in root.findall(w("updateFields")):
+        root.remove(existing)
+    element = etree.Element(w("updateFields"), {w("val"): "true"})
+    anchor = next((child for child in root if isinstance(child.tag, str) and child.tag.startswith(f"{{{W_NS}}}")
+                   and etree.QName(child).localname in SETTINGS_AFTER_UPDATE_FIELDS), None)
+    if anchor is not None:
+        anchor.addprevious(element)
+    else:
+        root.append(element)
+    files[name] = serialize(root)
+    return True
+
+
+def accept_all(root: etree._Element) -> None:
+    """Terima semua Track Changes (semantik Accept All Word) langsung pada XML."""
+    for row in list(root.iter(w("tr"))):
+        properties = row.find(w("trPr"))
+        if properties is None:
+            continue
+        if properties.find(w("del")) is not None:
+            row.getparent().remove(row)
+            continue
+        for mark in properties.findall(w("ins")):
+            properties.remove(mark)
+    for table in list(root.iter(w("tbl"))):
+        if not table.findall(w("tr")):
+            table.getparent().remove(table)
+    merged: list[etree._Element] = []
+    for paragraph in list(root.iter(w("p"))):
+        mark = paragraph.find(f"{w('pPr')}/{w('rPr')}")
+        if mark is None:
+            continue
+        for element in mark.findall(w("ins")):
+            mark.remove(element)
+        if mark.find(w("del")) is not None:
+            for element in mark.findall(w("del")):
+                mark.remove(element)
+            merged.append(paragraph)
+        if not len(mark):
+            properties = mark.getparent()
+            properties.remove(mark)
+            if not len(properties):
+                paragraph.remove(properties)
+    for element in list(root.iter(w("del"), w("moveFrom"))):
+        parent = element.getparent()
+        if parent is not None and parent.tag not in (w("rPr"), w("trPr")):
+            parent.remove(element)
+    for element in list(root.iter(w("ins"), w("moveTo"))):
+        parent = element.getparent()
+        if parent is None or parent.tag in (w("rPr"), w("trPr")):
+            continue
+        index = parent.index(element)
+        for child in list(element):
+            parent.insert(index, child)
+            index += 1
+        parent.remove(element)
+    for change in list(root.iter(w("pPrChange"), w("rPrChange"), w("tblPrChange"), w("trPrChange"),
+                                 w("tcPrChange"), w("sectPrChange"), w("tblGridChange"))):
+        change.getparent().remove(change)
+    for paragraph in merged:
+        parent = paragraph.getparent()
+        if parent is None:
+            continue
+        following = paragraph.getnext()
+        content = [child for child in paragraph if child.tag != w("pPr")]
+        if following is not None and following.tag == w("p"):
+            properties = following.find(w("pPr"))
+            position = 1 if properties is not None else 0
+            for child in content:
+                following.insert(position, child)
+                position += 1
+            parent.remove(paragraph)
+        elif not "".join(paragraph.itertext()).strip() and not has_drawing(paragraph):
+            parent.remove(paragraph)
+
+
+def drop_comments(root: etree._Element, keep: set[int]) -> None:
+    for element in list(root.iter(w("commentRangeStart"), w("commentRangeEnd"))):
+        if int(element.get(w("id"), "-1")) not in keep:
+            element.getparent().remove(element)
+    for reference in list(root.iter(w("commentReference"))):
+        if int(reference.get(w("id"), "-1")) in keep:
+            continue
+        run = reference.getparent()
+        run.remove(reference)
+        if not [child for child in run if child.tag != w("rPr")]:
+            run.getparent().remove(run)
+
+
+def clean_files(files: dict[str, bytes], comments_name: str, keep: set[int]) -> dict[str, bytes]:
+    """Salinan bersih: semua perubahan diterima, hanya komentar yang masih butuh masukan penulis."""
+    clean = dict(files)
+    for part in TEXT_PARTS:
+        if part in clean:
+            root = etree.fromstring(clean[part])
+            accept_all(root)
+            drop_comments(root, keep)
+            clean[part] = serialize(root)
+    if comments_name in clean:
+        comments = etree.fromstring(clean[comments_name])
+        for comment in list(comments.iter(w("comment"))):
+            if int(comment.get(w("id"), "-1")) not in keep:
+                comments.remove(comment)
+        clean[comments_name] = serialize(comments)
+    return clean
+
+
+def write_package(output: Path, infos: list[zipfile.ZipInfo], files: dict[str, bytes]) -> None:
+    written = set()
+    with zipfile.ZipFile(output, "w", zipfile.ZIP_DEFLATED) as archive:
+        for info in infos:
+            if info.filename in files:
+                archive.writestr(info, files[info.filename])
+                written.add(info.filename)
+        for name, content in files.items():
+            if name not in written:
+                archive.writestr(name, content)
+    with zipfile.ZipFile(output) as archive:
+        for name in archive.namelist():
+            if name.endswith(".xml") or name.endswith(".rels"):
+                etree.fromstring(archive.read(name))
+
+
 def serialize(root: etree._Element) -> bytes:
     return etree.tostring(root, xml_declaration=True, encoding="UTF-8", standalone=True)
 
@@ -2358,7 +3806,7 @@ def load_revisions(path: Path, only: set[str] | None) -> list[Revision]:
         if not item.get("cari"):
             sys.exit(f"butir {identifier}: 'cari' wajib diisi")
         extra = {key: value for key, value in item.items()
-                 if key in STRUCTURAL_KEYS or key in ("sebelum", "gaya", "tegak")}
+                 if key in STRUCTURAL_KEYS or key in ("sebelum", "gaya", "tegak", "komentar_bersih")}
         if item.get("ganti") is None and not item.get("catatan") and not any(key in extra for key in STRUCTURAL_KEYS):
             sys.exit(f"butir {identifier}: isi 'ganti', 'catatan', atau salah satu dari {', '.join(STRUCTURAL_KEYS)}")
         if item.get("ganti") is not None and "\n" in item["ganti"]:
@@ -2437,7 +3885,7 @@ def apply_structural(revision: Revision, workspace: Workspace, with_comments: bo
     if with_comments and revision.extra.get("_komentar_gambar"):
         notes.append(f"[{revision.id}] {revision.extra.pop('_komentar_gambar')}")
     if notes and created:
-        attach_comment_to_block(created, "\n".join(notes), workspace.session)
+        attach_comment_to_block(created, "\n".join(notes), workspace.session, bool(revision.extra.get("komentar_bersih")))
 
 
 def run(arguments: argparse.Namespace) -> int:
@@ -2556,6 +4004,11 @@ def run(arguments: argparse.Namespace) -> int:
     report(revisions, arguments.laporan)
     config = json.loads(Path(arguments.tata_tulis).read_text(encoding="utf-8")) if arguments.tata_tulis else {}
     body = document_root.find(w("body"))
+    if config.get("pustaka"):
+        library_path = Path(arguments.tata_tulis).resolve().parent / config["pustaka"]
+        print("Sitasi Mendeley dan daftar pustaka APA 7:")
+        for line in mendeley_citations(body, json.loads(library_path.read_text(encoding="utf-8")), styles, session):
+            print(line)
     if arguments.tata_tulis:
         counts = apply_layout_rules(body, config, styles, session)
         print("Tata tulis: " + ", ".join(f"{name} {count}" for name, count in counts.items()))
@@ -2571,23 +4024,29 @@ def run(arguments: argparse.Namespace) -> int:
     if session.comments:
         files[comments_name] = build_comments_part(existing_comments, session.comments, session)
         ensure_comments_wiring(files)
+    if config.get("perbarui_field") and set_update_fields(files):
+        print("settings.xml: w:updateFields aktif (Word memperbarui daftar isi, tabel, gambar saat dibuka)")
 
-    written = set()
-    with zipfile.ZipFile(output, "w", zipfile.ZIP_DEFLATED) as archive:
-        for info in infos:
-            if info.filename in files:
-                archive.writestr(info, files[info.filename])
-                written.add(info.filename)
-        for name, content in files.items():
-            if name not in written:
-                archive.writestr(name, content)
-    with zipfile.ZipFile(output) as archive:
-        for name in archive.namelist():
-            if name.endswith(".xml") or name.endswith(".rels"):
-                etree.fromstring(archive.read(name))
+    write_package(output, infos, files)
     print(f"\nTersimpan: {output}")
     mode = "Track Changes" if session.tracked else "langsung (tanpa Track Changes)"
     print(f"Mode: {mode}; penulis revisi: {session.author}")
+    if arguments.bersih:
+        clean_output = Path(arguments.bersih)
+        if clean_output.resolve() == source.resolve():
+            sys.exit("File salinan bersih tidak boleh sama dengan file asli.")
+        write_package(clean_output, infos, clean_files(files, comments_name, session.clean_comment_ids))
+        print(f"Salinan bersih (semua perubahan diterima, {len(session.clean_comment_ids)} komentar): {clean_output}")
+    if arguments.referensi_baru:
+        new_works = [work for work in session.cited_works if work.new]
+        prefix = Path(arguments.referensi_baru)
+        prefix.with_suffix(".ris").write_text(export_ris(new_works), encoding="utf-8")
+        prefix.with_suffix(".bib").write_text(export_bibtex(new_works), encoding="utf-8")
+        print(f"Karya baru ({len(new_works)}): {prefix.with_suffix('.ris')} dan {prefix.with_suffix('.bib')}")
+        fixed_works = sorted((work for work in session.cited_works if work.fixed and not work.new), key=reference_sort_key)
+        fixes_path = prefix.parent / "koreksi-pustaka-mendeley.bib"
+        fixes_path.write_text(export_bibtex(fixed_works, session.library_config), encoding="utf-8")
+        print(f"Karya Mendeley yang dikoreksi ({len(fixed_works)}): {fixes_path}")
     return 0
 
 
@@ -2626,6 +4085,9 @@ def main() -> int:
     parser.add_argument("--tata-tulis", help="file .json aturan tata tulis (miring, judul tabel/gambar, spasi)")
     parser.add_argument("--nomori-ulang", action="store_true",
                         help="nomori ulang judul Tabel/Gambar per bab dan rujukannya setelah semua revisi")
+    parser.add_argument("--bersih", help="tulis juga salinan bersih .docx (semua perubahan diterima, hanya komentar "
+                                         "bertanda komentar_bersih)")
+    parser.add_argument("--referensi-baru", help="awalan berkas .ris/.bib untuk karya baru (belum di pustaka Mendeley)")
     parser.add_argument("--uji", action="store_true", help="cek saja tanpa menulis file")
     return run(parser.parse_args())
 
