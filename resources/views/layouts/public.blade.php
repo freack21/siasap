@@ -29,15 +29,7 @@
                 @endforeach
             </nav>
 
-            <div class="hidden justify-self-end md:block">
-                @auth
-                    <a href="{{ route('admin.overview') }}" class="btn btn-secondary btn-sm">
-                        <x-tabler-layout-dashboard class="size-4" /> Panel Admin
-                    </a>
-                @else
-                    <a href="{{ route('login') }}" class="btn btn-ghost btn-sm"><x-tabler-login-2 class="size-4" /> Masuk Admin</a>
-                @endauth
-            </div>
+            <div class="hidden md:block" aria-hidden="true"></div>
 
             <button type="button" class="btn btn-ghost btn-sm justify-self-end md:hidden" @click="open = !open" :aria-expanded="open" aria-label="Buka menu">
                 <x-tabler-menu-2 class="size-5" x-show="!open" />
@@ -54,12 +46,6 @@
                         {{ $link['label'] }}
                     </a>
                 @endforeach
-                <div class="my-2 border-t border-slate-100"></div>
-                @auth
-                    <a href="{{ route('admin.overview') }}" class="nav-link"><x-tabler-layout-dashboard class="size-4" /> Panel Admin</a>
-                @else
-                    <a href="{{ route('login') }}" class="nav-link"><x-tabler-login-2 class="size-4" /> Masuk Admin</a>
-                @endauth
             </div>
         </nav>
     </header>
