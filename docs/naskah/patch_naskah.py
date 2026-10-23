@@ -31,7 +31,10 @@ Opsi lain:
   --bersih F.docx   tulis juga salinan bersih: semua perubahan diterima, komentar
                     hanya dari butir bertanda "komentar_bersih": true
   --referensi-baru P  tulis P.ris dan P.bib berisi karya baru (yang belum ada di
-                    pustaka Mendeley) untuk diimpor penulis ke Mendeley
+                    pustaka Mendeley) untuk diimpor penulis ke Mendeley, dan
+                    koreksi-pustaka-mendeley.bib (di folder P) berisi karya Mendeley yang
+                    dikoreksi lewat "perbaikan" (kunci BibTeX dari "kunci"), agar penulis bisa
+                    memperbarui pustakanya sehingga Refresh tidak memunculkan data lama
 
 Pembangunan lengkap naskah skripsi (dari folder naskah.docx):
   python3 -I patch_naskah.py naskah.docx revisi-naskah.json --tata-tulis tata-tulis.json \
@@ -52,14 +55,16 @@ Kunci tata-tulis.json:
                        sel tabel, judul) menjadi field Mendeley ADDIN CSL_CITATION berformat APA 7
                        (Track Changes: run field di w:ins, teks lama di w:del). Karya yang sudah ada
                        di field Mendeley naskah memakai itemData dan uris-nya; "perbaikan" membetulkan
-                       data yang salah; "baru" berisi itemData CSL karya baru (tanpa uris). Sitasi
+                       data yang salah atau melengkapi yang kosong (nilai null menghapus kunci, "kunci" = kunci BibTeX
+                       koreksi, "bukti" = URL sumber per kolom); "baru" berisi itemData CSL karya baru (tanpa uris). Sitasi
                        teks biasa "(Nama, 2020)", "Nama et al. (2020, hlm. 5)", "Sumber : Nama, 2020"
                        dan sel tabel berisi nama penulis (tahun di kolom lain) dikenali; lokator
                        halaman/tabel dihapus, "dan" untuk sitasi naratif dua penulis, beberapa karya
                        diurutkan abjad, huruf a/b/c dihitung otomatis, "t.t." untuk tanpa tahun.
                        Field CSL_BIBLIOGRAPHY disusun ulang dari itemData karya yang disitasi saja
                        (urut abjad, DOI https://doi.org/..., judul sentence case, nama jurnal title
-                       case dan miring bersama volume).
+                       case dan miring bersama volume; judul artikel/makalah prosiding tidak pernah
+                       miring; "number" artikel tanpa halaman ditulis "Artikel N").
 
 Format JSON:
   {"revisi": [{"id": "2.9-01", "lokasi": "2.9 hlm. 30",
@@ -253,6 +258,7 @@ class Session:
     base_dirs: list[Path] = field(default_factory=list)
     clean_comment_ids: set[int] = field(default_factory=set)
     cited_works: list = field(default_factory=list)
+    library_config: dict = field(default_factory=dict)
 
     def remember_inserted(self, element: etree._Element, context: str = "naskah") -> None:
         self.inserted[id(element)] = element
@@ -2587,6 +2593,7 @@ class Work:
     uris: list[str] = field(default_factory=list)
     new: bool = False
     fixed: bool = False
+    fix_id: str = ""
     aliases: set[str] = field(default_factory=set)
     suffix: str = ""
 
@@ -2784,12 +2791,7 @@ def render_reference(work: Work, config: dict) -> list[tuple[str, bool]]:
     kind = item.get("type") or "article-journal"
     container = (item.get("container-title") or "").strip()
     title = sentence_case(item.get("title", ""), config)
-    if kind in JENIS_BAB:
-        title_italic = False
-    elif kind.startswith("article"):
-        title_italic = not container
-    else:
-        title_italic = True
+    title_italic = not (kind in JENIS_BAB or kind.startswith("article"))
     title_part: list[tuple[str, bool]] = [(title, title_italic)]
     details = []
     if item.get("version"):
@@ -2827,6 +2829,9 @@ def render_reference(work: Work, config: dict) -> list[tuple[str, bool]]:
         if pages:
             source.append((", " if source else "", False))
             source.append((pages, False))
+        elif item.get("number"):
+            source.append((", " if source else "", False))
+            source.append((f"Artikel {item['number']}", False))
         if source:
             pieces.extend(source)
             pieces.append((". ", False))
@@ -2977,7 +2982,10 @@ class Library:
             if fix.get("itemData"):
                 old_key = work.key
                 work.item.update(deepcopy(fix["itemData"]))
+                for name in [name for name, value in fix["itemData"].items() if value is None]:
+                    del work.item[name]
                 work.fixed = True
+                work.fix_id = fix.get("kunci", "")
                 if work_key(work.item) != old_key:
                     self.works[work_key(work.item)] = work
                     work.aliases.add(f"__kunci_lama__{old_key}")
@@ -3472,6 +3480,7 @@ def mendeley_citations(body: etree._Element, config: dict, styles: StyleBook, se
         for found in PLAIN_CITATION_RE.finditer(masked):
             lines.append(f"  PERHATIKAN sitasi teks biasa tersisa: {masked[max(0, found.start() - 30):found.end() + 10]!r}")
     session.cited_works = ordered
+    session.library_config = config
     return lines
 
 
@@ -3530,10 +3539,16 @@ def bibtex_escape(text: str) -> str:
     return re.sub(r"([&%#_$])", r"\\\1", str(text))
 
 
-def export_bibtex(works: list[Work]) -> str:
+def export_bibtex(works: list[Work], config: dict | None = None) -> str:
+    """BibTeX untuk Mendeley; dengan config, judul ditulis sentence case dan nama jurnal title case (APA 7)."""
     entries = []
     for work in works:
-        item = work.item
+        item = dict(work.item, id=work.fix_id) if work.fix_id else work.item
+        if config is not None:
+            item = dict(item, title=sentence_case(item.get("title", ""), config))
+            if item.get("container-title"):
+                rendered = sentence_case if item.get("type") in JENIS_BAB else title_case
+                item["container-title"] = rendered(item["container-title"], config)
         fields: list[tuple[str, str]] = []
         names = []
         for name in item.get("author") or []:
@@ -3564,6 +3579,8 @@ def export_bibtex(works: list[Work]) -> str:
             if item.get(key):
                 value = str(item[key]).replace("-", "--") if key == "page" else item[key]
                 fields.append((name, value))
+        if kind and kind.startswith("article") and item.get("number") and not item.get("page"):
+            fields.append(("pages", str(item["number"])))
         if item.get("publisher"):
             fields.append(("institution" if kind == "report" else "publisher", item["publisher"]))
         if item.get("number") and kind == "report":
@@ -4026,6 +4043,10 @@ def run(arguments: argparse.Namespace) -> int:
         prefix.with_suffix(".ris").write_text(export_ris(new_works), encoding="utf-8")
         prefix.with_suffix(".bib").write_text(export_bibtex(new_works), encoding="utf-8")
         print(f"Karya baru ({len(new_works)}): {prefix.with_suffix('.ris')} dan {prefix.with_suffix('.bib')}")
+        fixed_works = sorted((work for work in session.cited_works if work.fixed and not work.new), key=reference_sort_key)
+        fixes_path = prefix.parent / "koreksi-pustaka-mendeley.bib"
+        fixes_path.write_text(export_bibtex(fixed_works, session.library_config), encoding="utf-8")
+        print(f"Karya Mendeley yang dikoreksi ({len(fixed_works)}): {fixes_path}")
     return 0
 
 
