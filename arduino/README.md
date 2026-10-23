@@ -1,4 +1,34 @@
-# Panduan Firmware ESP32 — Sistem Pemantauan Kualitas Udara (SIASAP)
+# Panduan Firmware ESP32 — SIASAP
+
+## Perangkat untuk aplikasi ini
+
+Aplikasi SIASAP saat ini hanya memakai **satu perangkat ESP32 yang terhubung langsung lewat WiFi**: [`siasap_monitor/siasap_monitor.ino`](siasap_monitor/siasap_monitor.ino) (ESP32 Arduino core 3 atau lebih baru).
+
+- Sensor: MQ-135 (CO₂, NH₃) di GPIO 33 dan MQ-2 (CO, H₂) di GPIO 32 (dapat diubah di sketsa).
+- Alur: pemanasan 30 detik, baseline = rata-rata 50 pembacaan ADC tiap sensor, lalu kirim data tiap 5 detik.
+- Konversi mengikuti Solihat, S. M., Salsabila, S., & Susilawati, S. (2026), JITET 14(1), hlm. 1596: `ppm = max(0, adc - baseline) * (5.0 / 4096.0) * k` dengan `k` = 100 (CO₂), 80 (NH₃), 50 (CO), 30 (H₂). Nilai adalah indikator relatif terhadap kondisi udara saat perangkat menyala, bukan konsentrasi absolut.
+- Waktu diambil dari NTP (WIB); data tidak dikirim sebelum waktu tersinkron.
+- Penyesuaian rumus/kalibrasi adalah tanggung jawab penelitian IoT dan perlu ditinjau rekan IoT.
+
+Isi konfigurasi di bagian atas sketsa: `WIFI_SSID`, `WIFI_PASSWORD`, `SERVER_URL` (`http://<ip>:8000/api/telemetry`), `API_KEY` (opsional, header `X-Api-Key`), dan `DEVICE_ID` (`AIR-001`).
+
+Payload `POST /api/telemetry`:
+
+```json
+{
+  "device_id": "AIR-001",
+  "timestamp": "2026-10-23 14:05:30",
+  "co2_ppm": 12.50,
+  "nh3_ppm": 10.00,
+  "co_ppm": 6.25,
+  "h2_ppm": 3.75
+}
+```
+
+---
+
+> **Arsip penelitian IoT, tidak dipakai aplikasi.** Seluruh bagian di bawah ini (sketsa topologi star/mesh, kalibrasi R0, metrik RSSI/hop/QoS, dan format payload `node_id`/`seq_number`) berasal dari penelitian IoT sebelumnya dan **tidak digunakan** oleh aplikasi SIASAP saat ini.
+
 
 Direktori ini berisi kode program (*firmware*) Arduino C++ untuk perangkat keras **ESP32 DevKit V1** yang terintegrasi langsung dengan aplikasi web **SIASAP (Laravel + Livewire)**.
 
