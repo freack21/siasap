@@ -5,7 +5,7 @@ namespace App\Livewire;
 use App\Models\Room;
 use App\Models\SensorLog;
 use App\Support\AirQuality;
-use App\Support\PreventiveActions;
+use App\Support\AirQualityClassifier;
 use Illuminate\Support\Collection;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
@@ -35,17 +35,17 @@ class UserDashboard extends Component
 
         // Status keseluruhan = kondisi terburuk dari pembacaan terakhir tiap ruangan
         $worstCard = $cards->filter(fn (array $card) => $card['log'])
-            ->sortByDesc(fn (array $card) => $card['log']->ku_value)
+            ->sortByDesc(fn (array $card) => AirQualityClassifier::rank($card['log']->overall_category))
             ->first();
         $worst = $worstCard['log'] ?? null;
         $lastUpdate = $cards->pluck('updated_at')->filter()->max();
 
         return view('livewire.user-dashboard', [
             'cards' => $cards,
-            'overallStatus' => $worst?->ku_status,
-            'overallCategory' => AirQuality::category($worst?->ku_status),
+            'overallStatus' => $worst?->overall_category,
+            'overallCategory' => AirQuality::category($worst?->overall_category),
             'worstRoom' => $worstCard['room'] ?? null,
-            'worstPreventive' => $worst ? PreventiveActions::forLog($worst) : null,
+            'worstRecommendation' => $worst?->recommendation(),
             'lastUpdate' => $lastUpdate,
             'devicesTotal' => $devicesTotal,
             'devicesOnline' => $devicesOnline,
@@ -56,28 +56,22 @@ class UserDashboard extends Component
 
     /**
      * Ringkas satu ruangan: pembacaan terburuk dari node aktif, status perangkat,
-     * dan parameter dominan.
+     * dan penyebab utama.
      *
-     * @return array{room: Room, log: ?SensorLog, dominant: ?string, devices_total: int, devices_online: int, online: bool, updated_at: mixed}
+     * @return array{room: Room, log: ?SensorLog, dominant: list<string>, devices_total: int, devices_online: int, online: bool, updated_at: mixed}
      */
     protected function summarizeRoom(Room $room, $threshold): array
     {
         /** @var Collection<int, SensorLog> $logs */
         $logs = $room->nodes->pluck('latestLog')->filter();
 
-        $worst = $logs->sortByDesc('ku_value')->first();
+        $worst = $logs->sortByDesc(fn (SensorLog $log) => AirQualityClassifier::rank($log->overall_category))->first();
         $online = $logs->filter(fn (SensorLog $log) => $log->created_at->gte($threshold))->count();
-
-        $dominant = null;
-        if ($worst) {
-            $dominant = $worst->ku_dominant
-                ?? SensorLog::computeKu($worst->co2, $worst->nh3, $worst->co, $worst->h2)['dominant'];
-        }
 
         return [
             'room' => $room,
             'log' => $worst,
-            'dominant' => $dominant,
+            'dominant' => $worst?->dominantGases() ?? [],
             'devices_total' => $room->nodes->count(),
             'devices_online' => $online,
             'online' => $online > 0,

@@ -53,16 +53,10 @@
     {{-- Ringkasan --}}
     <x-ui.card :icon="'tabler-chart-pie'" title="Ringkasan" description="Periode: {{ $period }}">
         <div class="grid grid-cols-1 gap-6 md:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)]">
-            <dl class="grid grid-cols-3 gap-4">
+            <dl class="grid grid-cols-2 gap-4">
                 <div>
                     <dt class="text-xs font-medium text-slate-500">Jumlah data</dt>
                     <dd class="mt-1 text-2xl font-bold tracking-tight text-slate-900 num">{{ number_format($summary['count'], 0, ',', '.') }}</dd>
-                </div>
-                <div>
-                    <dt class="text-xs font-medium text-slate-500">Rata-rata Indeks KU</dt>
-                    <dd class="mt-1 text-2xl font-bold tracking-tight text-slate-900 num">
-                        {{ $summary['average'] !== null ? number_format($summary['average'], 0, ',', '.') : '—' }}
-                    </dd>
                 </div>
                 <div>
                     <dt class="text-xs font-medium text-slate-500">Kondisi terburuk</dt>
@@ -133,7 +127,7 @@
                         <tr>
                             <th>Waktu</th>
                             <th>Ruangan</th>
-                            <th>Indeks KU</th>
+                            <th>Kategori</th>
                             <th>Penyebab utama</th>
                             @foreach ($gases as $gas)
                                 <th class="text-right">{{ $gas['symbol'] }}</th>
@@ -143,17 +137,12 @@
                     <tbody>
                         @foreach ($logs as $log)
                             <tr wire:key="log-{{ $log->id }}">
-                                <td class="num text-slate-600">{{ $log->created_at->translatedFormat('d M Y H:i:s') }}</td>
+                                <td class="num text-slate-600">{{ ($log->recorded_at ?? $log->created_at)->translatedFormat('d M Y H:i:s') }}</td>
                                 <td class="font-medium text-slate-900">{{ $log->node?->room?->name ?? $log->node?->name ?? 'Perangkat #'.$log->node_id }}</td>
+                                <td><x-ui.ku-badge :status="$log->overall_category" size="sm" /></td>
                                 <td>
-                                    <span class="flex items-center gap-2">
-                                        <span class="w-8 font-semibold text-slate-900 num">{{ number_format($log->ku_value, 0, ',', '.') }}</span>
-                                        <x-ui.ku-badge :status="$log->ku_status" size="sm" />
-                                    </span>
-                                </td>
-                                <td>
-                                    @if ($log->ku_dominant && isset($gases[$log->ku_dominant]))
-                                        <span class="font-medium text-slate-900">{{ $gases[$log->ku_dominant]['symbol'] }}</span>
+                                    @if ($log->dominantGases() !== [])
+                                        <span class="font-medium text-slate-900">{{ collect($log->dominantGases())->map(fn ($key) => $gases[$key]['symbol'] ?? strtoupper($key))->implode(', ') }}</span>
                                     @else
                                         <span class="text-slate-400">—</span>
                                     @endif

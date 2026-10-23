@@ -1,14 +1,4 @@
 <div class="space-y-10">
-    @php
-        // Format angka gaya Indonesia tanpa nol desimal berlebih (mis. 1.000 / 4,4).
-        $fmt = function (float $value, int $decimals = 1): string {
-            $text = number_format($value, $decimals, ',', '.');
-
-            return str_contains($text, ',') ? rtrim(rtrim($text, '0'), ',') : $text;
-        };
-        $dominant = $gases[$result['dominant']];
-    @endphp
-
     <x-ui.page-header
         :icon="'tabler-book-2'"
         title="Panduan Kualitas Udara"
@@ -34,73 +24,35 @@
                     setiap beberapa detik.
                 </p>
                 <p>
-                    Hasil pengukuran dikirim ke server lalu diringkas menjadi satu angka, yaitu <strong class="font-semibold text-slate-900">Indeks KU</strong>
-                    (Kualitas Udara), beserta kategorinya. Dengan begitu Anda cukup melihat satu status untuk mengetahui apakah udara ruangan masih nyaman.
+                    Hasil pengukuran dikirim ke server lalu diklasifikasikan menjadi empat kategori: Baik, Sedang, Tidak Sehat, dan Berbahaya.
+                    Dengan begitu Anda cukup melihat satu kategori untuk mengetahui apakah udara ruangan masih nyaman.
                 </p>
             </div>
         </div>
     </section>
 
-    {{-- Cara membaca Indeks KU --}}
+    {{-- Cara membaca kategori --}}
     <section class="space-y-4">
         <div>
-            <h2 class="text-lg font-semibold tracking-tight text-slate-900">Cara membaca Indeks KU</h2>
-            <p class="mt-1 max-w-3xl text-sm text-slate-500">Indeks KU bernilai 0 sampai 500. Semakin kecil angkanya, semakin baik udaranya.</p>
+            <h2 class="text-lg font-semibold tracking-tight text-slate-900">Cara membaca kategori</h2>
+            <p class="mt-1 max-w-3xl text-sm text-slate-500">Kategori ruangan ditentukan dari kategori gas yang paling buruk.</p>
         </div>
 
-        <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
-            <div class="card card-body">
-                <ol class="space-y-4 text-sm text-slate-600">
-                    <li class="flex gap-3">
-                        <span class="icon-chip icon-chip-sm"><x-tabler-math-function class="size-4" /></span>
-                        <span><strong class="font-semibold text-slate-900">Setiap gas dinilai sendiri.</strong> Kadar tiap gas (dalam ppm) diubah menjadi <em>sub-indeks</em> 0–500 berdasarkan ambang batasnya masing-masing.</span>
-                    </li>
-                    <li class="flex gap-3">
-                        <span class="icon-chip icon-chip-sm"><x-tabler-arrow-big-up-lines class="size-4" /></span>
-                        <span><strong class="font-semibold text-slate-900">Diambil yang tertinggi.</strong> Indeks KU ruangan adalah sub-indeks yang paling tinggi di antara keempat gas. Jadi satu gas yang buruk sudah cukup untuk menurunkan status ruangan.</span>
-                    </li>
-                    <li class="flex gap-3">
-                        <span class="icon-chip icon-chip-sm"><x-tabler-target class="size-4" /></span>
-                        <span><strong class="font-semibold text-slate-900">Penyebab utama.</strong> Gas yang menghasilkan sub-indeks tertinggi disebut <em>parameter dominan</em> &mdash; ditampilkan sebagai "Penyebab utama" agar Anda tahu sumber masalahnya.</span>
-                    </li>
-                </ol>
-            </div>
-
-            <x-ui.card :icon="'tabler-calculator'" title="Contoh perhitungan" description="Dihitung langsung oleh sistem dari contoh nilai pengukuran." :padded="false">
-                <div class="overflow-x-auto">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Gas</th>
-                                <th class="text-right">Kadar</th>
-                                <th class="text-right">Sub-indeks</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($gases as $key => $gas)
-                                @php $isDominant = $key === $result['dominant']; @endphp
-                                <tr>
-                                    <td @class(['font-semibold text-slate-900' => $isDominant])>
-                                        {{ $gas['symbol'] }}
-                                        @if ($isDominant)
-                                            <span class="ml-1.5 rounded-md bg-slate-100 px-1.5 py-0.5 text-[11px] font-medium text-slate-600">tertinggi</span>
-                                        @endif
-                                    </td>
-                                    <td class="text-right num">{{ $fmt($example[$key]) }} ppm</td>
-                                    <td @class(['text-right num', 'font-semibold text-slate-900' => $isDominant])>{{ $fmt($result['sub_indices'][$key]) }}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-                <div class="flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 px-5 py-4 sm:px-6">
-                    <p class="text-sm text-slate-600">
-                        Indeks KU = <span class="font-semibold text-slate-900 num">{{ $fmt($result['value']) }}</span>,
-                        penyebab utama <span class="font-semibold text-slate-900">{{ $dominant['symbol'] }}</span>
-                    </p>
-                    <x-ui.ku-badge :status="$result['status']" />
-                </div>
-            </x-ui.card>
+        <div class="card card-body">
+            <ol class="space-y-4 text-sm text-slate-600">
+                <li class="flex gap-3">
+                    <span class="icon-chip icon-chip-sm"><x-tabler-math-function class="size-4" /></span>
+                    <span><strong class="font-semibold text-slate-900">Setiap gas dinilai sendiri.</strong> Kadar tiap gas (dalam ppm) dibandingkan dengan ambang batasnya masing-masing.</span>
+                </li>
+                <li class="flex gap-3">
+                    <span class="icon-chip icon-chip-sm"><x-tabler-arrow-big-up-lines class="size-4" /></span>
+                    <span><strong class="font-semibold text-slate-900">Diambil yang terburuk.</strong> Kategori keseluruhan adalah kategori gas yang paling buruk. Jadi satu gas yang buruk sudah cukup untuk menurunkan status ruangan.</span>
+                </li>
+                <li class="flex gap-3">
+                    <span class="icon-chip icon-chip-sm"><x-tabler-target class="size-4" /></span>
+                    <span><strong class="font-semibold text-slate-900">Penyebab utama.</strong> Gas yang berada pada kategori terburuk ditampilkan sebagai "Penyebab utama" agar Anda tahu sumber masalahnya.</span>
+                </li>
+            </ol>
         </div>
     </section>
 
@@ -108,7 +60,7 @@
     <section class="space-y-4">
         <div>
             <h2 class="text-lg font-semibold tracking-tight text-slate-900">Arti setiap kategori</h2>
-            <p class="mt-1 max-w-3xl text-sm text-slate-500">Indeks KU dikelompokkan menjadi empat kategori. Warna yang sama dipakai di seluruh halaman.</p>
+            <p class="mt-1 max-w-3xl text-sm text-slate-500">Kualitas udara dikelompokkan menjadi empat kategori. Warna yang sama dipakai di seluruh halaman.</p>
         </div>
 
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -121,7 +73,6 @@
                             </span>
                             <span class="font-semibold text-slate-900">{{ $cat['label'] }}</span>
                         </span>
-                        <span class="text-xs text-slate-500 num">Indeks {{ $cat['range'] }}</span>
                     </div>
                     <p class="mt-3 text-sm text-slate-600">{{ $cat['description'] }}</p>
                     <div class="mt-4 rounded-xl {{ $cat['soft'] }} px-3.5 py-3 text-sm text-slate-700 sm:mt-auto">
@@ -137,7 +88,7 @@
     <section class="space-y-4">
         <div>
             <h2 class="text-lg font-semibold tracking-tight text-slate-900">Gas yang dipantau</h2>
-            <p class="mt-1 max-w-3xl text-sm text-slate-500">Setiap gas memiliki ambang batas sendiri. Tabel di tiap kartu menunjukkan kadar maksimum untuk masing-masing kategori.</p>
+            <p class="mt-1 max-w-3xl text-sm text-slate-500">Setiap gas memiliki ambang batas sendiri. Tabel di tiap kartu menunjukkan rentang kadar untuk masing-masing kategori.</p>
         </div>
 
         <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -171,33 +122,16 @@
                             <thead>
                                 <tr>
                                     <th>Kadar {{ $gas['symbol'] }}</th>
-                                    <th class="text-right">Indeks</th>
                                     <th class="text-right">Kategori</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @php $previous = null; @endphp
-                                @foreach ($gas['thresholds'] as $status => $ppm)
+                                @foreach ($categories as $status => $category)
                                     <tr>
-                                        <td class="num">
-                                            @if ($ppm === null)
-                                                —
-                                            @elseif ($previous === null)
-                                                0 – {{ $fmt($ppm) }} ppm
-                                            @else
-                                                &gt; {{ $fmt($previous) }} – {{ $fmt($ppm) }} ppm
-                                            @endif
-                                        </td>
-                                        <td class="text-right num text-slate-500">{{ $categories[$status]['range'] }}</td>
+                                        <td class="num">{{ \App\Support\AirQuality::thresholdLabel($key, $status) }}</td>
                                         <td class="text-right"><x-ui.ku-badge :status="$status" size="sm" /></td>
                                     </tr>
-                                    @php $previous = $ppm; @endphp
                                 @endforeach
-                                <tr>
-                                    <td class="num">&gt; {{ $previous !== null ? $fmt($previous) : '—' }} ppm</td>
-                                    <td class="text-right num text-slate-500">{{ $categories['Berbahaya']['range'] }}</td>
-                                    <td class="text-right"><x-ui.ku-badge status="Berbahaya" size="sm" /></td>
-                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -206,106 +140,36 @@
         </div>
     </section>
 
-    {{-- Tindakan preventif --}}
+    {{-- Rekomendasi tindakan --}}
     <section class="space-y-4">
         <div class="flex items-start gap-3">
             <span class="icon-chip">
                 <x-tabler-shield-check class="size-5" />
             </span>
             <div>
-                <h2 class="text-lg font-semibold tracking-tight text-slate-900">Tindakan preventif</h2>
-                <div class="mt-1 max-w-3xl space-y-2 text-sm leading-relaxed text-slate-500">
-                    <p>
-                        Untuk CO, SIASAP memakai AQI resmi U.S. EPA yang terdiri atas 6 level. Sub-indeks CO di aplikasi memakai
-                        breakpoint yang sama, sehingga level EPA dan anjurannya dapat ditampilkan langsung. EPA menulis anjuran
-                        ini untuk udara luar, jadi SIASAP menyesuaikannya untuk ruangan dan menambahkan langkah pengendalian sumber CO
-                        dari panduan EPA Indoor Air Quality.
-                    </p>
-                    <p>
-                        CO₂, NH₃, dan H₂ tidak termasuk AQI EPA. Langkahnya mengikuti strategi EPA Indoor Air Quality
-                        (kendalikan sumber, perbaiki ventilasi) sesuai kategori KU aplikasi. Untuk H₂, langkahnya berfokus pada
-                        keselamatan dari kebakaran karena gas ini mudah terbakar mulai kadar 4% di udara (LEL).
-                    </p>
-                </div>
+                <h2 class="text-lg font-semibold tracking-tight text-slate-900">Rekomendasi tindakan</h2>
+                <p class="mt-1 max-w-3xl text-sm leading-relaxed text-slate-500">
+                    Rekomendasi mengikuti kategori keseluruhan ruangan dan disusun berdasarkan aturan tetap (rule-based).
+                </p>
             </div>
         </div>
 
-        <x-ui.card :icon="'tabler-table'" title="Level AQI EPA untuk CO" description="Titik warna menunjukkan kategori KU aplikasi untuk rentang indeks yang sama." :padded="false">
-            <div class="overflow-x-auto">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th class="whitespace-nowrap">Rentang indeks</th>
-                            <th>Level</th>
-                            <th>Anjuran EPA</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($coAqiLevels as $level)
-                            @php $levelCategory = $categories[$level['ku_status']]; @endphp
-                            <tr>
-                                <td class="whitespace-nowrap align-top num text-slate-500">{{ $level['range'] }}</td>
-                                <td class="min-w-48 align-top">
-                                    <span class="flex items-start gap-2">
-                                        <span class="mt-1.5 size-2 shrink-0 rounded-full {{ $levelCategory['dot'] }}" title="Kategori KU: {{ $levelCategory['label'] }}"></span>
-                                        <span>
-                                            <span class="block font-medium text-slate-900">{{ $level['label'] }}</span>
-                                            <span class="block text-xs text-slate-500" lang="en">{{ $level['epa_label'] }}</span>
-                                        </span>
-                                    </span>
-                                </td>
-                                <td class="min-w-64 align-top text-slate-600">{{ $level['cautionary'] }}</td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-        </x-ui.card>
-
-        <div>
-            <h3 class="text-sm font-semibold text-slate-900">Contoh langkah pada tingkat paling serius</h3>
-            <p class="mt-0.5 text-sm text-slate-500">Rekomendasi pada halaman ruangan menyesuaikan level setiap gas; berikut contoh untuk level tertinggi.</p>
-        </div>
-
-        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            @foreach ($gases as $key => $gas)
-                <article class="card card-body">
-                    <div class="flex items-center gap-2.5">
-                        <span class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-slate-100" style="color: {{ $gas['color'] }}">
-                            <x-dynamic-component :component="$gas['icon']" class="size-4.5" />
-                        </span>
-                        <div>
-                            <h4 class="text-sm font-semibold text-slate-900">{{ $gas['symbol'] }}</h4>
-                            <p class="text-xs text-slate-500">{{ $key === 'co' ? 'Level EPA: Berbahaya' : 'Kategori KU: Berbahaya' }}</p>
-                        </div>
+        <div class="card divide-y divide-slate-100">
+            @foreach ($recommendations as $category => $rule)
+                <div class="flex flex-col gap-2 px-5 py-4 sm:flex-row sm:items-start sm:gap-6 sm:px-6">
+                    <div class="flex shrink-0 items-center gap-2 sm:w-56">
+                        <x-ui.ku-badge :status="$category" size="sm" />
+                        <span class="text-xs font-medium text-slate-500">{{ $rule['level'] }}</span>
                     </div>
-                    <ul class="mt-3 space-y-2 text-sm text-slate-600">
-                        @foreach ($preventiveExamples[$key] as $step)
-                            <li class="flex gap-2">
-                                <x-tabler-check class="mt-0.5 size-4 shrink-0 text-slate-400" />
-                                <span>{{ $step }}</span>
-                            </li>
-                        @endforeach
-                    </ul>
-                </article>
+                    <p class="text-sm text-slate-600">{{ $rule['text'] }}</p>
+                </div>
             @endforeach
         </div>
 
-        <div class="card card-body">
-            <p class="eyebrow">Sumber rujukan</p>
-            <ul class="mt-3 space-y-2 text-sm">
-                @foreach ($preventiveSources as $source)
-                    <li class="flex gap-2">
-                        <x-tabler-external-link class="mt-0.5 size-4 shrink-0 text-slate-400" />
-                        <a href="{{ $source['url'] }}" target="_blank" rel="noopener" class="text-slate-700 underline decoration-slate-300 underline-offset-2 hover:text-slate-900">{{ $source['label'] }}</a>
-                    </li>
-                @endforeach
-            </ul>
-            <p class="mt-4 flex gap-2 border-t border-slate-100 pt-4 text-xs text-slate-500">
-                <x-tabler-info-circle class="mt-px size-4 shrink-0 text-slate-400" />
-                Rekomendasi bersifat informatif dan bukan diagnosis medis.
-            </p>
-        </div>
+        <p class="flex gap-2 text-xs text-slate-500">
+            <x-tabler-info-circle class="mt-px size-4 shrink-0 text-slate-400" />
+            {{ config('recommendations.disclaimer') }}
+        </p>
     </section>
 
     {{-- FAQ --}}
@@ -352,8 +216,8 @@
     {{-- Catatan --}}
     <p class="flex max-w-3xl gap-2 border-t border-slate-200 pt-6 text-xs leading-relaxed text-slate-500">
         <x-tabler-info-circle class="mt-px size-4 shrink-0 text-slate-400" />
-        <span>Catatan: ambang batas setiap gas disusun dari sumber regulasi dan pedoman (antara lain Permenkes RI No. 1077/2011,
-        US EPA, OSHA, dan NIOSH) sebagaimana tercantum pada konfigurasi sistem. Nilai ini merupakan acuan penelitian untuk
+        <span>Catatan: ambang batas setiap gas mengacu pada {{ $source['label'] }} (doi: {{ $source['doi'] }}).
+        Nilai ppm dari sensor MQ merupakan indikator relatif, bukan pengukuran presisi, sehingga hasilnya digunakan untuk
         memantau kenyamanan udara ruangan, bukan diagnosis medis.</span>
     </p>
 </div>

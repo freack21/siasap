@@ -5,7 +5,7 @@ namespace App\Livewire;
 use App\Models\Room;
 use App\Models\SensorLog;
 use App\Support\AirQuality;
-use App\Support\PreventiveActions;
+use App\Support\AirQualityClassifier;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Livewire\Attributes\Layout;
@@ -14,8 +14,8 @@ use Livewire\Attributes\Url;
 use Livewire\Component;
 
 /**
- * Detail satu ruangan: nilai terkini, tindakan preventif, grafik tren,
- * ringkasan statistik, dan pembacaan terakhir.
+ * Detail satu ruangan: nilai terkini, rekomendasi, grafik tren,
+ * ringkasan proporsi kategori, dan pembacaan terakhir.
  */
 #[Layout('layouts::public')]
 #[Title('Detail Ruangan — SIASAP')]
@@ -52,7 +52,7 @@ class RoomDetail extends Component
         $threshold = now()->subSeconds(AirQuality::onlineThresholdSeconds());
 
         $latestLogs = $nodes->pluck('latestLog')->filter();
-        $current = $latestLogs->sortByDesc('ku_value')->first();
+        $current = $latestLogs->sortByDesc(fn (SensorLog $log) => AirQualityClassifier::rank($log->overall_category))->first();
 
         $devices = $nodes->map(fn ($node) => [
             'name' => $node->name,
@@ -68,19 +68,16 @@ class RoomDetail extends Component
             ->limit(10)
             ->get();
 
-        [$kuChart, $gasChart, $stats] = $this->buildTrend($nodeIds);
+        [$gasChart, $stats] = $this->buildTrend($nodeIds);
 
         return view('livewire.room-detail', [
             'current' => $current,
-            'currentCategory' => AirQuality::category($current?->ku_status),
-            'dominant' => $current
-                ? ($current->ku_dominant ?? SensorLog::computeKu($current->co2, $current->nh3, $current->co, $current->h2)['dominant'])
-                : null,
-            'preventive' => $current ? PreventiveActions::forLog($current) : null,
+            'currentCategory' => AirQuality::category($current?->overall_category),
+            'dominant' => $current?->dominantGases() ?? [],
+            'recommendation' => $current?->recommendation(),
             'devices' => $devices,
             'lastUpdate' => $latestLogs->max('created_at'),
             'recent' => $recent,
-            'kuChart' => $kuChart,
             'gasChart' => $gasChart,
             'stats' => $stats,
             'gases' => AirQuality::gases(),
@@ -95,7 +92,7 @@ class RoomDetail extends Component
      * (dikelompokkan di PHP agar sama di SQLite dan MySQL).
      *
      * @param  Collection<int, int>  $nodeIds
-     * @return array{0: array, 1: array, 2: array}
+     * @return array{0: array, 1: array}
      */
     protected function buildTrend(Collection $nodeIds): array
     {
@@ -104,18 +101,15 @@ class RoomDetail extends Component
         $now = now();
         $from = $now->copy()->subSeconds($config['seconds']);
 
-        $columns = ['ku_value', 'co2', 'nh3', 'co', 'h2'];
+        $columns = ['co2', 'nh3', 'co', 'h2'];
         $buckets = [];
         $count = 0;
-        $sum = 0.0;
-        $min = null;
-        $max = null;
         $perCategory = array_fill_keys(array_keys(AirQuality::categories()), 0);
 
         if ($nodeIds->isNotEmpty()) {
             $rows = SensorLog::query()
                 ->toBase()
-                ->select(array_merge(['created_at', 'ku_status'], $columns))
+                ->select(array_merge(['created_at', 'overall_category'], $columns))
                 ->whereIn('node_id', $nodeIds)
                 ->where('created_at', '>=', $from)
                 ->orderBy('created_at')
@@ -130,16 +124,8 @@ class RoomDetail extends Component
                 }
                 $buckets[$key]['n'] = ($buckets[$key]['n'] ?? 0) + 1;
 
-                $ku = (float) $row->ku_value;
                 $count++;
-                $sum += $ku;
-                $min = $min === null ? $ku : min($min, $ku);
-                $max = $max === null ? $ku : max($max, $ku);
-
-                $status = array_key_exists($row->ku_status, $perCategory)
-                    ? $row->ku_status
-                    : SensorLog::computeKuStatus($ku);
-                $perCategory[$status]++;
+                $perCategory[$row->overall_category]++;
             }
         }
 
@@ -153,20 +139,10 @@ class RoomDetail extends Component
 
             foreach ($columns as $column) {
                 $series[$column][] = isset($buckets[$key])
-                    ? round($buckets[$key][$column] / $buckets[$key]['n'], $column === 'ku_value' ? 1 : 2)
+                    ? round($buckets[$key][$column] / $buckets[$key]['n'], 2)
                     : null;
             }
         }
-
-        $kuChart = [
-            'labels' => $labels,
-            'datasets' => [[
-                'label' => 'Indeks KU',
-                'data' => $series['ku_value'],
-                'color' => '#0d9488',
-            ]],
-            'yTitle' => 'Indeks KU',
-        ];
 
         $gasChart = [
             'labels' => $labels,
@@ -180,12 +156,9 @@ class RoomDetail extends Component
 
         $stats = [
             'count' => $count,
-            'avg' => $count ? $sum / $count : null,
-            'min' => $min,
-            'max' => $max,
             'distribution' => collect($perCategory)->map(fn (int $n) => $count ? round($n / $count * 100, 1) : 0.0)->all(),
         ];
 
-        return [$kuChart, $gasChart, $stats];
+        return [$gasChart, $stats];
     }
 }

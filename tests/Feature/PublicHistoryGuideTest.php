@@ -30,30 +30,21 @@ class PublicHistoryGuideTest extends TestCase
         $kitchenNode = Node::create(['room_id' => $this->kitchen->id, 'name' => 'Node Dapur', 'code' => 'N-DPR']);
         $bedroomNode = Node::create(['room_id' => $this->bedroom->id, 'name' => 'Node Kamar', 'code' => 'N-KMR']);
 
-        $this->log($kitchenNode, 42.5, 'Baik', 'co2', '2026-10-01 08:00:00', co2: 850);
-        $this->log($kitchenNode, 220.0, 'Tidak Sehat', 'co', '2026-10-02 09:30:00', co: 21.4);
-        $this->log($bedroomNode, 120.0, 'Sedang', null, '2026-10-03 10:15:00', co2: 1700);
+        $this->log($kitchenNode, '2026-10-01 08:00:00', co2: 30);                  // Baik
+        $this->log($kitchenNode, '2026-10-02 09:30:00', co2: 30, co: 55.5);        // Tidak Sehat (CO)
+        $this->log($bedroomNode, '2026-10-03 10:15:00', co2: 70);                  // Sedang (CO2)
     }
 
-    private function log(Node $node, float $ku, string $status, ?string $dominant, string $at, float $co2 = 500, float $co = 1): SensorLog
+    private function log(Node $node, string $at, float $co2 = 30, float $co = 10): SensorLog
     {
-        $log = SensorLog::create([
-            'node_id' => $node->id,
-            'co2' => $co2,
-            'nh3' => 2,
-            'co' => $co,
-            'h2' => 100,
-            'ku_value' => $ku,
-            'ku_status' => $status,
-            'ku_dominant' => $dominant,
-            'seq_number' => 1,
-            'hop_count' => 1,
-            'topology_type' => 'star',
-        ]);
-        $log->created_at = Carbon::parse($at);
-        $log->save();
-
-        return $log;
+        return SensorLog::factory()
+            ->withGases($co2, 20, $co, 5)
+            ->create([
+                'node_id' => $node->id,
+                'recorded_at' => Carbon::parse($at),
+                'created_at' => Carbon::parse($at),
+                'updated_at' => Carbon::parse($at),
+            ]);
     }
 
     public function test_history_page_renders_for_guests(): void
@@ -72,7 +63,6 @@ class PublicHistoryGuideTest extends TestCase
         Livewire::test(UserHistory::class)
             ->assertViewHas('summary', function (array $summary) {
                 return $summary['count'] === 3
-                    && round($summary['average'], 1) === 127.5
                     && $summary['worst'] === 'Tidak Sehat'
                     && $summary['distribution']['Baik']['count'] === 1
                     && $summary['distribution']['Berbahaya']['count'] === 0;
@@ -83,14 +73,14 @@ class PublicHistoryGuideTest extends TestCase
     {
         Livewire::test(UserHistory::class)
             ->set('room', (string) $this->bedroom->id)
-            ->assertViewHas('logs', fn ($logs) => $logs->total() === 1 && $logs->first()->ku_status === 'Sedang');
+            ->assertViewHas('logs', fn ($logs) => $logs->total() === 1 && $logs->first()->overall_category === 'Sedang');
     }
 
     public function test_history_filters_by_category(): void
     {
         Livewire::test(UserHistory::class)
             ->set('category', 'Tidak Sehat')
-            ->assertViewHas('logs', fn ($logs) => $logs->total() === 1 && (float) $logs->first()->ku_value === 220.0)
+            ->assertViewHas('logs', fn ($logs) => $logs->total() === 1 && $logs->first()->overall_category === 'Tidak Sehat')
             ->assertViewHas('summary', fn ($s) => $s['count'] === 1 && $s['worst'] === 'Tidak Sehat');
     }
 
@@ -99,7 +89,7 @@ class PublicHistoryGuideTest extends TestCase
         Livewire::test(UserHistory::class)
             ->set('from', '2026-10-02')
             ->set('to', '2026-10-02')
-            ->assertViewHas('logs', fn ($logs) => $logs->total() === 1 && $logs->first()->ku_status === 'Tidak Sehat');
+            ->assertViewHas('logs', fn ($logs) => $logs->total() === 1 && $logs->first()->overall_category === 'Tidak Sehat');
 
         Livewire::withQueryParams(['dari' => '2026-10-02'])
             ->test(UserHistory::class)
@@ -136,9 +126,10 @@ class PublicHistoryGuideTest extends TestCase
         $this->assertMatchesRegularExpression('/^riwayat-kualitas-udara-\d{8}_\d{6}\.csv$/', $download['name']);
 
         $csv = base64_decode($download['content']);
-        $this->assertStringContainsString('waktu,ruangan,indeks_ku,kategori,parameter_dominan,co2_ppm,nh3_ppm,co_ppm,h2_ppm', $csv);
-        $this->assertStringContainsString('"2026-10-02 09:30:00","Dapur Utama",220,"Tidak Sehat",co,500,2,21.4,100', $csv);
-        $this->assertStringContainsString('"2026-10-01 08:00:00","Dapur Utama",42.5,Baik,co2,850,2,1,100', $csv);
+        $this->assertStringContainsString('waktu,ruangan,co2_ppm,nh3_ppm,co_ppm,h2_ppm,kategori_co2,kategori_nh3,kategori_co,kategori_h2,kategori_keseluruhan,penyebab_utama,rekomendasi', $csv);
+        $this->assertStringContainsString('"2026-10-02 09:30:00","Dapur Utama",30,20,55.5,5,Baik,Baik,"Tidak Sehat",Baik,"Tidak Sehat",co,', $csv);
+        $this->assertStringContainsString('"2026-10-01 08:00:00","Dapur Utama",30,20,10,5,Baik,Baik,Baik,Baik,Baik,,', $csv);
+        $this->assertStringContainsString('Tingkatkan ventilasi, periksa dan kurangi sumber polutan', $csv);
         $this->assertStringNotContainsString('Kamar Tidur', $csv);
     }
 
@@ -147,54 +138,20 @@ class PublicHistoryGuideTest extends TestCase
         $this->get(route('guide'))
             ->assertOk()
             ->assertSee('Panduan Kualitas Udara')
-            ->assertSee('Cara membaca Indeks KU');
+            ->assertSee('Cara membaca kategori');
     }
 
-    public function test_guide_shows_categories_gases_and_worked_example(): void
+    public function test_guide_shows_categories_gases_thresholds_and_recommendations(): void
     {
-        $expected = SensorLog::computeKu(850, 2, 6, 120);
-
         Livewire::test(AirQualityGuide::class)
             ->assertSee(['Baik', 'Sedang', 'Tidak Sehat', 'Berbahaya'])
             ->assertSee(['Karbon Dioksida', 'Amonia', 'Karbon Monoksida', 'Hidrogen'])
             ->assertSee(['MQ-135', 'MQ-2'])
-            ->assertSee('850 ppm')
-            ->assertSee('120 ppm')
-            ->assertSee('Indeks KU =')
-            ->assertSee(str_replace('.', ',', (string) $expected['value']))
-            ->assertViewHas('result', fn ($r) => $r['dominant'] === 'co' && $r['status'] === 'Sedang')
-            // Ambang CO hasil interpolasi balik: 4,4 / 12,4 / 30,4 ppm
-            ->assertSee('0 – 4,4 ppm')
-            ->assertSee('&gt; 12,4 – 30,4 ppm', false)
+            ->assertSee(['0 – < 50 ppm', '50 – < 100 ppm', '100 – < 150 ppm', '≥ 150 ppm'])
+            ->assertSee(['20 – < 50 ppm', '≥ 80 ppm'])
+            ->assertSee('Kondisi udara relatif baik. Pertahankan ventilasi ruangan.')
             ->assertSee('Pertanyaan umum')
-            ->assertSee('bukan diagnosis medis');
-    }
-
-    public function test_guide_threshold_inverse_interpolation(): void
-    {
-        $this->assertSame(['Baik' => 1000.0, 'Sedang' => 2000.0, 'Tidak Sehat' => 5000.0], AirQualityGuide::thresholds('co2'));
-        $this->assertEqualsWithDelta(4.4, AirQualityGuide::thresholds('co')['Baik'], 1e-9);
-        $this->assertEqualsWithDelta(30.4, AirQualityGuide::thresholds('co')['Tidak Sehat'], 1e-9);
-    }
-
-    public function test_guide_explains_preventive_actions_with_epa_levels_and_sources(): void
-    {
-        Livewire::test(AirQualityGuide::class)
-            ->assertSee('Tindakan preventif')
-            ->assertSee(['Good', 'Moderate', 'Unhealthy for Sensitive Groups', 'Unhealthy', 'Very Unhealthy', 'Hazardous'])
-            ->assertSee(['Tidak Sehat bagi Kelompok Sensitif', 'Sangat Tidak Sehat'])
-            ->assertSee(config('preventive_actions.co_aqi_levels.2.cautionary'))
-            ->assertSee(['0 – 50', '101 – 150', '≥ 301'])
-            ->assertSee(config('preventive_actions.actions.h2.Berbahaya.0'))
-            ->assertSee(config('preventive_actions.sources.epa_aqi.url'))
-            ->assertSee('Rekomendasi bersifat informatif dan bukan diagnosis medis.');
-    }
-
-    public function test_guide_co_aqi_levels_derive_ranges_and_ku_category(): void
-    {
-        $levels = AirQualityGuide::coAqiLevels();
-
-        $this->assertSame(['0 – 50', '51 – 100', '101 – 150', '151 – 200', '201 – 300', '≥ 301'], array_column($levels, 'range'));
-        $this->assertSame(['Baik', 'Sedang', 'Sedang', 'Tidak Sehat', 'Tidak Sehat', 'Berbahaya'], array_column($levels, 'ku_status'));
+            ->assertSee('Rekomendasi bersifat informatif dan bukan diagnosis medis.')
+            ->assertSee('10.23960/jitet.v14i1.5568');
     }
 }
