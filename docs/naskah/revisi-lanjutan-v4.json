@@ -1,0 +1,108 @@
+{
+  "keterangan": "Revisi lanjutan atas naskah acuan 24 Oktober 2026: subbab 3.1 memakai metode penelitian R&D dengan model pengembangan Waterfall.",
+  "revisi": [
+    {
+      "id": "3.1-RND-1",
+      "lokasi": "3.1 Metode Penelitian, paragraf 1",
+      "cari": "Penelitian ini merupakan penelitian terapan…memahami kondisi kualitas udara ruangan secara lebih mudah, terstruktur, dan informatif.",
+      "ganti": "Penelitian ini menggunakan metode penelitian dan pengembangan (*Research and Development* atau R&D) dalam bidang Rekayasa Perangkat Lunak. Borg dan Gall (1983) memandang R&D sebagai proses untuk mengembangkan dan memvalidasi suatu produk, sedangkan Sugiyono (2019) menjelaskan R&D sebagai metode penelitian yang digunakan untuk menghasilkan produk tertentu dan menguji keefektifan produk tersebut. Produk yang dihasilkan dalam penelitian ini adalah aplikasi berbasis *web* untuk menerima dan menampilkan data kualitas udara ruangan, menentukan kategori kualitasnya, serta memberikan rekomendasi tindakan preventif sederhana kepada pengguna. Metode R&D dipilih karena penelitian ini tidak hanya membangun aplikasi, tetapi juga menguji apakah aplikasi tersebut berfungsi sesuai kebutuhan dan dapat diterima oleh pengguna."
+    },
+    {
+      "id": "3.1-RND-2",
+      "lokasi": "3.1 Metode Penelitian, paragraf 2",
+      "cari": "Pendekatan yang digunakan adalah pendekatan pengembangan sistem",
+      "ganti": "Tahap pengembangan produk dalam kerangka R&D dilakukan dengan pendekatan pengembangan sistem"
+    },
+    {
+      "id": "3.1-RND-3",
+      "lokasi": "3.1 Metode Penelitian, paragraf 5",
+      "cari": "Pengembangan sistem menggunakan metode Waterfall Model…Evaluasi sistem dilakukan dengan dua cara.",
+      "ganti": "Pengembangan produk menggunakan model *Waterfall*, yaitu model proses perangkat lunak yang menjalankan tahapan secara berurutan, dengan setiap tahap diselesaikan sebelum tahap berikutnya dimulai (Royce, 1970; Sommerville, 2016). Model ini dipilih karena kebutuhan aplikasi telah ditentukan sejak awal sehingga tahapannya dapat dijalankan secara sistematis (Pressman & Maxim, 2020). Tahapan yang dilakukan meliputi analisis kebutuhan, perancangan sistem, implementasi, pengujian, dan pemeliharaan sebagaimana dijelaskan pada subbab 3.5. Tahap pengujian sekaligus menjadi tahap validasi produk dalam kerangka R&D, yang dilakukan dengan dua cara."
+    },
+    {
+      "id": "GBR-2.1",
+      "lokasi": "Gambar 2.1",
+      "cari": "Diagram Desain Sistem Menggunakan Metode Waterfall",
+      "ganti_gambar": "../gambar/waterfall-pengembangan.png"
+    },
+    {
+      "id": "GBR-3.1",
+      "lokasi": "Gambar 3.1",
+      "cari": "Gambar 3.1 Flowchart Sistem Monitoring Kualitas Udara",
+      "ganti_gambar": "../gambar/flowchart-sistem-monitoring.png",
+      "lebar_cm": 14.5
+    },
+    {
+      "id": "GBR-3.2",
+      "lokasi": "Gambar 3.2",
+      "cari": "Gambar 3.2 Use Case Diagram Sistem Monitoring",
+      "ganti_gambar": "../gambar/use-case-diagram.png"
+    },
+    {
+      "id": "GBR-3.3",
+      "lokasi": "Gambar 3.3",
+      "cari": "Gambar 3.3 Activity Diagram Penerimaan dan Pengolahan Data",
+      "ganti_gambar": "../sisipan/activity-penerimaan-data.png"
+    },
+    {
+      "id": "GBR-3.4",
+      "lokasi": "Gambar 3.4",
+      "cari": "Gambar 3.4 Activity Diagram Melihat Beranda dan Rekomendasi",
+      "ganti_gambar": "../sisipan/activity-beranda-rekomendasi.png"
+    },
+    {
+      "id": "GBR-3.5",
+      "lokasi": "Gambar 3.5",
+      "cari": "Gambar 3.5 Activity Diagram Mengisi Kuesioner UEQ",
+      "ganti_gambar": "../sisipan/activity-kuesioner-ueq.png"
+    },
+    {
+      "id": "GBR-3.6",
+      "lokasi": "Gambar 3.6",
+      "cari": "Gambar 3.6 Entity Relationship Diagram Sistem Monitoring",
+      "ganti_gambar": "../sisipan/erd-siasap.png"
+    },
+    {
+      "id": "GBR-3.7",
+      "lokasi": "Gambar 3.7",
+      "cari": "Gambar 3.7 Wireframe Halaman Beranda",
+      "ganti_gambar": "../gambar/wireframe-beranda.png"
+    },
+    {
+      "id": "GBR-3.8",
+      "lokasi": "Gambar 3.8",
+      "cari": "Gambar 3.8 Wireframe Halaman Detail Ruangan",
+      "ganti_gambar": "../gambar/wireframe-detail-ruangan.png"
+    },
+    {
+      "id": "GBR-3.9",
+      "lokasi": "Gambar 3.9",
+      "cari": "Gambar 3.9 Wireframe Halaman Riwayat",
+      "ganti_gambar": "../gambar/wireframe-riwayat.png"
+    },
+    {
+      "id": "GBR-3.10",
+      "lokasi": "Gambar 3.10",
+      "cari": "Gambar 3.10 Wireframe Halaman Panduan",
+      "ganti_gambar": "../gambar/wireframe-panduan.png"
+    },
+    {
+      "id": "GBR-3.11",
+      "lokasi": "Gambar 3.11",
+      "cari": "Gambar 3.11 Wireframe Halaman Rekomendasi Tindakan",
+      "ganti_gambar": "../gambar/wireframe-rekomendasi.png"
+    },
+    {
+      "id": "GBR-3.12",
+      "lokasi": "Gambar 3.12",
+      "cari": "Gambar 3.12 Wireframe Halaman Status Perangkat",
+      "ganti_gambar": "../gambar/wireframe-status-perangkat.png"
+    },
+    {
+      "id": "GBR-3.13",
+      "lokasi": "Gambar 3.13",
+      "cari": "Gambar 3.13 Wireframe Halaman Kuesioner UEQ",
+      "ganti_gambar": "../gambar/wireframe-kuesioner-ueq.png"
+    }
+  ]
+}

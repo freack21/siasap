@@ -1,108 +1,101 @@
 {
-  "keterangan": "Revisi lanjutan atas naskah acuan 24 Oktober 2026: subbab 3.1 memakai metode penelitian R&D dengan model pengembangan Waterfall.",
-  "revisi": [
-    {
-      "id": "3.1-RND-1",
-      "lokasi": "3.1 Metode Penelitian, paragraf 1",
-      "cari": "Penelitian ini merupakan penelitian terapan…memahami kondisi kualitas udara ruangan secara lebih mudah, terstruktur, dan informatif.",
-      "ganti": "Penelitian ini menggunakan metode penelitian dan pengembangan (*Research and Development* atau R&D) dalam bidang Rekayasa Perangkat Lunak. Borg dan Gall (1983) memandang R&D sebagai proses untuk mengembangkan dan memvalidasi suatu produk, sedangkan Sugiyono (2019) menjelaskan R&D sebagai metode penelitian yang digunakan untuk menghasilkan produk tertentu dan menguji keefektifan produk tersebut. Produk yang dihasilkan dalam penelitian ini adalah aplikasi berbasis *web* untuk menerima dan menampilkan data kualitas udara ruangan, menentukan kategori kualitasnya, serta memberikan rekomendasi tindakan preventif sederhana kepada pengguna. Metode R&D dipilih karena penelitian ini tidak hanya membangun aplikasi, tetapi juga menguji apakah aplikasi tersebut berfungsi sesuai kebutuhan dan dapat diterima oleh pengguna."
-    },
-    {
-      "id": "3.1-RND-2",
-      "lokasi": "3.1 Metode Penelitian, paragraf 2",
-      "cari": "Pendekatan yang digunakan adalah pendekatan pengembangan sistem",
-      "ganti": "Tahap pengembangan produk dalam kerangka R&D dilakukan dengan pendekatan pengembangan sistem"
-    },
-    {
-      "id": "3.1-RND-3",
-      "lokasi": "3.1 Metode Penelitian, paragraf 5",
-      "cari": "Pengembangan sistem menggunakan metode Waterfall Model…Evaluasi sistem dilakukan dengan dua cara.",
-      "ganti": "Pengembangan produk menggunakan model *Waterfall*, yaitu model proses perangkat lunak yang menjalankan tahapan secara berurutan, dengan setiap tahap diselesaikan sebelum tahap berikutnya dimulai (Royce, 1970; Sommerville, 2016). Model ini dipilih karena kebutuhan aplikasi telah ditentukan sejak awal sehingga tahapannya dapat dijalankan secara sistematis (Pressman & Maxim, 2020). Tahapan yang dilakukan meliputi analisis kebutuhan, perancangan sistem, implementasi, pengujian, dan pemeliharaan sebagaimana dijelaskan pada subbab 3.5. Tahap pengujian sekaligus menjadi tahap validasi produk dalam kerangka R&D, yang dilakukan dengan dua cara."
-    },
-    {
-      "id": "GBR-2.1",
-      "lokasi": "Gambar 2.1",
-      "cari": "Diagram Desain Sistem Menggunakan Metode Waterfall",
-      "ganti_gambar": "../gambar/waterfall-pengembangan.png"
-    },
-    {
-      "id": "GBR-3.1",
-      "lokasi": "Gambar 3.1",
-      "cari": "Gambar 3.1 Flowchart Sistem Monitoring Kualitas Udara",
-      "ganti_gambar": "../gambar/flowchart-sistem-monitoring.png",
-      "lebar_cm": 14.5
-    },
-    {
-      "id": "GBR-3.2",
-      "lokasi": "Gambar 3.2",
-      "cari": "Gambar 3.2 Use Case Diagram Sistem Monitoring",
-      "ganti_gambar": "../gambar/use-case-diagram.png"
-    },
-    {
-      "id": "GBR-3.3",
-      "lokasi": "Gambar 3.3",
-      "cari": "Gambar 3.3 Activity Diagram Penerimaan dan Pengolahan Data",
-      "ganti_gambar": "../sisipan/activity-penerimaan-data.png"
-    },
-    {
-      "id": "GBR-3.4",
-      "lokasi": "Gambar 3.4",
-      "cari": "Gambar 3.4 Activity Diagram Melihat Beranda dan Rekomendasi",
-      "ganti_gambar": "../sisipan/activity-beranda-rekomendasi.png"
-    },
-    {
-      "id": "GBR-3.5",
-      "lokasi": "Gambar 3.5",
-      "cari": "Gambar 3.5 Activity Diagram Mengisi Kuesioner UEQ",
-      "ganti_gambar": "../sisipan/activity-kuesioner-ueq.png"
-    },
-    {
-      "id": "GBR-3.6",
-      "lokasi": "Gambar 3.6",
-      "cari": "Gambar 3.6 Entity Relationship Diagram Sistem Monitoring",
-      "ganti_gambar": "../sisipan/erd-siasap.png"
-    },
-    {
-      "id": "GBR-3.7",
-      "lokasi": "Gambar 3.7",
-      "cari": "Gambar 3.7 Wireframe Halaman Beranda",
-      "ganti_gambar": "../gambar/wireframe-beranda.png"
-    },
-    {
-      "id": "GBR-3.8",
-      "lokasi": "Gambar 3.8",
-      "cari": "Gambar 3.8 Wireframe Halaman Detail Ruangan",
-      "ganti_gambar": "../gambar/wireframe-detail-ruangan.png"
-    },
-    {
-      "id": "GBR-3.9",
-      "lokasi": "Gambar 3.9",
-      "cari": "Gambar 3.9 Wireframe Halaman Riwayat",
-      "ganti_gambar": "../gambar/wireframe-riwayat.png"
-    },
-    {
-      "id": "GBR-3.10",
-      "lokasi": "Gambar 3.10",
-      "cari": "Gambar 3.10 Wireframe Halaman Panduan",
-      "ganti_gambar": "../gambar/wireframe-panduan.png"
-    },
-    {
-      "id": "GBR-3.11",
-      "lokasi": "Gambar 3.11",
-      "cari": "Gambar 3.11 Wireframe Halaman Rekomendasi Tindakan",
-      "ganti_gambar": "../gambar/wireframe-rekomendasi.png"
-    },
-    {
-      "id": "GBR-3.12",
-      "lokasi": "Gambar 3.12",
-      "cari": "Gambar 3.12 Wireframe Halaman Status Perangkat",
-      "ganti_gambar": "../gambar/wireframe-status-perangkat.png"
-    },
-    {
-      "id": "GBR-3.13",
-      "lokasi": "Gambar 3.13",
-      "cari": "Gambar 3.13 Wireframe Halaman Kuesioner UEQ",
-      "ganti_gambar": "../gambar/wireframe-kuesioner-ueq.png"
-    }
-  ]
+ "keterangan": "Revisi lanjutan atas naskah acuan v5 (naskah.docx unggahan terbaru): sitasi Solihat et al. (2026) di Bab 2 dan Bab 3 dibatasi pada sumber ambang batas (Tabel 2.2), konfigurasi sensor (subbab 2.5), dan tinjauan penelitian terdahulu; rincian rumus konversi ppm di perangkat dihapus.",
+ "revisi": [
+  {
+   "id": "S-2.5-1",
+   "lokasi": "2.5 paragraf 1",
+   "cari": "(Zhengzhou Winsen Electronics Technology, 2015a, 2015b). Pemilihan sensor, kalibrasi, dan rumus konversi berada di luar ruang lingkup penelitian ini.",
+   "ganti": "(Zhengzhou Winsen Electronics Technology, 2015a, 2015b)."
+  },
+  {
+   "id": "S-2.5-2",
+   "lokasi": "2.5 paragraf 2",
+   "cari": "Solihat et al. (2026) menghitung nilai tersebut dari selisih…bukan konsentrasi absolut hasil alat ukur terkalibrasi.",
+   "ganti": "Perhitungan tersebut dilakukan relatif terhadap kondisi udara saat perangkat dinyalakan (*baseline*), sehingga aplikasi memperlakukan nilai ppm sebagai indikator relatif terhadap kondisi udara awal, bukan konsentrasi absolut hasil alat ukur terkalibrasi. Pemilihan sensor serta perhitungan dan kalibrasi nilai ppm merupakan bagian dari penelitian IoT rekan satu proyek dan berada di luar ruang lingkup penelitian ini."
+  },
+  {
+   "id": "S-2.9-1",
+   "lokasi": "2.9 paragraf 1",
+   "cari": "menampilkan data secara real-time (Solihat et al., 2026).",
+   "ganti": "menampilkan data secara real-time (Fajar B et al., 2023; Wibowo et al., 2024)."
+  },
+  {
+   "id": "S-2.9-2",
+   "lokasi": "2.9 paragraf 2",
+   "cari": "Pada Solihat et al. (2026), nilai ppm dihitung dengan rumus…bukan konsentrasi absolut hasil alat ukur terkalibrasi.",
+   "ganti": "Nilai ppm yang dikirim perangkat dihitung relatif terhadap kondisi udara saat perangkat dinyalakan (*baseline*), sehingga nilai tersebut merupakan indikator relatif, bukan konsentrasi absolut hasil alat ukur terkalibrasi (subbab 2.5)."
+  },
+  {
+   "id": "S-2.9-3",
+   "lokasi": "2.9 paragraf 3",
+   "cari": "berdasarkan ambang batas konsentrasi gas yang terdeteksi (Solihat et al., 2026).",
+   "ganti": "berdasarkan ambang batas konsentrasi gas pada Tabel 2.2 (subbab 2.10)."
+  },
+  {
+   "id": "S-2.10-1",
+   "lokasi": "2.10 sesudah Tabel 2.2",
+   "cari": "Logika ini setara dengan fungsi evaluasi pada Solihat et al. (2026): udara Baik bila",
+   "ganti": "Dengan kata lain, udara Baik bila"
+  },
+  {
+   "id": "S-2.10-2",
+   "lokasi": "2.10 sesudah Tabel 2.2",
+   "cari": "Solihat et al. (2026) tidak mencantumkan dasar penetapan ambang pada Tabel 2.2.…Penelitian ini memakai empat kategori tersebut.",
+   "ganti": "Ambang pada Tabel 2.2 dipakai sebagai acuan kategori pada aplikasi dan bukan merupakan baku mutu udara resmi. Selain itu, nilai ppm yang diklasifikasikan merupakan indikator relatif terhadap kondisi udara saat perangkat dinyalakan (subbab 2.5). Oleh karena itu, kategori pada penelitian ini menunjukkan perubahan kondisi udara relatif terhadap kondisi awal ruangan, bukan tingkat bahaya menurut standar kesehatan."
+  },
+  {
+   "id": "S-3.1-1",
+   "lokasi": "3.1 paragraf 3",
+   "cari": "relatif terhadap baseline saat perangkat dinyalakan (lihat subbab 2.9)",
+   "ganti": "relatif terhadap baseline saat perangkat dinyalakan (lihat subbab 2.5)"
+  },
+  {
+   "id": "S-3.3-1",
+   "lokasi": "3.3 paragraf 2",
+   "cari": "serta MQ-2 untuk CO dan H₂ (Solihat et al., 2026).",
+   "ganti": "serta MQ-2 untuk CO dan H₂ (lihat subbab 2.5)."
+  },
+  {
+   "id": "S-3.3-2",
+   "lokasi": "3.3 butir 3 (CO)",
+   "cari": "dan asap rokok (Solihat et al., 2026; U.S. Environmental Protection Agency, 2026a). Sensor MQ-2 peka terhadap CO dan asap (Solihat et al., 2026; Wibowo et al., 2024),",
+   "ganti": "dan asap rokok (U.S. Environmental Protection Agency, 2026a). Sensor MQ-2 peka terhadap CO dan asap (Wibowo et al., 2024),"
+  },
+  {
+   "id": "S-3.3-3",
+   "lokasi": "3.3 paragraf sesudah daftar gas",
+   "cari": "Pemilihan jenis sensor, rumus konversi, dan kalibrasi merupakan",
+   "ganti": "Pemilihan jenis sensor, perhitungan nilai ppm, dan kalibrasi merupakan"
+  },
+  {
+   "id": "S-3.3-4",
+   "lokasi": "3.3 paragraf sesudah daftar gas",
+   "cari": "Ambang batas yang digunakan juga berasal dari penelitian Solihat et al. (2026) yang memantau udara di sekitar jalan raya, sehingga kesesuaiannya untuk ruangan tertutup dicatat sebagai keterbatasan penelitian ini.",
+   "ganti": "Ambang batas pada Tabel 2.2 digunakan sebagai acuan kategori pada aplikasi dan bukan merupakan baku mutu udara resmi."
+  },
+  {
+   "id": "S-3.8-1",
+   "lokasi": "3.8 Wireframe Halaman Panduan",
+   "cari": "untuk keempat gas beserta sumbernya (Solihat et al., 2026) dan menjelaskan",
+   "ganti": "untuk keempat gas sesuai Tabel 2.2 beserta sumber rujukannya dan menjelaskan"
+  },
+  {
+   "id": "S-3.8-2",
+   "lokasi": "3.8 Wireframe Halaman Panduan",
+   "cari": "ambang batas berasal dari satu sumber (Solihat et al., 2026) yang tidak menjelaskan dasar penetapannya, dan",
+   "ganti": "ambang batas pada Tabel 2.2 merupakan acuan kategori aplikasi dan bukan baku mutu udara resmi, dan"
+  },
+  {
+   "id": "S-3.9-1",
+   "lokasi": "3.9 paragraf 2",
+   "cari": "Nilai tersebut dihitung oleh perangkat relatif terhadap baseline saat perangkat dinyalakan dengan rumus Solihat et al. (2026) yang dijelaskan pada subbab 2.9. Rumus ini diterapkan oleh penelitian IoT; aplikasi web tidak bergantung pada rumus tersebut, hanya pada ambang Tabel 2.2.",
+   "ganti": "Nilai tersebut dihitung oleh perangkat relatif terhadap baseline saat perangkat dinyalakan (subbab 2.5), sehingga diperlakukan sebagai indikator relatif. Perhitungan tersebut merupakan bagian dari penelitian IoT; aplikasi web tidak melakukan konversi dan hanya membandingkan nilai yang diterima dengan ambang pada Tabel 2.2."
+  },
+  {
+   "id": "S-3.12-1",
+   "lokasi": "3.12 tabel pengujian fungsional, baris Panduan",
+   "cari": "tabel ambang (Solihat et al., 2026),",
+   "ganti": "tabel ambang (Tabel 2.2),"
+  }
+ ]
 }

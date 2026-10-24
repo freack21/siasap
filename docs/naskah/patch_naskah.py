@@ -52,6 +52,15 @@ Kunci tata-tulis.json:
   hapus_paragraf_kosong  hapus paragraf kosong yang terselip di antara dua paragraf isi
   perbarui_field       w:updateFields di settings.xml (Word memperbarui Daftar Isi/Tabel/Gambar)
   jangan_kompres_gambar  w:doNotAutoCompressPictures (Word tidak menurunkan resolusi gambar)
+  seragamkan_tabel     {"contoh": "Tabel 3.27", "kecuali": ["Tabel 2.1"]}: setiap tabel berjudul "Tabel B.N"
+                       mengikuti format tabel contoh sebagai Track Changes (tblPrChange, trPrChange,
+                       tcPrChange, pPrChange, rPrChange): gaya tabel, tblBorders, tblCellMar, jc dan tblInd
+                       tabel; tcBorders dan tcMar dihapus; arsiran dan vAlign sel mengikuti contoh; trHeight dan
+                       jc baris dihapus; pStyle, spacing, ind, contextualSpacing paragraf sel dan ukuran huruf
+                       (sz/szCs) mengikuti contoh; baris judul kolom (baris pertama yang seluruhnya tebal)
+                       memakai perataan dan tblHeader contoh. Lebar kolom, sel gabung, isi, huruf tebal,
+                       perataan teks isi, dan indentasi gantung butir bernomor ("1.", "2a.") tetap. Tabel
+                       tanpa judul (kotak kode/rumus) tidak disentuh.
   pustaka              berkas data sitasi (pustaka.json): setiap sitasi di batang tubuh (paragraf,
                        sel tabel, judul) menjadi field Mendeley ADDIN CSL_CITATION berformat APA 7
                        (Track Changes: run field di w:ins, teks lama di w:del). Karya yang sudah ada
@@ -73,6 +82,9 @@ Format JSON:
                "catatan": "instruksi manual", "semua": false}]}
   - "…" (elipsis) di "cari" berarti teks apa saja di paragraf yang sama.
   - *teks* di "ganti" ditulis miring; \\* untuk tanda bintang biasa.
+  - Suntingan yang memotong field sitasi (mis. menghapus satu karya dari
+    "(A, 2020; B, 2021)") memperluas diri sehingga field lama dihapus utuh;
+    sitasi dalam teks pengganti dijadikan field Mendeley lagi oleh tahap sitasi.
   - "semua": true mengganti setiap kemunculan (untuk istilah).
   - "urutan": n memakai kemunculan ke-n (dihitung pada naskah asli) bila
     "cari" ditemukan di beberapa tempat.
@@ -152,6 +164,7 @@ File asli tidak pernah ditimpa.
 from __future__ import annotations
 
 import argparse
+import bisect
 import csv
 import difflib
 import json
@@ -613,6 +626,50 @@ def shared_affixes(old: str, new: str) -> tuple[int, int]:
     return prefix, suffix
 
 
+def widen_edits_to_fields(edits: list[tuple[int, int, int, int]], fields: list[tuple[int, int]],
+                          positions: list[int]) -> list[tuple[int, int, int, int]]:
+    """Perluas suntingan yang memotong field (sitasi) sehingga field diganti utuh.
+
+    Rentang lama dan baru diperluas sama panjang karena teks di luar suntingan identik;
+    suntingan yang kemudian bertumpang tindih digabung. Sitasi baru dalam teks pengganti
+    dijadikan field lagi oleh tahap sitasi.
+    """
+    plain_fields = [(bisect.bisect_left(positions, start), bisect.bisect_left(positions, end)) for start, end in fields]
+    plain_fields = [(start, end) for start, end in plain_fields if start < end]
+    if not plain_fields or not edits:
+        return edits
+
+    def new_position(position: int, include_insertion: bool) -> int:
+        shift = 0
+        for old_from, old_to, new_from, new_to in edits:
+            pure_insertion = old_from == old_to
+            if old_to < position or (old_to == position and (not pure_insertion or include_insertion)):
+                shift += (new_to - new_from) - (old_to - old_from)
+        return position + shift
+
+    ranges = [[old_from, old_to] for old_from, old_to, _, _ in edits]
+    for item in ranges:
+        for start, end in plain_fields:
+            if item[0] == item[1]:
+                cuts = start < item[0] < end
+            else:
+                cuts = start < item[1] and end > item[0] and not (item[0] <= start and end <= item[1])
+            if cuts:
+                item[0], item[1] = min(item[0], start), max(item[1], end)
+    ranges.sort()
+    merged: list[list[int]] = []
+    for item in ranges:
+        touching = merged and item[0] == merged[-1][1] and (item[0] == item[1] or merged[-1][0] == merged[-1][1])
+        if merged and (item[0] < merged[-1][1] or touching):
+            merged[-1][1] = max(merged[-1][1], item[1])
+        else:
+            merged.append(list(item))
+    ranges = merged
+    if [tuple(item) for item in ranges] == [(old_from, old_to) for old_from, old_to, _, _ in edits]:
+        return edits
+    return [(old_from, old_to, new_position(old_from, False), new_position(old_to, True)) for old_from, old_to in ranges]
+
+
 def word_edits(old: str, new: str) -> list[tuple[int, int, int, int]]:
     """Daftar (dari, sampai) teks lama dan baru yang berubah, per kata.
 
@@ -696,11 +753,21 @@ def apply_match(match: Match, revision: Revision, session: Session, with_comment
         old_key, new_key = old_plain.translate(NORMALIZE), new_plain.translate(NORMALIZE)
         if old_key == new_key:
             return ALREADY_DONE
-        edits = word_edits(old_key, new_key)
+        fields = [(field_start, field_end) for field_start, field_end, _ in field_spans(segments)[0]
+                  if field_end > match.start and field_start < match.end
+                  and all(text[index] in (FIELD, BARRIER) or match.start <= index < match.end
+                          for index in range(field_start, field_end))]
+        edits = widen_edits_to_fields(word_edits(old_key, new_key), fields, positions)
 
         def raw_range(old_from: int, old_to: int) -> tuple[int, int]:
             start = positions[old_from] if old_from < len(positions) else match.end
             end = positions[old_to - 1] + 1 if old_to > old_from else start
+            for field_start, field_end in fields:
+                if start == end and start in positions and bisect.bisect_left(positions, field_start) == old_from \
+                        and field_start < start < field_end:
+                    return field_start, field_start
+                if start < end and field_start < end and field_end > start:
+                    start, end = min(start, field_start), max(end, field_end)
             return start, end
 
         for old_from, old_to, _, _ in edits:
@@ -1255,6 +1322,248 @@ def apply_layout_rules(body: etree._Element, config: dict, styles: StyleBook, se
     if config.get("rapikan_spasi", True):
         counts["spasi dirapikan"] = tidy_spaces(body, session)
     return counts
+
+
+# ---------------------------------------------------------------------------
+# seragamkan_tabel: format semua tabel berjudul mengikuti satu tabel contoh.
+# ---------------------------------------------------------------------------
+
+TABLE_PROPERTY_ORDER = [
+    "tblStyle", "tblpPr", "tblOverlap", "bidiVisual", "tblStyleRowBandSize", "tblStyleColBandSize", "tblW", "jc",
+    "tblCellSpacing", "tblInd", "tblBorders", "shd", "tblLayout", "tblCellMar", "tblLook", "tblCaption",
+    "tblDescription", "tblPrChange",
+]
+ROW_PROPERTY_ORDER = [
+    "cnfStyle", "divId", "gridBefore", "gridAfter", "wBefore", "wAfter", "cantSplit", "trHeight", "tblHeader",
+    "tblCellSpacing", "jc", "hidden", "ins", "del", "trPrChange",
+]
+CELL_PROPERTY_ORDER = [
+    "cnfStyle", "tcW", "gridSpan", "hMerge", "vMerge", "tcBorders", "shd", "noWrap", "tcMar", "textDirection",
+    "tcFitText", "vAlign", "hideMark", "headers", "cellIns", "cellDel", "cellMerge", "tcPrChange",
+]
+MARK_PROPERTY_ORDER = ["ins", "del", "moveFrom", "moveTo"] + RUN_PROPERTY_ORDER
+TABLE_PARAGRAPH_PROPERTIES = ("pStyle", "spacing", "ind", "contextualSpacing")
+ENUMERATION_RE = re.compile(r"\s*(?:\d+[a-z]?\.|[a-z]\.|[-•–])\s")
+
+
+def tracked_properties(properties: etree._Element, change: str, exclude: tuple[str, ...], order: list[str],
+                       session: Session, mutate, track: bool = True) -> bool:
+    """Ubah elemen properti (tblPr/trPr/tcPr/pPr/rPr) lewat mutate(); simpan versi lama sebagai *PrChange.
+
+    Bila *PrChange sudah ada (perubahan format sebelumnya), versi asli di dalamnya dipertahankan.
+    """
+    before = etree.tostring(properties)
+    previous = [deepcopy(child) for child in properties if child.tag not in {w(tag) for tag in exclude} | {w(change)}]
+    mutate(properties)
+    if etree.tostring(properties) == before:
+        return False
+    if track and session.tracked and properties.find(w(change)) is None:
+        inner_tag = etree.QName(properties).localname
+        record = etree.Element(w(change), revision_attributes(session))
+        inner = etree.SubElement(record, w(inner_tag))
+        inner.extend(previous)
+        place_in_order(properties, record, order)
+    return True
+
+
+def set_child(properties: etree._Element, name: str, value: etree._Element | None, order: list[str]) -> None:
+    """Ganti anak bernama name dengan salinan value (None: hapus)."""
+    for existing in properties.findall(w(name)):
+        properties.remove(existing)
+    if value is not None:
+        place_in_order(properties, deepcopy(value), order)
+
+
+def ensure_properties(element: etree._Element, name: str) -> etree._Element:
+    properties = element.find(w(name))
+    if properties is None:
+        properties = etree.Element(w(name))
+        element.insert(0, properties)
+    return properties
+
+
+def captioned_tables(body: etree._Element) -> list[tuple[str, etree._Element]]:
+    """(nomor, tabel) untuk setiap tabel tingkat atas yang didahului judul "Tabel B.N" (paragraf kosong dilewati)."""
+    found = []
+    children = list(body)
+    for index, child in enumerate(children):
+        if child.tag != w("tbl"):
+            continue
+        previous = index - 1
+        while previous >= 0 and children[previous].tag == w("p") and not paragraph_plain_text(children[previous]).strip():
+            previous -= 1
+        if previous < 0 or children[previous].tag != w("p"):
+            continue
+        match = re.match(r"\s*Tabel\s+(\d+\.\d+)\b", paragraph_plain_text(children[previous]))
+        if match:
+            found.append((match.group(1), child))
+    return found
+
+
+def header_row(table: etree._Element) -> etree._Element | None:
+    """Baris pertama bila semua teksnya tebal (baris judul kolom), selain itu None."""
+    rows = table.findall(w("tr"))
+    if not rows:
+        return None
+    runs = [run for run in rows[0].iter(w("r")) if "".join(t.text or "" for t in run.iter(w("t"))).strip()]
+    if runs and all(is_on(run.find(f"{w('rPr')}/{w('b')}")) for run in runs):
+        return rows[0]
+    return None
+
+
+def consistent(values: list[bytes | None]):
+    """Satu-satunya nilai bila semua sama, selain itu tanda tidak konsisten (...)."""
+    distinct = set(values)
+    return distinct.pop() if len(distinct) == 1 else ...
+
+
+def table_model(table: etree._Element) -> dict:
+    """Ambil format tabel contoh: properti tabel, sel, paragraf isi/judul kolom, dan ukuran huruf."""
+    properties = ensure_properties(table, "tblPr")
+    model = {"table": {name: properties.find(w(name)) for name in ("tblStyle", "tblBorders", "tblCellMar", "jc", "tblInd")}}
+    header = header_row(table)
+    model["header"] = header is not None
+    cells = [cell for row in table.findall(w("tr")) for cell in row.findall(w("tc"))]
+
+    def serial(element: etree._Element | None) -> bytes | None:
+        return etree.tostring(element) if element is not None else None
+
+    model["vAlign"] = consistent([serial(cell.find(f"{w('tcPr')}/{w('vAlign')}")) for cell in cells])
+    header_cells = header.findall(w("tc")) if header is not None else []
+    body_cells = [cell for cell in cells if cell not in header_cells]
+    model["shd"] = consistent([serial(cell.find(f"{w('tcPr')}/{w('shd')}")) for cell in body_cells]) if body_cells else None
+    model["header_shd"] = (consistent([serial(cell.find(f"{w('tcPr')}/{w('shd')}")) for cell in header_cells])
+                           if header_cells else model["shd"])
+    body_paragraphs_ = [paragraph for row in table.findall(w("tr")) if row is not header for paragraph in row.iter(w("p"))]
+    header_paragraphs = list(header.iter(w("p"))) if header is not None else []
+    model["paragraph"] = {name: consistent([serial(paragraph.find(f"{w('pPr')}/{w(name)}")) for paragraph in body_paragraphs_ + header_paragraphs])
+                          for name in TABLE_PARAGRAPH_PROPERTIES}
+    model["header_jc"] = consistent([serial(paragraph.find(f"{w('pPr')}/{w('jc')}")) for paragraph in header_paragraphs]) if header_paragraphs else ...
+    model["header_row"] = header.find(f"{w('trPr')}/{w('tblHeader')}") if header is not None else None
+    sizes = [(serial(run.find(f"{w('rPr')}/{w('sz')}")), serial(run.find(f"{w('rPr')}/{w('szCs')}"))) for run in table.iter(w("r"))
+             if run.find(w("t")) is not None]
+    model["size"] = consistent(sizes) if sizes else ...
+    return model
+
+
+def unify_table(table: etree._Element, model: dict, session: Session) -> bool:
+    """Terapkan format tabel contoh ke satu tabel; lebar kolom, sel gabung, isi, dan perataan isi tetap."""
+    changed = False
+
+    def parse(value: bytes | None) -> etree._Element | None:
+        return etree.fromstring(value) if value is not None else None
+
+    def table_mutation(properties: etree._Element) -> None:
+        for name, value in model["table"].items():
+            set_child(properties, name, value, TABLE_PROPERTY_ORDER)
+
+    changed |= tracked_properties(ensure_properties(table, "tblPr"), "tblPrChange", (), TABLE_PROPERTY_ORDER,
+                                  session, table_mutation)
+    header = header_row(table) if model["header"] else None
+    for row in table.findall(w("tr")):
+        row_properties = row.find(w("trPr"))
+        inserted_row = row_properties is not None and row_properties.find(w("ins")) is not None
+
+        def row_mutation(properties: etree._Element, is_header: bool = row is header) -> None:
+            set_child(properties, "trHeight", None, ROW_PROPERTY_ORDER)
+            set_child(properties, "jc", None, ROW_PROPERTY_ORDER)
+            if is_header and model["header_row"] is not None:
+                set_child(properties, "tblHeader", model["header_row"], ROW_PROPERTY_ORDER)
+
+        if row_properties is not None or (row is header and model["header_row"] is not None):
+            properties = row_properties if row_properties is not None else etree.Element(w("trPr"))
+            if row_properties is None:
+                row.insert(0 if row.find(w("tblPrEx")) is None else 1, properties)
+            changed |= tracked_properties(properties, "trPrChange", ("ins", "del"), ROW_PROPERTY_ORDER, session,
+                                          row_mutation, track=not inserted_row)
+            if not len(properties):
+                row.remove(properties)
+        for cell in row.findall(w("tc")):
+
+            def cell_mutation(properties: etree._Element, is_header: bool = row is header) -> None:
+                for name in ("tcBorders", "tcMar"):
+                    set_child(properties, name, None, CELL_PROPERTY_ORDER)
+                shading = model["header_shd"] if is_header else model["shd"]
+                if shading is not ...:
+                    set_child(properties, "shd", parse(shading), CELL_PROPERTY_ORDER)
+                if model["vAlign"] is not ...:
+                    set_child(properties, "vAlign", parse(model["vAlign"]), CELL_PROPERTY_ORDER)
+
+            changed |= tracked_properties(ensure_properties(cell, "tcPr"), "tcPrChange", ("cellIns", "cellDel", "cellMerge"),
+                                          CELL_PROPERTY_ORDER, session, cell_mutation, track=not inserted_row)
+            for paragraph in cell.findall(w("p")):
+                changed |= unify_cell_paragraph(paragraph, model, row is header, session, inserted_row)
+    return changed
+
+
+def unify_cell_paragraph(paragraph: etree._Element, model: dict, in_header: bool, session: Session,
+                         inserted_row: bool) -> bool:
+    changed = False
+    keep_hanging = bool(ENUMERATION_RE.match(paragraph_plain_text(paragraph)))
+
+    def paragraph_mutation(properties: etree._Element) -> None:
+        for name, value in model["paragraph"].items():
+            if value is ...:
+                continue
+            if name == "ind" and keep_hanging:
+                current = properties.find(w("ind"))
+                if current is not None and current.get(w("hanging")):
+                    continue
+            set_child(properties, name, etree.fromstring(value) if value is not None else None, PARAGRAPH_PROPERTY_ORDER)
+        if in_header and model["header_jc"] is not ...:
+            value = model["header_jc"]
+            set_child(properties, "jc", etree.fromstring(value) if value is not None else None, PARAGRAPH_PROPERTY_ORDER)
+
+    inserted = inserted_row or paragraph_inserted(paragraph)
+    changed |= tracked_properties(ensure_properties(paragraph, "pPr"), "pPrChange", ("rPr", "sectPr"),
+                                  PARAGRAPH_PROPERTY_ORDER, session, paragraph_mutation, track=not inserted)
+    if model["size"] is ...:
+        return changed
+    size, size_cs = (etree.fromstring(value) if value is not None else None for value in model["size"])
+
+    def run_mutation(properties: etree._Element) -> None:
+        set_child(properties, "sz", size, RUN_PROPERTY_ORDER)
+        set_child(properties, "szCs", size_cs, RUN_PROPERTY_ORDER)
+
+    for run in paragraph.iter(w("r")):
+        if any(ancestor.tag == w("p") and ancestor is not paragraph for ancestor in run.iterancestors()):
+            continue
+        properties = ensure_properties(run, "rPr")
+        changed |= tracked_properties(properties, "rPrChange", (), RUN_PROPERTY_ORDER, session, run_mutation,
+                                      track=not (inserted or inside_insertion(run)))
+        if not len(properties):
+            run.remove(properties)
+    paragraph_properties = ensure_properties(paragraph, "pPr")
+    mark = paragraph_properties.find(w("rPr"))
+    if mark is None:
+        mark = etree.Element(w("rPr"))
+        place_in_order(paragraph_properties, mark, PARAGRAPH_PROPERTY_ORDER)
+    mark_tracked = mark.find(w("ins")) is None and mark.find(w("del")) is None and not inserted
+
+    def mark_mutation(properties: etree._Element) -> None:
+        set_child(properties, "sz", size, MARK_PROPERTY_ORDER)
+        set_child(properties, "szCs", size_cs, MARK_PROPERTY_ORDER)
+
+    changed |= tracked_properties(mark, "rPrChange", ("ins", "del", "moveFrom", "moveTo"), MARK_PROPERTY_ORDER, session,
+                                  mark_mutation, track=mark_tracked)
+    if not len(mark):
+        paragraph_properties.remove(mark)
+    return changed
+
+
+def unify_tables(body: etree._Element, config: dict, session: Session) -> list[str]:
+    """seragamkan_tabel: {"contoh": "Tabel 3.27", "kecuali": ["Tabel 2.1"]}."""
+    settings = config.get("seragamkan_tabel") or {}
+    wanted = re.sub(r"^\s*Tabel\s+", "", str(settings.get("contoh", "")))
+    skipped = {re.sub(r"^\s*Tabel\s+", "", str(item)) for item in settings.get("kecuali", [])}
+    tables = captioned_tables(body)
+    examples = [table for number, table in tables if number == wanted]
+    if not examples:
+        return [f"  tabel contoh {settings.get('contoh')!r} tidak ditemukan; tabel tidak diubah"]
+    model = table_model(examples[0])
+    changed = [number for number, table in tables
+               if table is not examples[0] and number not in skipped and unify_table(table, model, session)]
+    return [f"  contoh: Tabel {wanted}; tabel diseragamkan ({len(changed)}): {', '.join(changed) or '-'}"]
 
 
 # ---------------------------------------------------------------------------
@@ -4103,7 +4412,8 @@ def run(arguments: argparse.Namespace) -> int:
         author=arguments.penulis,
         date=datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         tracked=not arguments.langsung,
-        next_change_id=max_numeric_id(list(parts.values()), ("ins", "del", "moveFrom", "moveTo", "rPrChange", "pPrChange")) + 1,
+        next_change_id=max_numeric_id(list(parts.values()), ("ins", "del", "moveFrom", "moveTo", "rPrChange", "pPrChange", "tblPrChange",
+                                                                 "trPrChange", "tcPrChange", "sectPrChange")) + 1,
         next_comment_id=max(max_numeric_id([comment_root], ("comment",)) if comment_root is not None else -1,
                             max_numeric_id(list(parts.values()), ("commentRangeStart", "commentReference"))) + 1,
         next_drawing_id=max([int(element.get("id")) for element in document_root.iter(f"{{{WP_NS}}}docPr")
@@ -4213,6 +4523,10 @@ def run(arguments: argparse.Namespace) -> int:
     if arguments.nomori_ulang or config.get("nomori_ulang"):
         print("Penomoran ulang judul tabel/gambar (lama → baru):")
         for line in renumber_captions(body, styles, session, config):
+            print(line)
+    if config.get("seragamkan_tabel"):
+        print("Format tabel diseragamkan:")
+        for line in unify_tables(body, config, session):
             print(line)
     if arguments.uji:
         print("\nMode uji: tidak ada file yang ditulis.")
