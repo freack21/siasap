@@ -18,7 +18,7 @@ return [
     | ketiga = Tidak Sehat, selebihnya Berbahaya. Satuan ppm.
     */
     'source' => [
-        'label' => 'Solihat, S. M., Salsabila, S., & Susilawati, S. (2026). Sistem Pemantauan Kualitas Udara Berbasis ESP32 Menggunakan Sensor Gas MQ-135 dan MQ-2. JITET, 14(1), 1592–1599.',
+        'label' => 'Solihat, S. M., Salsabila, S., & Susilawati. (2026). Sistem Pemantauan Kualitas Udara Berbasis ESP32 Menggunakan Sensor Gas MQ-135 dan MQ-2. JITET, 14(1), 1592–1599.',
         'doi' => '10.23960/jitet.v14i1.5568',
     ],
 

@@ -220,11 +220,11 @@
             <ul class="space-y-3 text-sm leading-relaxed text-slate-600">
                 <li class="flex gap-3">
                     <x-tabler-info-circle class="mt-0.5 size-4 shrink-0 text-slate-400" />
-                    <span>Nilai ppm adalah indikator relatif terhadap kondisi udara saat perangkat dinyalakan, mengikuti metode konversi Solihat dkk. (2026); nilainya bukan pengukuran ppm absolut.</span>
+                    <span>Nilai ppm adalah indikator relatif terhadap kondisi udara saat perangkat dinyalakan. Perhitungan dan kalibrasinya dilakukan pada perangkat IoT, sehingga nilainya bukan pengukuran ppm absolut.</span>
                 </li>
                 <li class="flex gap-3">
                     <x-tabler-info-circle class="mt-0.5 size-4 shrink-0 text-slate-400" />
-                    <span>Seluruh ambang batas berasal dari satu sumber (Solihat dkk., 2026), yang tidak menjelaskan dasar penetapan angka ambangnya.</span>
+                    <span>Ambang batas pada tabel di atas digunakan sebagai acuan kategori aplikasi dan bukan merupakan baku mutu udara resmi.</span>
                 </li>
                 <li class="flex gap-3">
                     <x-tabler-info-circle class="mt-0.5 size-4 shrink-0 text-slate-400" />
