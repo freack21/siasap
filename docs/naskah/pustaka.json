@@ -1273,49 +1273,6 @@
       }
     },
     {
-      "id": "wang2010_mos",
-      "keterangan": "Subbab 2.5: prinsip sensor oksida logam.",
-      "bukti": "https://api.crossref.org/works/10.3390/s100302088 (judul, penulis, Sensors 10(3), 2088-2106, 2010)",
-      "itemData": {
-        "type": "article-journal",
-        "author": [
-          {
-            "family": "Wang",
-            "given": "C."
-          },
-          {
-            "family": "Yin",
-            "given": "L."
-          },
-          {
-            "family": "Zhang",
-            "given": "L."
-          },
-          {
-            "family": "Xiang",
-            "given": "D."
-          },
-          {
-            "family": "Gao",
-            "given": "R."
-          }
-        ],
-        "issued": {
-          "date-parts": [
-            [
-              2010
-            ]
-          ]
-        },
-        "title": "Metal oxide gas sensors: Sensitivity and influencing factors",
-        "container-title": "Sensors",
-        "volume": "10",
-        "issue": "3",
-        "page": "2088-2106",
-        "DOI": "10.3390/s100302088"
-      }
-    },
-    {
       "id": "hayesroth1985",
       "keterangan": "Subbab 2.11: sistem berbasis aturan IF-THEN.",
       "bukti": "https://api.crossref.org/works/10.1145/4284.4286 (Communications of the ACM 28(9), 921-932, September 1985)",
