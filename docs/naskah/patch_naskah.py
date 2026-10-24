@@ -3109,7 +3109,12 @@ class Library:
         item = mendeley_item(entry["itemData"], entry["id"])
         key = work_key(item)
         if key in self.works:
-            raise ValueError(f"karya baru {entry['id']} sudah ada di pustaka Mendeley naskah")
+            # Naskah hasil pembangunan sebelumnya sudah memuat karya ini sebagai field:
+            # pakai data di naskah, dan anggap tetap "baru" selama belum tertaut ke Mendeley.
+            existing = self.works[key]
+            existing.aliases.update(entry.get("alias", []))
+            existing.new = not existing.uris
+            return
         work = Work(key=key, item=item, new=True)
         work.aliases.update(entry.get("alias", []))
         self.works[key] = work
@@ -4079,6 +4084,12 @@ def run(arguments: argparse.Namespace) -> int:
     ITALIC_CHARACTER_STYLES.update(identifier for identifier, style in styles.styles.items()
                                    if style.get(w("type")) == "character" and styles.lookup(identifier, f"{w('rPr')}/{w('i')}"))
     workspace = Workspace(parts, package, styles, session)
+    if comment_root is not None:
+        # Komentar yang sudah ada di naskah masukan milik penulis: selalu ikut ke salinan bersih.
+        for comment in comment_root.iter(w("comment")):
+            value = comment.get(w("id"), "")
+            if value.lstrip("-").isdigit():
+                session.clean_comment_ids.add(int(value))
     with_comments = not arguments.tanpa_komentar
     if arguments.tanpa_alasan:
         for revision in revisions:

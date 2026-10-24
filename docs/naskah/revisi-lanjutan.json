@@ -1,0 +1,23 @@
+{
+  "keterangan": "Revisi lanjutan atas naskah acuan 24 Oktober 2026: subbab 3.1 memakai metode penelitian R&D dengan model pengembangan Waterfall.",
+  "revisi": [
+    {
+      "id": "3.1-RND-1",
+      "lokasi": "3.1 Metode Penelitian, paragraf 1",
+      "cari": "Penelitian ini merupakan penelitian terapan…memahami kondisi kualitas udara ruangan secara lebih mudah, terstruktur, dan informatif.",
+      "ganti": "Penelitian ini menggunakan metode penelitian dan pengembangan (*Research and Development* atau R&D) dalam bidang Rekayasa Perangkat Lunak. Borg dan Gall (1983) memandang R&D sebagai proses untuk mengembangkan dan memvalidasi suatu produk, sedangkan Sugiyono (2019) menjelaskan R&D sebagai metode penelitian yang digunakan untuk menghasilkan produk tertentu dan menguji keefektifan produk tersebut. Produk yang dihasilkan dalam penelitian ini adalah aplikasi berbasis *web* untuk menerima dan menampilkan data kualitas udara ruangan, menentukan kategori kualitasnya, serta memberikan rekomendasi tindakan preventif sederhana kepada pengguna. Metode R&D dipilih karena penelitian ini tidak hanya membangun aplikasi, tetapi juga menguji apakah aplikasi tersebut berfungsi sesuai kebutuhan dan dapat diterima oleh pengguna."
+    },
+    {
+      "id": "3.1-RND-2",
+      "lokasi": "3.1 Metode Penelitian, paragraf 2",
+      "cari": "Pendekatan yang digunakan adalah pendekatan pengembangan sistem",
+      "ganti": "Tahap pengembangan produk dalam kerangka R&D dilakukan dengan pendekatan pengembangan sistem"
+    },
+    {
+      "id": "3.1-RND-3",
+      "lokasi": "3.1 Metode Penelitian, paragraf 5",
+      "cari": "Pengembangan sistem menggunakan metode Waterfall Model…Evaluasi sistem dilakukan dengan dua cara.",
+      "ganti": "Pengembangan produk menggunakan model *Waterfall*, yaitu model proses perangkat lunak yang menjalankan tahapan secara berurutan, dengan setiap tahap diselesaikan sebelum tahap berikutnya dimulai (Royce, 1970; Sommerville, 2016). Model ini dipilih karena kebutuhan aplikasi telah ditentukan sejak awal sehingga tahapannya dapat dijalankan secara sistematis (Pressman & Maxim, 2020). Tahapan yang dilakukan meliputi analisis kebutuhan, perancangan sistem, implementasi, pengujian, dan pemeliharaan sebagaimana dijelaskan pada subbab 3.5. Tahap pengujian sekaligus menjadi tahap validasi produk dalam kerangka R&D, yang dilakukan dengan dua cara."
+    }
+  ]
+}
