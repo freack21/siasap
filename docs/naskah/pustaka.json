@@ -1782,6 +1782,91 @@
         "version": "11",
         "URL": "https://www.ueq-online.org/Material/Handbook.pdf"
       }
+    },
+    {
+      "id": "sugiyono2019",
+      "bukti": [
+        "https://perpustakaan.binadarma.ac.id/opac/detail/6897",
+        "https://lib.umpr.ac.id/opac/detail/7845"
+      ],
+      "itemData": {
+        "type": "book",
+        "author": [
+          {
+            "family": "Sugiyono",
+            "given": ""
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2019
+            ]
+          ]
+        },
+        "title": "Metode penelitian kuantitatif, kualitatif, dan R&D",
+        "publisher": "Alfabeta",
+        "publisher-place": "Bandung",
+        "ISBN": "978-602-289-533-6"
+      }
+    },
+    {
+      "id": "borggall1983",
+      "bukti": [
+        "https://library.bracu.ac.bd/vufind/Record/4097/Details",
+        "https://ci.nii.ac.jp/ncid/BA03063678"
+      ],
+      "itemData": {
+        "type": "book",
+        "author": [
+          {
+            "family": "Borg",
+            "given": "W. R."
+          },
+          {
+            "family": "Gall",
+            "given": "M. D."
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              1983
+            ]
+          ]
+        },
+        "title": "Educational research: An introduction",
+        "edition": "4",
+        "publisher": "Longman"
+      }
+    },
+    {
+      "id": "royce1970",
+      "bukti": [
+        "https://swehb.nasa.gov/x/7QH7",
+        "https://faculty.washington.edu/hazeline/misc/reserve/royce_waterfall.pdf"
+      ],
+      "itemData": {
+        "type": "paper-conference",
+        "author": [
+          {
+            "family": "Royce",
+            "given": "W. W."
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              1970,
+              8
+            ]
+          ]
+        },
+        "title": "Managing the development of large software systems",
+        "container-title": "Proceedings of IEEE WESCON",
+        "volume": "26",
+        "page": "1-9"
+      }
     }
   ]
 }
