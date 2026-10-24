@@ -51,6 +51,7 @@ Kunci tata-tulis.json:
   kecualikan_tabel, kecualikan_kolom_tabel ({"2.1": ["Judul"]}), tegakkan_kolom_tabel
   hapus_paragraf_kosong  hapus paragraf kosong yang terselip di antara dua paragraf isi
   perbarui_field       w:updateFields di settings.xml (Word memperbarui Daftar Isi/Tabel/Gambar)
+  jangan_kompres_gambar  w:doNotAutoCompressPictures (Word tidak menurunkan resolusi gambar)
   pustaka              berkas data sitasi (pustaka.json): setiap sitasi di batang tubuh (paragraf,
                        sel tabel, judul) menjadi field Mendeley ADDIN CSL_CITATION berformat APA 7
                        (Track Changes: run field di w:ins, teks lama di w:del). Karya yang sudah ada
@@ -3840,6 +3841,31 @@ def set_update_fields(files: dict[str, bytes]) -> bool:
     return True
 
 
+SETTINGS_AFTER_NO_COMPRESSION = {
+    "forceUpgrade", "captions", "readModeInkLockDown", "smartTagType", "schemaLibrary",
+    "shapeDefaults", "doNotEmbedSmartTags", "decimalSymbol", "listSeparator",
+}
+
+
+def set_no_picture_compression(files: dict[str, bytes]) -> bool:
+    """w:doNotAutoCompressPictures: Word tidak menurunkan resolusi gambar (mis. ke 220 ppi) saat menyimpan."""
+    name = "word/settings.xml"
+    if name not in files:
+        return False
+    root = etree.fromstring(files[name])
+    if root.find(w("doNotAutoCompressPictures")) is not None:
+        return True
+    element = etree.Element(w("doNotAutoCompressPictures"))
+    anchor = next((child for child in root if isinstance(child.tag, str) and child.tag.startswith(f"{{{W_NS}}}")
+                   and etree.QName(child).localname in SETTINGS_AFTER_NO_COMPRESSION), None)
+    if anchor is not None:
+        anchor.addprevious(element)
+    else:
+        root.append(element)
+    files[name] = serialize(root)
+    return True
+
+
 def accept_all(root: etree._Element) -> None:
     """Terima semua Track Changes (semantik Accept All Word) langsung pada XML."""
     for row in list(root.iter(w("tr"))):
@@ -4198,6 +4224,8 @@ def run(arguments: argparse.Namespace) -> int:
         ensure_comments_wiring(files)
     if config.get("perbarui_field") and set_update_fields(files):
         print("settings.xml: w:updateFields aktif (Word memperbarui daftar isi, tabel, gambar saat dibuka)")
+    if config.get("jangan_kompres_gambar") and set_no_picture_compression(files):
+        print("settings.xml: w:doNotAutoCompressPictures aktif (Word tidak mengompres gambar saat menyimpan)")
 
     write_package(output, infos, files)
     print(f"\nTersimpan: {output}")

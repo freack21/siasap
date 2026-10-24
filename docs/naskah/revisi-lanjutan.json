@@ -28,9 +28,81 @@
     {
       "id": "GBR-3.1",
       "lokasi": "Gambar 3.1",
-      "cari": "Flowchart Sistem Monitoring Kualitas Udara",
+      "cari": "Gambar 3.1 Flowchart Sistem Monitoring Kualitas Udara",
       "ganti_gambar": "../gambar/flowchart-sistem-monitoring.png",
       "lebar_cm": 14.5
+    },
+    {
+      "id": "GBR-3.2",
+      "lokasi": "Gambar 3.2",
+      "cari": "Gambar 3.2 Use Case Diagram Sistem Monitoring",
+      "ganti_gambar": "../gambar/use-case-diagram.png"
+    },
+    {
+      "id": "GBR-3.3",
+      "lokasi": "Gambar 3.3",
+      "cari": "Gambar 3.3 Activity Diagram Penerimaan dan Pengolahan Data",
+      "ganti_gambar": "../sisipan/activity-penerimaan-data.png"
+    },
+    {
+      "id": "GBR-3.4",
+      "lokasi": "Gambar 3.4",
+      "cari": "Gambar 3.4 Activity Diagram Melihat Beranda dan Rekomendasi",
+      "ganti_gambar": "../sisipan/activity-beranda-rekomendasi.png"
+    },
+    {
+      "id": "GBR-3.5",
+      "lokasi": "Gambar 3.5",
+      "cari": "Gambar 3.5 Activity Diagram Mengisi Kuesioner UEQ",
+      "ganti_gambar": "../sisipan/activity-kuesioner-ueq.png"
+    },
+    {
+      "id": "GBR-3.6",
+      "lokasi": "Gambar 3.6",
+      "cari": "Gambar 3.6 Entity Relationship Diagram Sistem Monitoring",
+      "ganti_gambar": "../sisipan/erd-siasap.png"
+    },
+    {
+      "id": "GBR-3.7",
+      "lokasi": "Gambar 3.7",
+      "cari": "Gambar 3.7 Wireframe Halaman Beranda",
+      "ganti_gambar": "../gambar/wireframe-beranda.png"
+    },
+    {
+      "id": "GBR-3.8",
+      "lokasi": "Gambar 3.8",
+      "cari": "Gambar 3.8 Wireframe Halaman Detail Ruangan",
+      "ganti_gambar": "../gambar/wireframe-detail-ruangan.png"
+    },
+    {
+      "id": "GBR-3.9",
+      "lokasi": "Gambar 3.9",
+      "cari": "Gambar 3.9 Wireframe Halaman Riwayat",
+      "ganti_gambar": "../gambar/wireframe-riwayat.png"
+    },
+    {
+      "id": "GBR-3.10",
+      "lokasi": "Gambar 3.10",
+      "cari": "Gambar 3.10 Wireframe Halaman Panduan",
+      "ganti_gambar": "../gambar/wireframe-panduan.png"
+    },
+    {
+      "id": "GBR-3.11",
+      "lokasi": "Gambar 3.11",
+      "cari": "Gambar 3.11 Wireframe Halaman Rekomendasi Tindakan",
+      "ganti_gambar": "../gambar/wireframe-rekomendasi.png"
+    },
+    {
+      "id": "GBR-3.12",
+      "lokasi": "Gambar 3.12",
+      "cari": "Gambar 3.12 Wireframe Halaman Status Perangkat",
+      "ganti_gambar": "../gambar/wireframe-status-perangkat.png"
+    },
+    {
+      "id": "GBR-3.13",
+      "lokasi": "Gambar 3.13",
+      "cari": "Gambar 3.13 Wireframe Halaman Kuesioner UEQ",
+      "ganti_gambar": "../gambar/wireframe-kuesioner-ueq.png"
     }
   ]
 }
