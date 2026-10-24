@@ -128,7 +128,7 @@ mengubah teks; sisipan berikutnya ke sasaran yang sama diletakkan berurutan.
     subbab yang sama bila ada. "tanpa_paragraf_kosong": paragraf kosong (jarak
     ketikan) tidak ikut disalin, kecuali pemisah dua tabel.
   - "ganti_gambar": "berkas.png" ganti gambar di atas judul "cari": lebar tampil
-    tetap, tinggi mengikuti rasio baru (maks. 80% tinggi halaman). Word tidak
+    tetap (atau "lebar_cm": 14.5), tinggi mengikuti rasio baru (maks. 80% tinggi halaman). Word tidak
     bisa melacak penggantian gambar, jadi dicatat dengan komentar "Gambar
     diganti ..." pada judul. Bila berkas belum ada, butir dilewati.
   - "format_nomor": "3.11.%1" ganti teks nomor otomatis daftar yang dipakai
@@ -1959,8 +1959,9 @@ def build_image_paragraph(body: etree._Element, anchor: etree._Element, image: P
     return paragraph
 
 
-def replace_image(caption: etree._Element, image: Path, package: Package, session: Session) -> str:
-    """Ganti gambar di atas judul: lebar tampil tetap, tinggi mengikuti rasio gambar baru."""
+def replace_image(caption: etree._Element, image: Path, package: Package, session: Session,
+                  width_cm: float | None = None) -> str:
+    """Ganti gambar di atas judul: lebar tampil tetap (atau width_cm), tinggi mengikuti rasio gambar baru."""
     figure = drawing_paragraph_before(caption)
     if figure is None:
         raise ValueError("paragraf gambar di atas judul tidak ditemukan")
@@ -1975,7 +1976,8 @@ def replace_image(caption: etree._Element, image: Path, package: Package, sessio
     blip.set(f"{{{R_NS}}}embed", rel_id)
     extent = drawing.find(f".//{{{WP_NS}}}extent")
     old_size = (int(extent.get("cx")), int(extent.get("cy")))
-    new_size = fitted_extent(old_size[0], pixels, text_area(figure))
+    target_width = round(width_cm * 360000) if width_cm else old_size[0]
+    new_size = fitted_extent(target_width, pixels, text_area(figure))
     set_drawing_extent(drawing, *new_size)
     still_used = any(element.get(f"{{{R_NS}}}embed") == old_rel for element in package.root("word/document.xml").iter(f"{{{A_NS}}}blip"))
     if old_rel and not still_used:
@@ -2233,7 +2235,9 @@ def op_replace_image(revision: Revision, workspace: Workspace) -> tuple[list[etr
     if not image.exists():
         print(f"   ({revision.id}: gambar {image} belum tersedia; penggantian dilewati)")
         return [], SKIPPED
-    description = replace_image(revision.target.paragraph, image, workspace.package, workspace.session)
+    width = revision.extra.get("lebar_cm")
+    description = replace_image(revision.target.paragraph, image, workspace.package, workspace.session,
+                                float(width) if width else None)
     revision.extra["_komentar_gambar"] = f"Gambar diganti dengan {description}. Penggantian gambar tidak tercatat sebagai Track Changes."
     return [revision.target.paragraph], f"gambar diganti: {description}"
 
@@ -3968,7 +3972,7 @@ def load_revisions(path: Path, only: set[str] | None) -> list[Revision]:
         if not item.get("cari"):
             sys.exit(f"butir {identifier}: 'cari' wajib diisi")
         extra = {key: value for key, value in item.items()
-                 if key in STRUCTURAL_KEYS or key in ("sebelum", "gaya", "tegak", "komentar_bersih", "pindah_pemisah_halaman")}
+                 if key in STRUCTURAL_KEYS or key in ("sebelum", "gaya", "tegak", "komentar_bersih", "pindah_pemisah_halaman", "lebar_cm")}
         if item.get("ganti") is None and not item.get("catatan") and not any(key in extra for key in STRUCTURAL_KEYS):
             sys.exit(f"butir {identifier}: isi 'ganti', 'catatan', atau salah satu dari {', '.join(STRUCTURAL_KEYS)}")
         if item.get("ganti") is not None and "\n" in item["ganti"]:

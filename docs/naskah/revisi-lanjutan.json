@@ -18,6 +18,19 @@
       "lokasi": "3.1 Metode Penelitian, paragraf 5",
       "cari": "Pengembangan sistem menggunakan metode Waterfall Model…Evaluasi sistem dilakukan dengan dua cara.",
       "ganti": "Pengembangan produk menggunakan model *Waterfall*, yaitu model proses perangkat lunak yang menjalankan tahapan secara berurutan, dengan setiap tahap diselesaikan sebelum tahap berikutnya dimulai (Royce, 1970; Sommerville, 2016). Model ini dipilih karena kebutuhan aplikasi telah ditentukan sejak awal sehingga tahapannya dapat dijalankan secara sistematis (Pressman & Maxim, 2020). Tahapan yang dilakukan meliputi analisis kebutuhan, perancangan sistem, implementasi, pengujian, dan pemeliharaan sebagaimana dijelaskan pada subbab 3.5. Tahap pengujian sekaligus menjadi tahap validasi produk dalam kerangka R&D, yang dilakukan dengan dua cara."
+    },
+    {
+      "id": "GBR-2.1",
+      "lokasi": "Gambar 2.1",
+      "cari": "Diagram Desain Sistem Menggunakan Metode Waterfall",
+      "ganti_gambar": "../gambar/waterfall-pengembangan.png"
+    },
+    {
+      "id": "GBR-3.1",
+      "lokasi": "Gambar 3.1",
+      "cari": "Flowchart Sistem Monitoring Kualitas Udara",
+      "ganti_gambar": "../gambar/flowchart-sistem-monitoring.png",
+      "lebar_cm": 14.5
     }
   ]
 }
