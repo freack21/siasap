@@ -25,7 +25,7 @@ class PublicGuideTest extends TestCase
             ->assertSee('Tabel ambang batas')
             ->assertSeeInOrder(['0 – < 50 ppm', '50 – < 100 ppm', '100 – < 150 ppm', '≥ 150 ppm'])
             ->assertSee(['0 – < 40 ppm', '≥ 120 ppm', '20 – < 50 ppm', '≥ 80 ppm', '0 – < 15 ppm', '≥ 60 ppm'])
-            ->assertSee('Solihat, S. M., Salsabila, S., & Susilawati, S. (2026)')
+            ->assertSee('Solihat, S. M., Salsabila, S., & Susilawati. (2026)')
             ->assertSee('10.23960/jitet.v14i1.5568');
     }
 
