@@ -1,9 +1,9 @@
 /* =========================================================================================
- * SIASAP - FIRMWARE PERANGKAT TUNGGAL (ESP32, WiFi LANGSUNG)
+ * SIMKU - FIRMWARE PERANGKAT TUNGGAL (ESP32, WiFi LANGSUNG)
  * =========================================================================================
  * Deskripsi:
  * Satu perangkat ESP32 membaca sensor MQ-135 (CO2, NH3) dan MQ-2 (CO, H2), lalu mengirim
- * data tiap INTERVAL_KIRIM ke aplikasi SIASAP lewat HTTP POST /api/telemetry.
+ * data tiap INTERVAL_KIRIM ke aplikasi SIMKU lewat HTTP POST /api/telemetry.
  *
  * CATATAN PENTING (tanggung jawab penelitian IoT):
  * Penyesuaian rumus konversi dan kalibrasi sensor adalah tanggung jawab penelitian IoT dan
@@ -103,7 +103,7 @@ void setup() {
   delay(1000);
 
   Serial.println("\n=======================================================");
-  Serial.println("  SIASAP - ESP32 PERANGKAT TUNGGAL");
+  Serial.println("  SIMKU - ESP32 PERANGKAT TUNGGAL");
   Serial.print("  Device ID : "); Serial.println(DEVICE_ID);
   Serial.println("=======================================================");
 

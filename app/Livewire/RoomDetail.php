@@ -19,7 +19,7 @@ use Livewire\Component;
  * dengan garis ambang kategori, ringkasan rentang, dan 10 pembacaan terakhir.
  */
 #[Layout('layouts::public')]
-#[Title('Detail Ruangan — SIASAP')]
+#[Title('Detail Ruangan — SIMKU')]
 class RoomDetail extends Component
 {
     /**
@@ -98,7 +98,7 @@ class RoomDetail extends Component
             'categories' => AirQuality::categories(),
             'ranges' => self::RANGES,
             'multiNode' => $nodes->count() > 1,
-        ])->title($this->room->name.' — SIASAP');
+        ])->title($this->room->name.' — SIMKU');
     }
 
     /**

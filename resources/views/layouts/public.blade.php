@@ -58,7 +58,7 @@
 
     <footer class="border-t border-slate-200 bg-white">
         <div class="mx-auto flex max-w-6xl flex-col gap-1 px-4 py-6 text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between sm:px-6">
-            <p class="inline-flex items-center gap-1.5"><x-tabler-wind class="size-4 text-accent-600" /> SIASAP — Sistem Monitoring Kualitas Udara Ruangan Berbasis IoT</p>
+            <p class="inline-flex items-center gap-1.5"><x-tabler-wind class="size-4 text-accent-600" /> SIMKU — Sistem Monitoring Kualitas Udara Ruangan Berbasis IoT</p>
             <p class="inline-flex items-center gap-1.5"><x-tabler-refresh class="size-3.5" /> &copy; {{ now()->year }} · Data diperbarui otomatis setiap beberapa detik</p>
         </div>
     </footer>

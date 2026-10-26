@@ -23,4 +23,13 @@ class PublicAccessTest extends TestCase
             ->assertDontSee('Masuk Admin')
             ->assertDontSee('Panel Admin');
     }
+
+    public function test_public_pages_use_simku_brand(): void
+    {
+        $this->get('/')
+            ->assertOk()
+            ->assertSee('<title>Beranda — SIMKU</title>', false)
+            ->assertSee('SIMKU — Sistem Monitoring Kualitas Udara Ruangan Berbasis IoT')
+            ->assertDontSee('SIASAP');
+    }
 }

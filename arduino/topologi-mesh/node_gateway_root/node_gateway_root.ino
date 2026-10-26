@@ -1,9 +1,9 @@
 /* =========================================================================================
- * SISTEM PEMANTAUAN KUALITAS UDARA LINGKUNGAN (SIASAP)
+ * SISTEM PEMANTAUAN KUALITAS UDARA LINGKUNGAN (SIMKU)
  * TOPOLOGI MESH - ESP32 NODE 1 (ROOT GATEWAY / SINK NODE)
  * =========================================================================================
  * Deskripsi Peran Node 1:
- * 1. Terkoneksi ke WiFi Router ("cargo") dan server backend Laravel SIASAP.
+ * 1. Terkoneksi ke WiFi Router ("cargo") dan server backend Laravel SIMKU.
  * 2. Membaca sensor gas lokal miliknya sendiri (Node ID 1 - Ruang Tamu, Hop Count = 1,
  *    RSSI = WiFi.RSSI() link Node 1 -> AP).
  * 3. Berfungsi sebagai Sink / Gateway: Mendengarkan paket data dari Node 2 dan Node 3 melalui
@@ -37,7 +37,7 @@
 const char* WIFI_SSID     = "cargo";
 const char* WIFI_PASSWORD = "cargocargo";
 
-// URL Endpoint Laravel SIASAP
+// URL Endpoint Laravel SIMKU
 const char* SERVER_URL    = "http://192.168.137.1:8000/api/telemetry";
 
 // API Key opsional. Isi dengan nilai TELEMETRY_API_KEY di file .env Laravel bila backend
@@ -166,7 +166,7 @@ void setup() {
   delay(1000);
 
   Serial.println("\n=======================================================");
-  Serial.println("  SIASAP - ESP32 TOPOLOGI MESH [NODE 1: ROOT GATEWAY]");
+  Serial.println("  SIMKU - ESP32 TOPOLOGI MESH [NODE 1: ROOT GATEWAY]");
   Serial.println("=======================================================");
 
   analogReadResolution(12);

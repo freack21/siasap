@@ -1,8 +1,8 @@
-# Daftar Revisi Naskah Skripsi SIASAP
+# Daftar Revisi Naskah Skripsi SIMKU
 
 Naskah: *Sistem Monitoring Kualitas Udara Ruangan Berbasis IoT*, Wan Salma Nurkhairin Fitri (NIM 2207125057). Acuan: naskah proposal terbaru dan spesifikasi penyelarasan `docs/superpowers/specs/2026-10-23-penyelarasan-naskah-design.md` (selanjutnya disebut **Spec**).
 
-Aplikasi SIASAP telah diselaraskan dengan ruang lingkup yang disepakati: sistem hanya memantau data kualitas udara secara real-time (interval 5–10 detik) tanpa analisis tren maupun prediksi, diuji pada satu ruangan, dikembangkan dengan metode Waterfall, dan dievaluasi dengan black-box testing serta UEQ 26 butir. Dokumen ini mendaftar setiap bagian naskah yang perlu diubah agar isi naskah sama dengan perilaku aplikasi. Kalibrasi sensor dan rumus konversi ppm menjadi tanggung jawab penelitian IoT (rekan satu proyek), sehingga naskah ini cukup menjelaskan sifat nilai yang diterima aplikasi. Nomor halaman mengikuti naskah proposal. Keterangan "(cek)" menandai detail yang belum dapat dipastikan dari sumber yang tersedia.
+Aplikasi SIMKU telah diselaraskan dengan ruang lingkup yang disepakati: sistem hanya memantau data kualitas udara secara real-time (interval 5–10 detik) tanpa analisis tren maupun prediksi, diuji pada satu ruangan, dikembangkan dengan metode Waterfall, dan dievaluasi dengan black-box testing serta UEQ 26 butir. Dokumen ini mendaftar setiap bagian naskah yang perlu diubah agar isi naskah sama dengan perilaku aplikasi. Kalibrasi sensor dan rumus konversi ppm menjadi tanggung jawab penelitian IoT (rekan satu proyek), sehingga naskah ini cukup menjelaskan sifat nilai yang diterima aplikasi. Nomor halaman mengikuti naskah proposal. Keterangan "(cek)" menandai detail yang belum dapat dipastikan dari sumber yang tersedia.
 
 **Fakta aplikasi yang dirujuk**
 
@@ -10,9 +10,9 @@ Aplikasi SIASAP telah diselaraskan dengan ruang lingkup yang disepakati: sistem 
 |---|---|---|
 | Ambang batas (ppm) | CO₂ 50/100/150, NH₃ 40/80/120, CO 20/50/80, H₂ 15/40/60; batas eksklusif (`<`) | `config/air_quality.php` |
 | Sumber ambang | Solihat, Salsabila & Susilawati (2026), JITET 14(1), 1592–1599, doi:10.23960/jitet.v14i1.5568 | `config/air_quality.php` |
-| Interval kirim perangkat | 5 detik | `config/air_quality.php`, `arduino/siasap_monitor/siasap_monitor.ino` |
+| Interval kirim perangkat | 5 detik | `config/air_quality.php`, `arduino/simku_monitor/simku_monitor.ino` |
 | Batas status terhubung | data terakhir ≤ 30 detik (3 × interval maksimum 10 detik) | `config/air_quality.php` |
-| Rumus konversi di perangkat | ppm = max(0, ADC − baseline) × (5,0/4096) × k; k: CO₂ 100, NH₃ 80, CO 50, H₂ 30; baseline = rata-rata 50 pembacaan ADC saat perangkat menyala | `siasap_monitor.ino`; Solihat et al. (2026, hlm. 1596) |
+| Rumus konversi di perangkat | ppm = max(0, ADC − baseline) × (5,0/4096) × k; k: CO₂ 100, NH₃ 80, CO 50, H₂ 30; baseline = rata-rata 50 pembacaan ADC saat perangkat menyala | `simku_monitor.ino`; Solihat et al. (2026, hlm. 1596) |
 | Format data | `device_id`, `timestamp` (`Y-m-d H:i:s`), `co2_ppm`, `nh3_ppm`, `co_ppm`, `h2_ppm` | `TelemetryApiController.php` |
 | Validasi | semua atribut wajib; ppm numerik ≥ 0; `device_id` terdaftar; format waktu valid. Data ditolak dijawab HTTP 422 dan dicatat pada log penolakan | `TelemetryApiController.php` |
 | Rekomendasi | 4 aturan if-then sesuai Tabel 3.3; dasar: tiga strategi EPA *Improving Indoor Air Quality* dan prinsip gradasi AQI (EPA-403/B-26-003, Tabel 5) | `config/recommendations.php` |
@@ -102,7 +102,7 @@ Aplikasi SIASAP telah diselaraskan dengan ruang lingkup yang disepakati: sistem 
 | Lokasi | Tertulis sekarang | Usulan revisi | Alasan |
 |---|---|---|---|
 | 2.7, paragraf 1 (hlm. 26) | "(Solihat et al., 2025)" | "(Solihat et al., 2026)" | Spec §9 (tahun Solihat). |
-| 2.7, paragraf 2 (hlm. 26), sesudah "…melainkan digunakan sebagai indikator kualitas udara." | — | Tambahkan: "Pada Solihat et al. (2026, hlm. 1596), nilai ppm dihitung dengan rumus ppm = (ADC − baseline) × (5,0/4096) × k, dengan k bernilai 100 untuk CO₂, 80 untuk NH₃, 50 untuk CO, dan 30 untuk H₂. Baseline adalah rata-rata 50 pembacaan ADC saat perangkat dinyalakan, dan selisih negatif dibulatkan menjadi nol. Akibatnya, nilai yang dihasilkan mendekati nol pada udara awal dan naik ketika kadar gas di sekitar sensor bertambah. Nilai ini merupakan indikator relatif terhadap kondisi udara saat perangkat dinyalakan, bukan konsentrasi absolut hasil alat ukur terkalibrasi." | Spec §2 dan §9 (ppm sebagai indikator relatif berbasis baseline). Rumus sama dengan fungsi `hitungPpm()` di `siasap_monitor.ino`. |
+| 2.7, paragraf 2 (hlm. 26), sesudah "…melainkan digunakan sebagai indikator kualitas udara." | — | Tambahkan: "Pada Solihat et al. (2026, hlm. 1596), nilai ppm dihitung dengan rumus ppm = (ADC − baseline) × (5,0/4096) × k, dengan k bernilai 100 untuk CO₂, 80 untuk NH₃, 50 untuk CO, dan 30 untuk H₂. Baseline adalah rata-rata 50 pembacaan ADC saat perangkat dinyalakan, dan selisih negatif dibulatkan menjadi nol. Akibatnya, nilai yang dihasilkan mendekati nol pada udara awal dan naik ketika kadar gas di sekitar sensor bertambah. Nilai ini merupakan indikator relatif terhadap kondisi udara saat perangkat dinyalakan, bukan konsentrasi absolut hasil alat ukur terkalibrasi." | Spec §2 dan §9 (ppm sebagai indikator relatif berbasis baseline). Rumus sama dengan fungsi `hitungPpm()` di `simku_monitor.ino`. |
 | 2.7, paragraf 3 (hlm. 26) | "…berdasarkan ambang batas konsentrasi gas yang terdeteksi (Solihat et al., 2025)." | "(Solihat et al., 2026)" | Spec §9. |
 
 ### 2.8 Klasifikasi Berbasis Ambang Batas

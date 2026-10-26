@@ -32,7 +32,7 @@ class ClearTransactionDataCommand extends Command
     {
         $this->newLine();
         $this->info('====================================================================');
-        $this->info('       SIASAP - PEMBERSIHAN DATA TRANSAKSI SISTEM PEMANTAUAN        ');
+        $this->info('       SIMKU - PEMBERSIHAN DATA TRANSAKSI SISTEM PEMANTAUAN        ');
         $this->info('====================================================================');
 
         $logCount = SensorLog::count();

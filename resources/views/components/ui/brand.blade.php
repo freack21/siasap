@@ -5,7 +5,7 @@
         <x-tabler-wind class="size-5" stroke-width="2" />
     </span>
     <span class="leading-tight">
-        <span class="block text-sm font-bold tracking-tight text-slate-900">SIASAP</span>
+        <span class="block text-sm font-bold tracking-tight text-slate-900">SIMKU</span>
         @if ($subtitle)
             <span class="block text-[11px] text-slate-500">Monitoring Kualitas Udara Ruangan</span>
         @endif

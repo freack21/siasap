@@ -2,7 +2,7 @@
     <x-ui.page-header
         :icon="'tabler-book-2'"
         title="Panduan Kualitas Udara"
-        description="Penjelasan singkat cara kerja SIASAP dan cara membaca status kualitas udara di ruangan Anda.">
+        description="Penjelasan singkat cara kerja SIMKU dan cara membaca status kualitas udara di ruangan Anda.">
         <x-slot:eyebrow>Panduan</x-slot:eyebrow>
         <x-slot:actions>
             <a href="{{ route('home') }}" wire:navigate class="btn btn-secondary">
@@ -191,7 +191,7 @@
                     'a' => 'Ikuti rekomendasi yang tampil untuk kategori tersebut (lihat halaman Rekomendasi) dan perhatikan gas pada "Penyebab utama" untuk mencari sumbernya.',
                 ],
                 [
-                    'q' => 'Apakah SIASAP dapat dipakai untuk menilai kondisi kesehatan?',
+                    'q' => 'Apakah SIMKU dapat dipakai untuk menilai kondisi kesehatan?',
                     'a' => 'Tidak. Kategori dan rekomendasi bersifat informatif untuk menjaga kenyamanan udara ruangan dan bukan diagnosis medis. Bila mengalami keluhan kesehatan, hubungi tenaga kesehatan.',
                 ],
             ];

@@ -1,5 +1,5 @@
 /* =========================================================================================
- * SISTEM PEMANTAUAN KUALITAS UDARA LINGKUNGAN (SIASAP)
+ * SISTEM PEMANTAUAN KUALITAS UDARA LINGKUNGAN (SIMKU)
  * SKETCH KALIBRASI R0 - SENSOR MQ-2 & MQ-135 (PER BOARD)
  * =========================================================================================
  * Tujuan:
@@ -73,7 +73,7 @@ void setup() {
   delay(1000);
 
   Serial.println("\n=======================================================");
-  Serial.println("  SIASAP - KALIBRASI R0 SENSOR MQ-2 & MQ-135");
+  Serial.println("  SIMKU - KALIBRASI R0 SENSOR MQ-2 & MQ-135");
   Serial.println("=======================================================");
   Serial.println("[INGAT] Sensor baru wajib burn-in 24-48 jam (dinyalakan terus)");
   Serial.println("        sebelum kalibrasi. Letakkan board di UDARA BERSIH.");

@@ -1,4 +1,4 @@
-# SIASAP — Sistem Monitoring Kualitas Udara Ruangan Berbasis IoT
+# SIMKU — Sistem Monitoring Kualitas Udara Ruangan Berbasis IoT
 
 Aplikasi web untuk memantau kualitas udara ruangan secara *real-time* dari data perangkat IoT ESP32 (sensor MQ-135 dan MQ-2). Perangkat mengirim nilai ppm empat gas (CO₂, NH₃, CO, H₂) setiap 5 detik. Server memvalidasi data, menentukan kategori tiap gas dan kategori keseluruhan berdasarkan ambang batas, lalu menampilkan rekomendasi tindakan preventif sesuai kategori. Aplikasi hanya menyajikan data; tidak ada analisis tren maupun prediksi.
 
@@ -139,7 +139,7 @@ Mengembalikan 10 pembacaan terakhir untuk pemeriksaan cepat (memakai aturan `X-A
 
 ## Firmware
 
-Sketsa perangkat ada di [`arduino/siasap_monitor/siasap_monitor.ino`](arduino/siasap_monitor/siasap_monitor.ino); panduan lengkap di [`arduino/README.md`](arduino/README.md). Isi konfigurasi di bagian atas sketsa: `WIFI_SSID`, `WIFI_PASSWORD`, `SERVER_URL`, `API_KEY` (opsional), dan `DEVICE_ID` (`AIR-001`).
+Sketsa perangkat ada di [`arduino/simku_monitor/simku_monitor.ino`](arduino/simku_monitor/simku_monitor.ino); panduan lengkap di [`arduino/README.md`](arduino/README.md). Isi konfigurasi di bagian atas sketsa: `WIFI_SSID`, `WIFI_PASSWORD`, `SERVER_URL`, `API_KEY` (opsional), dan `DEVICE_ID` (`AIR-001`).
 
 Saat dinyalakan, perangkat memanaskan sensor, mengambil **baseline** dari udara saat itu, menyinkronkan waktu lewat NTP, lalu mengirim data tiap 5 detik. Nyalakan perangkat di udara ruangan normal dan jangan di-*restart* di tengah sesi pengujian agar baseline tidak berubah. Konversi ppm dan kalibrasi sensor merupakan tanggung jawab penelitian IoT.
 
