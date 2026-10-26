@@ -52,6 +52,13 @@ const float K_NH3 = 80.0;   // MQ-135
 const float K_CO  = 50.0;   // MQ-2
 const float K_H2  = 30.0;   // MQ-2
 
+// ======================== DIAGNOSIS ========================
+// true: setiap kiriman juga mencetak ADC mentah, baseline, tegangan pin, dan sebaran
+// 10 pembacaan cepat. Hanya untuk Serial Monitor; nilai yang dikirim ke server tidak berubah.
+const bool TAMPILKAN_ADC_MENTAH = true;
+const int JUMLAH_SAMPEL_SEBARAN = 10;
+const int JEDA_SAMPEL_SEBARAN_MS = 2;
+
 // Tahun minimum agar waktu dianggap sudah tersinkron NTP (sebelum sinkron, tahun = 1970).
 const int TAHUN_MINIMUM_VALID = 2024;
 
@@ -80,6 +87,34 @@ int rataRataBaseline(int pin) {
     delay(JEDA_SAMPEL_BASELINE_MS);
   }
   return (int)(total / JUMLAH_SAMPEL_BASELINE);
+}
+
+/**
+ * Cetak ADC mentah satu sensor untuk diagnosis kabel/daya, contoh:
+ * "MQ-135 adc=2450 base=450 selisih=2000 (1975 mV) | 10x: min=2380 maks=2510 rentang=130"
+ * Rentang besar dalam beberapa milidetik menandakan pin mengambang atau daya tidak stabil.
+ */
+void cetakAdcMentah(const char* nama, int pin, int nilaiAdc, int baseline) {
+  int minimum = 4095;
+  int maksimum = 0;
+  for (int i = 0; i < JUMLAH_SAMPEL_SEBARAN; i++) {
+    int sampel = analogRead(pin);
+    if (sampel < minimum) {
+      minimum = sampel;
+    }
+    if (sampel > maksimum) {
+      maksimum = sampel;
+    }
+    delay(JEDA_SAMPEL_SEBARAN_MS);
+  }
+  Serial.print(nama);
+  Serial.print(" adc="); Serial.print(nilaiAdc);
+  Serial.print(" base="); Serial.print(baseline);
+  Serial.print(" selisih="); Serial.print(nilaiAdc - baseline);
+  Serial.print(" ("); Serial.print(analogReadMilliVolts(pin)); Serial.print(" mV)");
+  Serial.print(" | "); Serial.print(JUMLAH_SAMPEL_SEBARAN); Serial.print("x: min="); Serial.print(minimum);
+  Serial.print(" maks="); Serial.print(maksimum);
+  Serial.print(" rentang="); Serial.println(maksimum - minimum);
 }
 
 // ======================== FUNGSI WAKTU ========================
@@ -159,6 +194,11 @@ void loop() {
 
   int adcMq135 = analogRead(PIN_MQ135);
   int adcMq2   = analogRead(PIN_MQ2);
+
+  if (TAMPILKAN_ADC_MENTAH) {
+    Serial.print("[ADC] "); cetakAdcMentah("MQ-135", PIN_MQ135, adcMq135, baselineMq135);
+    Serial.print("[ADC] "); cetakAdcMentah("MQ-2  ", PIN_MQ2, adcMq2, baselineMq2);
+  }
 
   float co2 = hitungPpm(adcMq135, baselineMq135, K_CO2);
   float nh3 = hitungPpm(adcMq135, baselineMq135, K_NH3);
