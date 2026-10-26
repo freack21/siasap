@@ -4636,6 +4636,10 @@ def run(arguments: argparse.Namespace) -> int:
         print("Penomoran ulang judul tabel/gambar (lama → baru):")
         for line in renumber_captions(body, styles, session, config):
             print(line)
+    if config.get("daftar_per_bab"):
+        print("Daftar gambar/tabel per bab:")
+        for line in add_chapter_lists(body, styles, session):
+            print(line)
     if config.get("seragamkan_tabel"):
         print("Format tabel diseragamkan:")
         for line in unify_tables(body, config, session):
@@ -4674,6 +4678,113 @@ def run(arguments: argparse.Namespace) -> int:
         fixes_path.write_text(export_bibtex(fixed_works, session.library_config), encoding="utf-8")
         print(f"Karya Mendeley yang dikoreksi ({len(fixed_works)}): {fixes_path}")
     return 0
+
+
+CHAPTER_LIST_RE = re.compile(r'\\c\s+"((?:Tabel|Gambar) \d+\.)"')
+
+
+def chapter_list_fields(body: etree._Element) -> list[tuple[str, etree._Element, etree._Element]]:
+    """Field daftar gambar/tabel per bab (TOC \\c "Gambar 3."): (label, paragraf awal, paragraf akhir)."""
+    found: list[tuple[str, etree._Element, etree._Element]] = []
+    stack: list[list] = []
+    for paragraph in body.iter(w("p")):
+        for element in paragraph.iter(w("fldChar"), w("instrText")):
+            if element.tag == w("instrText"):
+                if stack:
+                    stack[-1][0] += element.text or ""
+                continue
+            kind = element.get(w("fldCharType"))
+            if kind == "begin":
+                stack.append(["", paragraph])
+            elif kind == "end" and stack:
+                instruction, start = stack.pop()
+                label = CHAPTER_LIST_RE.search(instruction)
+                if instruction.strip().startswith("TOC") and label:
+                    found.append((label.group(1), start, paragraph))
+    return found
+
+
+def add_chapter_lists(body: etree._Element, styles: StyleBook, session: Session) -> list[str]:
+    """Tambahkan field TOC \\c "Gambar N." / "Tabel N." untuk bab yang judulnya belum punya daftar.
+
+    Daftar Gambar/Tabel naskah memakai satu field per bab, sehingga judul bab baru (mis. Gambar 4.x)
+    tidak pernah masuk daftar saat field diperbarui. Field baru diletakkan setelah daftar bab sebelumnya,
+    berisi entri awal dengan PAGEREF ke bookmark pada judul; Word membangun ulang isinya saat diperbarui.
+    """
+    captions: dict[str, list[etree._Element]] = {}
+    for paragraph in body_paragraphs(body):
+        found = CAPTION_RE.match(live_text(paragraph))
+        if found and seq_instruction(paragraph):
+            captions.setdefault(f"{found.group(1)} {found.group(2)}.", []).append(paragraph)
+    fields = chapter_list_fields(body)
+    existing = {label for label, _, _ in fields}
+    bookmark_ids = [int(item.get(w("id"))) for item in body.iter(w("bookmarkStart")) if (item.get(w("id")) or "").isdigit()]
+    next_id = max(bookmark_ids, default=0) + 1
+    lines = []
+    for label in sorted(captions, key=lambda item: (item.split()[0], int(item.split()[1].rstrip(".")))):
+        if label in existing:
+            continue
+        kind, chapter = label.split()[0], int(label.split()[1].rstrip("."))
+        earlier = [field for field in fields if field[0].split()[0] == kind and int(field[0].split()[1].rstrip(".")) < chapter]
+        if not earlier:
+            lines.append(f"  {label}: tidak ada daftar {kind.lower()} bab sebelumnya sebagai acuan, dilewati")
+            continue
+        _, reference_start, reference_end = max(earlier, key=lambda field: int(field[0].split()[1].rstrip(".")))
+        last_entry = reference_end.getprevious()
+        if live_text(reference_end).strip() or last_entry is None or last_entry.tag != w("p"):
+            lines.append(f"  {label}: daftar bab sebelumnya tidak diakhiri paragraf penutup kosong, dilewati")
+            continue
+        entry_properties = clean_properties(reference_start.find(w("pPr")))
+        paragraphs = []
+        for index, caption in enumerate(captions[label]):
+            name = f"_Toc9{next_id:08d}"
+            start = etree.Element(w("bookmarkStart"), {w("id"): str(next_id), w("name"): name})
+            properties = caption.find(w("pPr"))
+            (properties.addnext if properties is not None else lambda node: caption.insert(0, node))(start)
+            caption.append(etree.Element(w("bookmarkEnd"), {w("id"): str(next_id)}))
+            next_id += 1
+            segments, _ = paragraph_model(caption)
+            pieces: list[tuple[str, bool]] = []
+            for segment in segments:
+                if segment.kind == "text":
+                    italic = styles.is_italic(segment.run, caption)
+                    pieces.extend((char, italic) for char in segment.chars if char not in (FIELD, BARRIER))
+            while pieces and pieces[0][0].isspace():
+                pieces.pop(0)
+            number = CAPTION_RE.match("".join(char for char, _ in pieces)).group(0)
+            entry = etree.Element(w("p"))
+            entry.append(deepcopy(entry_properties))
+            plain = etree.Element(w("r"))
+            if index == 0:
+                opening = field_runs(plain, f' TOC \\h \\z \\c "{label}" ', [])[:3]
+                opening[0].find(w("fldChar")).attrib.pop(w("fldLock"), None)
+                entry.extend(opening)
+            link = etree.SubElement(entry, w("hyperlink"), {w("anchor"): name, w("history"): "1"})
+            bold = etree.Element(w("r"))
+            etree.SubElement(etree.SubElement(bold, w("rPr")), w("b"))
+            link.append(make_run(bold, list(number)))
+            for chars, italic in merge_pieces(pieces[len(number):]):
+                link.append(make_run(plain, list(chars), italic))
+            tab = etree.SubElement(link, w("r"))
+            etree.SubElement(tab, w("tab"))
+            page = field_runs(plain, f" PAGEREF {name} \\h ", [])
+            page[0].find(w("fldChar")).attrib.pop(w("fldLock"), None)
+            link.extend(page)
+            paragraphs.append(entry)
+        for paragraph in paragraphs:
+            mark_paragraph_inserted(paragraph, session)
+        # Field bab sebelumnya ditutup di akhir entri terakhirnya (seperti antara daftar bab 2 dan 3);
+        # paragraf penutup lama kini menutup field baru, jadi tidak ada baris kosong di antara daftar.
+        closing_run = field_runs(etree.Element(w("r")), "", [])[-1]
+        if session.tracked:
+            wrapper = etree.SubElement(last_entry, w("ins"), revision_attributes(session))
+            wrapper.append(closing_run)
+        else:
+            last_entry.append(closing_run)
+        insert_elements(reference_end, paragraphs, session, before=True)
+        fields.append((label, paragraphs[0], reference_end))
+        lines.append(f"  {label}: daftar baru setelah daftar {kind.lower()} bab {int(label.split()[1].rstrip('.')) - 1} ({len(captions[label])} entri)")
+    return lines
 
 
 def report(revisions: list[Revision], csv_path: str | None) -> None:
