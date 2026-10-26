@@ -49,6 +49,8 @@ Kunci tata-tulis.json:
   istilah_tegak        kata Indonesia/akronim yang harus tegak walau tercetak miring; judul artikel
                        dalam tanda petik juga ditegakkan (APA 7)
   kecualikan_tabel, kecualikan_kolom_tabel ({"2.1": ["Judul"]}), tegakkan_kolom_tabel
+  kecualikan_gaya      gaya paragraf yang tidak dimiringkan dan spasinya tidak dirapikan
+                       (mis. ["code"] untuk kotak JSON/kode)
   hapus_paragraf_kosong  hapus paragraf kosong yang terselip di antara dua paragraf isi
   perbarui_field       w:updateFields di settings.xml (Word memperbarui Daftar Isi/Tabel/Gambar)
   jangan_kompres_gambar  w:doNotAutoCompressPictures (Word tidak menurunkan resolusi gambar)
@@ -115,10 +117,21 @@ mengubah teks; sisipan berikutnya ke sasaran yang sama diletakkan berurutan.
     paragraf "cari" ke akhir sisipan (terlacak), untuk sisipan di akhir bab.
       {"teks": "...", "seperti": "<cari>"}         salin pPr paragraf itu
       {"tabel": [["sel", ...], ...], "seperti": "<judul atau isi tabel contoh>",
-       "lebar": [1, 4, 5], "rata": "kiri"}          tabel baru (baris tersisip),
-                                                   format dari tabel contoh
-      {"gambar": "berkas.png"}                     paragraf gambar baru; bentuk
-                                                   dan lebar dari gambar terdekat
+       "lebar": [1, 4, 5], "rata": "kiri", "rata_sel": "kiri"}
+                                                   tabel baru (baris tersisip),
+                                                   format dari tabel contoh; "rata_sel":
+                                                   teks sel isi rata kiri, bukan rata
+                                                   kanan-kiri; "\n" di sel = paragraf baru
+      {"gambar": "berkas.png", "lebar_cm": 14}     paragraf gambar baru; bentuk dan
+                                                   lebar dari gambar terdekat, atau
+                                                   "lebar_cm" (tinggi ikut rasio,
+                                                   maks. 80% tinggi bidang teks)
+      {"teks": "BAB IV\nJUDUL", "gaya": "Heading1", "halaman_baru": true}
+                                                   "\n" di teks menjadi pindah baris
+                                                   (w:br); "halaman_baru" memberi
+                                                   pageBreakBefore (bab baru)
+    Tabel baru boleh berjumlah kolom lain dari tabel contoh: sel dibuang dari kanan
+    atau sel terakhir disalin, sel gabung dilepas, lebar dibagi rata (atur dengan "lebar").
     Judul "Tabel B.N ..." / "Gambar B.N ..." yang disisipkan dengan gaya judul
     naskah otomatis meniru judul naskah (label tebal, nomor field SEQ).
     Bisa juga dipakai di dalam daftar pustaka Mendeley (field multi-paragraf),
@@ -431,6 +444,9 @@ def text_elements(chars: list[str]) -> list[etree._Element]:
         if char == "\t":
             flush()
             elements.append(etree.Element(w("tab")))
+        elif char == "\n":
+            flush()
+            elements.append(etree.Element(w("br")))
         elif char == "‑":
             flush()
             elements.append(etree.Element(w("noBreakHyphen")))
@@ -966,6 +982,12 @@ def excluded_paragraphs(body: etree._Element, config: dict) -> set[etree._Elemen
     after_heading = config.get("kecualikan_setelah_judul", "DAFTAR PUSTAKA").upper()
     tables = [str(number) for number in config.get("kecualikan_tabel", [])]
     columns = {str(number): set(headers) for number, headers in config.get("kecualikan_kolom_tabel", {}).items()}
+    styles = set(config.get("kecualikan_gaya", []))
+    if styles:
+        for paragraph in body.iter(w("p")):
+            style = paragraph.find(f"{w('pPr')}/{w('pStyle')}")
+            if style is not None and style.get(w("val")) in styles:
+                excluded.add(paragraph)
     children = list(body)
     bibliography = False
     for index, child in enumerate(children):
@@ -1067,7 +1089,10 @@ def italicise_terms(body: etree._Element, config: dict, styles: StyleBook, sessi
     terms = sorted(config.get("istilah_asing", []), key=len, reverse=True)
     if not terms:
         return 0
-    pattern = re.compile(r"(?<![\w-])(" + "|".join(re.escape(term) for term in terms) + r")(?![\w-])", re.IGNORECASE)
+    # Spasi lebar-nol (U+200B, titik pemenggalan pada nama kode panjang) dianggap bagian kata, dan istilah yang
+    # menjadi bagian nama berkas/produk bertitik (Chart.js, web.php) tidak dimiringkan.
+    pattern = re.compile(r"(?<![\w\u200b./-])(" + "|".join(re.escape(term) for term in terms)
+                         + r")(?![\w\u200b-]|[./]\w)", re.IGNORECASE)
     excluded = excluded_paragraphs(body, config)
     changed = 0
     for paragraph in list(body.iter(w("p"))):
@@ -1157,9 +1182,10 @@ def upright_terms(body: etree._Element, config: dict, styles: StyleBook, session
         if pattern is not None:
             for found in pattern.finditer(text):
                 start, end = found.span()
-                if not all(flags[start:end]) or any(inside_field[start:end]):
-                    continue
                 term = found.group()
+                partial_ok = "." in term and any(flags[start:end])
+                if not (all(flags[start:end]) or partial_ok) or any(inside_field[start:end]):
+                    continue
                 acronym = term.isupper() or any(char.isupper() for char in term[1:])
                 left, right = start, end
                 while left > 0 and flags[left - 1]:
@@ -1210,10 +1236,13 @@ SPACE_RULES = [
 ]
 
 
-def tidy_spaces(body: etree._Element, session: Session) -> int:
+def tidy_spaces(body: etree._Element, session: Session, skip_styles: set[str] | None = None) -> int:
     changed = 0
     for paragraph in list(body.iter(w("p"))):
         if is_listing_paragraph(paragraph):
+            continue
+        style = paragraph.find(f"{w('pPr')}/{w('pStyle')}")
+        if skip_styles and style is not None and style.get(w("val")) in skip_styles:
             continue
         _, text = paragraph_model(paragraph)
         if "{" in text or "\t" in text.strip():
@@ -1297,6 +1326,25 @@ def keep_headings_with_next(body: etree._Element, styles: StyleBook, session: Se
     return changed
 
 
+def align_body_cells_left(table: etree._Element) -> None:
+    """Paragraf sel baris isi (selain baris pertama) yang rata kanan-kiri atau tanpa perataan dibuat rata kiri.
+
+    Sel berperataan tengah/kanan (mis. kolom No) tetap; dipakai untuk tabel sisipan berisi teks panjang.
+    """
+    for row in table.findall(w("tr"))[1:]:
+        for paragraph in row.iter(w("p")):
+            properties = paragraph.find(w("pPr"))
+            if properties is None:
+                properties = etree.Element(w("pPr"))
+                paragraph.insert(0, properties)
+            alignment = properties.find(w("jc"))
+            if alignment is None:
+                alignment = etree.Element(w("jc"))
+                place_in_order(properties, alignment, PARAGRAPH_PROPERTY_ORDER)
+            if alignment.get(w("val")) in (None, "both", "distribute"):
+                alignment.set(w("val"), "left")
+
+
 def align_table_left(table: etree._Element) -> None:
     """Isi sel tabel sisipan rata kiri, agar tidak muncul celah lebar antarkata."""
     for paragraph in table.iter(w("p")):
@@ -1320,7 +1368,7 @@ def apply_layout_rules(body: etree._Element, config: dict, styles: StyleBook, se
     counts["kata Indonesia/akronim/judul kutipan ditegakkan"] = upright_terms(body, config, styles, session)
     counts["istilah asing dimiringkan"] = italicise_terms(body, config, styles, session)
     if config.get("rapikan_spasi", True):
-        counts["spasi dirapikan"] = tidy_spaces(body, session)
+        counts["spasi dirapikan"] = tidy_spaces(body, session, set(config.get("kecualikan_gaya", [])))
     return counts
 
 
@@ -1911,12 +1959,61 @@ def set_column_widths(table: etree._Element, weights: list[float]) -> None:
                 cell_width.set(w("type"), "dxa")
 
 
+def reshaped_template(template: etree._Element, columns: int) -> etree._Element:
+    """Salinan tabel contoh (baris judul dan baris isi pertama) dengan jumlah kolom lain.
+
+    Sel kelebihan dibuang dari kanan; sel kurang ditambah dengan menyalin sel terakhir. Sel gabung
+    (gridSpan/vMerge) dilepas dan lebar total tabel dibagi rata ke kolom baru (atur ulang dengan "lebar").
+    """
+    copy = deepcopy(template)
+    grid = copy.find(w("tblGrid"))
+    old_columns = grid.findall(w("gridCol")) if grid is not None else []
+    total = sum(int(column.get(w("w"), "0")) for column in old_columns) or 7927
+    for row in copy.findall(w("tr"))[2:]:
+        copy.remove(row)
+    for row in copy.findall(w("tr")):
+        cells = row.findall(w("tc"))
+        for cell in cells:
+            properties = cell.find(w("tcPr"))
+            if properties is not None:
+                for tag in ("gridSpan", "vMerge", "hMerge"):
+                    for element in properties.findall(w(tag)):
+                        properties.remove(element)
+        for cell in cells[columns:]:
+            row.remove(cell)
+        cells = row.findall(w("tc"))
+        while len(cells) < columns:
+            extra = deepcopy(cells[-1])
+            cells[-1].addnext(extra)
+            cells = row.findall(w("tc"))
+    if grid is None:
+        grid = etree.Element(w("tblGrid"))
+        copy.find(w("tblPr")).addnext(grid)
+    for column in list(grid):
+        grid.remove(column)
+    for index in range(columns):
+        width = total // columns + (total % columns if index == columns - 1 else 0)
+        etree.SubElement(grid, w("gridCol")).set(w("w"), str(width))
+    widths = [int(column.get(w("w"))) for column in grid]
+    for row in copy.findall(w("tr")):
+        for cell, width in zip(row.findall(w("tc")), widths):
+            cell_width = cell.find(f"{w('tcPr')}/{w('tcW')}")
+            if cell_width is not None:
+                cell_width.set(w("w"), str(width))
+                cell_width.set(w("type"), "dxa")
+    return copy
+
+
 def build_table(template: etree._Element, rows: list[list[str]], session: Session) -> etree._Element:
     """Tabel baru dengan format (tblPr, lebar kolom, baris judul dan isi) disalin dari tabel contoh."""
     template_rows = template.findall(w("tr"))
     if not template_rows:
         raise ValueError("tabel contoh kosong")
     columns = len(template_rows[0].findall(w("tc")))
+    if rows and len(rows[0]) != columns and all(len(row) == len(rows[0]) for row in rows):
+        template = reshaped_template(template, len(rows[0]))
+        template_rows = template.findall(w("tr"))
+        columns = len(rows[0])
     if any(len(row) != columns for row in rows):
         raise ValueError(f"tabel contoh punya {columns} kolom; samakan jumlah sel setiap baris")
     table = etree.Element(w("tbl"))
@@ -2229,8 +2326,10 @@ def nearest_drawing(body: etree._Element, before: etree._Element) -> etree._Elem
 
 
 def build_image_paragraph(body: etree._Element, anchor: etree._Element, image: Path, package: Package,
-                          session: Session) -> etree._Element:
-    """Paragraf gambar baru: pPr dan bentuk drawing disalin dari gambar terdekat sebelumnya."""
+                          session: Session, width_cm: float | None = None) -> etree._Element:
+    """Paragraf gambar baru: pPr dan bentuk drawing disalin dari gambar terdekat sebelumnya.
+
+    width_cm menetapkan lebar tampil (tinggi mengikuti rasio, maks. 80% tinggi bidang teks)."""
     template = nearest_drawing(body, anchor)
     if template is None:
         raise ValueError("tidak ada gambar contoh di naskah")
@@ -2255,6 +2354,8 @@ def build_image_paragraph(body: etree._Element, anchor: etree._Element, image: P
             blip.attrib.pop(attribute, None)
     extent = drawing.find(f".//{{{WP_NS}}}extent")
     width = int(extent.get("cx")) if extent is not None else text_area(anchor)[0]
+    if width_cm:
+        width = round(width_cm * 360000)
     set_drawing_extent(drawing, *fitted_extent(width, pixels, text_area(anchor)))
     for doc_properties in drawing.iter(f"{{{WP_NS}}}docPr"):
         doc_properties.set("id", str(session.next_drawing_id))
@@ -2393,13 +2494,17 @@ def op_insert_paragraphs(revision: Revision, workspace: Workspace) -> tuple[list
                 set_column_widths(element, entry["lebar"])
             if entry.get("rata") == "kiri":
                 align_table_left(element)
+            if entry.get("rata_sel") == "kiri":
+                align_body_cells_left(element)
             tables += 1
         elif "gambar" in entry:
             image = session.resolve_path(entry["gambar"])
             if not image.exists():
                 print(f"   ({revision.id}: gambar {image} belum tersedia; paragraf gambar dilewati)")
                 continue
-            element = build_image_paragraph(workspace.body, anchor, image, workspace.package, session)
+            width_cm = entry.get("lebar_cm")
+            element = build_image_paragraph(workspace.body, anchor, image, workspace.package, session,
+                                            float(width_cm) if width_cm else None)
         else:
             source = entry.get("_contoh")
             if source is None and style:
@@ -2410,6 +2515,13 @@ def op_insert_paragraphs(revision: Revision, workspace: Workspace) -> tuple[list
                                       style=style if source is anchor and style else None)
             if entry.get("nomor"):
                 number_heading(element, style or "", entry["nomor"], workspace)
+            if entry.get("halaman_baru"):
+                properties = element.find(w("pPr"))
+                if properties is None:
+                    properties = etree.Element(w("pPr"))
+                    element.insert(0, properties)
+                if properties.find(w("pageBreakBefore")) is None:
+                    place_in_order(properties, etree.Element(w("pageBreakBefore")), PARAGRAPH_PROPERTY_ORDER)
         created.append(element)
     insert_elements(anchor, created, session, before=before)
     for element in created:

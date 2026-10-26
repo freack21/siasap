@@ -1,12 +1,12 @@
 # Pengujian Sistem (Bab 3.12): Black-Box Testing SIASAP
 
-Dokumen ini menyajikan rancangan dan hasil pengujian aplikasi web SIASAP (Sistem Monitoring Kualitas Udara Ruangan Berbasis IoT) mengikuti struktur Bab 3.12 naskah, yaitu Tabel 3.5 sampai Tabel 3.10. Pengujian memakai metode *black-box*: setiap skenario dinilai dari masukan dan keluaran, tanpa melihat struktur kode program. Perangkat IoT berperan sebagai penyedia data dan tidak termasuk objek pengujian.
+Dokumen ini menyajikan rancangan dan hasil pengujian aplikasi web SIASAP (Sistem Monitoring Kualitas Udara Ruangan Berbasis IoT) mengikuti struktur Bab 3.12 naskah, yaitu Tabel 3.22 sampai Tabel 3.27. Hasilnya dilaporkan di Bab IV naskah (subbab 4.2, Tabel 4.2 sampai Tabel 4.7; skenario kondisi ruangan di subbab 4.3, Tabel 4.8 dan 4.9). Pengujian memakai metode *black-box*: setiap skenario dinilai dari masukan dan keluaran, tanpa melihat struktur kode program. Perangkat IoT berperan sebagai penyedia data dan tidak termasuk objek pengujian.
 
 ## Aturan pengisian status
 
 | Status | Arti |
 |---|---|
-| **Valid** | Skenario dibuktikan oleh kasus uji otomatis (PHPUnit) yang **lulus** pada eksekusi tanggal 23 Oktober 2026. Kasus ujinya disebut dalam format `KelasUji::metode` (kelas di `tests/Feature` atau `tests/Unit`). |
+| **Valid** | Skenario dibuktikan oleh kasus uji otomatis (PHPUnit) yang **lulus** pada eksekusi tanggal 26 Oktober 2026. Kasus ujinya disebut dalam format `KelasUji::metode` (kelas di `tests/Feature` atau `tests/Unit`). |
 | **Belum diuji (manual)** | Belum ada kasus uji otomatis yang membuktikan skenario ini. Skenario harus diuji manual (di peramban atau dengan perangkat IoT), lalu kolom Hasil Aktual dan Status diisi dari pengamatan. |
 
 Kolom **Hasil Aktual** hanya berisi hasil yang benar-benar diperiksa oleh kasus uji yang disebut. Tidak ada hasil yang diisi tanpa eksekusi.
@@ -19,47 +19,47 @@ Kolom **Hasil Aktual** hanya berisi hasil yang benar-benar diperiksa oleh kasus 
 | *Framework* | Laravel Framework 13.34.0 |
 | Komponen antarmuka | Livewire 4.4.7 |
 | *Framework* pengujian | PHPUnit 12.5.37 |
-| Basis data pengujian | SQLite *in-memory*, di-*reset* untuk setiap kasus uji (`RefreshDatabase`) |
+| Basis data pengujian | SQLite *in-memory*, di-*reset* untuk setiap kasus uji (`RefreshDatabase`); diulang pada MariaDB 10.11 (kompatibel MySQL) |
 | Perintah | `php artisan test --compact` |
-| Tanggal eksekusi | 23 Oktober 2026 |
+| Tanggal eksekusi | 26 Oktober 2026 |
 | Peramban (uji manual) | (diisi saat uji manual: nama dan versi peramban) |
 
-Hasil eksekusi `php artisan test --compact` pada 23 Oktober 2026: **147 kasus uji lulus, 601 *assertion*, 0 gagal** (durasi ±6,5 detik). Jumlah ini terdiri atas 91 kasus uji *feature* dan 56 kasus uji *unit*. Kasus uji dengan *data provider* dihitung satu per set data, misalnya `TelemetryApiTest::test_table_3_8_classification_via_api` dihitung 7 kali (baris 1–7).
+Hasil eksekusi `php artisan test --compact` pada 26 Oktober 2026: **150 kasus uji lulus, 606 *assertion*, 0 gagal** (durasi ±6 detik). Jumlah ini terdiri atas 94 kasus uji *feature* dan 56 kasus uji *unit*. Rangkaian yang sama dijalankan ulang pada MariaDB 10.11 (`DB_CONNECTION=mariadb`) dengan hasil identik: 150 lulus, 606 *assertion*. Kasus uji dengan *data provider* dihitung satu per set data, misalnya `TelemetryApiTest::test_table_3_8_classification_via_api` dihitung 7 kali (baris 1–7).
 
 Pembagian kasus uji per kelas:
 
 | Kelas uji | Jumlah | Cakupan |
 |---|---|---|
-| `Feature\TelemetryApiTest` | 20 | API `POST /api/telemetry`: validasi (Tabel 3.7), klasifikasi lewat API (Tabel 3.8), format lama, API key |
-| `Feature\PublicDashboardTest` | 14 | Beranda `/` dan Detail Ruangan `/ruangan/{room}` |
-| `Feature\PublicHistoryTest` | 11 | Riwayat `/riwayat`: filter, *pagination*, ekspor CSV |
+| `Feature\TelemetryApiTest` | 26 | API `POST /api/telemetry`: validasi (Tabel 3.24), klasifikasi lewat API (Tabel 3.25), format lama, API key, pembatasan laju, pembulatan ppm, JSON rusak |
+| `Feature\PublicDashboardTest` | 18 | Beranda `/` dan Detail Ruangan `/ruangan/{room}` |
+| `Feature\PublicHistoryTest` | 12 | Riwayat `/riwayat`: filter, *pagination*, ekspor CSV |
 | `Feature\DeviceStatusTest` | 11 | Status Perangkat `/perangkat` |
-| `Feature\SurveyTest` | 8 | Kuesioner UEQ `/kuesioner` dan perintah `ueq:report` |
+| `Feature\SurveyTest` | 9 | Kuesioner UEQ `/kuesioner` dan perintah `ueq:report` |
 | `Feature\PublicGuideTest` | 5 | Panduan `/panduan` |
 | `Feature\RecommendationPageTest` | 4 | Rekomendasi `/rekomendasi` |
 | `Feature\PublicAccessTest` | 2 | Halaman publik tanpa login; rute login lama sudah dihapus |
 | `Feature\RoomDeviceSeederTest` | 2 | *Seeder* ruangan/perangkat, perintah `telemetry:clear` |
+| `Feature\SensorLogNodeRelationTest` | 2 | *Foreign key* `sensor_logs.node_id` dan penghapusan berantai |
 | `Feature\NavigationTest` | 1 | Navigasi atas |
 | `Feature\ExampleTest` | 1 | Beranda dapat diakses tanpa login |
 | `Unit\AirQualityClassifierTest` | 35 | Klasifikasi per gas, nilai batas, kategori keseluruhan, penyebab utama |
 | `Unit\UeqTest` | 9 | Skoring UEQ |
-| `Unit\RecommendationTest` | 8 | Aturan rekomendasi (Tabel 3.9) |
-| `Unit\AirQualityTest` | 3 | Label rentang ambang |
-| `Unit\ExampleTest` | 1 | Kasus uji bawaan Laravel |
+| `Unit\RecommendationTest` | 8 | Aturan rekomendasi (Tabel 3.26) |
+| `Unit\AirQualityTest` | 4 | Label rentang ambang, urutan kategori |
 
 ---
 
 ## 3.12.1 Rencana Pengujian
 
-**Tabel 3.5 Rencana Pengujian Sistem**
+**Tabel 3.22 Rencana Pengujian Sistem**
 
 | No | Jenis Pengujian | Aspek yang Diuji | Tujuan Pengujian | Cara Pengujian | Tabel Hasil |
 |---|---|---|---|---|---|
-| 1 | Pengujian Fungsional Aplikasi | Beranda (*dashboard*), Detail Ruangan (*sensor charts*), Riwayat (*historical data*), Rekomendasi Tindakan, Status Perangkat (*IoT system*), Panduan, Kuesioner | Memastikan setiap fitur aplikasi web berjalan sesuai kebutuhan sistem | Otomatis (*feature test* Livewire/HTTP); tampilan visual di peramban diuji manual | Tabel 3.6 |
-| 2 | Pengujian Validasi Data | Validasi masukan `POST /api/telemetry` (`device_id`, `timestamp`, `co2_ppm`, `nh3_ppm`, `co_ppm`, `h2_ppm`) dan pencatatan data yang ditolak | Memastikan hanya data lengkap dan berformat benar yang diproses dan disimpan, sedangkan data tidak valid ditolak dan dicatat | Otomatis (*feature test* API) | Tabel 3.7 |
-| 3 | Pengujian Pengolahan Data Sensor (klasifikasi) | Kategori setiap gas berdasarkan ambang batas, nilai tepat di batas, kategori keseluruhan (kategori terburuk), penyebab utama | Memastikan data ppm CO₂, NH₃, CO, dan H₂ diklasifikasikan dengan benar | Otomatis (*unit test* dan *feature test* API) | Tabel 3.8 |
-| 4 | Pengujian Rekomendasi Tindakan Preventif | Pemetaan kategori keseluruhan ke rekomendasi berbasis aturan | Memastikan rekomendasi yang tampil sesuai kategori kualitas udara | Otomatis (*unit test* dan *feature test* halaman) | Tabel 3.9 |
-| 5 | Pengujian pada Beberapa Kondisi Ruangan | Ruangan normal, tertutup, berasap, dan ventilasi berbeda | Memastikan sistem mampu memantau perubahan kondisi kualitas udara dengan perangkat IoT nyata | Manual dengan perangkat IoT (lembar isian) | Tabel 3.10 |
+| 1 | Pengujian Fungsional Aplikasi | Beranda (*dashboard*), Detail Ruangan (*sensor charts*), Riwayat (*historical data*), Rekomendasi Tindakan, Status Perangkat (*IoT system*), Panduan, Kuesioner | Memastikan setiap fitur aplikasi web berjalan sesuai kebutuhan sistem | Otomatis (*feature test* Livewire/HTTP); tampilan visual di peramban diuji manual | Tabel 3.23 |
+| 2 | Pengujian Validasi Data | Validasi masukan `POST /api/telemetry` (`device_id`, `timestamp`, `co2_ppm`, `nh3_ppm`, `co_ppm`, `h2_ppm`) dan pencatatan data yang ditolak | Memastikan hanya data lengkap dan berformat benar yang diproses dan disimpan, sedangkan data tidak valid ditolak dan dicatat | Otomatis (*feature test* API) | Tabel 3.24 |
+| 3 | Pengujian Pengolahan Data Sensor (klasifikasi) | Kategori setiap gas berdasarkan ambang batas, nilai tepat di batas, kategori keseluruhan (kategori terburuk), penyebab utama | Memastikan data ppm CO₂, NH₃, CO, dan H₂ diklasifikasikan dengan benar | Otomatis (*unit test* dan *feature test* API) | Tabel 3.25 |
+| 4 | Pengujian Rekomendasi Tindakan Preventif | Pemetaan kategori keseluruhan ke rekomendasi berbasis aturan | Memastikan rekomendasi yang tampil sesuai kategori kualitas udara | Otomatis (*unit test* dan *feature test* halaman) | Tabel 3.26 |
+| 5 | Pengujian pada Beberapa Kondisi Ruangan | Ruangan normal, tertutup, berasap, dan ventilasi berbeda | Memastikan sistem mampu memantau perubahan kondisi kualitas udara dengan perangkat IoT nyata | Manual dengan perangkat IoT (lembar isian) | Tabel 3.27 |
 
 ---
 
@@ -67,7 +67,7 @@ Pembagian kasus uji per kelas:
 
 Data uji dibuat oleh kasus uji itu sendiri (ruangan, perangkat, dan log sensor dengan nilai ppm tertentu). Kategori pada data uji mengikuti ambang Tabel 2.2 naskah.
 
-**Tabel 3.6 Pengujian Fungsional Aplikasi**
+**Tabel 3.23 Pengujian Fungsional Aplikasi**
 
 | No | Halaman / Fitur | Skenario Pengujian | Masukan / Data Uji | Hasil yang Diharapkan | Hasil Aktual | Status | Kasus Uji |
 |---|---|---|---|---|---|---|---|
@@ -127,9 +127,9 @@ Data uji dibuat oleh kasus uji itu sendiri (ruangan, perangkat, dan log sensor d
 
 Data uji dasar (format naskah 3.9.1): `device_id` = `AIR-001` (terdaftar dan aktif), `timestamp` = `2026-05-01 10:00:00`, `co2_ppm` = 30, `nh3_ppm` = 20, `co_ppm` = 10, `h2_ppm` = 5. Setiap baris mengubah satu bagian dari data dasar.
 
-"Kesalahan dicatat" berarti data yang ditolak disimpan di tabel `telemetry_rejections` (device_id, payload, errors) dan ditulis ke log channel `telemetry` (`storage/logs/telemetry-*.log`). Penolakan juga terlihat di halaman Status Perangkat (Tabel 3.6 F35).
+"Kesalahan dicatat" berarti data yang ditolak disimpan di tabel `telemetry_rejections` (device_id, payload, errors) dan ditulis ke log channel `telemetry` (`storage/logs/telemetry-*.log`). Penolakan juga terlihat di halaman Status Perangkat (Tabel 3.23 F35).
 
-**Tabel 3.7 Pengujian Validasi Data**
+**Tabel 3.24 Pengujian Validasi Data**
 
 | No | Kondisi Data Uji | Masukan | Hasil yang Diharapkan | Hasil Aktual | Status | Kasus Uji |
 |---|---|---|---|---|---|---|
@@ -159,9 +159,9 @@ Ambang batas (ppm) mengikuti Tabel 2.2 naskah (Solihat et al., 2026) dan disimpa
 | CO | < 20 | 20 – < 50 | 50 – < 80 | ≥ 80 |
 | H₂ | < 15 | 15 – < 40 | 40 – < 60 | ≥ 60 |
 
-Setiap baris Tabel 3.8 diuji dua kali: langsung pada fungsi klasifikasi (`AirQualityClassifierTest::test_overall_category_follows_table_3_8`) dan lewat `POST /api/telemetry` sampai data tersimpan (`TelemetryApiTest::test_table_3_8_classification_via_api`). Pada uji lewat API, kategori tiap gas yang tersimpan juga dibandingkan dengan hasil fungsi klasifikasi, dan tingkat rekomendasi yang tersimpan dibandingkan dengan aturan Tabel 3.9.
+Setiap baris Tabel 3.25 diuji dua kali: langsung pada fungsi klasifikasi (`AirQualityClassifierTest::test_overall_category_follows_table_3_8`) dan lewat `POST /api/telemetry` sampai data tersimpan (`TelemetryApiTest::test_table_3_8_classification_via_api`). Pada uji lewat API, kategori tiap gas yang tersimpan juga dibandingkan dengan hasil fungsi klasifikasi, dan tingkat rekomendasi yang tersimpan dibandingkan dengan aturan Tabel 3.26.
 
-**Tabel 3.8 Pengujian Klasifikasi Kualitas Udara**
+**Tabel 3.25 Pengujian Klasifikasi Kualitas Udara**
 
 | No | CO₂ (ppm) | NH₃ (ppm) | CO (ppm) | H₂ (ppm) | Kategori per Gas yang Diharapkan (CO₂ / NH₃ / CO / H₂) | Kategori Keseluruhan yang Diharapkan | Hasil Aktual | Status | Kasus Uji (set data) |
 |---|---|---|---|---|---|---|---|---|---|
@@ -188,9 +188,9 @@ Pengujian tambahan untuk klasifikasi:
 
 ## 3.12.4 Pengujian Rekomendasi Tindakan Preventif
 
-Rekomendasi ditentukan hanya dari kategori keseluruhan. Teks yang diharapkan adalah teks lengkap Tabel 3.3 naskah (Tabel 3.9 naskah memuat versi ringkas dari teks yang sama untuk baris 3 dan 4).
+Rekomendasi ditentukan hanya dari kategori keseluruhan. Teks yang diharapkan adalah teks Tabel 3.20 naskah (sama dengan Tabel 3.26).
 
-**Tabel 3.9 Pengujian Rekomendasi Tindakan Preventif**
+**Tabel 3.26 Pengujian Rekomendasi Tindakan Preventif**
 
 | No | Kategori Keseluruhan | Tingkat | Rekomendasi yang Diharapkan | Hasil Aktual | Status | Kasus Uji |
 |---|---|---|---|---|---|---|
@@ -205,7 +205,7 @@ Pengujian tambahan untuk rekomendasi:
 |---|---|---|---|---|---|
 | 5 | Daftar aturan lengkap dan berurutan | 4 aturan berurutan Baik, Sedang, Tidak Sehat, Berbahaya | Sesuai harapan | Valid | `RecommendationTest::test_all_returns_four_rules_in_order` |
 | 6 | Setiap aturan memakai strategi EPA | Setiap aturan merujuk minimal satu strategi EPA (kendali sumber, ventilasi, pembersihan udara); sumber memiliki label dan URL | Sesuai harapan | Valid | `RecommendationTest::test_every_rule_cites_epa_strategy`, `RecommendationTest::test_sources_expose_label_and_url` |
-| 7 | Tingkat rekomendasi tersimpan bersama data sensor | Tingkat yang tersimpan untuk setiap baris Tabel 3.8 sama dengan aturan kategorinya | Sesuai harapan | Valid | `TelemetryApiTest::test_table_3_8_classification_via_api` |
+| 7 | Tingkat rekomendasi tersimpan bersama data sensor | Tingkat yang tersimpan untuk setiap baris Tabel 3.25 sama dengan aturan kategorinya | Sesuai harapan | Valid | `TelemetryApiTest::test_table_3_8_classification_via_api` |
 | 8 | Kategori yang tidak dikenal | Ditolak (pengecualian), tidak memberi rekomendasi asal | Sesuai harapan | Valid | `RecommendationTest::test_unknown_category_throws` |
 
 ---
@@ -223,9 +223,8 @@ Pengujian ini dilakukan manual dengan perangkat IoT nyata (`arduino/siasap_monit
 3. Jalankan server dengan `php artisan serve --host=0.0.0.0 --port=8000` agar dapat dijangkau ESP32.
 4. Kosongkan data uji coba sebelumnya bila perlu (`php artisan telemetry:clear`).
 5. Untuk setiap skenario, catat waktu mulai dan selesai, lalu ekspor CSV dari halaman Riwayat dengan filter tanggal tersebut sebagai bukti.
-6. Interval pengiriman data adalah 5 detik (naskah 3.12 masih menulis 30 detik; lihat `docs/revisi-naskah.md`).
 
-**Tabel 3.10 Skenario Pengujian pada Beberapa Kondisi Ruangan**
+**Tabel 3.27 Skenario Pengujian pada Beberapa Kondisi Ruangan**
 
 | No | Skenario | Kondisi Pengujian | Hal yang Diamati | Hasil yang Diharapkan | Hasil Aktual | Status |
 |---|---|---|---|---|---|---|
@@ -247,9 +246,9 @@ Status skenario diubah menjadi **Valid** bila seluruh kolom "Hal yang Diamati" s
 
 ---
 
-## Pengujian pendukung (di luar Tabel 3.5–3.10)
+## Pengujian pendukung (di luar Tabel 3.22–3.27)
 
-Kasus uji berikut mendukung evaluasi pengguna (UEQ) dan penyiapan data. Bagian ini tidak termasuk Tabel 3.5–3.10.
+Kasus uji berikut mendukung evaluasi pengguna (UEQ) dan penyiapan data. Bagian ini tidak termasuk Tabel 3.22–3.27.
 
 | No | Skenario | Hasil yang Diharapkan | Hasil Aktual | Status | Kasus Uji |
 |---|---|---|---|---|---|
@@ -271,12 +270,12 @@ Kasus uji berikut mendukung evaluasi pengguna (UEQ) dan penyiapan data. Bagian i
 
 | Tabel | Jumlah Skenario | Valid | Belum diuji (manual) |
 |---|---|---|---|
-| Tabel 3.6 Pengujian Fungsional Aplikasi | 47 | 42 | 5 (F8, F15, F22, F33, F47) |
-| Tabel 3.7 Pengujian Validasi Data | 14 | 14 | 0 |
-| Tabel 3.8 Pengujian Klasifikasi Kualitas Udara (termasuk pengujian tambahan) | 11 | 11 | 0 |
-| Tabel 3.9 Pengujian Rekomendasi Tindakan Preventif (termasuk pengujian tambahan) | 8 | 8 | 0 |
-| Tabel 3.10 Skenario Pengujian pada Beberapa Kondisi Ruangan | 4 | 0 | 4 |
+| Tabel 3.23 Pengujian Fungsional Aplikasi | 47 | 42 | 5 (F8, F15, F22, F33, F47) |
+| Tabel 3.24 Pengujian Validasi Data | 14 | 14 | 0 |
+| Tabel 3.25 Pengujian Klasifikasi Kualitas Udara (termasuk pengujian tambahan) | 11 | 11 | 0 |
+| Tabel 3.26 Pengujian Rekomendasi Tindakan Preventif (termasuk pengujian tambahan) | 8 | 8 | 0 |
+| Tabel 3.27 Skenario Pengujian pada Beberapa Kondisi Ruangan | 4 | 0 | 4 |
 | Pengujian pendukung | 11 | 11 | 0 |
 | **Jumlah** | **95** | **86** | **9** |
 
-Kesimpulan sementara (23 Oktober 2026): seluruh skenario yang diotomasi lulus (147 kasus uji, 601 *assertion*, 0 gagal). Kelima butir wajib Tabel 3.7 naskah, ketujuh baris Tabel 3.8, dan keempat baris Tabel 3.9 berstatus Valid. Skenario yang masih membutuhkan pengamatan di peramban atau dengan perangkat IoT nyata, termasuk seluruh Tabel 3.10, berstatus "Belum diuji (manual)" dan harus diisi dari pengujian lapangan sebelum dilaporkan di Bab IV.
+Kesimpulan sementara (26 Oktober 2026): seluruh skenario yang diotomasi lulus (150 kasus uji, 606 *assertion*, 0 gagal). Kelima butir wajib Tabel 3.24 naskah, ketujuh baris Tabel 3.25, dan keempat baris Tabel 3.26 berstatus Valid. Skenario yang masih membutuhkan pengamatan di peramban atau dengan perangkat IoT nyata, termasuk seluruh Tabel 3.27, berstatus "Belum diuji (manual)" dan harus diisi dari pengujian lapangan sebelum dilaporkan di Bab IV.

@@ -35,7 +35,8 @@
     "IoT",
     "UEQ",
     "AQI",
-    "VOC"
+    "VOC",
+    "Chart.js"
   ],
   "istilah_asing": [
     "system development approach",
@@ -156,5 +157,8 @@
     "Stimulation",
     "Novelty"
   ],
-  "jangan_kompres_gambar": true
+  "jangan_kompres_gambar": true,
+  "kecualikan_gaya": [
+    "code"
+  ]
 }
