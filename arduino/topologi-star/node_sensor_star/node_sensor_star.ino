@@ -27,7 +27,8 @@ const char* WIFI_PASSWORD = "cargocargo";
 
 // URL Endpoint Laravel SIMKU (Ganti IP dengan IP komputer/server Anda yang menjalankan Laravel)
 // Contoh: "http://192.168.137.1:8000/api/telemetry"
-const char* SERVER_URL    = "http://192.168.137.1:8000/api/telemetry";
+// const char* SERVER_URL    = "http://192.168.137.1:8000/api/telemetry";
+const char* SERVER_URL    = "https://siasap.ptsigmamutuindonesia.com/api/telemetry";
 
 // API Key opsional. Isi dengan nilai TELEMETRY_API_KEY di file .env Laravel bila backend
 // mewajibkannya. Biarkan kosong ("") bila backend tidak memakai API key.

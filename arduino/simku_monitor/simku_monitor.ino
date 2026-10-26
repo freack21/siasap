@@ -24,11 +24,11 @@
 #include <time.h>
 
 // ======================== KONFIGURASI JARINGAN & SERVER ========================
-const char* WIFI_SSID     = "ISI_SSID_WIFI";
-const char* WIFI_PASSWORD = "ISI_PASSWORD_WIFI";
+const char* WIFI_SSID     = "cargo";
+const char* WIFI_PASSWORD = "cargocargo";
 
 // Ganti <ip> dengan IP komputer/server yang menjalankan Laravel.
-const char* SERVER_URL    = "http://<ip>:8000/api/telemetry";
+const char* SERVER_URL    = "https://siasap.ptsigmamutuindonesia.com/api/telemetry";
 
 // Opsional: isi dengan TELEMETRY_API_KEY di .env Laravel. Kosongkan ("") bila tidak dipakai.
 const char* API_KEY       = "";
