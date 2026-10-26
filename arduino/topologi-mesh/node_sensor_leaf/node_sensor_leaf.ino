@@ -1,5 +1,5 @@
 /* =========================================================================================
- * SISTEM PEMANTAUAN KUALITAS UDARA LINGKUNGAN (SIASAP)
+ * SISTEM PEMANTAUAN KUALITAS UDARA LINGKUNGAN (SIMKU)
  * TOPOLOGI MESH - ESP32 NODE 3 (LEAF / BLIND SPOT SENSOR NODE)
  * =========================================================================================
  * Deskripsi Peran Node 3:
@@ -7,7 +7,7 @@
  * 2. Membaca sensor gas lokal miliknya sendiri (Node ID 3 - Dapur).
  * 3. Mengirim paket telemetri via ESP-NOW broadcast (ditujukan ke Node 2 / Relay Node).
  * 4. Node 2 menerima paket ini, mengukur RSSI link 3->2, menaikkan Hop Count, lalu
- *    meneruskannya ke Node 1 (Root Gateway) untuk disimpan di database Laravel SIASAP.
+ *    meneruskannya ke Node 1 (Root Gateway) untuk disimpan di database Laravel SIMKU.
  *
  * Definisi metrik (seragam untuk semua topologi, lihat arduino/README.md):
  * - rssi      : RSSI TERLEMAH (minimum) dari seluruh link nirkabel yang dilalui paket sampai
@@ -95,7 +95,7 @@ void setup() {
   delay(1000);
 
   Serial.println("\n=======================================================");
-  Serial.println("  SIASAP - ESP32 TOPOLOGI MESH [NODE 3: LEAF / BLIND SPOT]");
+  Serial.println("  SIMKU - ESP32 TOPOLOGI MESH [NODE 3: LEAF / BLIND SPOT]");
   Serial.println("=======================================================");
 
   analogReadResolution(12);

@@ -16,7 +16,7 @@ use Livewire\WithPagination;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 #[Layout('layouts::public')]
-#[Title('Riwayat Kualitas Udara — SIASAP')]
+#[Title('Riwayat Kualitas Udara — SIMKU')]
 class UserHistory extends Component
 {
     use WithPagination;

@@ -1,10 +1,10 @@
 /* =========================================================================================
- * SISTEM PEMANTAUAN KUALITAS UDARA LINGKUNGAN (SIASAP)
+ * SISTEM PEMANTAUAN KUALITAS UDARA LINGKUNGAN (SIMKU)
  * TOPOLOGI STAR - ESP32 SENSOR NODE (STANDALONE / DIRECT WIFI)
  * =========================================================================================
  * Deskripsi:
  * Perangkat ESP32 membaca 4 konsentrasi gas (CO2, NH3, CO, H2) dari sensor MQ-135 & MQ-2,
- * lalu mengirimkan data telemetri secara berkala langsung ke server Laravel SIASAP via HTTP POST.
+ * lalu mengirimkan data telemetri secara berkala langsung ke server Laravel SIMKU via HTTP POST.
  *
  * Konfigurasi Node:
  * - Ubah NODE_ID (1: Ruang Tamu, 2: Kamar, 3: Dapur) sesuai penempatan perangkat.
@@ -25,7 +25,7 @@
 const char* WIFI_SSID     = "cargo";
 const char* WIFI_PASSWORD = "cargocargo";
 
-// URL Endpoint Laravel SIASAP (Ganti IP dengan IP komputer/server Anda yang menjalankan Laravel)
+// URL Endpoint Laravel SIMKU (Ganti IP dengan IP komputer/server Anda yang menjalankan Laravel)
 // Contoh: "http://192.168.137.1:8000/api/telemetry"
 const char* SERVER_URL    = "http://192.168.137.1:8000/api/telemetry";
 
@@ -104,7 +104,7 @@ void setup() {
   delay(1000);
 
   Serial.println("\n=======================================================");
-  Serial.println("  SIASAP - ESP32 TOPOLOGI STAR SENSOR NODE");
+  Serial.println("  SIMKU - ESP32 TOPOLOGI STAR SENSOR NODE");
   Serial.print("  Node ID Terpasang : "); Serial.println(NODE_ID);
   Serial.println("=======================================================");
 
@@ -174,7 +174,7 @@ void loop() {
   long rssi = WiFi.RSSI();  // Satu-satunya link nirkabel: Node -> AP
   seqNumber++;
 
-  // 5. Susun Payload JSON Sesuai Kebutuhan Backend Laravel SIASAP
+  // 5. Susun Payload JSON Sesuai Kebutuhan Backend Laravel SIMKU
   String jsonPayload = "{";
   jsonPayload += "\"node_id\":"        + String(NODE_ID) + ",";
   jsonPayload += "\"co2\":"            + String(ppm_co2, 2) + ",";

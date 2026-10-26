@@ -14,7 +14,7 @@ use Livewire\Component;
  * keterangan gas, FAQ, dan batasan.
  */
 #[Layout('layouts::public')]
-#[Title('Panduan Kualitas Udara — SIASAP')]
+#[Title('Panduan Kualitas Udara — SIMKU')]
 class AirQualityGuide extends Component
 {
     public function render(): View

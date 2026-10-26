@@ -18,7 +18,7 @@ use Livewire\Component;
  * interval kirim terukur, alur data, dan 10 penolakan data terakhir.
  */
 #[Layout('layouts::public')]
-#[Title('Status Perangkat — SIASAP')]
+#[Title('Status Perangkat — SIMKU')]
 class DeviceStatus extends Component
 {
     /**

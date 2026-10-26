@@ -17,7 +17,7 @@ use Livewire\Component;
  * (Tabel 3.3 naskah), dasar rekomendasi, dan disclaimer.
  */
 #[Layout('layouts::public')]
-#[Title('Rekomendasi Tindakan — SIASAP')]
+#[Title('Rekomendasi Tindakan — SIMKU')]
 class RecommendationPage extends Component
 {
     public function render(): View

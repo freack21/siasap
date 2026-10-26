@@ -1,6 +1,6 @@
-# Pengujian Sistem (Bab 3.12): Black-Box Testing SIASAP
+# Pengujian Sistem (Bab 3.12): Black-Box Testing SIMKU
 
-Dokumen ini menyajikan rancangan dan hasil pengujian aplikasi web SIASAP (Sistem Monitoring Kualitas Udara Ruangan Berbasis IoT) mengikuti struktur Bab 3.12 naskah, yaitu Tabel 3.22 sampai Tabel 3.27. Hasilnya dilaporkan di Bab IV naskah (subbab 4.2, Tabel 4.2 sampai Tabel 4.7; skenario kondisi ruangan di subbab 4.3, Tabel 4.8 dan 4.9). Pengujian memakai metode *black-box*: setiap skenario dinilai dari masukan dan keluaran, tanpa melihat struktur kode program. Perangkat IoT berperan sebagai penyedia data dan tidak termasuk objek pengujian.
+Dokumen ini menyajikan rancangan dan hasil pengujian aplikasi web SIMKU (Sistem Monitoring Kualitas Udara Ruangan Berbasis IoT) mengikuti struktur Bab 3.12 naskah, yaitu Tabel 3.22 sampai Tabel 3.27. Hasilnya dilaporkan di Bab IV naskah (subbab 4.2, Tabel 4.2 sampai Tabel 4.7; skenario kondisi ruangan di subbab 4.3, Tabel 4.8 dan 4.9). Pengujian memakai metode *black-box*: setiap skenario dinilai dari masukan dan keluaran, tanpa melihat struktur kode program. Perangkat IoT berperan sebagai penyedia data dan tidak termasuk objek pengujian.
 
 ## Aturan pengisian status
 
@@ -212,7 +212,7 @@ Pengujian tambahan untuk rekomendasi:
 
 ## 3.12.5 Pengujian pada Beberapa Kondisi Ruangan
 
-Pengujian ini dilakukan manual dengan perangkat IoT nyata (`arduino/siasap_monitor`) di ruang uji yang sama. Tidak ada kasus uji otomatis untuk bagian ini, sehingga seluruh skenario berstatus "Belum diuji (manual)" sampai lembar isian diisi.
+Pengujian ini dilakukan manual dengan perangkat IoT nyata (`arduino/simku_monitor`) di ruang uji yang sama. Tidak ada kasus uji otomatis untuk bagian ini, sehingga seluruh skenario berstatus "Belum diuji (manual)" sampai lembar isian diisi.
 
 **Persiapan (wajib dibaca sebelum mulai):**
 

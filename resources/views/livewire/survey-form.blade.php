@@ -2,7 +2,7 @@
     <x-ui.page-header
         :icon="'tabler-clipboard-check'"
         title="Kuesioner Pengalaman Pengguna"
-        description="Bantu kami menilai pengalaman Anda menggunakan website SIASAP dengan User Experience Questionnaire (UEQ). Penilaian ini merupakan bagian dari penelitian skripsi.">
+        description="Bantu kami menilai pengalaman Anda menggunakan website SIMKU dengan User Experience Questionnaire (UEQ). Penilaian ini merupakan bagian dari penelitian skripsi.">
         <x-slot:eyebrow>Uji Coba Produk</x-slot:eyebrow>
     </x-ui.page-header>
 

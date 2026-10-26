@@ -1,8 +1,8 @@
-# Panduan Firmware ESP32 — SIASAP
+# Panduan Firmware ESP32 — SIMKU
 
 ## Perangkat untuk aplikasi ini
 
-Aplikasi SIASAP saat ini hanya memakai **satu perangkat ESP32 yang terhubung langsung lewat WiFi**: [`siasap_monitor/siasap_monitor.ino`](siasap_monitor/siasap_monitor.ino) (ESP32 Arduino core 3 atau lebih baru).
+Aplikasi SIMKU saat ini hanya memakai **satu perangkat ESP32 yang terhubung langsung lewat WiFi**: [`simku_monitor/simku_monitor.ino`](simku_monitor/simku_monitor.ino) (ESP32 Arduino core 3 atau lebih baru).
 
 - Sensor: MQ-135 (CO₂, NH₃) di GPIO 33 dan MQ-2 (CO, H₂) di GPIO 32 (dapat diubah di sketsa).
 - Alur: pemanasan 30 detik, baseline = rata-rata 50 pembacaan ADC tiap sensor, lalu kirim data tiap 5 detik.
@@ -27,10 +27,10 @@ Payload `POST /api/telemetry`:
 
 ---
 
-> **Arsip penelitian IoT, tidak dipakai aplikasi.** Seluruh bagian di bawah ini (sketsa topologi star/mesh, kalibrasi R0, metrik RSSI/hop/QoS, dan format payload `node_id`/`seq_number`) berasal dari penelitian IoT sebelumnya dan **tidak digunakan** oleh aplikasi SIASAP saat ini.
+> **Arsip penelitian IoT, tidak dipakai aplikasi.** Seluruh bagian di bawah ini (sketsa topologi star/mesh, kalibrasi R0, metrik RSSI/hop/QoS, dan format payload `node_id`/`seq_number`) berasal dari penelitian IoT sebelumnya dan **tidak digunakan** oleh aplikasi SIMKU saat ini.
 
 
-Direktori ini berisi kode program (*firmware*) Arduino C++ untuk perangkat keras **ESP32 DevKit V1** yang terintegrasi langsung dengan aplikasi web **SIASAP (Laravel + Livewire)**.
+Direktori ini berisi kode program (*firmware*) Arduino C++ untuk perangkat keras **ESP32 DevKit V1** yang terintegrasi langsung dengan aplikasi web **SIMKU (Laravel + Livewire)**.
 
 ---
 
@@ -134,7 +134,7 @@ Pada topologi **Star**, setiap node terhubung langsung ke router WiFi lokal (*Ac
 Pada topologi **Mesh**, sistem mengatasi skenario area *blind spot* (misalnya Node 3 diletakkan jauh di belakang dinding tebal tanpa jangkauan WiFi):
 
 ```
-[Node 3 (Leaf)] ──(ESP-NOW, hop 1)──> [Node 2 (Relay)] ──(ESP-NOW, hop 2)──> [Node 1 (Root Gateway)] ──(WiFi, hop 3)──> [AP] ──> [Laravel SIASAP]
+[Node 3 (Leaf)] ──(ESP-NOW, hop 1)──> [Node 2 (Relay)] ──(ESP-NOW, hop 2)──> [Node 1 (Root Gateway)] ──(WiFi, hop 3)──> [AP] ──> [Laravel SIMKU]
 ```
 
 Semua transmisi ESP-NOW dikirim ke alamat **broadcast** (`FF:FF:FF:FF:FF:FF`), dan semua node ESP-NOW harus berada pada channel yang sama dengan channel WiFi AP (`WIFI_CHANNEL` pada sketch relay & leaf).

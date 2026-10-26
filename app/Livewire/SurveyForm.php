@@ -10,7 +10,7 @@ use Livewire\Attributes\Title;
 use Livewire\Component;
 
 #[Layout('layouts::public')]
-#[Title('Kuesioner — SIASAP')]
+#[Title('Kuesioner — SIMKU')]
 class SurveyForm extends Component
 {
     /** Batas pengiriman per alamat IP per jam. */

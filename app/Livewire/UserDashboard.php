@@ -19,7 +19,7 @@ use Livewire\Component;
  * langsung; bila lebih, setiap ruangan tampil sebagai kartu ringkas.
  */
 #[Layout('layouts::public')]
-#[Title('Beranda — SIASAP')]
+#[Title('Beranda — SIMKU')]
 class UserDashboard extends Component
 {
     public function render(): View

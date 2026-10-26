@@ -1,5 +1,5 @@
 /* =========================================================================================
- * SISTEM PEMANTAUAN KUALITAS UDARA LINGKUNGAN (SIASAP)
+ * SISTEM PEMANTAUAN KUALITAS UDARA LINGKUNGAN (SIMKU)
  * TOPOLOGI MESH - ESP32 NODE 2 (INTERMEDIATE / RELAY SENSOR NODE)
  * =========================================================================================
  * Deskripsi Peran Node 2:
@@ -153,7 +153,7 @@ void setup() {
   delay(1000);
 
   Serial.println("\n=======================================================");
-  Serial.println("  SIASAP - ESP32 TOPOLOGI MESH [NODE 2: RELAY NODE]");
+  Serial.println("  SIMKU - ESP32 TOPOLOGI MESH [NODE 2: RELAY NODE]");
   Serial.println("=======================================================");
 
   analogReadResolution(12);
