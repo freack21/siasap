@@ -637,8 +637,16 @@
           "gaya": "Normal"
         },
         {
-          "teks": "Seluruh kasus uji dijalankan dengan perintah php artisan test pada 26 Oktober 2026 menggunakan PHP 8.3.6, Laravel Framework 13.34.0, Livewire 4.4.7, dan PHPUnit 12.5.37, dengan basis data SQLite *in-memory* yang dikosongkan untuk setiap kasus uji. Hasilnya, 150 kasus uji lulus dengan 606 *assertion* dan tidak ada kasus uji yang gagal. Jumlah tersebut terdiri atas 94 kasus uji *feature* dan 56 kasus uji *unit*. Rangkaian uji yang sama dijalankan ulang pada MariaDB 10.11 yang kompatibel dengan MySQL dan memberikan hasil yang sama, yaitu 150 kasus uji lulus dengan 606 *assertion*. Kasus uji yang memakai *data provider* dihitung satu kali untuk setiap set data; misalnya, pengujian klasifikasi Tabel 3.25 dihitung tujuh kali, satu untuk setiap baris.",
+          "teks": "Seluruh kasus uji dijalankan dengan perintah php artisan test pada 27 Oktober 2026 menggunakan PHP 8.3.6, Laravel Framework 13.34.0, Livewire 4.4.7, dan PHPUnit 12.5.37, dengan basis data SQLite *in-memory* yang dikosongkan untuk setiap kasus uji. Hasilnya, 158 kasus uji lulus dengan 634 *assertion* dan tidak ada kasus uji yang gagal (Gambar 4.11). Jumlah tersebut terdiri atas 102 kasus uji *feature* dan 56 kasus uji *unit*. Rangkaian uji yang sama dijalankan ulang pada MariaDB 10.11 yang kompatibel dengan MySQL dan memberikan hasil yang sama, yaitu 158 kasus uji lulus dengan 634 *assertion*. Kasus uji yang memakai *data provider* dihitung satu kali untuk setiap set data; misalnya, pengujian klasifikasi Tabel 3.25 dihitung tujuh kali, satu untuk setiap baris. Setiap titik pada Gambar 4.11 mewakili satu kasus uji yang lulus.",
           "gaya": "Normal"
+        },
+        {
+          "gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/bab4/gambar/uji-semua.png",
+          "lebar_cm": 14.0
+        },
+        {
+          "teks": "Gambar 4.11 Hasil Eksekusi Seluruh Kasus Uji",
+          "gaya": "Heading5"
         }
       ]
     },
@@ -653,134 +661,27 @@
           "nomor": "4.2.%1"
         },
         {
-          "teks": "Hasil pengujian fungsional untuk skenario pada Tabel 3.23 ditunjukkan pada Tabel 4.2. Skenario yang memuat bagian yang hanya dapat diamati di peramban dipecah menjadi dua baris (misalnya 1a dan 1b), agar bagian yang sudah dibuktikan kasus uji otomatis terpisah dari bagian yang masih memerlukan uji manual.",
+          "teks": "Hasil pengujian fungsional untuk skenario pada Tabel 3.23 diuraikan per skenario berikut. Setiap skenario memuat hasil yang diharapkan, hasil aktual, tangkapan layar tampilan hasilnya, kasus uji yang membuktikannya, dan statusnya. Bukti bahwa kasus uji benar-benar dijalankan dan lulus ditampilkan sebagai keluaran perintah php artisan test yang hanya menjalankan kasus uji skenario tersebut; tanda centang dan tulisan PASS menunjukkan setiap kasus uji lulus. Tangkapan layar diambil dari aplikasi yang dijalankan pada peramban Chromium dengan data contoh yang sama seperti subbab 4.1, sehingga memperlihatkan tampilan hasil skenario dan bukan hasil pengukuran kualitas udara. Bagian skenario yang hanya dapat dibuktikan dengan pengamatan langsung di peramban ditandai [ISI setelah uji manual].",
           "gaya": "Normal"
         },
         {
-          "teks": "Tabel 4.2 Hasil Pengujian Fungsional Aplikasi",
-          "gaya": "Heading4"
+          "teks": "1.\tBeranda: membuka halaman saat data masuk",
+          "seperti": "1. Kebutuhan Fungsional"
         },
         {
-          "tabel": [
-            [
-              "No",
-              "Skenario",
-              "Hasil yang Diharapkan",
-              "Hasil Aktual dan Kasus Uji",
-              "Status"
-            ],
-            [
-              "1a",
-              "Beranda: membuka halaman dashboard saat data masuk",
-              "Menampilkan status keseluruhan, nilai ppm tiap gas, dan rekomendasi",
-              "Sesuai harapan. Kategori keseluruhan, penyebab utama, ppm dan kategori keempat gas, tingkat dan teks rekomendasi, serta status koneksi tampil; tanpa data tampil pesan menunggu data.\nPublicDashboardTest::​test​_home​_with​_single​_room​_focuses​_on​_that​_room\nPublicDashboardTest::​test​_home​_hides​_main​_cause​_when​_overall​_is​_good\nPublicDashboardTest::​test​_home​_without​_data​_shows​_waiting​_state​_without​_recommendation\nTampilan: Gambar 4.1 (ada data), Gambar 4.11 (belum ada data).",
-              "Valid"
-            ],
-            [
-              "1b",
-              "Beranda: data baru diterima saat halaman terbuka",
-              "Tampilan diperbarui saat data baru diterima",
-              "Halaman memuat pembaruan berkala wire:poll.5s.\nPublicDashboardTest::​test​_home​_with​_single​_room​_focuses​_on​_that​_room\nPerubahan tampilan tanpa muat ulang: [ISI setelah uji manual]",
-              "[ISI]"
-            ],
-            [
-              "2a",
-              "Detail ruangan: memilih parameter gas (CO₂, NH₃, CO, atau H₂) dan rentang waktu",
-              "Grafik menampilkan nilai gas terpilih pada rentang 1 jam, 24 jam, atau 7 hari beserta garis ambang kategori",
-              "Sesuai harapan. Data grafik memuat gas terpilih dan tiga garis ambangnya (CO₂: 50/100/150; CO: 20/50/80); gas tidak dikenal kembali ke CO₂; setiap rentang memuat data sesuai rentangnya.\nPublicDashboardTest::​test​_room​_detail​_defaults​_to​_co2​_chart​_with​_threshold​_lines\nPublicDashboardTest::​test​_room​_detail​_gas​_query​_selects​_gas​_and​_its​_thresholds\nPublicDashboardTest::​test​_room​_detail​_unknown​_gas​_falls​_back​_to​_co2\nPublicDashboardTest::​test​_room​_detail​_range​_switching\nTampilan: Gambar 4.2 (CO₂), Gambar 4.12 (CO).",
-              "Valid"
-            ],
-            [
-              "2b",
-              "Detail ruangan: grafik tergambar di peramban",
-              "Garis grafik dan garis ambang terlihat",
-              "[ISI setelah uji manual]",
-              "[ISI]"
-            ],
-            [
-              "3",
-              "Riwayat: memfilter berdasarkan tanggal dan status",
-              "Tabel hanya menampilkan data yang sesuai filter",
-              "Sesuai harapan. Filter tanggal, kategori, dan ruangan hanya menyisakan data yang cocok; kategori tidak dikenal diabaikan; Reset filter mengembalikan seluruh data.\nPublicHistoryTest::​test​_history​_filters​_by​_date​_range\nPublicHistoryTest::​test​_history​_filters​_by​_category\nPublicHistoryTest::​test​_history​_ignores​_unknown​_category\nPublicHistoryTest::​test​_history​_filters​_by​_room\nPublicHistoryTest::​test​_reset​_filters​_clears​_all​_filters\nTampilan: Gambar 4.13.",
-              "Valid"
-            ],
-            [
-              "4",
-              "Riwayat: menekan tombol ekspor CSV",
-              "File CSV terunduh dan isinya sesuai data pada tabel",
-              "Sesuai harapan. Berkas riwayat-kualitas-udara-<waktu>.csv dihasilkan dengan kolom yang ditetapkan dan hanya berisi data sesuai filter.\nPublicHistoryTest::​test​_csv​_download​_has​_exact​_header​_and​_filtered​_rows\nPublicHistoryTest::​test​_csv​_download​_respects​_category​_and​_date​_filters\nTampilan: Gambar 4.14.",
-              "Valid"
-            ],
-            [
-              "5a",
-              "Riwayat: pembagian halaman data (pagination)",
-              "Data dibagi per halaman",
-              "Sesuai harapan. 23 data dibagi menjadi 2 halaman dengan 20 baris pada halaman pertama.\nPublicHistoryTest::​test​_history​_paginates​_twenty​_rows​_per​_page\nTampilan: Gambar 4.4.",
-              "Valid"
-            ],
-            [
-              "5b",
-              "Riwayat: berpindah ke halaman berikutnya di peramban",
-              "Data tampil sesuai halaman yang dipilih",
-              "[ISI setelah uji manual]",
-              "[ISI]"
-            ],
-            [
-              "6",
-              "Rekomendasi tindakan: membuka halaman rekomendasi",
-              "Menampilkan rekomendasi kategori saat ini dan daftar aturan seluruh kategori",
-              "Sesuai harapan. Kondisi saat ini memakai data terbaru; empat aturan beserta strategi EPA, dasar rekomendasi, tautan sumber, dan pernyataan bukan diagnosis medis tampil.\nRecommendationPageTest::​test​_current​_condition​_shows​_latest​_category​_and​_recommendation​_per​_room\nRecommendationPageTest::​test​_page​_shows​_all​_four​_rules​_basis​_sources​_and​_disclaimer\nRecommendationPageTest::​test​_rule​_table​_lists​_epa​_strategies\nTampilan: Gambar 4.5.",
-              "Valid"
-            ],
-            [
-              "7a",
-              "Status perangkat: membuka halaman status perangkat",
-              "Menampilkan device ID, gas yang dikirim, status koneksi (terhubung bila data terakhir ≤ 30 detik), alur data, dan sepuluh penolakan terakhir",
-              "Sesuai harapan. Device ID, ruangan, dan empat gas tampil; Terhubung pada data 10 dan tepat 30 detik lalu, Terputus pada 120 detik lalu; alur data dan sepuluh penolakan terbaru beserta alasannya tampil.\nDeviceStatusTest::​test​_page​_renders​_device​_with​_room​_and​_gases\nDeviceStatusTest::​test​_device​_is​_connected​_at​_exactly​_thirty​_seconds\nDeviceStatusTest::​test​_device​_is​_disconnected​_when​_last​_data​_is​_old\nDeviceStatusTest::​test​_shows​_data​_flow​_steps\nDeviceStatusTest::​test​_shows​_ten​_latest​_rejections​_with​_short​_errors\nTampilan: Gambar 4.6.",
-              "Valid"
-            ],
-            [
-              "7b",
-              "Status perangkat: waktu data terakhir",
-              "Waktu data terakhir sesuai waktu kirim perangkat",
-              "[ISI setelah uji manual]",
-              "[ISI]"
-            ],
-            [
-              "8",
-              "Panduan: membuka halaman panduan",
-              "Menampilkan cara membaca kategori, tabel ambang (Tabel 2.2), keterangan empat gas, pertanyaan umum, dan batasan",
-              "Sesuai harapan. Seluruh bagian tampil, termasuk rentang ppm keempat gas, sumber ambang, sensor MQ-135 dan MQ-2, serta pernyataan bukan diagnosis medis.\nPublicGuideTest::​test​_guide​_page​_renders​_for​_guests\nPublicGuideTest::​test​_guide​_shows​_threshold​_table​_with​_solihat​_citation\nPublicGuideTest::​test​_guide​_explains​_relative​_ppm​_and​_worst​_category\nPublicGuideTest::​test​_guide​_faq​_covers​_interval​_disconnection​_and​_disclaimer\nTampilan: Gambar 4.7, Gambar 4.8.",
-              "Valid"
-            ],
-            [
-              "9",
-              "Kuesioner UEQ: mengisi 26 butir lalu mengirim",
-              "Jawaban tersimpan dan muncul pesan berhasil; pengiriman dengan butir kosong ditolak",
-              "Sesuai harapan. 26 butir tampil; jawaban lengkap tersimpan dengan pesan Terima kasih; butir kosong atau di luar 1–7 ditolak; pengiriman keempat dalam satu jam dari IP yang sama ditolak.\nSurveyTest::​test​_guest​_can​_open​_survey​_page​_with​_26​_items\nSurveyTest::​test​_guest​_can​_submit​_complete​_answers\nSurveyTest::​test​_all​_items​_are​_required\nSurveyTest::​test​_answers​_must​_be​_between​_one​_and​_seven\nSurveyTest::​test​_submissions​_are​_rate​_limited​_per​_ip\nTampilan: Gambar 4.9, Gambar 4.10, Gambar 4.15 (butir belum lengkap), Gambar 4.16 (berhasil terkirim).",
-              "Valid"
-            ]
-          ],
-          "seperti": "Tabel 3.27 Skenario Pengujian pada Beberapa Kondisi Ruangan",
-          "lebar": [
-            0.9,
-            2.5,
-            2.9,
-            6.6,
-            1.5
-          ],
-          "rata_sel": "kiri"
-        },
-        {
-          "teks": "Sembilan dari tiga belas baris pada Tabel 4.2 berstatus Valid. Empat baris lainnya, yaitu pembaruan tampilan tanpa muat ulang (1b), grafik yang tergambar di peramban (2b), perpindahan halaman riwayat (5b), dan waktu data terakhir pada halaman Status Perangkat (7b), menunggu uji manual karena kasus uji otomatis hanya memeriksa keluaran HTML dan data komponen, bukan tampilan yang digambar peramban. [ISI setelah uji manual: ringkas hasil keempat baris tersebut, nama dan versi peramban yang dipakai, serta tanggal uji manual.]",
+          "teks": "Skenario: pengguna membuka Beranda ketika perangkat IoT sudah mengirim data. Hasil yang diharapkan: Beranda menampilkan status keseluruhan, nilai ppm tiap gas, dan rekomendasi.",
           "gaya": "Normal"
         },
         {
-          "teks": "Kolom Hasil Aktual pada Tabel 4.2 merujuk tangkapan layar yang memperlihatkan hasil setiap skenario. Halaman yang sudah ditampilkan pada subbab 4.1 dirujuk ke Gambar 4.1 sampai Gambar 4.10, sedangkan keadaan yang belum tampak di sana ditunjukkan pada Gambar 4.11 sampai Gambar 4.16. Tangkapan layar ini diambil dari aplikasi yang dijalankan pada peramban Chromium dengan data contoh yang sama seperti subbab 4.1, sehingga memperlihatkan tampilan hasil skenario dan bukan hasil pengukuran kualitas udara.",
+          "teks": "Hasil aktual: kategori keseluruhan, penyebab utama, nilai ppm dan kategori keempat gas, tingkat dan teks rekomendasi, serta status koneksi tampil. Ketika perangkat belum pernah mengirim data, Beranda menampilkan pesan menunggu data tanpa kartu rekomendasi. Tampilan hasilnya ditunjukkan pada Gambar 4.1 dan Gambar 4.12. Hasil ini dibuktikan oleh 3 kasus uji pada kelas PublicDashboardTest (test​_home​_with​_single​_room​_focuses​_on​_that​_room, test​_home​_hides​_main​_cause​_when​_overall​_is​_good, dan test​_home​_without​_data​_shows​_waiting​_state​_without​_recommendation) yang seluruhnya lulus saat dijalankan (Gambar 4.13). Status: Valid.",
           "gaya": "Normal"
         },
         {
-          "teks": "Gambar 4.11 memperlihatkan Beranda ketika perangkat belum pernah mengirim data: status Perangkat terputus, keterangan Belum pernah menerima data, dan pesan Menunggu data dari perangkat IoT tanpa kartu rekomendasi.",
+          "teks": "Bagian skenario berupa pembaruan tampilan saat data baru diterima tanpa memuat ulang halaman dibuktikan sebagian oleh kasus uji yang sama, yaitu halaman memuat pembaruan berkala wire:poll.5s. Perubahan tampilannya di peramban: [ISI setelah uji manual].",
+          "gaya": "Normal"
+        },
+        {
+          "teks": "Gambar 4.12 memperlihatkan Beranda ketika perangkat belum pernah mengirim data: status Perangkat terputus, keterangan Belum pernah menerima data, dan pesan Menunggu data dari perangkat IoT tanpa kartu rekomendasi.",
           "gaya": "Normal"
         },
         {
@@ -788,11 +689,35 @@
           "lebar_cm": 14.0
         },
         {
-          "teks": "Gambar 4.11 Tampilan Beranda saat Belum Ada Data",
+          "teks": "Gambar 4.12 Tampilan Beranda saat Belum Ada Data",
           "gaya": "Heading5"
         },
         {
-          "teks": "Gambar 4.12 memperlihatkan grafik Detail Ruangan setelah parameter CO dipilih pada rentang 24 jam. Judul grafik berganti menjadi CO, dan tiga garis putus-putus menandai ambang CO pada 20, 50, dan 80 ppm sesuai Tabel 2.2.",
+          "gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/bab4/gambar/uji-s1-beranda.png",
+          "lebar_cm": 14.0
+        },
+        {
+          "teks": "Gambar 4.13 Hasil Eksekusi Kasus Uji Beranda",
+          "gaya": "Heading5"
+        },
+        {
+          "teks": "2.\tDetail Ruangan: memilih parameter gas dan rentang waktu",
+          "seperti": "1. Kebutuhan Fungsional"
+        },
+        {
+          "teks": "Skenario: pengguna memilih parameter gas (CO₂, NH₃, CO, atau H₂) dan rentang waktu pada halaman Detail Ruangan. Hasil yang diharapkan: grafik menampilkan nilai gas terpilih pada rentang 1 jam, 24 jam, atau 7 hari beserta garis ambang kategori.",
+          "gaya": "Normal"
+        },
+        {
+          "teks": "Hasil aktual: data grafik memuat gas terpilih dan tiga garis ambangnya (CO₂: 50/100/150 ppm; CO: 20/50/80 ppm), gas yang tidak dikenal kembali ke CO₂, dan setiap rentang memuat data sesuai rentangnya. Tampilan hasilnya ditunjukkan pada Gambar 4.2 dan Gambar 4.14. Hasil ini dibuktikan oleh 4 kasus uji pada kelas PublicDashboardTest (test​_room​_detail​_defaults​_to​_co2​_chart​_with​_threshold​_lines, test​_room​_detail​_gas​_query​_selects​_gas​_and​_its​_thresholds, test​_room​_detail​_unknown​_gas​_falls​_back​_to​_co2, dan test​_room​_detail​_range​_switching) yang seluruhnya lulus saat dijalankan (Gambar 4.15). Status: Valid.",
+          "gaya": "Normal"
+        },
+        {
+          "teks": "Pengamatan grafik dan garis ambang yang tergambar di peramban pengguna: [ISI setelah uji manual].",
+          "gaya": "Normal"
+        },
+        {
+          "teks": "Gambar 4.14 memperlihatkan grafik Detail Ruangan setelah parameter CO dipilih pada rentang 24 jam. Judul grafik berganti menjadi CO, dan tiga garis putus-putus menandai ambang CO pada 20, 50, dan 80 ppm sesuai Tabel 2.2.",
           "gaya": "Normal"
         },
         {
@@ -800,11 +725,31 @@
           "lebar_cm": 14.0
         },
         {
-          "teks": "Gambar 4.12 Grafik Detail Ruangan dengan Parameter CO",
+          "teks": "Gambar 4.14 Grafik Detail Ruangan dengan Parameter CO",
           "gaya": "Heading5"
         },
         {
-          "teks": "Gambar 4.13 memperlihatkan halaman Riwayat dengan filter kategori Tidak Sehat. Ringkasan menunjukkan 25 data yang seluruhnya berkategori Tidak Sehat, dan tabel hanya memuat baris dengan kategori tersebut.",
+          "gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/bab4/gambar/uji-s2-detail.png",
+          "lebar_cm": 14.0
+        },
+        {
+          "teks": "Gambar 4.15 Hasil Eksekusi Kasus Uji Detail Ruangan",
+          "gaya": "Heading5"
+        },
+        {
+          "teks": "3.\tRiwayat: memfilter berdasarkan tanggal dan status",
+          "seperti": "1. Kebutuhan Fungsional"
+        },
+        {
+          "teks": "Skenario: pengguna memfilter data pada halaman Riwayat berdasarkan tanggal dan kategori. Hasil yang diharapkan: tabel hanya menampilkan data yang sesuai filter.",
+          "gaya": "Normal"
+        },
+        {
+          "teks": "Hasil aktual: filter tanggal, kategori, dan ruangan hanya menyisakan data yang cocok, kategori yang tidak dikenal diabaikan, dan tombol Reset filter mengembalikan seluruh data. Tampilan hasilnya ditunjukkan pada Gambar 4.16. Hasil ini dibuktikan oleh 5 kasus uji pada kelas PublicHistoryTest (test​_history​_filters​_by​_date​_range, test​_history​_filters​_by​_category, test​_history​_ignores​_unknown​_category, test​_history​_filters​_by​_room, dan test​_reset​_filters​_clears​_all​_filters) yang seluruhnya lulus saat dijalankan (Gambar 4.17). Status: Valid.",
+          "gaya": "Normal"
+        },
+        {
+          "teks": "Gambar 4.16 memperlihatkan halaman Riwayat dengan filter kategori Tidak Sehat. Ringkasan menunjukkan 25 data yang seluruhnya berkategori Tidak Sehat, dan tabel hanya memuat baris dengan kategori tersebut.",
           "gaya": "Normal"
         },
         {
@@ -812,11 +757,31 @@
           "lebar_cm": 14.0
         },
         {
-          "teks": "Gambar 4.13 Tampilan Riwayat dengan Filter Kategori Tidak Sehat",
+          "teks": "Gambar 4.16 Tampilan Riwayat dengan Filter Kategori Tidak Sehat",
           "gaya": "Heading5"
         },
         {
-          "teks": "Gambar 4.14 memperlihatkan lima baris pertama berkas CSV yang diunduh dari halaman Riwayat dengan filter yang sama. Baris pertama memuat nama kolom, dan setiap baris data berkategori Tidak Sehat sesuai filter.",
+          "gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/bab4/gambar/uji-s3-riwayat-filter.png",
+          "lebar_cm": 14.0
+        },
+        {
+          "teks": "Gambar 4.17 Hasil Eksekusi Kasus Uji Riwayat (memfilter berdasarkan tanggal dan status)",
+          "gaya": "Heading5"
+        },
+        {
+          "teks": "4.\tRiwayat: menekan tombol ekspor CSV",
+          "seperti": "1. Kebutuhan Fungsional"
+        },
+        {
+          "teks": "Skenario: pengguna menekan tombol Unduh CSV pada halaman Riwayat. Hasil yang diharapkan: file CSV terunduh dan isinya sesuai data pada tabel.",
+          "gaya": "Normal"
+        },
+        {
+          "teks": "Hasil aktual: berkas riwayat-kualitas-udara-<waktu>.csv dihasilkan dengan kolom yang ditetapkan dan hanya berisi data yang sesuai filter. Tampilan hasilnya ditunjukkan pada Gambar 4.18. Hasil ini dibuktikan oleh 2 kasus uji pada kelas PublicHistoryTest (test​_csv​_download​_has​_exact​_header​_and​_filtered​_rows dan test​_csv​_download​_respects​_category​_and​_date​_filters) yang seluruhnya lulus saat dijalankan (Gambar 4.19). Status: Valid.",
+          "gaya": "Normal"
+        },
+        {
+          "teks": "Gambar 4.18 memperlihatkan lima baris pertama berkas CSV yang diunduh dari halaman Riwayat dengan filter kategori Tidak Sehat. Baris pertama memuat nama kolom, dan setiap baris data berkategori Tidak Sehat sesuai filter.",
           "gaya": "Normal"
         },
         {
@@ -824,11 +789,119 @@
           "lebar_cm": 14.0
         },
         {
-          "teks": "Gambar 4.14 Isi Berkas CSV Hasil Unduhan Riwayat",
+          "teks": "Gambar 4.18 Isi Berkas CSV Hasil Unduhan Riwayat",
           "gaya": "Heading5"
         },
         {
-          "teks": "Gambar 4.15 memperlihatkan halaman Kuesioner ketika jawaban dikirim sebelum seluruh butir diisi. Setiap butir yang belum dijawab diberi tanda merah beserta pesan, dan di atas tombol Kirim Jawaban muncul pemberitahuan bahwa masih ada baris yang belum dijawab. Gambar 4.16 memperlihatkan pesan berhasil setelah 26 butir diisi dan dikirim.",
+          "gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/bab4/gambar/uji-s4-csv.png",
+          "lebar_cm": 14.0
+        },
+        {
+          "teks": "Gambar 4.19 Hasil Eksekusi Kasus Uji Riwayat (menekan tombol ekspor CSV)",
+          "gaya": "Heading5"
+        },
+        {
+          "teks": "5.\tRiwayat: pembagian halaman data",
+          "seperti": "1. Kebutuhan Fungsional"
+        },
+        {
+          "teks": "Skenario: data riwayat berjumlah lebih dari satu halaman. Hasil yang diharapkan: data dibagi per halaman.",
+          "gaya": "Normal"
+        },
+        {
+          "teks": "Hasil aktual: 23 data dibagi menjadi 2 halaman dengan 20 baris pada halaman pertama, dan keterangan serta tombol navigasi halaman tampil dalam bahasa Indonesia. Tampilan hasilnya ditunjukkan pada Gambar 4.4. Hasil ini dibuktikan oleh 2 kasus uji pada kelas PublicHistoryTest (test​_history​_paginates​_twenty​_rows​_per​_page dan test​_history​_pagination​_is​_in​_indonesian) yang seluruhnya lulus saat dijalankan (Gambar 4.20). Status: Valid.",
+          "gaya": "Normal"
+        },
+        {
+          "teks": "Perpindahan ke halaman berikutnya di peramban dan kecocokan isinya: [ISI setelah uji manual].",
+          "gaya": "Normal"
+        },
+        {
+          "gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/bab4/gambar/uji-s5-pagination.png",
+          "lebar_cm": 14.0
+        },
+        {
+          "teks": "Gambar 4.20 Hasil Eksekusi Kasus Uji Riwayat (pembagian halaman data)",
+          "gaya": "Heading5"
+        },
+        {
+          "teks": "6.\tRekomendasi Tindakan: membuka halaman rekomendasi",
+          "seperti": "1. Kebutuhan Fungsional"
+        },
+        {
+          "teks": "Skenario: pengguna membuka halaman Rekomendasi Tindakan. Hasil yang diharapkan: halaman menampilkan rekomendasi untuk kategori saat ini dan daftar aturan seluruh kategori.",
+          "gaya": "Normal"
+        },
+        {
+          "teks": "Hasil aktual: bagian Kondisi saat ini memakai data terbaru, serta empat aturan beserta strategi EPA, dasar rekomendasi, tautan sumber, dan pernyataan bukan diagnosis medis tampil. Tampilan hasilnya ditunjukkan pada Gambar 4.5. Hasil ini dibuktikan oleh 3 kasus uji pada kelas RecommendationPageTest (test​_current​_condition​_shows​_latest​_category​_and​_recommendation​_per​_room, test​_page​_shows​_all​_four​_rules​_basis​_sources​_and​_disclaimer, dan test​_rule​_table​_lists​_epa​_strategies) yang seluruhnya lulus saat dijalankan (Gambar 4.21). Status: Valid.",
+          "gaya": "Normal"
+        },
+        {
+          "gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/bab4/gambar/uji-s6-rekomendasi.png",
+          "lebar_cm": 14.0
+        },
+        {
+          "teks": "Gambar 4.21 Hasil Eksekusi Kasus Uji Rekomendasi Tindakan",
+          "gaya": "Heading5"
+        },
+        {
+          "teks": "7.\tStatus Perangkat: membuka halaman status perangkat",
+          "seperti": "1. Kebutuhan Fungsional"
+        },
+        {
+          "teks": "Skenario: pengguna membuka halaman Status Perangkat. Hasil yang diharapkan: halaman menampilkan device ID, gas yang dikirim, status koneksi (terhubung bila data terakhir paling lama 30 detik), alur data, dan sepuluh penolakan terakhir.",
+          "gaya": "Normal"
+        },
+        {
+          "teks": "Hasil aktual: device ID, ruangan, dan empat gas tampil; status Terhubung pada data 10 detik dan tepat 30 detik yang lalu serta Terputus pada data 120 detik yang lalu; alur data dan sepuluh penolakan terbaru beserta alasannya tampil. Tampilan hasilnya ditunjukkan pada Gambar 4.6. Hasil ini dibuktikan oleh 5 kasus uji pada kelas DeviceStatusTest (test​_page​_renders​_device​_with​_room​_and​_gases, test​_device​_is​_connected​_at​_exactly​_thirty​_seconds, test​_device​_is​_disconnected​_when​_last​_data​_is​_old, test​_shows​_data​_flow​_steps, dan test​_shows​_ten​_latest​_rejections​_with​_short​_errors) yang seluruhnya lulus saat dijalankan (Gambar 4.22). Status: Valid.",
+          "gaya": "Normal"
+        },
+        {
+          "teks": "Kesesuaian waktu data terakhir dengan waktu kirim perangkat: [ISI setelah uji manual].",
+          "gaya": "Normal"
+        },
+        {
+          "gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/bab4/gambar/uji-s7-perangkat.png",
+          "lebar_cm": 14.0
+        },
+        {
+          "teks": "Gambar 4.22 Hasil Eksekusi Kasus Uji Status Perangkat",
+          "gaya": "Heading5"
+        },
+        {
+          "teks": "8.\tPanduan: membuka halaman panduan",
+          "seperti": "1. Kebutuhan Fungsional"
+        },
+        {
+          "teks": "Skenario: pengguna membuka halaman Panduan. Hasil yang diharapkan: halaman menampilkan cara membaca kategori, tabel ambang (Tabel 2.2), keterangan empat gas, pertanyaan umum, dan batasan.",
+          "gaya": "Normal"
+        },
+        {
+          "teks": "Hasil aktual: seluruh bagian tampil, termasuk rentang ppm keempat gas, sumber ambang, sensor MQ-135 dan MQ-2, serta pernyataan bukan diagnosis medis. Tampilan hasilnya ditunjukkan pada Gambar 4.7 dan Gambar 4.8. Hasil ini dibuktikan oleh 4 kasus uji pada kelas PublicGuideTest (test​_guide​_page​_renders​_for​_guests, test​_guide​_shows​_threshold​_table​_with​_solihat​_citation, test​_guide​_explains​_relative​_ppm​_and​_worst​_category, dan test​_guide​_faq​_covers​_interval​_disconnection​_and​_disclaimer) yang seluruhnya lulus saat dijalankan (Gambar 4.23). Status: Valid.",
+          "gaya": "Normal"
+        },
+        {
+          "gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/bab4/gambar/uji-s8-panduan.png",
+          "lebar_cm": 14.0
+        },
+        {
+          "teks": "Gambar 4.23 Hasil Eksekusi Kasus Uji Panduan",
+          "gaya": "Heading5"
+        },
+        {
+          "teks": "9.\tKuesioner UEQ: mengisi 26 butir lalu mengirim",
+          "seperti": "1. Kebutuhan Fungsional"
+        },
+        {
+          "teks": "Skenario: pengguna mengisi 26 butir UEQ lalu menekan Kirim Jawaban. Hasil yang diharapkan: jawaban tersimpan dan muncul pesan berhasil, sedangkan pengiriman dengan butir kosong ditolak.",
+          "gaya": "Normal"
+        },
+        {
+          "teks": "Hasil aktual: 26 butir tampil, jawaban lengkap tersimpan dengan pesan terima kasih, butir kosong atau di luar 1–7 ditolak, dan pengiriman keempat dalam satu jam dari alamat IP yang sama ditolak. Tampilan hasilnya ditunjukkan pada Gambar 4.9, Gambar 4.10, Gambar 4.24, dan Gambar 4.25. Hasil ini dibuktikan oleh 5 kasus uji pada kelas SurveyTest (test​_guest​_can​_open​_survey​_page​_with​_26​_items, test​_guest​_can​_submit​_complete​_answers, test​_all​_items​_are​_required, test​_answers​_must​_be​_between​_one​_and​_seven, dan test​_submissions​_are​_rate​_limited​_per​_ip) yang seluruhnya lulus saat dijalankan (Gambar 4.26). Status: Valid.",
+          "gaya": "Normal"
+        },
+        {
+          "teks": "Gambar 4.24 memperlihatkan halaman Kuesioner ketika jawaban dikirim sebelum seluruh butir diisi. Setiap butir yang belum dijawab diberi tanda merah beserta pesan, dan di atas tombol Kirim Jawaban muncul pemberitahuan bahwa masih ada baris yang belum dijawab.",
           "gaya": "Normal"
         },
         {
@@ -836,19 +909,35 @@
           "lebar_cm": 11.0
         },
         {
-          "teks": "Gambar 4.15 Tampilan Kuesioner saat Butir Belum Lengkap",
+          "teks": "Gambar 4.24 Tampilan Kuesioner saat Butir Belum Lengkap",
           "gaya": "Heading5"
+        },
+        {
+          "teks": "Gambar 4.25 memperlihatkan pesan berhasil setelah 26 butir diisi dan dikirim.",
+          "gaya": "Normal"
         },
         {
           "gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/bab4/gambar/4-16-kuesioner-berhasil.png",
           "lebar_cm": 14.0
         },
         {
-          "teks": "Gambar 4.16 Tampilan Kuesioner setelah Jawaban Terkirim",
+          "teks": "Gambar 4.25 Tampilan Kuesioner setelah Jawaban Terkirim",
           "gaya": "Heading5"
+        },
+        {
+          "gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/bab4/gambar/uji-s9-kuesioner.png",
+          "lebar_cm": 14.0
+        },
+        {
+          "teks": "Gambar 4.26 Hasil Eksekusi Kasus Uji Kuesioner UEQ",
+          "gaya": "Heading5"
+        },
+        {
+          "teks": "Kesembilan skenario fungsional berstatus Valid berdasarkan kasus uji otomatis. Empat bagian skenario, yaitu pembaruan tampilan tanpa muat ulang pada skenario 1, grafik yang tergambar di peramban pada skenario 2, perpindahan halaman riwayat pada skenario 5, dan waktu data terakhir pada skenario 7, masih menunggu uji manual karena kasus uji otomatis hanya memeriksa keluaran HTML dan data komponen, bukan tampilan yang digambar peramban. [ISI setelah uji manual: ringkas hasil keempat bagian tersebut, nama dan versi peramban yang dipakai, serta tanggal uji manual.]",
+          "gaya": "Normal"
         }
       ],
-      "catatan": "Uji manual baris 1b, 2b, 5b, dan 7b: jalankan aplikasi (php artisan serve) dengan perangkat IoT atau kiriman data uji, buka di peramban (catat nama/versi). 1b: biarkan Beranda terbuka, kirim data dengan kategori berbeda, amati apakah nilai, kategori, dan rekomendasi berubah tanpa muat ulang (maks. 5 detik). 2b: buka Detail Ruangan, pilih tiap gas dan rentang, amati garis grafik dan garis ambang. 5b: dengan > 20 data, klik halaman 2 di Riwayat dan cocokkan isinya. 7b: bandingkan waktu data terakhir di Status Perangkat dengan waktu kirim. Isi kolom Hasil Aktual dan Status (Valid/Tidak Valid), lalu ubah paragraf ringkasan di bawah tabel.",
+      "catatan": "Uji manual empat bagian skenario (1, 2, 5, 7): jalankan aplikasi (php artisan serve) dengan perangkat IoT atau kiriman data uji, buka di peramban (catat nama/versi). Skenario 1: biarkan Beranda terbuka, kirim data dengan kategori berbeda, amati apakah nilai, kategori, dan rekomendasi berubah tanpa muat ulang (maks. 5 detik). Skenario 2: buka Detail Ruangan, pilih tiap gas dan rentang, amati garis grafik dan garis ambang. Skenario 5: dengan lebih dari 20 data, klik halaman 2 di Riwayat dan cocokkan isinya. Skenario 7: bandingkan waktu data terakhir di Status Perangkat dengan waktu kirim. Ganti tiap [ISI setelah uji manual] dengan hasilnya, lalu ubah paragraf ringkasan di atas.",
       "tetap_komentar": true,
       "komentar_bersih": true
     },
@@ -863,11 +952,11 @@
           "nomor": "4.2.%1"
         },
         {
-          "teks": "Hasil pengujian validasi data untuk skenario pada Tabel 3.24 ditunjukkan pada Tabel 4.3. Data uji dasar adalah contoh data subbab 3.9.1 dengan pembacaan udara bersih (device_id AIR-001, CO₂ 30, NH₃ 20, CO 10, dan H₂ 5 ppm), lalu setiap baris mengubah satu atribut dari data tersebut.",
+          "teks": "Hasil pengujian validasi data untuk skenario pada Tabel 3.24 ditunjukkan pada Tabel 4.2. Data uji dasar adalah contoh data subbab 3.9.1 dengan pembacaan udara bersih (device_id AIR-001, CO₂ 30, NH₃ 20, CO 10, dan H₂ 5 ppm), lalu setiap baris mengubah satu atribut dari data tersebut.",
           "gaya": "Normal"
         },
         {
-          "teks": "Tabel 4.3 Hasil Pengujian Validasi Data",
+          "teks": "Tabel 4.2 Hasil Pengujian Validasi Data",
           "gaya": "Heading4"
         },
         {
@@ -926,7 +1015,7 @@
           "rata_sel": "kiri"
         },
         {
-          "teks": "Kelima skenario pada Tabel 4.3 berstatus Valid. Kasus uji tambahan pada kelas yang sama juga lulus, yaitu penolakan nilai ppm negatif (TelemetryApiTest::​test​_negative​_ppm​_is​_rejected), penolakan isi yang bukan JSON valid (TelemetryApiTest::​test​_malformed​_json​_is​_rejected​_with​_truncated​_raw​_content), pesan galat berbahasa Indonesia (TelemetryApiTest::​test​_validation​_messages​_are​_in​_indonesian), pembatasan isi data yang ditolak sebelum disimpan (TelemetryApiTest::​test​_rejected​_payload​_keeps​_only​_known​_keys​_with​_bounded​_values), penyimpanan waktu perangkat terpisah dari waktu terima server (TelemetryApiTest::​test​_device​_timestamp​_is​_kept​_while​_created​_at​_is​_server​_time), kewajiban API key bila dikonfigurasi (TelemetryApiTest::​test​_api​_key​_is​_enforced​_when​_configured​_without​_logging​_rejection dan TelemetryApiTest::​test​_api​_key​_is​_not​_required​_when​_empty), serta pembatasan 60 permintaan per menit yang menjawab permintaan ke-61 dengan HTTP 429 (TelemetryApiTest::​test​_telemetry​_endpoint​_is​_throttled​_to​_sixty​_requests​_per​_minute).",
+          "teks": "Kelima skenario pada Tabel 4.2 berstatus Valid. Kasus uji tambahan pada kelas yang sama juga lulus, yaitu penolakan nilai ppm negatif (TelemetryApiTest::​test​_negative​_ppm​_is​_rejected), penolakan isi yang bukan JSON valid (TelemetryApiTest::​test​_malformed​_json​_is​_rejected​_with​_truncated​_raw​_content), pesan galat berbahasa Indonesia (TelemetryApiTest::​test​_validation​_messages​_are​_in​_indonesian), pembatasan isi data yang ditolak sebelum disimpan (TelemetryApiTest::​test​_rejected​_payload​_keeps​_only​_known​_keys​_with​_bounded​_values), penyimpanan waktu perangkat terpisah dari waktu terima server (TelemetryApiTest::​test​_device​_timestamp​_is​_kept​_while​_created​_at​_is​_server​_time), kewajiban API key bila dikonfigurasi (TelemetryApiTest::​test​_api​_key​_is​_enforced​_when​_configured​_without​_logging​_rejection dan TelemetryApiTest::​test​_api​_key​_is​_not​_required​_when​_empty), serta pembatasan 60 permintaan per menit yang menjawab permintaan ke-61 dengan HTTP 429 (TelemetryApiTest::​test​_telemetry​_endpoint​_is​_throttled​_to​_sixty​_requests​_per​_minute).",
           "gaya": "Normal"
         }
       ]
@@ -942,11 +1031,11 @@
           "nomor": "4.2.%1"
         },
         {
-          "teks": "Setiap baris Tabel 3.25 diuji dua kali, yaitu langsung pada fungsi klasifikasi (AirQualityClassifierTest::​test​_overall​_category​_follows​_table​_3​_8) dan melalui endpoint POST /api/telemetry sampai data tersimpan (TelemetryApiTest::​test​_table​_3​_8​_classification​_via​_api). Pada pengujian melalui endpoint, kategori setiap gas yang tersimpan juga dibandingkan dengan hasil fungsi klasifikasi, dan tingkat rekomendasi yang tersimpan dibandingkan dengan aturan pada Tabel 3.20. Hasilnya ditunjukkan pada Tabel 4.4.",
+          "teks": "Setiap baris Tabel 3.25 diuji dua kali, yaitu langsung pada fungsi klasifikasi (AirQualityClassifierTest::​test​_overall​_category​_follows​_table​_3​_8) dan melalui endpoint POST /api/telemetry sampai data tersimpan (TelemetryApiTest::​test​_table​_3​_8​_classification​_via​_api). Pada pengujian melalui endpoint, kategori setiap gas yang tersimpan juga dibandingkan dengan hasil fungsi klasifikasi, dan tingkat rekomendasi yang tersimpan dibandingkan dengan aturan pada Tabel 3.20. Hasilnya ditunjukkan pada Tabel 4.3.",
           "gaya": "Normal"
         },
         {
-          "teks": "Tabel 4.4 Hasil Pengujian Klasifikasi Kualitas Udara",
+          "teks": "Tabel 4.3 Hasil Pengujian Klasifikasi Kualitas Udara",
           "gaya": "Heading4"
         },
         {
@@ -1046,15 +1135,15 @@
           "rata_sel": "kiri"
         },
         {
-          "teks": "Ketujuh baris pada Tabel 4.4 berstatus Valid. Baris 3 dan 4 menunjukkan bahwa kategori keseluruhan mengikuti gas dengan kategori terburuk, yaitu CO dan H₂, sedangkan baris 6 dan 7 menunjukkan bahwa nilai tepat pada batas ambang CO₂ masuk ke kategori berikutnya. Bila lebih dari satu gas berada pada kategori terburuk, misalnya CO₂ 70, NH₃ 30, CO 55, dan H₂ 45 ppm, kategori keseluruhan Tidak Sehat dengan penyebab utama CO dan H₂, dan keduanya tersimpan sebagai co,h2 (AirQualityClassifierTest::​test​_dominant​_lists​_all​_worst​_gases dan TelemetryApiTest::​test​_dominant​_gases​_are​_stored​_and​_returned).",
+          "teks": "Ketujuh baris pada Tabel 4.3 berstatus Valid. Baris 3 dan 4 menunjukkan bahwa kategori keseluruhan mengikuti gas dengan kategori terburuk, yaitu CO dan H₂, sedangkan baris 6 dan 7 menunjukkan bahwa nilai tepat pada batas ambang CO₂ masuk ke kategori berikutnya. Bila lebih dari satu gas berada pada kategori terburuk, misalnya CO₂ 70, NH₃ 30, CO 55, dan H₂ 45 ppm, kategori keseluruhan Tidak Sehat dengan penyebab utama CO dan H₂, dan keduanya tersimpan sebagai co,h2 (AirQualityClassifierTest::​test​_dominant​_lists​_all​_worst​_gases dan TelemetryApiTest::​test​_dominant​_gases​_are​_stored​_and​_returned).",
           "gaya": "Normal"
         },
         {
-          "teks": "Pengujian nilai batas dilakukan untuk setiap batas b pada Tabel 2.2 dengan dua nilai uji, yaitu b − 0,01 dan b, sehingga diperoleh 24 set data untuk keempat gas (AirQualityClassifierTest::​test​_category​_boundaries​_are​_exclusive​_upper​_limits). Seluruh set data lulus dan hasilnya dirangkum pada Tabel 4.5. Sebagai contoh, CO₂ 49,99 ppm diklasifikasikan Baik dan 50 ppm Sedang, 99,99 ppm Sedang dan 100 ppm Tidak Sehat, serta 149,99 ppm Tidak Sehat dan 150 ppm Berbahaya. Hasil ini sesuai dengan aturan batas eksklusif pada subbab 3.9.3. Selain itu, nilai yang dikirim dengan tiga desimal dibulatkan lebih dahulu; CO₂ 49,995 ppm tersimpan sebagai 50,00 ppm dengan kategori Sedang (TelemetryApiTest::​test​_ppm​_is​_rounded​_to​_two​_decimals​_before​_classification).",
+          "teks": "Pengujian nilai batas dilakukan untuk setiap batas b pada Tabel 2.2 dengan dua nilai uji, yaitu b − 0,01 dan b, sehingga diperoleh 24 set data untuk keempat gas (AirQualityClassifierTest::​test​_category​_boundaries​_are​_exclusive​_upper​_limits). Seluruh set data lulus dan hasilnya dirangkum pada Tabel 4.4. Sebagai contoh, CO₂ 49,99 ppm diklasifikasikan Baik dan 50 ppm Sedang, 99,99 ppm Sedang dan 100 ppm Tidak Sehat, serta 149,99 ppm Tidak Sehat dan 150 ppm Berbahaya. Hasil ini sesuai dengan aturan batas eksklusif pada subbab 3.9.3. Selain itu, nilai yang dikirim dengan tiga desimal dibulatkan lebih dahulu; CO₂ 49,995 ppm tersimpan sebagai 50,00 ppm dengan kategori Sedang (TelemetryApiTest::​test​_ppm​_is​_rounded​_to​_two​_decimals​_before​_classification).",
           "gaya": "Normal"
         },
         {
-          "teks": "Tabel 4.5 Hasil Pengujian Nilai Batas Ambang",
+          "teks": "Tabel 4.4 Hasil Pengujian Nilai Batas Ambang",
           "gaya": "Heading4"
         },
         {
@@ -1124,11 +1213,11 @@
           "nomor": "4.2.%1"
         },
         {
-          "teks": "Hasil pengujian rekomendasi untuk skenario pada Tabel 3.26 ditunjukkan pada Tabel 4.6. Setiap kategori diberikan kepada fungsi rekomendasi, lalu tingkat dan teks rekomendasi yang dihasilkan dibandingkan dengan Tabel 3.20 (RecommendationTest::​test​_for​_category​_matches​_table​_3​_9, satu set data untuk setiap kategori).",
+          "teks": "Hasil pengujian rekomendasi untuk skenario pada Tabel 3.26 ditunjukkan pada Tabel 4.5. Setiap kategori diberikan kepada fungsi rekomendasi, lalu tingkat dan teks rekomendasi yang dihasilkan dibandingkan dengan Tabel 3.20 (RecommendationTest::​test​_for​_category​_matches​_table​_3​_9, satu set data untuk setiap kategori).",
           "gaya": "Normal"
         },
         {
-          "teks": "Tabel 4.6 Hasil Pengujian Rekomendasi Tindakan Preventif",
+          "teks": "Tabel 4.5 Hasil Pengujian Rekomendasi Tindakan Preventif",
           "gaya": "Heading4"
         },
         {
@@ -1180,15 +1269,15 @@
           "rata_sel": "kiri"
         },
         {
-          "teks": "Keempat baris pada Tabel 4.6 berstatus Valid. Kasus uji lain menunjukkan bahwa rekomendasi juga benar pada titik penggunaannya: tingkat rekomendasi yang tersimpan bersama setiap data sesuai dengan kategori keseluruhan data tersebut (TelemetryApiTest::​test​_table​_3​_8​_classification​_via​_api), Beranda menampilkan teks rekomendasi sesuai kategori (PublicDashboardTest::​test​_home​_with​_single​_room​_focuses​_on​_that​_room dan PublicDashboardTest::​test​_home​_with​_multiple​_rooms​_shows​_a​_card​_per​_room), keempat aturan tersusun berurutan dan masing-masing merujuk strategi EPA (RecommendationTest::​test​_all​_returns​_four​_rules​_in​_order dan RecommendationTest::​test​_every​_rule​_cites​_epa​_strategy), serta kategori yang tidak dikenal ditolak sehingga sistem tidak memberikan rekomendasi sembarang (RecommendationTest::​test​_unknown​_category​_throws).",
+          "teks": "Keempat baris pada Tabel 4.5 berstatus Valid. Kasus uji lain menunjukkan bahwa rekomendasi juga benar pada titik penggunaannya: tingkat rekomendasi yang tersimpan bersama setiap data sesuai dengan kategori keseluruhan data tersebut (TelemetryApiTest::​test​_table​_3​_8​_classification​_via​_api), Beranda menampilkan teks rekomendasi sesuai kategori (PublicDashboardTest::​test​_home​_with​_single​_room​_focuses​_on​_that​_room dan PublicDashboardTest::​test​_home​_with​_multiple​_rooms​_shows​_a​_card​_per​_room), keempat aturan tersusun berurutan dan masing-masing merujuk strategi EPA (RecommendationTest::​test​_all​_returns​_four​_rules​_in​_order dan RecommendationTest::​test​_every​_rule​_cites​_epa​_strategy), serta kategori yang tidak dikenal ditolak sehingga sistem tidak memberikan rekomendasi sembarang (RecommendationTest::​test​_unknown​_category​_throws).",
           "gaya": "Normal"
         },
         {
-          "teks": "Rekapitulasi hasil pengujian black-box ditunjukkan pada Tabel 4.7.",
+          "teks": "Rekapitulasi hasil pengujian black-box ditunjukkan pada Tabel 4.6.",
           "gaya": "Normal"
         },
         {
-          "teks": "Tabel 4.7 Rekapitulasi Hasil Pengujian Black-Box",
+          "teks": "Tabel 4.6 Rekapitulasi Hasil Pengujian Black-Box",
           "gaya": "Heading4"
         },
         {
@@ -1198,39 +1287,39 @@
               "Pengujian",
               "Jumlah Skenario",
               "Valid",
-              "Menunggu Uji Manual"
+              "Bagian Menunggu Uji Manual"
             ],
             [
               "1",
-              "Fungsional aplikasi (Tabel 4.2)",
-              "13",
+              "Fungsional aplikasi (subbab 4.2.1)",
+              "9",
               "9",
               "4"
             ],
             [
               "2",
-              "Validasi data (Tabel 4.3)",
+              "Validasi data (Tabel 4.2)",
               "5",
               "5",
               "0"
             ],
             [
               "3",
-              "Klasifikasi kualitas udara (Tabel 4.4)",
+              "Klasifikasi kualitas udara (Tabel 4.3)",
               "7",
               "7",
               "0"
             ],
             [
               "4",
-              "Nilai batas ambang (Tabel 4.5)",
+              "Nilai batas ambang (Tabel 4.4)",
               "4",
               "4",
               "0"
             ],
             [
               "5",
-              "Rekomendasi tindakan preventif (Tabel 4.6)",
+              "Rekomendasi tindakan preventif (Tabel 4.5)",
               "4",
               "4",
               "0"
@@ -1238,7 +1327,7 @@
             [
               "",
               "Jumlah",
-              "33",
+              "29",
               "29",
               "4"
             ]
@@ -1254,7 +1343,7 @@
           "rata_sel": "kiri"
         }
       ],
-      "catatan": "Setelah uji manual baris 1b, 2b, 5b, dan 7b pada Tabel 4.2 selesai, perbarui baris 1 dan baris Jumlah pada tabel rekapitulasi ini (kolom Valid dan Menunggu Uji Manual, atau tambahkan kolom Tidak Valid bila ada yang gagal).",
+      "catatan": "Setelah uji manual empat bagian skenario pada subbab 4.2.1 selesai, perbarui baris 1 dan baris Jumlah pada tabel rekapitulasi ini (kolom Bagian Menunggu Uji Manual, atau tambahkan kolom Tidak Valid bila ada yang gagal).",
       "tetap_komentar": true,
       "komentar_bersih": true
     },
@@ -1277,7 +1366,7 @@
           "gaya": "Normal"
         },
         {
-          "teks": "Keempat skenario dijalankan berurutan dengan durasi rencana sebagai berikut: ruangan normal sekitar 10 menit, ruangan tertutup dengan pintu dan jendela ditutup sekitar 30 menit, ruangan berasap dengan sumber asap terkontrol di dekat sensor sekitar 5 menit, dan ventilasi berbeda, yaitu pintu dan jendela dibuka kembali setelah kondisi tertutup dan berasap, sekitar 15 menit. Sumber asap yang dipakai adalah [ISI: jenis sumber asap dan jaraknya dari sensor]. Waktu pelaksanaan setiap skenario dicatat pada Tabel 4.8.",
+          "teks": "Keempat skenario dijalankan berurutan dengan durasi rencana sebagai berikut: ruangan normal sekitar 10 menit, ruangan tertutup dengan pintu dan jendela ditutup sekitar 30 menit, ruangan berasap dengan sumber asap terkontrol di dekat sensor sekitar 5 menit, dan ventilasi berbeda, yaitu pintu dan jendela dibuka kembali setelah kondisi tertutup dan berasap, sekitar 15 menit. Sumber asap yang dipakai adalah [ISI: jenis sumber asap dan jaraknya dari sensor]. Waktu pelaksanaan setiap skenario dicatat pada Tabel 4.7.",
           "gaya": "Normal"
         },
         {
@@ -1295,7 +1384,7 @@
       "cari": "Dengan demikian, rancangan pengujian ini digunakan untuk memastikan bahwa sistem dapat menerima data…pemantau kualitas udara ruangan berbasis IoT.",
       "sisip_paragraf": [
         {
-          "teks": "Tabel 4.8 Waktu Pelaksanaan Pengujian pada Beberapa Kondisi Ruangan",
+          "teks": "Tabel 4.7 Waktu Pelaksanaan Pengujian pada Beberapa Kondisi Ruangan",
           "gaya": "Heading4"
         },
         {
@@ -1347,11 +1436,11 @@
           "rata_sel": "kiri"
         },
         {
-          "teks": "Hasil pengamatan keempat skenario dirangkum pada Tabel 4.9.",
+          "teks": "Hasil pengamatan keempat skenario dirangkum pada Tabel 4.8.",
           "gaya": "Normal"
         },
         {
-          "teks": "Tabel 4.9 Hasil Pengujian pada Beberapa Kondisi Ruangan",
+          "teks": "Tabel 4.8 Hasil Pengujian pada Beberapa Kondisi Ruangan",
           "gaya": "Heading4"
         },
         {
@@ -1409,7 +1498,7 @@
           "rata_sel": "kiri"
         }
       ],
-      "catatan": "Cara mengisi: ekspor CSV dari halaman Riwayat dengan filter tanggal pengujian. Untuk tiap skenario, ambil baris di antara waktu mulai dan selesai (Tabel 4.8): hitung jumlah baris (Jumlah Data Diterima), kategori keseluruhan yang paling sering muncul (Kategori Dominan), nilai min–maks tiap gas (Rentang Nilai ppm, tulis per gas: CO₂ a–b; NH₃ a–b; CO a–b; H₂ a–b), dan tingkat/teks rekomendasi yang muncul. Kesesuaian = Sesuai/Tidak Sesuai terhadap Hasil yang Diharapkan pada Tabel 3.27. Simpan berkas CSV sebagai lampiran bukti.",
+      "catatan": "Cara mengisi: ekspor CSV dari halaman Riwayat dengan filter tanggal pengujian. Untuk tiap skenario, ambil baris di antara waktu mulai dan selesai (Tabel 4.7): hitung jumlah baris (Jumlah Data Diterima), kategori keseluruhan yang paling sering muncul (Kategori Dominan), nilai min–maks tiap gas (Rentang Nilai ppm, tulis per gas: CO₂ a–b; NH₃ a–b; CO a–b; H₂ a–b), dan tingkat/teks rekomendasi yang muncul. Kesesuaian = Sesuai/Tidak Sesuai terhadap Hasil yang Diharapkan pada Tabel 3.27. Simpan berkas CSV sebagai lampiran bukti.",
       "tetap_komentar": true,
       "komentar_bersih": true
     },
@@ -1439,7 +1528,7 @@
           "gaya": "Normal"
         }
       ],
-      "catatan": "Isi setelah Tabel 4.8 dan 4.9 lengkap. Tulis hanya angka dari CSV Riwayat; sertakan waktu (jam:menit) saat kategori berubah. Bila suatu skenario tidak sesuai harapan, laporkan apa adanya beserta dugaan penyebabnya (misalnya sumber asap terlalu jauh atau durasi terlalu singkat).",
+      "catatan": "Isi setelah Tabel 4.7 dan 4.9 lengkap. Tulis hanya angka dari CSV Riwayat; sertakan waktu (jam:menit) saat kategori berubah. Bila suatu skenario tidak sesuai harapan, laporkan apa adanya beserta dugaan penyebabnya (misalnya sumber asap terlalu jauh atau durasi terlalu singkat).",
       "tetap_komentar": true,
       "komentar_bersih": true
     },
@@ -1472,11 +1561,11 @@
       "cari": "Dengan demikian, rancangan pengujian ini digunakan untuk memastikan bahwa sistem dapat menerima data…pemantau kualitas udara ruangan berbasis IoT.",
       "sisip_paragraf": [
         {
-          "teks": "Profil responden ditunjukkan pada Tabel 4.10.",
+          "teks": "Profil responden ditunjukkan pada Tabel 4.9.",
           "gaya": "Normal"
         },
         {
-          "teks": "Tabel 4.10 Profil Responden",
+          "teks": "Tabel 4.9 Profil Responden",
           "gaya": "Heading4"
         },
         {
@@ -1545,11 +1634,11 @@
       "cari": "Dengan demikian, rancangan pengujian ini digunakan untuk memastikan bahwa sistem dapat menerima data…pemantau kualitas udara ruangan berbasis IoT.",
       "sisip_paragraf": [
         {
-          "teks": "Hasil pengolahan keenam skala UEQ dan perbandingannya dengan benchmark ditunjukkan pada Tabel 4.11.",
+          "teks": "Hasil pengolahan keenam skala UEQ dan perbandingannya dengan benchmark ditunjukkan pada Tabel 4.10.",
           "gaya": "Normal"
         },
         {
-          "teks": "Tabel 4.11 Hasil Skala UEQ dan Perbandingan dengan Benchmark",
+          "teks": "Tabel 4.10 Hasil Skala UEQ dan Perbandingan dengan Benchmark",
           "gaya": "Heading4"
         },
         {
@@ -1633,11 +1722,11 @@
       "cari": "Dengan demikian, rancangan pengujian ini digunakan untuk memastikan bahwa sistem dapat menerima data…pemantau kualitas udara ruangan berbasis IoT.",
       "sisip_paragraf": [
         {
-          "teks": "Rata-rata setiap butir setelah transformasi ke rentang −3 sampai +3 ditunjukkan pada Tabel 4.12.",
+          "teks": "Rata-rata setiap butir setelah transformasi ke rentang −3 sampai +3 ditunjukkan pada Tabel 4.11.",
           "gaya": "Normal"
         },
         {
-          "teks": "Tabel 4.12 Rata-rata Setiap Butir UEQ",
+          "teks": "Tabel 4.11 Rata-rata Setiap Butir UEQ",
           "gaya": "Heading4"
         },
         {
@@ -1829,7 +1918,7 @@
           "gaya": "Normal"
         },
         {
-          "teks": "[ISI: skala dengan rata-rata tertinggi dan terendah, penilaiannya (positif, netral, atau negatif), dan kategori benchmark setiap skala berdasarkan Tabel 4.11.]",
+          "teks": "[ISI: skala dengan rata-rata tertinggi dan terendah, penilaiannya (positif, netral, atau negatif), dan kategori benchmark setiap skala berdasarkan Tabel 4.10.]",
           "gaya": "Normal"
         },
         {
@@ -1837,11 +1926,11 @@
           "gaya": "Normal"
         },
         {
-          "teks": "[ISI: butir dengan rata-rata terendah pada Tabel 4.12 dan kaitannya dengan halaman atau fitur aplikasi yang perlu diperbaiki.]",
+          "teks": "[ISI: butir dengan rata-rata terendah pada Tabel 4.11 dan kaitannya dengan halaman atau fitur aplikasi yang perlu diperbaiki.]",
           "gaya": "Normal"
         }
       ],
-      "catatan": "Isi setelah Tabel 4.11 dan 4.12 lengkap. Gunakan batas −0,8/0,8 (Schrepp, 2023) untuk menyebut penilaian dan Tabel 3.29 untuk kategori benchmark. Jangan menyimpulkan lebih dari yang ditunjukkan data.",
+      "catatan": "Isi setelah Tabel 4.10 dan 4.12 lengkap. Gunakan batas −0,8/0,8 (Schrepp, 2023) untuk menyebut penilaian dan Tabel 3.29 untuk kategori benchmark. Jangan menyimpulkan lebih dari yang ditunjukkan data.",
       "tetap_komentar": true,
       "komentar_bersih": true
     },
@@ -1860,15 +1949,15 @@
           "gaya": "Normal"
         },
         {
-          "teks": "Tujuan pertama adalah merancang dan membangun sistem berbasis IoT untuk memantau kualitas udara ruangan secara real-time. Hasil implementasi pada subbab 4.1 menunjukkan bahwa aplikasi web dapat menerima data dari perangkat melalui endpoint POST /api/telemetry, memvalidasi dan menyimpan data tersebut, lalu menyajikannya pada tujuh halaman yang memuat ulang datanya setiap 5 detik. Pengujian black-box pada subbab 4.2 membuktikan penerimaan, penolakan, pengolahan, dan penyajian data tersebut dengan data uji. Pembuktian bahwa tampilan di peramban berubah sendiri saat data baru masuk dan bahwa sistem bekerja dengan perangkat IoT nyata bergantung pada uji manual (Tabel 4.2) dan pengujian pada subbab 4.3. [ISI: ringkas hasil uji manual dan hasil Tabel 4.9 yang berkaitan dengan penerimaan data setiap sekitar 5 detik.]",
+          "teks": "Tujuan pertama adalah merancang dan membangun sistem berbasis IoT untuk memantau kualitas udara ruangan secara real-time. Hasil implementasi pada subbab 4.1 menunjukkan bahwa aplikasi web dapat menerima data dari perangkat melalui endpoint POST /api/telemetry, memvalidasi dan menyimpan data tersebut, lalu menyajikannya pada tujuh halaman yang memuat ulang datanya setiap 5 detik. Pengujian black-box pada subbab 4.2 membuktikan penerimaan, penolakan, pengolahan, dan penyajian data tersebut dengan data uji. Pembuktian bahwa tampilan di peramban berubah sendiri saat data baru masuk dan bahwa sistem bekerja dengan perangkat IoT nyata bergantung pada uji manual (subbab 4.2.1) dan pengujian pada subbab 4.3. [ISI: ringkas hasil uji manual dan hasil Tabel 4.8 yang berkaitan dengan penerimaan data setiap sekitar 5 detik.]",
           "gaya": "Normal"
         },
         {
-          "teks": "Tujuan kedua adalah merancang sistem rekomendasi berbasis aturan yang memberikan saran tindakan preventif sesuai kondisi kualitas udara terkini. Tabel 4.6 menunjukkan bahwa keempat aturan pada Tabel 3.20 menghasilkan tingkat dan teks rekomendasi yang tepat untuk setiap kategori, dan rekomendasi disimpan bersama setiap data yang diterima sehingga selalu mengikuti pembacaan terbaru. Karena aturan hanya bergantung pada kategori keseluruhan, ketepatan rekomendasi bergantung pada ketepatan klasifikasi, yang telah diuji pada Tabel 4.4 dan Tabel 4.5 termasuk nilai tepat pada batas ambang. Kesesuaian rekomendasi dengan perubahan kondisi udara yang sebenarnya dinilai pada pengujian kondisi ruangan. [ISI: ringkas kolom Rekomendasi yang Tampil dan Kesesuaian pada Tabel 4.9.]",
+          "teks": "Tujuan kedua adalah merancang sistem rekomendasi berbasis aturan yang memberikan saran tindakan preventif sesuai kondisi kualitas udara terkini. Tabel 4.5 menunjukkan bahwa keempat aturan pada Tabel 3.20 menghasilkan tingkat dan teks rekomendasi yang tepat untuk setiap kategori, dan rekomendasi disimpan bersama setiap data yang diterima sehingga selalu mengikuti pembacaan terbaru. Karena aturan hanya bergantung pada kategori keseluruhan, ketepatan rekomendasi bergantung pada ketepatan klasifikasi, yang telah diuji pada Tabel 4.3 dan Tabel 4.4 termasuk nilai tepat pada batas ambang. Kesesuaian rekomendasi dengan perubahan kondisi udara yang sebenarnya dinilai pada pengujian kondisi ruangan. [ISI: ringkas kolom Rekomendasi yang Tampil dan Kesesuaian pada Tabel 4.8.]",
           "gaya": "Normal"
         }
       ],
-      "catatan": "Isi kedua tanda [ISI] pada paragraf tujuan pertama dan kedua setelah uji manual (Tabel 4.2) dan pengujian kondisi ruangan (Tabel 4.9) selesai.",
+      "catatan": "Isi kedua tanda [ISI] pada paragraf tujuan pertama dan kedua setelah uji manual (subbab 4.2.1) dan pengujian kondisi ruangan (Tabel 4.8) selesai.",
       "tetap_komentar": true,
       "komentar_bersih": true
     },
@@ -1878,11 +1967,11 @@
       "cari": "Dengan demikian, rancangan pengujian ini digunakan untuk memastikan bahwa sistem dapat menerima data…pemantau kualitas udara ruangan berbasis IoT.",
       "sisip_paragraf": [
         {
-          "teks": "Tujuan ketiga mencakup pengujian fungsional pada beberapa skenario kondisi di satu ruangan uji dan pengukuran pengalaman pengguna dengan UEQ. Bagian pengujian fungsional dengan data uji telah selesai: 150 kasus uji otomatis lulus, seluruh skenario pada Tabel 3.24 sampai Tabel 3.26 berstatus Valid, dan empat baris turunan Tabel 3.23 masih menunggu uji manual. Pengujian empat kondisi ruangan dan evaluasi UEQ belum dilaksanakan saat bab ini disusun, sehingga tujuan ketiga baru tercapai sebagian. [ISI: setelah data tersedia, ringkas hasil Tabel 4.9 dan Tabel 4.11, lalu nyatakan apakah tujuan ketiga tercapai.]",
+          "teks": "Tujuan ketiga mencakup pengujian fungsional pada beberapa skenario kondisi di satu ruangan uji dan pengukuran pengalaman pengguna dengan UEQ. Bagian pengujian fungsional dengan data uji telah selesai: 158 kasus uji otomatis lulus, seluruh skenario pada Tabel 3.23 sampai Tabel 3.26 berstatus Valid, dan empat bagian skenario pada Tabel 3.23 masih menunggu uji manual. Pengujian empat kondisi ruangan dan evaluasi UEQ belum dilaksanakan saat bab ini disusun, sehingga tujuan ketiga baru tercapai sebagian. [ISI: setelah data tersedia, ringkas hasil Tabel 4.8 dan Tabel 4.10, lalu nyatakan apakah tujuan ketiga tercapai.]",
           "gaya": "Normal"
         }
       ],
-      "catatan": "Setelah pengujian kondisi ruangan dan UEQ selesai, ganti kalimat \"belum dilaksanakan ... baru tercapai sebagian\" dengan ringkasan hasilnya. Pastikan angka sama dengan Tabel 4.9 dan 4.11.",
+      "catatan": "Setelah pengujian kondisi ruangan dan UEQ selesai, ganti kalimat \"belum dilaksanakan ... baru tercapai sebagian\" dengan ringkasan hasilnya. Pastikan angka sama dengan Tabel 4.8 dan 4.11.",
       "tetap_komentar": true,
       "komentar_bersih": true
     },
@@ -1900,7 +1989,7 @@
           "gaya": "Normal"
         }
       ],
-      "catatan": "Isi tanda [ISI] pada paragraf terakhir setelah hasil UEQ (Tabel 4.11) tersedia; bila tidak ada kaitan yang jelas, hapus kalimat isian tersebut.",
+      "catatan": "Isi tanda [ISI] pada paragraf terakhir setelah hasil UEQ (Tabel 4.10) tersedia; bila tidak ada kaitan yang jelas, hapus kalimat isian tersebut.",
       "tetap_komentar": true,
       "komentar_bersih": true
     }
