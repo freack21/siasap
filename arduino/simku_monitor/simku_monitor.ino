@@ -38,9 +38,9 @@ const char* DEVICE_ID     = "AIR-001";
 // Interval pengiriman data (milidetik): 5 detik.
 const unsigned long INTERVAL_KIRIM = 5000;
 
-// ======================== PIN SENSOR (sesuai paper; dapat diubah) ========================
-const int PIN_MQ135 = 33;  // CO2, NH3
-const int PIN_MQ2   = 32;  // CO, H2
+// ======================== PIN SENSOR (sesuai rangkaian perangkat; dapat diubah) ========================
+const int PIN_MQ135 = 35;  // CO2, NH3 (AO MQ-135 ke GPIO35)
+const int PIN_MQ2   = 34;  // CO, H2 (AO MQ-2 ke GPIO34)
 
 // ======================== PARAMETER KONVERSI & BASELINE ========================
 const unsigned long DURASI_PEMANASAN_MS = 30000;  // pemanasan sensor 30 detik
