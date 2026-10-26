@@ -149,6 +149,7 @@ Saat dinyalakan, perangkat memanaskan sensor, mengambil **baseline** dari udara 
 |---|---|
 | `php artisan ueq:report` | Ringkasan hasil kuesioner UEQ: jumlah responden, rata-rata dan simpangan baku per skala, kategori *benchmark*, Cronbach's alpha, serta ekspor CSV data mentah (kolom butir 1–26 bernilai 1–7) yang kompatibel dengan *UEQ Data Analysis Tool*. Lokasi CSV bawaan `storage/app/ueq-export.csv`; ubah dengan `--csv=<path>`. |
 | `php artisan telemetry:clear` | Mengosongkan data sensor dan penolakan data; data ruangan dan perangkat tetap. Tambahkan `--force` untuk melewati konfirmasi. |
+| `php artisan telemetry:sweep --dari=2026-10-26 --sampai=2026-10-26` | Menghapus data sensor pada rentang waktu terima server (tanggal saja = sehari penuh, atau `"Y-m-d H:i:s"`). Opsi: `--perangkat=AIR-001`, `--pratinjau` (lihat dulu tanpa menghapus), `--force`. |
 
 ## Pengujian
 
