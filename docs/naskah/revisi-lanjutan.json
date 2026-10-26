@@ -122,6 +122,48 @@
       "ganti": "Klasifikasi memakai satu rujukan ambang batas, yaitu Solihat et al. (2026), untuk keempat gas. Ambang tersebut digunakan sebagai acuan kategori pada aplikasi dan bukan merupakan baku mutu udara resmi, sedangkan nilai ppm yang diklasifikasikan merupakan indikator relatif terhadap kondisi udara saat perangkat dinyalakan."
     },
     {
+      "id": "GBR-WF-3.7",
+      "lokasi": "Gambar 3.7",
+      "cari": "Gambar 3.7 Wireframe Halaman Beranda",
+      "ganti_gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/rebrand/gambar/wireframe-beranda.png"
+    },
+    {
+      "id": "GBR-WF-3.8",
+      "lokasi": "Gambar 3.8",
+      "cari": "Gambar 3.8 Wireframe Halaman Detail Ruangan",
+      "ganti_gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/rebrand/gambar/wireframe-detail-ruangan.png"
+    },
+    {
+      "id": "GBR-WF-3.9",
+      "lokasi": "Gambar 3.9",
+      "cari": "Gambar 3.9 Wireframe Halaman Riwayat",
+      "ganti_gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/rebrand/gambar/wireframe-riwayat.png"
+    },
+    {
+      "id": "GBR-WF-3.10",
+      "lokasi": "Gambar 3.10",
+      "cari": "Gambar 3.10 Wireframe Halaman Panduan",
+      "ganti_gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/rebrand/gambar/wireframe-panduan.png"
+    },
+    {
+      "id": "GBR-WF-3.11",
+      "lokasi": "Gambar 3.11",
+      "cari": "Gambar 3.11 Wireframe Halaman Rekomendasi Tindakan",
+      "ganti_gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/rebrand/gambar/wireframe-rekomendasi.png"
+    },
+    {
+      "id": "GBR-WF-3.12",
+      "lokasi": "Gambar 3.12",
+      "cari": "Gambar 3.12 Wireframe Halaman Status Perangkat",
+      "ganti_gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/rebrand/gambar/wireframe-status-perangkat.png"
+    },
+    {
+      "id": "GBR-WF-3.13",
+      "lokasi": "Gambar 3.13",
+      "cari": "Gambar 3.13 Wireframe Halaman Kuesioner UEQ",
+      "ganti_gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/rebrand/gambar/wireframe-kuesioner-ueq.png"
+    },
+    {
       "id": "BAB4-00",
       "lokasi": "BAB IV judul dan pengantar",
       "cari": "Dengan demikian, rancangan pengujian ini digunakan untuk memastikan bahwa sistem dapat menerima data…pemantau kualitas udara ruangan berbasis IoT.",
@@ -148,7 +190,7 @@
       "cari": "Dengan demikian, rancangan pengujian ini digunakan untuk memastikan bahwa sistem dapat menerima data…pemantau kualitas udara ruangan berbasis IoT.",
       "sisip_paragraf": [
         {
-          "teks": "Implementasi sistem mengikuti rancangan pada subbab 3.6 sampai 3.11 dan teknologi pada Tabel 3.21. Aplikasi dibangun dengan bahasa pemrograman PHP 8.3 dan framework Laravel 13 (Laravel, t.t.). Antarmuka disusun dengan Blade dan Livewire 4 (Livewire, t.t.), tampilan diatur dengan Tailwind CSS 4 (Tailwind Labs, t.t.), dan grafik dibuat dengan Chart.js 4 (Chart.js, t.t.). Versi yang terpasang saat bab ini disusun adalah Laravel Framework 13.34.0, Livewire 4.4.7, Tailwind CSS 4.3.3, dan Chart.js 4.4.4, sedangkan aset antarmuka dibangun dengan Vite. Basis data untuk penerapan adalah MySQL (Oracle Corporation, t.t.) sesuai Tabel 3.21. Konfigurasi bawaan proyek (berkas .env.example) memakai SQLite agar aplikasi dapat dijalankan pada tahap pengembangan tanpa server basis data terpisah. Pengujian otomatis pada subbab 4.2 dijalankan pada SQLite *in-memory* dan diulang pada MariaDB 10.11, sistem basis data yang kompatibel dengan MySQL. Struktur tabel pada seluruh kondisi tersebut dibentuk oleh migration yang sama.",
+          "teks": "Aplikasi web hasil penelitian ini diberi nama SIMKU (Sistem Monitoring Kualitas Udara). Implementasi sistem mengikuti rancangan pada subbab 3.6 sampai 3.11 dan teknologi pada Tabel 3.21. Aplikasi dibangun dengan bahasa pemrograman PHP 8.3 dan framework Laravel 13 (Laravel, t.t.). Antarmuka disusun dengan Blade dan Livewire 4 (Livewire, t.t.), tampilan diatur dengan Tailwind CSS 4 (Tailwind Labs, t.t.), dan grafik dibuat dengan Chart.js 4 (Chart.js, t.t.). Versi yang terpasang saat bab ini disusun adalah Laravel Framework 13.34.0, Livewire 4.4.7, Tailwind CSS 4.3.3, dan Chart.js 4.4.4, sedangkan aset antarmuka dibangun dengan Vite. Basis data untuk penerapan adalah MySQL (Oracle Corporation, t.t.) sesuai Tabel 3.21. Konfigurasi bawaan proyek (berkas .env.example) memakai SQLite agar aplikasi dapat dijalankan pada tahap pengembangan tanpa server basis data terpisah. Pengujian otomatis pada subbab 4.2 dijalankan pada SQLite *in-memory* dan diulang pada MariaDB 10.11, sistem basis data yang kompatibel dengan MySQL. Struktur tabel pada seluruh kondisi tersebut dibentuk oleh migration yang sama.",
           "gaya": "Normal"
         }
       ],
