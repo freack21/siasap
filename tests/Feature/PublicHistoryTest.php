@@ -119,6 +119,20 @@ class PublicHistoryTest extends TestCase
             ->assertViewHas('logs', fn ($logs) => $logs->total() === 23 && $logs->count() === 20 && $logs->lastPage() === 2);
     }
 
+    public function test_history_pagination_is_in_indonesian(): void
+    {
+        $node = Node::where('code', 'N-KMR')->firstOrFail();
+
+        foreach (range(1, 20) as $i) {
+            $this->log($node, '2026-10-04 08:'.str_pad((string) $i, 2, '0', STR_PAD_LEFT).':00');
+        }
+
+        Livewire::test(UserHistory::class)
+            ->assertSee('Menampilkan')
+            ->assertSee('Berikutnya', false)
+            ->assertDontSee('Showing');
+    }
+
     public function test_reset_filters_clears_all_filters(): void
     {
         Livewire::test(UserHistory::class)
