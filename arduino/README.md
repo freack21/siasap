@@ -4,7 +4,7 @@
 
 Aplikasi SIMKU saat ini hanya memakai **satu perangkat ESP32 yang terhubung langsung lewat WiFi**: [`simku_monitor/simku_monitor.ino`](simku_monitor/simku_monitor.ino) (ESP32 Arduino core 3 atau lebih baru).
 
-- Sensor: MQ-135 (CO₂, NH₃) di GPIO 33 dan MQ-2 (CO, H₂) di GPIO 32 (dapat diubah di sketsa).
+- Sensor: MQ-135 (CO₂, NH₃) di GPIO 35 dan MQ-2 (CO, H₂) di GPIO 34 (dapat diubah di sketsa).
 - Alur: pemanasan 30 detik, baseline = rata-rata 50 pembacaan ADC tiap sensor, lalu kirim data tiap 5 detik.
 - Konversi mengikuti Solihat, S. M., Salsabila, S., & Susilawati, S. (2026), JITET 14(1), hlm. 1596: `ppm = max(0, adc - baseline) * (5.0 / 4096.0) * k` dengan `k` = 100 (CO₂), 80 (NH₃), 50 (CO), 30 (H₂). Nilai adalah indikator relatif terhadap kondisi udara saat perangkat menyala, bukan konsentrasi absolut.
 - Waktu diambil dari NTP (WIB); data tidak dikirim sebelum waktu tersinkron.
