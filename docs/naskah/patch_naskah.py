@@ -4638,7 +4638,8 @@ def run(arguments: argparse.Namespace) -> int:
             print(line)
     if config.get("daftar_per_bab"):
         print("Daftar gambar/tabel per bab:")
-        for line in add_chapter_lists(body, styles, session):
+        pages = json.loads(Path(arguments.halaman_judul).read_text(encoding="utf-8")) if arguments.halaman_judul else {}
+        for line in add_chapter_lists(body, styles, session, pages):
             print(line)
     if config.get("seragamkan_tabel"):
         print("Format tabel diseragamkan:")
@@ -4704,13 +4705,17 @@ def chapter_list_fields(body: etree._Element) -> list[tuple[str, etree._Element,
     return found
 
 
-def add_chapter_lists(body: etree._Element, styles: StyleBook, session: Session) -> list[str]:
+def add_chapter_lists(body: etree._Element, styles: StyleBook, session: Session,
+                      pages: dict[str, str] | None = None) -> list[str]:
     """Tambahkan field TOC \\c "Gambar N." / "Tabel N." untuk bab yang judulnya belum punya daftar.
 
     Daftar Gambar/Tabel naskah memakai satu field per bab, sehingga judul bab baru (mis. Gambar 4.x)
-    tidak pernah masuk daftar saat field diperbarui. Field baru diletakkan setelah daftar bab sebelumnya,
-    berisi entri awal dengan PAGEREF ke bookmark pada judul; Word membangun ulang isinya saat diperbarui.
+    tidak pernah masuk daftar saat field diperbarui. Field baru diletakkan setelah daftar bab sebelumnya
+    dan entrinya disalin dari entri bab sebelumnya (gaya Hyperlink, run webHidden, PAGEREF ke bookmark
+    _Toc pada judul), sehingga formatnya sama. pages ("Gambar 4.1" -> "118") mengisi nomor halaman awal;
+    Word menghitung ulang nomor itu saat field diperbarui.
     """
+    pages = pages or {}
     captions: dict[str, list[etree._Element]] = {}
     for paragraph in body_paragraphs(body):
         found = CAPTION_RE.match(live_text(paragraph))
@@ -4731,11 +4736,29 @@ def add_chapter_lists(body: etree._Element, styles: StyleBook, session: Session)
             continue
         _, reference_start, reference_end = max(earlier, key=lambda field: int(field[0].split()[1].rstrip(".")))
         last_entry = reference_end.getprevious()
-        if live_text(reference_end).strip() or last_entry is None or last_entry.tag != w("p"):
+        template_link = last_entry.find(w("hyperlink")) if last_entry is not None and last_entry.tag == w("p") else None
+        if live_text(reference_end).strip() or template_link is None:
             lines.append(f"  {label}: daftar bab sebelumnya tidak diakhiri paragraf penutup kosong, dilewati")
             continue
-        entry_properties = clean_properties(reference_start.find(w("pPr")))
+        link_runs = [run for run in template_link if run.tag == w("r")]
+        tab_index = next(index for index, run in enumerate(link_runs) if run.find(w("tab")) is not None)
+        label_template = link_runs[0]
+        text_template = next((run for run in link_runs[1:tab_index]
+                              if run.find(f"{w('rPr')}/{w('i')}") is None and run.find(f"{w('rPr')}/{w('b')}") is None), None)
+        if text_template is None:
+            text_template = deepcopy(label_template)
+            for unwanted in text_template.iter(w("b"), w("bCs"), w("i"), w("iCs")):
+                unwanted.getparent().remove(unwanted)
+        page_runs = link_runs[tab_index:]
+        opening_runs = []
+        for child in reference_start:
+            if child.tag == w("hyperlink"):
+                break
+            if child.tag == w("r"):
+                opening_runs.append(child)
+        entry_properties = clean_properties(last_entry.find(w("pPr")))
         paragraphs = []
+        missing_pages = []
         for index, caption in enumerate(captions[label]):
             name = f"_Toc9{next_id:08d}"
             start = etree.Element(w("bookmarkStart"), {w("id"): str(next_id), w("name"): name})
@@ -4754,22 +4777,26 @@ def add_chapter_lists(body: etree._Element, styles: StyleBook, session: Session)
             number = CAPTION_RE.match("".join(char for char, _ in pieces)).group(0)
             entry = etree.Element(w("p"))
             entry.append(deepcopy(entry_properties))
-            plain = etree.Element(w("r"))
             if index == 0:
-                opening = field_runs(plain, f' TOC \\h \\z \\c "{label}" ', [])[:3]
-                opening[0].find(w("fldChar")).attrib.pop(w("fldLock"), None)
-                entry.extend(opening)
+                for run in opening_runs:
+                    copy = deepcopy(run)
+                    for instruction in copy.iter(w("instrText")):
+                        instruction.text = f' TOC \\h \\z \\c "{label}" '
+                    entry.append(copy)
             link = etree.SubElement(entry, w("hyperlink"), {w("anchor"): name, w("history"): "1"})
-            bold = etree.Element(w("r"))
-            etree.SubElement(etree.SubElement(bold, w("rPr")), w("b"))
-            link.append(make_run(bold, list(number)))
+            link.append(make_run(label_template, list(number), fresh=True))
             for chars, italic in merge_pieces(pieces[len(number):]):
-                link.append(make_run(plain, list(chars), italic))
-            tab = etree.SubElement(link, w("r"))
-            etree.SubElement(tab, w("tab"))
-            page = field_runs(plain, f" PAGEREF {name} \\h ", [])
-            page[0].find(w("fldChar")).attrib.pop(w("fldLock"), None)
-            link.extend(page)
+                link.append(make_run(text_template, list(chars), italic, fresh=True))
+            page = pages.get(number, "")
+            if not page:
+                missing_pages.append(number)
+            for run in page_runs:
+                copy = deepcopy(run)
+                for instruction in copy.iter(w("instrText")):
+                    instruction.text = f" PAGEREF {name} \\h "
+                for text in copy.iter(w("t")):
+                    text.text = page
+                link.append(copy)
             paragraphs.append(entry)
         for paragraph in paragraphs:
             mark_paragraph_inserted(paragraph, session)
@@ -4783,7 +4810,8 @@ def add_chapter_lists(body: etree._Element, styles: StyleBook, session: Session)
             last_entry.append(closing_run)
         insert_elements(reference_end, paragraphs, session, before=True)
         fields.append((label, paragraphs[0], reference_end))
-        lines.append(f"  {label}: daftar baru setelah daftar {kind.lower()} bab {int(label.split()[1].rstrip('.')) - 1} ({len(captions[label])} entri)")
+        note = f"; tanpa nomor halaman: {', '.join(missing_pages)}" if missing_pages else ""
+        lines.append(f"  {label}: daftar baru setelah daftar {kind.lower()} bab {chapter - 1} ({len(captions[label])} entri{note})")
     return lines
 
 
@@ -4820,6 +4848,8 @@ def main() -> int:
     parser.add_argument("--hanya", help="id butir dipisah koma")
     parser.add_argument("--laporan", help="simpan laporan ke CSV")
     parser.add_argument("--tata-tulis", help="file .json aturan tata tulis (miring, judul tabel/gambar, spasi)")
+    parser.add_argument("--halaman-judul", metavar="JSON",
+                        help='nomor halaman judul untuk entri daftar baru, mis. {"Gambar 4.1": "118"} (dari tools/halaman_judul.py)')
     parser.add_argument("--nomori-ulang", action="store_true",
                         help="nomori ulang judul Tabel/Gambar per bab dan rujukannya setelah semua revisi")
     parser.add_argument("--bersih", help="tulis juga salinan bersih .docx (semua perubahan diterima, hanya komentar "
