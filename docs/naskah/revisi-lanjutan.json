@@ -673,7 +673,7 @@
               "1a",
               "Beranda: membuka halaman dashboard saat data masuk",
               "Menampilkan status keseluruhan, nilai ppm tiap gas, dan rekomendasi",
-              "Sesuai harapan. Kategori keseluruhan, penyebab utama, ppm dan kategori keempat gas, tingkat dan teks rekomendasi, serta status koneksi tampil; tanpa data tampil pesan menunggu data.\nPublicDashboardTest::​test​_home​_with​_single​_room​_focuses​_on​_that​_room\nPublicDashboardTest::​test​_home​_hides​_main​_cause​_when​_overall​_is​_good\nPublicDashboardTest::​test​_home​_without​_data​_shows​_waiting​_state​_without​_recommendation",
+              "Sesuai harapan. Kategori keseluruhan, penyebab utama, ppm dan kategori keempat gas, tingkat dan teks rekomendasi, serta status koneksi tampil; tanpa data tampil pesan menunggu data.\nPublicDashboardTest::​test​_home​_with​_single​_room​_focuses​_on​_that​_room\nPublicDashboardTest::​test​_home​_hides​_main​_cause​_when​_overall​_is​_good\nPublicDashboardTest::​test​_home​_without​_data​_shows​_waiting​_state​_without​_recommendation\nTampilan: Gambar 4.1 (ada data), Gambar 4.11 (belum ada data).",
               "Valid"
             ],
             [
@@ -687,7 +687,7 @@
               "2a",
               "Detail ruangan: memilih parameter gas (CO₂, NH₃, CO, atau H₂) dan rentang waktu",
               "Grafik menampilkan nilai gas terpilih pada rentang 1 jam, 24 jam, atau 7 hari beserta garis ambang kategori",
-              "Sesuai harapan. Data grafik memuat gas terpilih dan tiga garis ambangnya (CO₂: 50/100/150; CO: 20/50/80); gas tidak dikenal kembali ke CO₂; setiap rentang memuat data sesuai rentangnya.\nPublicDashboardTest::​test​_room​_detail​_defaults​_to​_co2​_chart​_with​_threshold​_lines\nPublicDashboardTest::​test​_room​_detail​_gas​_query​_selects​_gas​_and​_its​_thresholds\nPublicDashboardTest::​test​_room​_detail​_unknown​_gas​_falls​_back​_to​_co2\nPublicDashboardTest::​test​_room​_detail​_range​_switching",
+              "Sesuai harapan. Data grafik memuat gas terpilih dan tiga garis ambangnya (CO₂: 50/100/150; CO: 20/50/80); gas tidak dikenal kembali ke CO₂; setiap rentang memuat data sesuai rentangnya.\nPublicDashboardTest::​test​_room​_detail​_defaults​_to​_co2​_chart​_with​_threshold​_lines\nPublicDashboardTest::​test​_room​_detail​_gas​_query​_selects​_gas​_and​_its​_thresholds\nPublicDashboardTest::​test​_room​_detail​_unknown​_gas​_falls​_back​_to​_co2\nPublicDashboardTest::​test​_room​_detail​_range​_switching\nTampilan: Gambar 4.2 (CO₂), Gambar 4.12 (CO).",
               "Valid"
             ],
             [
@@ -701,21 +701,21 @@
               "3",
               "Riwayat: memfilter berdasarkan tanggal dan status",
               "Tabel hanya menampilkan data yang sesuai filter",
-              "Sesuai harapan. Filter tanggal, kategori, dan ruangan hanya menyisakan data yang cocok; kategori tidak dikenal diabaikan; Reset filter mengembalikan seluruh data.\nPublicHistoryTest::​test​_history​_filters​_by​_date​_range\nPublicHistoryTest::​test​_history​_filters​_by​_category\nPublicHistoryTest::​test​_history​_ignores​_unknown​_category\nPublicHistoryTest::​test​_history​_filters​_by​_room\nPublicHistoryTest::​test​_reset​_filters​_clears​_all​_filters",
+              "Sesuai harapan. Filter tanggal, kategori, dan ruangan hanya menyisakan data yang cocok; kategori tidak dikenal diabaikan; Reset filter mengembalikan seluruh data.\nPublicHistoryTest::​test​_history​_filters​_by​_date​_range\nPublicHistoryTest::​test​_history​_filters​_by​_category\nPublicHistoryTest::​test​_history​_ignores​_unknown​_category\nPublicHistoryTest::​test​_history​_filters​_by​_room\nPublicHistoryTest::​test​_reset​_filters​_clears​_all​_filters\nTampilan: Gambar 4.13.",
               "Valid"
             ],
             [
               "4",
               "Riwayat: menekan tombol ekspor CSV",
               "File CSV terunduh dan isinya sesuai data pada tabel",
-              "Sesuai harapan. Berkas riwayat-kualitas-udara-<waktu>.csv dihasilkan dengan kolom yang ditetapkan dan hanya berisi data sesuai filter.\nPublicHistoryTest::​test​_csv​_download​_has​_exact​_header​_and​_filtered​_rows\nPublicHistoryTest::​test​_csv​_download​_respects​_category​_and​_date​_filters",
+              "Sesuai harapan. Berkas riwayat-kualitas-udara-<waktu>.csv dihasilkan dengan kolom yang ditetapkan dan hanya berisi data sesuai filter.\nPublicHistoryTest::​test​_csv​_download​_has​_exact​_header​_and​_filtered​_rows\nPublicHistoryTest::​test​_csv​_download​_respects​_category​_and​_date​_filters\nTampilan: Gambar 4.14.",
               "Valid"
             ],
             [
               "5a",
               "Riwayat: pembagian halaman data (pagination)",
               "Data dibagi per halaman",
-              "Sesuai harapan. 23 data dibagi menjadi 2 halaman dengan 20 baris pada halaman pertama.\nPublicHistoryTest::​test​_history​_paginates​_twenty​_rows​_per​_page",
+              "Sesuai harapan. 23 data dibagi menjadi 2 halaman dengan 20 baris pada halaman pertama.\nPublicHistoryTest::​test​_history​_paginates​_twenty​_rows​_per​_page\nTampilan: Gambar 4.4.",
               "Valid"
             ],
             [
@@ -729,14 +729,14 @@
               "6",
               "Rekomendasi tindakan: membuka halaman rekomendasi",
               "Menampilkan rekomendasi kategori saat ini dan daftar aturan seluruh kategori",
-              "Sesuai harapan. Kondisi saat ini memakai data terbaru; empat aturan beserta strategi EPA, dasar rekomendasi, tautan sumber, dan pernyataan bukan diagnosis medis tampil.\nRecommendationPageTest::​test​_current​_condition​_shows​_latest​_category​_and​_recommendation​_per​_room\nRecommendationPageTest::​test​_page​_shows​_all​_four​_rules​_basis​_sources​_and​_disclaimer\nRecommendationPageTest::​test​_rule​_table​_lists​_epa​_strategies",
+              "Sesuai harapan. Kondisi saat ini memakai data terbaru; empat aturan beserta strategi EPA, dasar rekomendasi, tautan sumber, dan pernyataan bukan diagnosis medis tampil.\nRecommendationPageTest::​test​_current​_condition​_shows​_latest​_category​_and​_recommendation​_per​_room\nRecommendationPageTest::​test​_page​_shows​_all​_four​_rules​_basis​_sources​_and​_disclaimer\nRecommendationPageTest::​test​_rule​_table​_lists​_epa​_strategies\nTampilan: Gambar 4.5.",
               "Valid"
             ],
             [
               "7a",
               "Status perangkat: membuka halaman status perangkat",
               "Menampilkan device ID, gas yang dikirim, status koneksi (terhubung bila data terakhir ≤ 30 detik), alur data, dan sepuluh penolakan terakhir",
-              "Sesuai harapan. Device ID, ruangan, dan empat gas tampil; Terhubung pada data 10 dan tepat 30 detik lalu, Terputus pada 120 detik lalu; alur data dan sepuluh penolakan terbaru beserta alasannya tampil.\nDeviceStatusTest::​test​_page​_renders​_device​_with​_room​_and​_gases\nDeviceStatusTest::​test​_device​_is​_connected​_at​_exactly​_thirty​_seconds\nDeviceStatusTest::​test​_device​_is​_disconnected​_when​_last​_data​_is​_old\nDeviceStatusTest::​test​_shows​_data​_flow​_steps\nDeviceStatusTest::​test​_shows​_ten​_latest​_rejections​_with​_short​_errors",
+              "Sesuai harapan. Device ID, ruangan, dan empat gas tampil; Terhubung pada data 10 dan tepat 30 detik lalu, Terputus pada 120 detik lalu; alur data dan sepuluh penolakan terbaru beserta alasannya tampil.\nDeviceStatusTest::​test​_page​_renders​_device​_with​_room​_and​_gases\nDeviceStatusTest::​test​_device​_is​_connected​_at​_exactly​_thirty​_seconds\nDeviceStatusTest::​test​_device​_is​_disconnected​_when​_last​_data​_is​_old\nDeviceStatusTest::​test​_shows​_data​_flow​_steps\nDeviceStatusTest::​test​_shows​_ten​_latest​_rejections​_with​_short​_errors\nTampilan: Gambar 4.6.",
               "Valid"
             ],
             [
@@ -750,14 +750,14 @@
               "8",
               "Panduan: membuka halaman panduan",
               "Menampilkan cara membaca kategori, tabel ambang (Tabel 2.2), keterangan empat gas, pertanyaan umum, dan batasan",
-              "Sesuai harapan. Seluruh bagian tampil, termasuk rentang ppm keempat gas, sumber ambang, sensor MQ-135 dan MQ-2, serta pernyataan bukan diagnosis medis.\nPublicGuideTest::​test​_guide​_page​_renders​_for​_guests\nPublicGuideTest::​test​_guide​_shows​_threshold​_table​_with​_solihat​_citation\nPublicGuideTest::​test​_guide​_explains​_relative​_ppm​_and​_worst​_category\nPublicGuideTest::​test​_guide​_faq​_covers​_interval​_disconnection​_and​_disclaimer",
+              "Sesuai harapan. Seluruh bagian tampil, termasuk rentang ppm keempat gas, sumber ambang, sensor MQ-135 dan MQ-2, serta pernyataan bukan diagnosis medis.\nPublicGuideTest::​test​_guide​_page​_renders​_for​_guests\nPublicGuideTest::​test​_guide​_shows​_threshold​_table​_with​_solihat​_citation\nPublicGuideTest::​test​_guide​_explains​_relative​_ppm​_and​_worst​_category\nPublicGuideTest::​test​_guide​_faq​_covers​_interval​_disconnection​_and​_disclaimer\nTampilan: Gambar 4.7, Gambar 4.8.",
               "Valid"
             ],
             [
               "9",
               "Kuesioner UEQ: mengisi 26 butir lalu mengirim",
               "Jawaban tersimpan dan muncul pesan berhasil; pengiriman dengan butir kosong ditolak",
-              "Sesuai harapan. 26 butir tampil; jawaban lengkap tersimpan dengan pesan Terima kasih; butir kosong atau di luar 1–7 ditolak; pengiriman keempat dalam satu jam dari IP yang sama ditolak.\nSurveyTest::​test​_guest​_can​_open​_survey​_page​_with​_26​_items\nSurveyTest::​test​_guest​_can​_submit​_complete​_answers\nSurveyTest::​test​_all​_items​_are​_required\nSurveyTest::​test​_answers​_must​_be​_between​_one​_and​_seven\nSurveyTest::​test​_submissions​_are​_rate​_limited​_per​_ip",
+              "Sesuai harapan. 26 butir tampil; jawaban lengkap tersimpan dengan pesan Terima kasih; butir kosong atau di luar 1–7 ditolak; pengiriman keempat dalam satu jam dari IP yang sama ditolak.\nSurveyTest::​test​_guest​_can​_open​_survey​_page​_with​_26​_items\nSurveyTest::​test​_guest​_can​_submit​_complete​_answers\nSurveyTest::​test​_all​_items​_are​_required\nSurveyTest::​test​_answers​_must​_be​_between​_one​_and​_seven\nSurveyTest::​test​_submissions​_are​_rate​_limited​_per​_ip\nTampilan: Gambar 4.9, Gambar 4.10, Gambar 4.15 (butir belum lengkap), Gambar 4.16 (berhasil terkirim).",
               "Valid"
             ]
           ],
@@ -774,6 +774,78 @@
         {
           "teks": "Sembilan dari tiga belas baris pada Tabel 4.2 berstatus Valid. Empat baris lainnya, yaitu pembaruan tampilan tanpa muat ulang (1b), grafik yang tergambar di peramban (2b), perpindahan halaman riwayat (5b), dan waktu data terakhir pada halaman Status Perangkat (7b), menunggu uji manual karena kasus uji otomatis hanya memeriksa keluaran HTML dan data komponen, bukan tampilan yang digambar peramban. [ISI setelah uji manual: ringkas hasil keempat baris tersebut, nama dan versi peramban yang dipakai, serta tanggal uji manual.]",
           "gaya": "Normal"
+        },
+        {
+          "teks": "Kolom Hasil Aktual pada Tabel 4.2 merujuk tangkapan layar yang memperlihatkan hasil setiap skenario. Halaman yang sudah ditampilkan pada subbab 4.1 dirujuk ke Gambar 4.1 sampai Gambar 4.10, sedangkan keadaan yang belum tampak di sana ditunjukkan pada Gambar 4.11 sampai Gambar 4.16. Tangkapan layar ini diambil dari aplikasi yang dijalankan pada peramban Chromium dengan data contoh yang sama seperti subbab 4.1, sehingga memperlihatkan tampilan hasil skenario dan bukan hasil pengukuran kualitas udara.",
+          "gaya": "Normal"
+        },
+        {
+          "teks": "Gambar 4.11 memperlihatkan Beranda ketika perangkat belum pernah mengirim data: status Perangkat terputus, keterangan Belum pernah menerima data, dan pesan Menunggu data dari perangkat IoT tanpa kartu rekomendasi.",
+          "gaya": "Normal"
+        },
+        {
+          "gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/bab4/gambar/4-11-beranda-tanpa-data.png",
+          "lebar_cm": 14.0
+        },
+        {
+          "teks": "Gambar 4.11 Tampilan Beranda saat Belum Ada Data",
+          "gaya": "Heading5"
+        },
+        {
+          "teks": "Gambar 4.12 memperlihatkan grafik Detail Ruangan setelah parameter CO dipilih pada rentang 24 jam. Judul grafik berganti menjadi CO, dan tiga garis putus-putus menandai ambang CO pada 20, 50, dan 80 ppm sesuai Tabel 2.2.",
+          "gaya": "Normal"
+        },
+        {
+          "gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/bab4/gambar/4-12-detail-ruangan-co.png",
+          "lebar_cm": 14.0
+        },
+        {
+          "teks": "Gambar 4.12 Grafik Detail Ruangan dengan Parameter CO",
+          "gaya": "Heading5"
+        },
+        {
+          "teks": "Gambar 4.13 memperlihatkan halaman Riwayat dengan filter kategori Tidak Sehat. Ringkasan menunjukkan 25 data yang seluruhnya berkategori Tidak Sehat, dan tabel hanya memuat baris dengan kategori tersebut.",
+          "gaya": "Normal"
+        },
+        {
+          "gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/bab4/gambar/4-13-riwayat-filter-tidak-sehat.png",
+          "lebar_cm": 14.0
+        },
+        {
+          "teks": "Gambar 4.13 Tampilan Riwayat dengan Filter Kategori Tidak Sehat",
+          "gaya": "Heading5"
+        },
+        {
+          "teks": "Gambar 4.14 memperlihatkan lima baris pertama berkas CSV yang diunduh dari halaman Riwayat dengan filter yang sama. Baris pertama memuat nama kolom, dan setiap baris data berkategori Tidak Sehat sesuai filter.",
+          "gaya": "Normal"
+        },
+        {
+          "gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/bab4/gambar/4-14-isi-csv-riwayat.png",
+          "lebar_cm": 14.0
+        },
+        {
+          "teks": "Gambar 4.14 Isi Berkas CSV Hasil Unduhan Riwayat",
+          "gaya": "Heading5"
+        },
+        {
+          "teks": "Gambar 4.15 memperlihatkan halaman Kuesioner ketika jawaban dikirim sebelum seluruh butir diisi. Setiap butir yang belum dijawab diberi tanda merah beserta pesan, dan di atas tombol Kirim Jawaban muncul pemberitahuan bahwa masih ada baris yang belum dijawab. Gambar 4.16 memperlihatkan pesan berhasil setelah 26 butir diisi dan dikirim.",
+          "gaya": "Normal"
+        },
+        {
+          "gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/bab4/gambar/4-15-kuesioner-belum-lengkap.png",
+          "lebar_cm": 11.0
+        },
+        {
+          "teks": "Gambar 4.15 Tampilan Kuesioner saat Butir Belum Lengkap",
+          "gaya": "Heading5"
+        },
+        {
+          "gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/bab4/gambar/4-16-kuesioner-berhasil.png",
+          "lebar_cm": 14.0
+        },
+        {
+          "teks": "Gambar 4.16 Tampilan Kuesioner setelah Jawaban Terkirim",
+          "gaya": "Heading5"
         }
       ],
       "catatan": "Uji manual baris 1b, 2b, 5b, dan 7b: jalankan aplikasi (php artisan serve) dengan perangkat IoT atau kiriman data uji, buka di peramban (catat nama/versi). 1b: biarkan Beranda terbuka, kirim data dengan kategori berbeda, amati apakah nilai, kategori, dan rekomendasi berubah tanpa muat ulang (maks. 5 detik). 2b: buka Detail Ruangan, pilih tiap gas dan rentang, amati garis grafik dan garis ambang. 5b: dengan > 20 data, klik halaman 2 di Riwayat dan cocokkan isinya. 7b: bandingkan waktu data terakhir di Status Perangkat dengan waktu kirim. Isi kolom Hasil Aktual dan Status (Valid/Tidak Valid), lalu ubah paragraf ringkasan di bawah tabel.",
