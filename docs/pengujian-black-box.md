@@ -19,12 +19,12 @@ Kolom **Hasil Aktual** hanya berisi hasil yang benar-benar diperiksa oleh kasus 
 | *Framework* | Laravel Framework 13.34.0 |
 | Komponen antarmuka | Livewire 4.4.7 |
 | *Framework* pengujian | PHPUnit 12.5.37 |
-| Basis data pengujian | SQLite *in-memory*, di-*reset* untuk setiap kasus uji (`RefreshDatabase`) |
+| Basis data pengujian | SQLite *in-memory*, di-*reset* untuk setiap kasus uji (`RefreshDatabase`); diulang pada MariaDB 10.11 (kompatibel MySQL) |
 | Perintah | `php artisan test --compact` |
 | Tanggal eksekusi | 26 Oktober 2026 |
 | Peramban (uji manual) | (diisi saat uji manual: nama dan versi peramban) |
 
-Hasil eksekusi `php artisan test --compact` pada 26 Oktober 2026: **149 kasus uji lulus, 603 *assertion*, 0 gagal** (durasi ±6 detik). Jumlah ini terdiri atas 93 kasus uji *feature* dan 56 kasus uji *unit*. Kasus uji dengan *data provider* dihitung satu per set data, misalnya `TelemetryApiTest::test_table_3_8_classification_via_api` dihitung 7 kali (baris 1–7).
+Hasil eksekusi `php artisan test --compact` pada 26 Oktober 2026: **150 kasus uji lulus, 606 *assertion*, 0 gagal** (durasi ±6 detik). Jumlah ini terdiri atas 94 kasus uji *feature* dan 56 kasus uji *unit*. Rangkaian yang sama dijalankan ulang pada MariaDB 10.11 (`DB_CONNECTION=mariadb`) dengan hasil identik: 150 lulus, 606 *assertion*. Kasus uji dengan *data provider* dihitung satu per set data, misalnya `TelemetryApiTest::test_table_3_8_classification_via_api` dihitung 7 kali (baris 1–7).
 
 Pembagian kasus uji per kelas:
 
@@ -278,4 +278,4 @@ Kasus uji berikut mendukung evaluasi pengguna (UEQ) dan penyiapan data. Bagian i
 | Pengujian pendukung | 11 | 11 | 0 |
 | **Jumlah** | **95** | **86** | **9** |
 
-Kesimpulan sementara (26 Oktober 2026): seluruh skenario yang diotomasi lulus (149 kasus uji, 603 *assertion*, 0 gagal). Kelima butir wajib Tabel 3.24 naskah, ketujuh baris Tabel 3.25, dan keempat baris Tabel 3.26 berstatus Valid. Skenario yang masih membutuhkan pengamatan di peramban atau dengan perangkat IoT nyata, termasuk seluruh Tabel 3.27, berstatus "Belum diuji (manual)" dan harus diisi dari pengujian lapangan sebelum dilaporkan di Bab IV.
+Kesimpulan sementara (26 Oktober 2026): seluruh skenario yang diotomasi lulus (150 kasus uji, 606 *assertion*, 0 gagal). Kelima butir wajib Tabel 3.24 naskah, ketujuh baris Tabel 3.25, dan keempat baris Tabel 3.26 berstatus Valid. Skenario yang masih membutuhkan pengamatan di peramban atau dengan perangkat IoT nyata, termasuk seluruh Tabel 3.27, berstatus "Belum diuji (manual)" dan harus diisi dari pengujian lapangan sebelum dilaporkan di Bab IV.

@@ -35,7 +35,8 @@
     "IoT",
     "UEQ",
     "AQI",
-    "VOC"
+    "VOC",
+    "Chart.js"
   ],
   "istilah_asing": [
     "system development approach",

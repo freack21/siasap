@@ -1091,8 +1091,8 @@ def italicise_terms(body: etree._Element, config: dict, styles: StyleBook, sessi
         return 0
     # Spasi lebar-nol (U+200B, titik pemenggalan pada nama kode panjang) dianggap bagian kata, dan istilah yang
     # menjadi bagian nama berkas/produk bertitik (Chart.js, web.php) tidak dimiringkan.
-    pattern = re.compile(r"(?<![\w\u200b.-])(" + "|".join(re.escape(term) for term in terms)
-                         + r")(?![\w\u200b-]|\.\w)", re.IGNORECASE)
+    pattern = re.compile(r"(?<![\w\u200b./-])(" + "|".join(re.escape(term) for term in terms)
+                         + r")(?![\w\u200b-]|[./]\w)", re.IGNORECASE)
     excluded = excluded_paragraphs(body, config)
     changed = 0
     for paragraph in list(body.iter(w("p"))):
@@ -1182,9 +1182,10 @@ def upright_terms(body: etree._Element, config: dict, styles: StyleBook, session
         if pattern is not None:
             for found in pattern.finditer(text):
                 start, end = found.span()
-                if not all(flags[start:end]) or any(inside_field[start:end]):
-                    continue
                 term = found.group()
+                partial_ok = "." in term and any(flags[start:end])
+                if not (all(flags[start:end]) or partial_ok) or any(inside_field[start:end]):
+                    continue
                 acronym = term.isupper() or any(char.isupper() for char in term[1:])
                 left, right = start, end
                 while left > 0 and flags[left - 1]:
