@@ -138,9 +138,10 @@ mengubah teks; sisipan berikutnya ke sasaran yang sama diletakkan berurutan.
     tetapi entri itu hilang bila Mendeley memperbarui daftar pustaka.
   - "sisip_baris": [["sel1", "sel2", ...], ...] sisipkan baris tabel sesudah
     baris yang memuat "cari"; format baris disalin; w:trPr/w:ins + run di w:ins.
-  - "hapus": "paragraf" | "tabel" | "paragraf+tabel" | "baris" hapus paragraf
-    "cari", tabel sesudah judul "cari", keduanya, atau baris tabel yang memuat
-    "cari" (w:del pada tanda paragraf dan run; w:trPr/w:del pada baris).
+  - "hapus": "paragraf" | "tabel" | "paragraf+tabel" | "baris" | "gambar" hapus paragraf
+    "cari", tabel sesudah judul "cari", keduanya, baris tabel yang memuat
+    "cari", atau judul gambar "cari" beserta paragraf gambar di atasnya
+    (w:del pada tanda paragraf dan run; w:trPr/w:del pada baris).
   - "sisip_dokumen": {"file": "lain.docx", "bagian": "<penanda>" atau [...],
     "tanpa_penanda": false, "judul_otomatis": false, "penanda": [...],
     "tanpa_paragraf_kosong": false}
@@ -2648,6 +2649,16 @@ def op_delete(revision: Revision, workspace: Workspace) -> tuple[list[etree._Ele
             return [row], "baris tabel dihapus"
         row.getparent().remove(row)
         return [anchor], "baris tabel dihapus"
+    if mode == "gambar":
+        image = paragraph.getprevious()
+        while image is not None and image.tag == w("p") and image.find(f".//{w('drawing')}") is None \
+                and not paragraph_plain_text(image).strip():
+            image = image.getprevious()
+        if image is None or image.tag != w("p") or image.find(f".//{w('drawing')}") is None:
+            raise ValueError("tidak ada gambar di atas judul ini")
+        delete_paragraph(image, workspace.session)
+        delete_paragraph(paragraph, workspace.session)
+        return [image], "gambar dan judulnya dihapus"
     done = []
     affected: list[etree._Element] = []
     if "tabel" in mode:
@@ -4413,7 +4424,7 @@ def serialize(root: etree._Element) -> bytes:
     return etree.tostring(root, xml_declaration=True, encoding="UTF-8", standalone=True)
 
 
-HAPUS_MODES = ("paragraf", "tabel", "paragraf+tabel", "baris")
+HAPUS_MODES = ("paragraf", "tabel", "paragraf+tabel", "baris", "gambar")
 
 
 def load_revisions(path: Path, only: set[str] | None) -> list[Revision]:
