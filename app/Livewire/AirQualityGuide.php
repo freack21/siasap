@@ -10,11 +10,12 @@ use Livewire\Attributes\Title;
 use Livewire\Component;
 
 /**
- * Halaman Panduan: cara membaca kategori, tabel ambang Solihat et al. (2026),
- * keterangan gas, FAQ, dan batasan.
+ * Halaman Panduan Sistem: cara kerja SIMKU, isi setiap halaman, cara membaca
+ * kategori, tabel ambang Solihat et al. (2026), keterangan gas, dasar saran
+ * tindakan, FAQ, dan batasan.
  */
 #[Layout('layouts::public')]
-#[Title('Panduan Kualitas Udara — SIMKU')]
+#[Title('Panduan Sistem — SIMKU')]
 class AirQualityGuide extends Component
 {
     public function render(): View
@@ -24,6 +25,8 @@ class AirQualityGuide extends Component
             'gases' => AirQuality::gases(),
             'recommendations' => collect(Recommendation::all())->keyBy('category')->all(),
             'source' => config('air_quality.source'),
+            'basis' => config('recommendations.basis'),
+            'sources' => config('recommendations.sources'),
             'onlineSeconds' => AirQuality::onlineThresholdSeconds(),
             'sendInterval' => (int) config('air_quality.send_interval_seconds', 5),
         ]);

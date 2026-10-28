@@ -2,7 +2,7 @@
     <x-ui.page-header
         :icon="'tabler-bulb'"
         title="Rekomendasi Tindakan"
-        description="Saran tindakan preventif mengikuti kategori keseluruhan kualitas udara ruangan saat ini.">
+        description="Saran tindakan pencegahan yang sesuai dengan kondisi udara ruangan saat ini.">
         <x-slot:eyebrow>Rekomendasi</x-slot:eyebrow>
     </x-ui.page-header>
 
@@ -10,14 +10,14 @@
     <section class="space-y-4">
         <div>
             <h2 class="text-lg font-semibold tracking-tight text-slate-900">Kondisi saat ini</h2>
-            <p class="mt-1 max-w-3xl text-sm text-slate-500">Berdasarkan pembacaan terakhir dari perangkat di setiap ruangan.</p>
+            <p class="mt-1 max-w-3xl text-sm text-slate-500">Berdasarkan data terakhir dari perangkat di setiap ruangan.</p>
         </div>
 
         @if ($conditions->isEmpty())
             <div class="card">
                 <x-ui.empty-state icon="tabler-antenna-bars-off"
                                   title="Belum ada ruangan yang dipantau"
-                                  description="Rekomendasi akan muncul setelah perangkat sensor terpasang dan mulai mengirim data." />
+                                  description="Saran akan muncul setelah perangkat pemantau terpasang dan mulai mengirim data." />
             </div>
         @else
             <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
@@ -57,7 +57,7 @@
                                 </p>
                             @endif
                         @else
-                            <p class="text-sm text-slate-500">Rekomendasi belum tersedia karena belum ada data yang diterima.</p>
+                            <p class="text-sm text-slate-500">Saran belum tersedia karena belum ada data yang diterima.</p>
                         @endif
                     </article>
                 @endforeach
@@ -68,8 +68,8 @@
     {{-- Aturan rekomendasi --}}
     <section class="space-y-4">
         <div>
-            <h2 class="text-lg font-semibold tracking-tight text-slate-900">Aturan rekomendasi</h2>
-            <p class="mt-1 max-w-3xl text-sm text-slate-500">Satu rekomendasi untuk setiap kategori keseluruhan (rule-based).</p>
+            <h2 class="text-lg font-semibold tracking-tight text-slate-900">Saran untuk setiap kategori</h2>
+            <p class="mt-1 max-w-3xl text-sm text-slate-500">Setiap kategori kualitas udara memiliki satu saran tindakan. Makin buruk kategorinya, makin tegas sarannya.</p>
         </div>
 
         <div class="card overflow-x-auto">
@@ -78,8 +78,7 @@
                     <tr>
                         <th>Kategori</th>
                         <th>Tingkat</th>
-                        <th>Rekomendasi</th>
-                        <th>Strategi EPA</th>
+                        <th>Saran tindakan</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -88,13 +87,6 @@
                             <td class="align-top"><x-ui.ku-badge :status="$rule['category']" size="sm" /></td>
                             <td class="align-top whitespace-nowrap font-medium text-slate-700">{{ $rule['level'] }}</td>
                             <td class="min-w-64 align-top whitespace-normal text-slate-600">{{ $rule['text'] }}</td>
-                            <td class="align-top">
-                                <div class="flex flex-wrap gap-1.5">
-                                    @foreach ($rule['strategies'] as $strategy)
-                                        <span class="inline-flex whitespace-nowrap rounded-md bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-600">{{ $strategyLabels[$strategy] ?? $strategy }}</span>
-                                    @endforeach
-                                </div>
-                            </td>
                         </tr>
                     @endforeach
                 </tbody>
@@ -102,47 +94,13 @@
         </div>
     </section>
 
-    {{-- Dasar rekomendasi --}}
-    <section class="space-y-4">
-        <div class="flex items-start gap-3">
-            <span class="icon-chip">
-                <x-tabler-shield-check class="size-5" />
-            </span>
-            <div>
-                <h2 class="text-lg font-semibold tracking-tight text-slate-900">Dasar rekomendasi</h2>
-                <p class="mt-1 max-w-3xl text-sm text-slate-500">Pemetaan kategori ke tindakan disusun peneliti dengan dua acuan berikut.</p>
-            </div>
-        </div>
-
-        <div class="card card-body space-y-5">
-            <ol class="space-y-3 text-sm text-slate-600">
-                @foreach ($basis as $point)
-                    <li class="flex gap-3">
-                        <span class="flex size-6 shrink-0 items-center justify-center rounded-full bg-slate-100 text-xs font-semibold text-slate-600">{{ $loop->iteration }}</span>
-                        <span class="leading-relaxed">{{ $point }}</span>
-                    </li>
-                @endforeach
-            </ol>
-
-            <div class="border-t border-slate-100 pt-4">
-                <p class="eyebrow mb-2 text-[11px]">Sumber</p>
-                <ul class="space-y-2 text-sm">
-                    @foreach ($sources as $source)
-                        <li>
-                            <a href="{{ $source['url'] }}" target="_blank" rel="noopener noreferrer"
-                               class="inline-flex items-start gap-1.5 text-accent-700 hover:underline">
-                                <x-tabler-external-link class="mt-0.5 size-4 shrink-0" />
-                                {{ $source['label'] }}
-                            </a>
-                        </li>
-                    @endforeach
-                </ul>
-            </div>
-        </div>
-
-        <p class="flex gap-2 text-xs text-slate-500">
-            <x-tabler-info-circle class="mt-px size-4 shrink-0 text-slate-400" />
-            {{ $disclaimer }}
+    <section class="card card-body flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <p class="flex max-w-2xl gap-3 text-sm leading-relaxed text-slate-600">
+            <x-tabler-info-circle class="mt-0.5 size-5 shrink-0 text-slate-400" />
+            <span>{{ $disclaimer }} Saran disusun berdasarkan panduan kualitas udara dalam ruangan dari U.S. EPA.</span>
         </p>
+        <a href="{{ route('guide') }}" wire:navigate class="btn btn-secondary shrink-0">
+            <x-tabler-book-2 class="size-4" /> Dasar penyusunan saran
+        </a>
     </section>
 </div>

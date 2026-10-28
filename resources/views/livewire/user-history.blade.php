@@ -2,7 +2,7 @@
     <x-ui.page-header
         :icon="'tabler-history'"
         title="Riwayat Kualitas Udara"
-        description="Catatan hasil pengukuran perangkat IoT di setiap ruangan. Gunakan filter untuk melihat ruangan, kategori, atau tanggal tertentu.">
+        description="Catatan kualitas udara yang pernah terukur. Gunakan filter untuk melihat ruangan, kategori, atau tanggal tertentu.">
         <x-slot:eyebrow>Riwayat</x-slot:eyebrow>
         <x-slot:actions>
             <button type="button" wire:click="downloadCsv" wire:loading.attr="disabled" wire:target="downloadCsv" class="btn btn-secondary">
@@ -106,7 +106,7 @@
                 </span>
                 <div class="min-w-0">
                     <h2 class="card-title">Data pengukuran</h2>
-                    <p class="mt-0.5 text-xs text-slate-500">Diperbarui otomatis setiap 5 detik. Nilai gas dalam ppm (indikator relatif); titik warna menunjukkan kategori tiap gas.</p>
+                    <p class="mt-0.5 text-xs text-slate-500">Diperbarui otomatis setiap 5 detik. Kadar gas dalam ppm; titik warna menunjukkan kategori tiap gas.</p>
                 </div>
             </div>
         </header>
@@ -114,7 +114,7 @@
         @if ($logs->isEmpty())
             <x-ui.empty-state
                 title="Belum ada data"
-                :description="$this->hasFilters() ? 'Tidak ada pengukuran yang cocok dengan filter. Coba ubah atau reset filter.' : 'Data akan muncul setelah sensor mulai mengirim pengukuran.'"
+                :description="$this->hasFilters() ? 'Tidak ada pengukuran yang cocok dengan filter. Coba ubah atau reset filter.' : 'Data akan muncul setelah perangkat mulai mengirim data.'"
                 icon="tabler-clock">
                 @if ($this->hasFilters())
                     <button type="button" wire:click="resetFilters" class="btn btn-secondary btn-sm"><x-tabler-filter-off class="size-4" /> Reset filter</button>

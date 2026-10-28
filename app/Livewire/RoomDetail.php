@@ -175,7 +175,7 @@ class RoomDetail extends Component
         $gasChart = [
             'labels' => $labels,
             'datasets' => $datasets,
-            'yTitle' => 'ppm (indikator relatif)',
+            'yTitle' => 'Kadar gas (ppm)',
         ];
 
         $stats = [

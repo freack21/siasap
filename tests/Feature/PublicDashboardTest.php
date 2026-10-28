@@ -94,7 +94,7 @@ class PublicDashboardTest extends TestCase
         $response = $this->get(route('home'))
             ->assertOk()
             ->assertSee('Ruang Uji')
-            ->assertSee('Menunggu data dari perangkat IoT')
+            ->assertSee('Menunggu data dari perangkat')
             ->assertDontSee('Rekomendasi tindakan');
 
         foreach (self::RECOMMENDATION_TEXTS as $text) {
@@ -159,7 +159,7 @@ class PublicDashboardTest extends TestCase
         Livewire::test(UserDashboard::class)
             ->assertSee('Data terakhir diterima')
             ->assertSee('5 menit yang lalu')
-            ->assertSee('bukan kondisi terkini. Periksa perangkat IoT.');
+            ->assertSee('bukan kondisi terkini. Periksa perangkat pemantau.');
     }
 
     public function test_single_room_home_has_no_stale_warning_when_online(): void
@@ -178,7 +178,7 @@ class PublicDashboardTest extends TestCase
 
         Livewire::test(RoomDetail::class, ['room' => $room])
             ->assertSee('Data terakhir diterima')
-            ->assertSee('bukan kondisi terkini. Periksa perangkat IoT.');
+            ->assertSee('bukan kondisi terkini. Periksa perangkat pemantau.');
 
         $this->log($node, ['co2' => 30, 'nh3' => 20, 'co' => 10, 'h2' => 5]);
 
@@ -207,7 +207,7 @@ class PublicDashboardTest extends TestCase
             ->assertSee('Laboratorium')
             ->assertSee('wire:poll.5s', false)
             ->assertSee('data-chart', false)
-            ->assertSee('10 pembacaan terakhir');
+            ->assertSee('10 data terakhir');
 
         Livewire::test(RoomDetail::class, ['room' => $room])
             ->assertSet('gas', 'co2')
@@ -217,7 +217,7 @@ class PublicDashboardTest extends TestCase
                 $points = array_values(array_filter($series['data'], fn ($value) => $value !== null));
 
                 return count($chart['datasets']) === 4
-                    && $chart['yTitle'] === 'ppm (indikator relatif)'
+                    && $chart['yTitle'] === 'Kadar gas (ppm)'
                     && $series['label'] === 'CO₂'
                     && empty($series['dashed'])
                     && $points === [30.5, 70.0]
@@ -314,7 +314,7 @@ class PublicDashboardTest extends TestCase
 
         $this->get(route('rooms.show', $room))
             ->assertOk()
-            ->assertSee('Menunggu data dari perangkat IoT');
+            ->assertSee('Menunggu data dari perangkat');
     }
 
     public function test_unknown_room_returns_404(): void

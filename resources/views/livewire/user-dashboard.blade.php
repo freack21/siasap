@@ -1,12 +1,12 @@
 <div wire:poll.5s class="space-y-8">
     @if ($cards->isEmpty())
         <x-ui.page-header :icon="'tabler-home-2'" title="Kualitas udara ruangan saat ini"
-                          description="Pantau kondisi udara di setiap ruangan secara langsung dari perangkat IoT." />
+                          description="Pantau kondisi udara ruangan secara langsung." />
 
         <div class="card">
             <x-ui.empty-state icon="tabler-antenna-bars-off"
                               title="Belum ada ruangan yang dipantau"
-                              description="Perangkat IoT belum dipasang atau belum diaktifkan. Halaman ini akan terisi otomatis setelah perangkat mulai mengirim data." >
+                              description="Perangkat pemantau belum terpasang atau belum aktif. Halaman ini akan terisi sendiri setelah perangkat mulai mengirim data." >
                 <a href="{{ route('guide') }}" wire:navigate class="btn btn-secondary btn-sm">
                     <x-tabler-book-2 class="size-4" /> Pelajari kategori kualitas udara
                 </a>
@@ -35,8 +35,8 @@
         @if (! $log)
             <div class="card">
                 <x-ui.empty-state icon="tabler-hourglass-high"
-                                  title="Menunggu data dari perangkat IoT"
-                                  description="Perangkat di ruangan ini belum mengirim pembacaan. Halaman diperbarui otomatis setiap 5 detik begitu data pertama masuk." />
+                                  title="Menunggu data dari perangkat"
+                                  description="Perangkat di ruangan ini belum mengirim data. Halaman akan diperbarui sendiri begitu data pertama masuk." />
             </div>
         @else
             @if (! $focus['online'] && $focus['updated_at'])
@@ -102,7 +102,7 @@
             </section>
 
             <p class="text-xs text-slate-400">
-                Nilai ppm merupakan indikator relatif terhadap kondisi udara saat perangkat dinyalakan.
+                Angka ppm menunjukkan perubahan kadar gas dibandingkan saat perangkat mulai menyala, bukan hasil alat ukur laboratorium.
             </p>
         @endif
     @else
@@ -152,7 +152,7 @@
         <section class="space-y-4">
             <div>
                 <h2 class="text-base font-semibold text-slate-900">Kondisi per ruangan</h2>
-                <p class="mt-0.5 text-sm text-slate-500">Pilih ruangan untuk melihat grafik dan rincian pembacaan.</p>
+                <p class="mt-0.5 text-sm text-slate-500">Pilih ruangan untuk melihat grafik dan rincian datanya.</p>
             </div>
 
             <div class="grid grid-cols-1 gap-4 md:grid-cols-2">

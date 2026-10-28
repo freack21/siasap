@@ -27,6 +27,6 @@
         'mt-2' => $compact,
         'mt-auto' => ! $compact,
     ])>
-        Dasar rekomendasi <x-tabler-arrow-right class="size-3.5" />
+        Lihat semua saran <x-tabler-arrow-right class="size-3.5" />
     </a>
 </div>

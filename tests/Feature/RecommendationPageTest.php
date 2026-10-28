@@ -14,27 +14,27 @@ class RecommendationPageTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_page_shows_all_four_rules_basis_sources_and_disclaimer(): void
+    public function test_page_shows_all_four_rules_and_disclaimer(): void
     {
         $this->get(route('recommendations'))
             ->assertOk()
             ->assertSee('Rekomendasi Tindakan')
+            ->assertSee('Saran untuk setiap kategori')
             ->assertSeeInOrder(['Normal', 'Waspada', 'Perlu Tindakan', 'Segera Bertindak'])
             ->assertSee('Kondisi udara relatif baik. Pertahankan ventilasi ruangan.')
             ->assertSee('Tingkatkan sirkulasi udara, misalnya dengan membuka jendela atau pintu.')
             ->assertSee('Tingkatkan ventilasi, periksa dan kurangi sumber polutan seperti asap atau gas, serta kurangi aktivitas di dalam ruangan.')
             ->assertSee('Segera tingkatkan ventilasi, hentikan sumber polutan, dan pertimbangkan meninggalkan ruangan sementara sampai kondisi udara membaik.')
-            ->assertSee('Dasar rekomendasi')
-            ->assertSee(config('recommendations.basis'))
-            ->assertSee('https://www.epa.gov/indoor-air-quality-iaq/improving-indoor-air-quality', false)
-            ->assertSee('https://document.airnow.gov/technical-assistance-document-for-the-reporting-of-daily-air-quailty.pdf', false)
             ->assertSee('Rekomendasi bersifat informatif dan bukan diagnosis medis.');
     }
 
-    public function test_rule_table_lists_epa_strategies(): void
+    public function test_basis_of_recommendations_is_linked_to_guide(): void
     {
         Livewire::test(RecommendationPage::class)
-            ->assertSee(['Peningkatan ventilasi', 'Kendali sumber']);
+            ->assertSee('Dasar penyusunan saran')
+            ->assertSee(route('guide'), false)
+            ->assertDontSee('Strategi EPA')
+            ->assertDontSee(config('recommendations.basis')[0]);
     }
 
     public function test_current_condition_shows_latest_category_and_recommendation_per_room(): void
