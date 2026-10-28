@@ -1,0 +1,683 @@
+{
+ "keterangan": "Revisi v7: Bab IV ditulis ulang dengan bahasa tidak teknis (tanpa contoh permintaan API, nama kasus uji, dan keluaran terminal), bagian uji manual diganti hasil pengamatan di peramban, isian [ISI] diberi petunjuk dan contoh, serta Bab V Penutup ditambahkan.uji nonfungsional, halaman Status Perangkat dan Panduan Sistem disederhanakan untuk pengguna awam, serta Bab IV diselaraskan dengan aplikasi dan bukti uji terbaru.",
+ "revisi": [
+  {
+   "id": "B4-0",
+   "cari": "Bab ini menyajikan hasil implementasi aplikasi web pema…ksanakan saat bab ini disusun.",
+   "ganti": "Bab ini menyajikan hasil implementasi aplikasi yang dirancang pada Bab III, hasil pengujian sesuai rencana pada Tabel 3.17, dan pembahasannya terhadap tujuan penelitian pada subbab 1.3. Pengujian pada beberapa kondisi ruangan (subbab 4.3) dan evaluasi pengalaman pengguna (subbab 4.4) dilaksanakan setelah bab ini disusun, sehingga hasilnya masih berupa isian bertanda [ISI]."
+  },
+  {
+   "id": "B4-4.1-1",
+   "cari": "Aplikasi web hasil penelitian ini diberi nama SIMKU (Si…ntuk oleh migration yang sama.",
+   "ganti": "Aplikasi web hasil penelitian ini diberi nama SIMKU (Sistem Monitoring Kualitas Udara) dan dibangun sesuai rancangan pada subbab 3.6 sampai 3.11 dengan teknologi pada Tabel 3.16. Aplikasi dibuat dengan framework Laravel (Laravel, t.t.), Livewire untuk tampilan yang diperbarui otomatis (Livewire, t.t.), Tailwind CSS untuk tata letak (Tailwind Labs, t.t.), Chart.js untuk grafik (Chart.js, t.t.), dan MySQL sebagai basis data (Oracle Corporation, t.t.). Aplikasi dibuka melalui peramban dan dapat digunakan tanpa login."
+  },
+  {
+   "id": "B4-4.1-2",
+   "cari": "Komponen perangkat lunak hasil implementasi beserta ber…tanpa mengubah logika program.",
+   "ganti": "Bagian utama aplikasi beserta fungsinya dirangkum pada Tabel 4.1. Ambang batas kategori dan aturan rekomendasi disimpan sebagai pengaturan aplikasi, sehingga nilainya dapat diubah tanpa mengubah program."
+  },
+  {
+   "id": "B4-T4.1-hapus",
+   "cari": "Tabel 4.1 Komponen Hasil Implementasi Aplikasi",
+   "utuh": true,
+   "hapus": "tabel"
+  },
+  {
+   "id": "B4-T4.1-baru",
+   "cari": "Tabel 4.1 Komponen Hasil Implementasi Aplikasi",
+   "utuh": true,
+   "ganti": "Tabel 4.1 Bagian Utama Aplikasi",
+   "sisip_paragraf": [
+    {
+     "tabel": [
+      [
+       "No",
+       "Bagian Aplikasi",
+       "Fungsi"
+      ],
+      [
+       "1",
+       "Penerimaan data",
+       "Menerima data dari perangkat IoT, memeriksa kelengkapan dan formatnya, lalu menyimpan data yang valid"
+      ],
+      [
+       "2",
+       "Klasifikasi",
+       "Menentukan kategori setiap gas berdasarkan ambang Tabel 2.2, kategori keseluruhan, dan gas penyebab utama"
+      ],
+      [
+       "3",
+       "Rekomendasi",
+       "Menentukan tingkat dan saran tindakan sesuai Tabel 3.15"
+      ],
+      [
+       "4",
+       "Pengolahan UEQ",
+       "Mengolah jawaban kuesioner menjadi rata-rata, simpangan baku, Cronbach's alpha, dan kategori benchmark setiap skala"
+      ],
+      [
+       "5",
+       "Halaman Beranda",
+       "Ringkasan kondisi udara ruangan terkini"
+      ],
+      [
+       "6",
+       "Halaman Detail Ruangan",
+       "Grafik setiap gas, statistik, proporsi kategori, dan sepuluh data terakhir"
+      ],
+      [
+       "7",
+       "Halaman Riwayat",
+       "Filter, ringkasan, tabel data per halaman, dan unduh CSV"
+      ],
+      [
+       "8",
+       "Halaman Rekomendasi Tindakan",
+       "Saran untuk kondisi saat ini dan untuk setiap kategori"
+      ],
+      [
+       "9",
+       "Halaman Status Perangkat",
+       "Status koneksi perangkat, waktu data terakhir, dan gas yang dipantau"
+      ],
+      [
+       "10",
+       "Halaman Panduan Sistem",
+       "Penjelasan cara kerja sistem, isi setiap halaman, cara membaca kategori, dan batasan"
+      ],
+      [
+       "11",
+       "Halaman Kuesioner",
+       "Pengisian 26 butir UEQ"
+      ]
+     ],
+     "seperti": "Tabel 3.22 Skenario Pengujian pada Beberapa Kondisi Ruangan",
+     "lebar": [
+      1,
+      4,
+      9
+     ],
+     "rata_sel": "kiri"
+    }
+   ]
+  },
+  {
+   "id": "B4-4.1.1-judul",
+   "cari": "Implementasi Penerimaan Data (API)",
+   "utuh": true,
+   "ganti": "Implementasi Penerimaan dan Pengolahan Data"
+  },
+  {
+   "id": "B4-4.1.1-1",
+   "cari": "Penerimaan data diimplementasikan sebagai endpoint POST…i dengan nilai yang tersimpan.",
+   "ganti": "Perangkat IoT mengirim data ke aplikasi setiap 5 detik melalui alamat penerimaan data (endpoint) /api/telemetry. Setiap data yang masuk diperiksa lebih dahulu: identitas perangkat harus terdaftar, keempat nilai gas harus berupa angka yang tidak negatif, dan waktu pembacaan harus berformat tanggal dan jam yang benar. Data yang lolos pemeriksaan diolah menjadi kategori setiap gas berdasarkan ambang Tabel 2.2, kategori keseluruhan dan gas penyebab utama, serta rekomendasi sesuai Tabel 3.15, lalu disimpan bersama hasil olahannya."
+  },
+  {
+   "id": "B4-4.1.1-2",
+   "cari": "Untuk menunjukkan hasil implementasi, endpoint dipanggi…contoh data pada subbab 3.9.1:",
+   "ganti": "Sebagai contoh, data dengan nilai CO₂ 70 ppm, NH₃ 30 ppm, CO 55 ppm, dan H₂ 10 ppm diterima dan diolah menjadi kategori CO₂ Sedang, NH₃ Baik, CO Tidak Sehat, dan H₂ Baik. Kategori keseluruhannya Tidak Sehat dengan penyebab utama CO, dan rekomendasi yang diberikan adalah tingkat Perlu Tindakan dengan saran meningkatkan ventilasi, mengurangi sumber polutan, dan mengurangi aktivitas di dalam ruangan. Hasil ini sama dengan perhitungan pada contoh subbab 3.9.2.",
+   "hapus": "tabel"
+  },
+  {
+   "id": "B4-4.1.1-3",
+   "cari": "Server menjawab dengan kode HTTP 201 Created. Respons b…ndentasinya agar mudah dibaca:",
+   "hapus": "paragraf+tabel"
+  },
+  {
+   "id": "B4-4.1.1-4",
+   "cari": "Respons memuat kategori setiap gas (CO₂ Sedang, NH₃ Bai…di atas hanya untuk penulisan.",
+   "hapus": "paragraf"
+  },
+  {
+   "id": "B4-4.1.1-5",
+   "cari": "Permintaan kedua mengirim data yang tidak valid, yaitu…berformat YYYY-MM-DD HH:MM:SS:",
+   "hapus": "paragraf+tabel"
+  },
+  {
+   "id": "B4-4.1.1-6",
+   "cari": "Server menolak data tersebut dengan kode HTTP 422 Unpro…tribut dalam bahasa Indonesia:",
+   "hapus": "paragraf+tabel"
+  },
+  {
+   "id": "B4-4.1.1-7",
+   "cari": "Data yang ditolak tidak disimpan ke tabel sensor_logs,…HTTP (Fielding et al., 2022).",
+   "ganti": "Data yang tidak lengkap atau formatnya salah, misalnya nilai CO₂ berupa huruf atau format waktu yang keliru, ditolak dan tidak disimpan sebagai data pembacaan, sehingga tidak ikut ditampilkan. Data yang ditolak dicatat terpisah beserta alasannya agar dapat ditelusuri."
+  },
+  {
+   "id": "B4-4.1.2-1",
+   "cari": "Basis data diimplementasikan sesuai ERD pada Gambar 3.6…engan seeder RoomDeviceSeeder.",
+   "ganti": "Basis data dibuat sesuai ERD pada Gambar 3.6 dan terdiri atas lima tabel utama, yaitu rooms untuk data ruangan, nodes untuk data perangkat, sensor_logs untuk data pembacaan beserta kategori dan rekomendasinya, telemetry_rejections untuk data yang ditolak, dan ueq_responses untuk jawaban kuesioner. Setiap data pembacaan terhubung dengan perangkat pengirimnya, sehingga data tidak dapat disimpan untuk perangkat yang tidak terdaftar. Saat aplikasi dipasang, basis data diisi dengan satu ruangan uji (Ruang Uji) dan satu perangkat (AIR-001)."
+  },
+  {
+   "id": "B4-4.1.3-1",
+   "cari": "Ketujuh halaman pada subbab 3.8 diimplementasikan sebag…ngan lebar layar 1.280 piksel.",
+   "ganti": "Ketujuh halaman pada subbab 3.8 dapat dibuka tanpa login melalui menu navigasi di bagian atas. Halaman yang menampilkan data diperbarui otomatis setiap 5 detik mengikuti interval kirim perangkat, sehingga pengguna tidak perlu memuat ulang halaman. Tangkapan layar pada subbab ini diambil dari peramban Chromium dengan lebar layar 1.280 piksel."
+  },
+  {
+   "id": "B4-4.1.3-2",
+   "cari": "Data yang tampil pada tangkapan layar merupakan data co…lihatkan rentang beberapa jam.",
+   "ganti": "Data yang tampil pada tangkapan layar adalah data contoh untuk memperagakan tampilan, bukan hasil pengukuran perangkat IoT maupun hasil pengujian pada subbab 4.3. Data contoh disusun agar melintasi keempat kategori, yaitu satu data setiap dua menit untuk pukul 06.00 sampai 10.40 WIB, ditambah data setiap 5 detik saat tangkapan layar diambil."
+  },
+  {
+   "id": "B4-GBR-4.4",
+   "cari": "Gambar 4.4 Tampilan Halaman Riwayat",
+   "utuh": true,
+   "ganti_gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/peramban/final/4-04-riwayat.png"
+  },
+  {
+   "id": "B4-GBR-4.6",
+   "cari": "Gambar 4.6 Tampilan Halaman Status Perangkat",
+   "utuh": true,
+   "ganti_gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/peramban/final/4-06-status-perangkat.png"
+  },
+  {
+   "id": "B4-4.1.3-3",
+   "cari": "Jawaban disimpan ke tabel ueq_responses hanya bila ke-2…ng dijelaskan pada subbab 4.4.",
+   "ganti": "Jawaban hanya disimpan bila ke-26 butir terisi dengan nilai 1 sampai 7. Pengolahan jawaban menjadi skor setiap skala dijelaskan pada subbab 4.4."
+  },
+  {
+   "id": "B4-4.2-1",
+   "cari": "Pengujian black-box dilaksanakan untuk tiga aspek perta…anda [ISI setelah uji manual].",
+   "ganti": "Pengujian black-box dilaksanakan untuk tiga aspek pertama pada Tabel 3.17, yaitu pengujian fungsional aplikasi, pengujian validasi dan pengolahan data sensor, serta pengujian rekomendasi tindakan preventif. Setiap skenario pada Tabel 3.18 sampai Tabel 3.21 diuji dengan memberikan masukan kepada aplikasi, lalu membandingkan keluaran yang tampil atau tersimpan dengan hasil yang diharapkan tanpa melihat kode program (Myers et al., 2012). Skenario dinyatakan Valid bila hasil pengujian sama dengan hasil yang diharapkan."
+  },
+  {
+   "id": "B4-4.2-2",
+   "cari": "Seluruh kasus uji dijalankan dengan perintah php artisa…ili satu kasus uji yang lulus.",
+   "ganti": "Pengujian dilakukan dengan dua cara. Pertama, setiap skenario dijalankan sebagai pengujian otomatis sehingga dapat diulang dengan hasil yang sama setiap kali aplikasi diubah; pengujian otomatis terakhir dijalankan pada 29 Oktober 2026 dan seluruh skenario berhasil. Kedua, bagian skenario yang berkaitan dengan tampilan, seperti perubahan halaman saat data baru masuk dan perpindahan halaman data, diamati langsung pada peramban Chromium 141 pada tanggal yang sama. Data uji dikirim ke aplikasi dengan meniru pengiriman dari perangkat IoT, sehingga pengujian ini memeriksa fungsi aplikasi, bukan kondisi udara yang sebenarnya."
+  },
+  {
+   "id": "B4-GBR-4.11-hapus",
+   "cari": "Gambar 4.11 Hasil Eksekusi Seluruh Kasus Uji",
+   "utuh": true,
+   "hapus": "gambar"
+  },
+  {
+   "id": "B4-4.2.1-0",
+   "cari": "Hasil pengujian fungsional untuk skenario pada Tabel 3.…ndai [ISI setelah uji manual].",
+   "ganti": "Hasil pengujian fungsional untuk skenario pada Tabel 3.18 diuraikan per skenario berikut. Setiap skenario memuat hasil yang diharapkan, hasil pengujian, tangkapan layar sebagai bukti, dan status. Tangkapan layar memakai data contoh yang sama seperti subbab 4.1, sehingga memperlihatkan hasil skenario dan bukan hasil pengukuran kualitas udara."
+  },
+  {
+   "id": "B4-S1-1",
+   "cari": "Hasil aktual: kategori keseluruhan, penyebab utama, nil…(Gambar 4.13). Status: Valid.",
+   "ganti": "Hasil pengujian: Beranda menampilkan kategori keseluruhan, gas penyebab utama, nilai ppm dan kategori keempat gas, tingkat dan teks rekomendasi, serta status koneksi perangkat (Gambar 4.1). Ketika perangkat belum pernah mengirim data, Beranda menampilkan pesan menunggu data tanpa kartu rekomendasi (Gambar 4.12). Status: Valid."
+  },
+  {
+   "id": "B4-S1-2",
+   "cari": "Bagian skenario berupa pembaruan tampilan saat data bar…ban: [ISI setelah uji manual].",
+   "ganti": "Pembaruan tampilan tanpa memuat ulang halaman diamati di peramban. Beranda dibuka dengan data terakhir berkategori Baik, lalu data baru dengan CO₂ 70, NH₃ 30, CO 55, dan H₂ 10 ppm dikirim pada 29 Oktober 2026 pukul 02.05.51 WIB. Sekitar 2,4 detik kemudian, tanpa halaman dimuat ulang, kategori keseluruhan berubah menjadi Tidak Sehat dengan penyebab utama CO, rekomendasi berubah menjadi Perlu Tindakan, dan nilai keempat gas ikut berganti (Gambar 4.91)."
+  },
+  {
+   "id": "B4-S1-gbr",
+   "cari": "Gambar 4.12 Tampilan Beranda saat Belum Ada Data",
+   "utuh": true,
+   "sisip_paragraf": [
+    {
+     "gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/peramban/final/4-beranda-sebelum-sesudah.png",
+     "lebar_cm": 13.0
+    },
+    {
+     "teks": "Gambar 4.91 Beranda Sebelum dan Sesudah Data Baru Diterima",
+     "gaya": "Heading5"
+    }
+   ]
+  },
+  {
+   "id": "B4-GBR-4.13-hapus",
+   "cari": "Gambar 4.13 Hasil Eksekusi Kasus Uji Beranda",
+   "utuh": true,
+   "hapus": "gambar"
+  },
+  {
+   "id": "B4-S2-1",
+   "cari": "Hasil aktual: data grafik memuat gas terpilih dan tiga…(Gambar 4.15). Status: Valid.",
+   "ganti": "Hasil pengujian: grafik menampilkan gas yang dipilih beserta tiga garis ambangnya, misalnya 50, 100, dan 150 ppm untuk CO₂ serta 20, 50, dan 80 ppm untuk CO, dan setiap pilihan rentang 1 jam, 24 jam, atau 7 hari menampilkan data pada rentang tersebut. Bila gas yang diminta tidak dikenal, grafik kembali menampilkan CO₂. Status: Valid."
+  },
+  {
+   "id": "B4-S2-2",
+   "cari": "Pengamatan grafik dan garis ambang yang tergambar di pe…una: [ISI setelah uji manual].",
+   "ganti": "Pengamatan di peramban menunjukkan bahwa grafik sudah tergambar saat halaman dibuka (Gambar 4.2) dan berganti tanpa memuat ulang halaman ketika pengguna memilih gas atau rentang waktu lain. Pada pengamatan pertama, grafik tidak berganti ketika tombol gas ditekan walaupun tombolnya sudah tertandai terpilih. Kesalahan pada kode grafik tersebut diperbaiki, lalu pengamatan diulang dengan hasil sesuai harapan."
+  },
+  {
+   "id": "B4-S2-3",
+   "cari": "Gambar 4.14 memperlihatkan grafik Detail Ruangan setela…, dan 80 ppm sesuai Tabel 2.2.",
+   "ganti": "Gambar 4.14 memperlihatkan grafik setelah tombol CO dan tombol 7 Hari ditekan. Grafik berganti menjadi grafik CO selama tujuh hari terakhir, dan tiga garis putus-putus menandai ambang CO pada 20, 50, dan 80 ppm sesuai Tabel 2.2."
+  },
+  {
+   "id": "B4-GBR-4.14",
+   "cari": "Gambar 4.14 Grafik Detail Ruangan dengan Parameter CO",
+   "utuh": true,
+   "ganti": "Gambar 4.14 Grafik Detail Ruangan setelah Memilih CO dan Rentang 7 Hari",
+   "ganti_gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/peramban/final/4-grafik-co-7hari.png"
+  },
+  {
+   "id": "B4-GBR-4.15-hapus",
+   "cari": "Gambar 4.15 Hasil Eksekusi Kasus Uji Detail Ruangan",
+   "utuh": true,
+   "hapus": "gambar"
+  },
+  {
+   "id": "B4-S3-1",
+   "cari": "Hasil aktual: filter tanggal, kategori, dan ruangan han…(Gambar 4.17). Status: Valid.",
+   "ganti": "Hasil pengujian: filter tanggal, kategori, dan ruangan hanya menyisakan data yang sesuai, pilihan kategori yang tidak dikenal diabaikan, dan tombol Reset filter menampilkan kembali seluruh data (Gambar 4.16). Status: Valid."
+  },
+  {
+   "id": "B4-GBR-4.17-hapus",
+   "cari": "Gambar 4.17 Hasil Eksekusi Kasus Uji Riwayat (memfilter berdasarkan tanggal dan status)",
+   "utuh": true,
+   "hapus": "gambar"
+  },
+  {
+   "id": "B4-S4-1",
+   "cari": "Hasil aktual: berkas riwayat-kualitas-udara-<waktu>.csv…(Gambar 4.19). Status: Valid.",
+   "ganti": "Hasil pengujian: berkas riwayat-kualitas-udara-<waktu>.csv terunduh dengan kolom yang ditetapkan dan hanya berisi data yang sesuai filter (Gambar 4.18). Status: Valid."
+  },
+  {
+   "id": "B4-GBR-4.19-hapus",
+   "cari": "Gambar 4.19 Hasil Eksekusi Kasus Uji Riwayat (menekan tombol ekspor CSV)",
+   "utuh": true,
+   "hapus": "gambar"
+  },
+  {
+   "id": "B4-S5-1",
+   "cari": "Hasil aktual: 23 data dibagi menjadi 2 halaman dengan 2…(Gambar 4.20). Status: Valid.",
+   "ganti": "Hasil pengujian: data dibagi 20 baris per halaman, dan keterangan serta tombol navigasi halaman tampil dalam bahasa Indonesia (Gambar 4.4). Status: Valid."
+  },
+  {
+   "id": "B4-S5-2",
+   "cari": "Perpindahan ke halaman berikutnya di peramban dan kecoc…nya: [ISI setelah uji manual].",
+   "ganti": "Perpindahan halaman diamati di peramban dengan 234 data pada halaman Riwayat. Setelah tombol halaman berikutnya ditekan, keterangan berubah dari Menampilkan 1 sampai 20 dari 234 data menjadi Menampilkan 21 sampai 40 dari 234 data, nomor halaman 2 ditandai, dan baris pertama halaman kedua adalah data tepat sesudah baris terakhir halaman pertama (Gambar 4.92).",
+   "sisip_paragraf": [
+    {
+     "gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/peramban/final/4-riwayat-hal2.png",
+     "lebar_cm": 13.0
+    },
+    {
+     "teks": "Gambar 4.92 Halaman Kedua Riwayat setelah Tombol Halaman Berikutnya Ditekan",
+     "gaya": "Heading5"
+    }
+   ]
+  },
+  {
+   "id": "B4-GBR-4.20-hapus",
+   "cari": "Gambar 4.20 Hasil Eksekusi Kasus Uji Riwayat (pembagian halaman data)",
+   "utuh": true,
+   "hapus": "gambar"
+  },
+  {
+   "id": "B4-S6-1",
+   "cari": "Hasil aktual: bagian Kondisi saat ini memakai data terb…(Gambar 4.21). Status: Valid.",
+   "ganti": "Hasil pengujian: bagian Kondisi saat ini menampilkan kategori dan rekomendasi dari data terbaru, bagian Saran untuk setiap kategori menampilkan keempat aturan beserta tingkat dan saran tindakannya, pernyataan bukan diagnosis medis tampil, dan dasar penyusunan saran ditautkan ke halaman Panduan Sistem (Gambar 4.5). Status: Valid."
+  },
+  {
+   "id": "B4-GBR-4.21-hapus",
+   "cari": "Gambar 4.21 Hasil Eksekusi Kasus Uji Rekomendasi Tindakan",
+   "utuh": true,
+   "hapus": "gambar"
+  },
+  {
+   "id": "B4-S7-1",
+   "cari": "Hasil aktual: nama perangkat, ruangan, kode perangkat,…(Gambar 4.22). Status: Valid.",
+   "ganti": "Hasil pengujian: nama perangkat, ruangan, kode perangkat, dan keempat gas yang dipantau tampil. Status Terhubung tampil bila data terakhir diterima 10 detik dan tepat 30 detik yang lalu, sedangkan status Terputus tampil bila data terakhir diterima 120 detik yang lalu atau perangkat belum pernah mengirim data. Status: Valid."
+  },
+  {
+   "id": "B4-S7-2",
+   "cari": "Kesesuaian waktu data terakhir dengan waktu kirim perangkat: [ISI setelah uji manual].",
+   "utuh": true,
+   "ganti": "Kesesuaian waktu data terakhir diamati di peramban. Data dikirim pada 29 Oktober 2026 pukul 02.06.07 WIB, dan halaman Status Perangkat menampilkan Data terakhir diterima 0 detik yang lalu dengan waktu 29 Okt 2026 02:06:07, sama dengan waktu pengiriman (Gambar 4.6)."
+  },
+  {
+   "id": "B4-GBR-4.22-hapus",
+   "cari": "Gambar 4.22 Hasil Eksekusi Kasus Uji Status Perangkat",
+   "utuh": true,
+   "hapus": "gambar"
+  },
+  {
+   "id": "B4-S8-1",
+   "cari": "Hasil aktual: seluruh bagian tampil, termasuk enam lang…(Gambar 4.23). Status: Valid.",
+   "ganti": "Hasil pengujian: seluruh bagian tampil, termasuk enam langkah cara kerja SIMKU, isi ketujuh halaman, rentang ppm keempat gas beserta sumber ambangnya, dasar penyusunan saran beserta sumbernya, dan pernyataan bukan diagnosis medis (Gambar 4.7 dan Gambar 4.8). Status: Valid."
+  },
+  {
+   "id": "B4-GBR-4.23-hapus",
+   "cari": "Gambar 4.23 Hasil Eksekusi Kasus Uji Panduan Sistem",
+   "utuh": true,
+   "hapus": "gambar"
+  },
+  {
+   "id": "B4-S9-1",
+   "cari": "Hasil aktual: 26 butir tampil, jawaban lengkap tersimpa…(Gambar 4.26). Status: Valid.",
+   "ganti": "Hasil pengujian: 26 butir tampil, jawaban lengkap tersimpan dan pesan terima kasih muncul, sedangkan butir yang kosong atau bernilai di luar 1 sampai 7 ditolak (Gambar 4.9, Gambar 4.10, Gambar 4.24, dan Gambar 4.25). Status: Valid."
+  },
+  {
+   "id": "B4-GBR-4.26-hapus",
+   "cari": "Gambar 4.26 Hasil Eksekusi Kasus Uji Kuesioner UEQ",
+   "utuh": true,
+   "hapus": "gambar"
+  },
+  {
+   "id": "B4-4.2.1-akhir",
+   "cari": "Kesembilan skenario fungsional berstatus Valid berdasar…ai, serta tanggal uji manual.]",
+   "ganti": "Kesembilan skenario fungsional berstatus Valid. Keempat bagian yang berkaitan dengan tampilan di peramban, yaitu pembaruan Beranda tanpa memuat ulang halaman, pergantian grafik, perpindahan halaman Riwayat, dan waktu data terakhir pada Status Perangkat, juga sesuai harapan berdasarkan pengamatan pada peramban Chromium 141 tanggal 29 Oktober 2026."
+  },
+  {
+   "id": "B4-T4.2-kepala",
+   "cari": "Hasil Aktual dan Kasus Uji",
+   "utuh": true,
+   "ganti": "Hasil Pengujian"
+  },
+  {
+   "id": "B4-T4.2-1",
+   "cari": "Sesuai harapan. HTTP 201; data tersimpan dengan kategor…tidak ada penolakan tercatat.",
+   "ganti": "Sesuai harapan. Data diterima dan disimpan dengan kategori setiap gas, kategori keseluruhan Baik, dan tingkat Normal."
+  },
+  {
+   "id": "B4-T4.2-2",
+   "cari": "Sesuai harapan. Tanpa co_ppm: HTTP 422 dengan galat co_…mpan, satu penolakan tercatat.",
+   "ganti": "Sesuai harapan. Data tanpa co_ppm ditolak dengan pesan bahwa co_ppm wajib diisi, tidak disimpan, dan dicatat sebagai data ditolak."
+  },
+  {
+   "id": "B4-T4.2-3",
+   "cari": "Sesuai harapan. co2_ppm = \"abc\": HTTP 422 dengan galat co2_ppm, satu penolakan tercatat.",
+   "utuh": true,
+   "ganti": "Sesuai harapan. Data dengan co2_ppm berupa \"abc\" ditolak dengan pesan bahwa co2_ppm harus berupa angka dan dicatat sebagai data ditolak."
+  },
+  {
+   "id": "B4-T4.2-4",
+   "cari": "Sesuai harapan. device_id kosong dan AIR-999 dijawab HT…rangkat nonaktif juga ditolak.",
+   "ganti": "Sesuai harapan. Data dengan device_id kosong atau AIR-999 yang tidak terdaftar ditolak dan dicatat; data dari perangkat nonaktif juga ditolak."
+  },
+  {
+   "id": "B4-T4.2-5",
+   "cari": "Sesuai harapan. timestamp = \"01-05-2026 10:00\": HTTP 42…tamp, satu penolakan tercatat.",
+   "ganti": "Sesuai harapan. Data dengan timestamp \"01-05-2026 10:00\" ditolak dengan pesan format waktu salah dan dicatat sebagai data ditolak."
+  },
+  {
+   "id": "B4-T4.2-uji-1",
+   "cari": "TelemetryApiTest::​test​_complete​_payload​_is​_stored​_and​_returns​_classification",
+   "utuh": true,
+   "hapus": "paragraf"
+  },
+  {
+   "id": "B4-T4.2-uji-2",
+   "cari": "TelemetryApiTest::​test​_invalid​_payload​_is​_rejected​_and​_logged (set data co_ppm tidak dikirim)",
+   "utuh": true,
+   "hapus": "paragraf"
+  },
+  {
+   "id": "B4-T4.2-uji-3",
+   "cari": "TelemetryApiTest::​test​_invalid​_payload​_is​_rejected​_and​_logged (set data co2_ppm bukan angka)",
+   "utuh": true,
+   "hapus": "paragraf"
+  },
+  {
+   "id": "B4-T4.2-uji-4",
+   "cari": "TelemetryApiTest::​test​_invalid​_payload​_is​_rejected​_and​_logged (set data device_id kosong dan device_id tidak terdaftar)",
+   "utuh": true,
+   "hapus": "paragraf"
+  },
+  {
+   "id": "B4-T4.2-uji-5",
+   "cari": "TelemetryApiTest::​test​_inactive​_device​_is​_rejected",
+   "utuh": true,
+   "hapus": "paragraf"
+  },
+  {
+   "id": "B4-T4.2-uji-6",
+   "cari": "TelemetryApiTest::​test​_invalid​_payload​_is​_rejected​_and​_logged (set data format timestamp salah)",
+   "utuh": true,
+   "hapus": "paragraf"
+  },
+  {
+   "id": "B4-4.2.2-2",
+   "cari": "Kelima skenario pada Tabel 4.2 berstatus Valid. Kasus u…reated​_at​_is​_server​_time).",
+   "ganti": "Kelima skenario pada Tabel 4.2 berstatus Valid. Selain itu, aplikasi juga menolak nilai ppm negatif dan data yang tidak berformat JSON, menampilkan pesan penolakan dalam bahasa Indonesia, serta menyimpan waktu dari perangkat terpisah dari waktu data diterima aplikasi."
+  },
+  {
+   "id": "B4-4.2.3-1",
+   "cari": "Setiap baris Tabel 3.20 diuji dua kali, yaitu langsung…ya ditunjukkan pada Tabel 4.3.",
+   "ganti": "Setiap baris Tabel 3.20 diuji dengan memasukkan nilai keempat gas ke aplikasi, lalu membandingkan kategori keseluruhan yang dihasilkan dengan kategori yang diharapkan. Pengujian dilakukan dua kali, yaitu langsung pada fungsi klasifikasi dan melalui pengiriman data seperti dari perangkat sampai data tersimpan. Pada pengujian kedua, kategori setiap gas dan tingkat rekomendasi yang tersimpan juga diperiksa terhadap Tabel 3.15. Hasilnya ditunjukkan pada Tabel 4.3."
+  },
+  {
+   "id": "B4-4.2.3-2",
+   "cari": "Ketujuh baris pada Tabel 4.3 berstatus Valid. Baris 3 d…​_are​_stored​_and​_returned).",
+   "ganti": "Ketujuh baris pada Tabel 4.3 berstatus Valid. Baris 3 dan 4 menunjukkan bahwa kategori keseluruhan mengikuti gas dengan kategori terburuk, yaitu CO dan H₂, sedangkan baris 6 dan 7 menunjukkan bahwa nilai tepat pada batas ambang CO₂ masuk ke kategori berikutnya. Bila lebih dari satu gas berada pada kategori terburuk, misalnya CO₂ 70, NH₃ 30, CO 55, dan H₂ 45 ppm, kategori keseluruhan Tidak Sehat dengan penyebab utama CO dan H₂ sekaligus."
+  },
+  {
+   "id": "B4-4.2.3-3",
+   "cari": "Pengujian nilai batas dilakukan untuk setiap batas b pa…mals​_before​_classification).",
+   "ganti": "Pengujian nilai batas dilakukan untuk setiap batas b pada Tabel 2.2 dengan dua nilai uji, yaitu b − 0,01 dan b, sehingga diperoleh 24 data uji untuk keempat gas. Seluruh data uji sesuai harapan dan hasilnya dirangkum pada Tabel 4.4. Sebagai contoh, CO₂ 49,99 ppm diklasifikasikan Baik dan 50 ppm Sedang, 99,99 ppm Sedang dan 100 ppm Tidak Sehat, serta 149,99 ppm Tidak Sehat dan 150 ppm Berbahaya. Hasil ini sesuai dengan aturan batas pada subbab 3.9.3. Nilai dengan tiga desimal dibulatkan lebih dahulu, misalnya CO₂ 49,995 ppm disimpan sebagai 50,00 ppm dengan kategori Sedang."
+  },
+  {
+   "id": "B4-4.2.4-1",
+   "cari": "Hasil pengujian rekomendasi untuk skenario pada Tabel 3…t data untuk setiap kategori).",
+   "ganti": "Hasil pengujian rekomendasi untuk skenario pada Tabel 3.21 ditunjukkan pada Tabel 4.5. Setiap kategori diberikan kepada aplikasi, lalu tingkat dan teks rekomendasi yang dihasilkan dibandingkan dengan Tabel 3.15."
+  },
+  {
+   "id": "B4-4.2.4-2",
+   "cari": "Keempat baris pada Tabel 4.5 berstatus Valid. Kasus uji…t​_unknown​_category​_throws).",
+   "ganti": "Keempat baris pada Tabel 4.5 berstatus Valid. Rekomendasi juga benar saat digunakan: tingkat rekomendasi yang tersimpan bersama setiap data sesuai dengan kategori keseluruhan data tersebut, Beranda menampilkan teks rekomendasi sesuai kategori, dan kategori yang tidak dikenal tidak menghasilkan rekomendasi apa pun."
+  },
+  {
+   "id": "B4-T4.6-kepala",
+   "cari": "Bagian Menunggu Uji Manual",
+   "utuh": true,
+   "ganti": "Bagian yang Diamati di Peramban"
+  },
+  {
+   "id": "B4-4.3-1",
+   "cari": "Pengujian ini menjalankan empat skenario pada Tabel 3.2…ISI: nama dan versi peramban].",
+   "ganti": "Pengujian ini menjalankan empat skenario pada Tabel 3.22 di satu ruangan uji, yaitu [ISI: nama ruangan, ukuran panjang × lebar dalam meter, serta jumlah pintu dan jendela. Contoh: kamar kos berukuran 3 × 4 meter dengan satu pintu dan satu jendela], pada [ISI: hari dan tanggal pengujian. Contoh: Sabtu, 7 November 2026]. Perangkat IoT AIR-001 mengirim data ke aplikasi setiap 5 detik. Aplikasi dijalankan pada [ISI: perangkat yang menjalankan aplikasi dan cara perangkat IoT terhubung. Contoh: laptop yang terhubung ke jaringan WiFi yang sama dengan perangkat IoT], dan tampilan diamati melalui peramban [ISI: nama dan versi peramban. Contoh: Google Chrome 141; versinya terlihat di menu Bantuan > Tentang Google Chrome].",
+   "catatan": "Isi keempat [ISI] pada paragraf ini dari catatan saat pengujian, lalu hapus tanda kurung siku beserta kata Contoh. Angka untuk Tabel 4.7, Tabel 4.8, dan paragraf hasil tidak perlu dihitung manual. Setelah satu skenario selesai, jalankan di folder aplikasi: php artisan telemetry:ringkasan --dari=\"2026-11-07 14:05\" --sampai=\"2026-11-07 14:15\" (ganti dengan jam mulai dan selesai skenario). Perintah ini menampilkan jumlah data, selang antardata, kategori dominan, rentang ppm, rekomendasi yang tampil, dan jam setiap perubahan kategori. Langkah lengkapnya ada di berkas kisi-kisi pengisian.",
+   "tetap_komentar": true,
+   "komentar_bersih": true
+  },
+  {
+   "id": "B4-4.3-2",
+   "cari": "Sumber asap yang dipakai adalah [ISI: jenis sumber asap dan jaraknya dari sensor].",
+   "ganti": "Sumber asap yang dipakai adalah [ISI: jenis sumber asap dan jaraknya dari sensor. Contoh: satu batang obat nyamuk bakar yang diletakkan sekitar 50 cm dari sensor]."
+  },
+  {
+   "id": "B4-T4.7-kisi",
+   "cari": "Tabel 4.7 Waktu Pelaksanaan Pengujian pada Beberapa Kondisi Ruangan",
+   "utuh": true,
+   "catatan": "Cara mengisi Tabel 4.7: Waktu Mulai dan Waktu Selesai diisi jam saat skenario dimulai dan diakhiri, misalnya 14.05 WIB dan 14.15 WIB. Jumlah Data Diterima diambil dari baris Jumlah data diterima pada keluaran php artisan telemetry:ringkasan untuk jam tersebut. Sebagai patokan, interval 5 detik berarti sekitar 12 data per menit, jadi skenario 10 menit seharusnya sekitar 120 data. Bila jauh lebih sedikit, tuliskan penyebabnya di paragraf pembahasan skenario.",
+   "tetap_komentar": true,
+   "komentar_bersih": true
+  },
+  {
+   "id": "B4-T4.8-kisi",
+   "cari": "Tabel 4.8 Hasil Pengujian pada Beberapa Kondisi Ruangan",
+   "utuh": true,
+   "catatan": "Cara mengisi Tabel 4.8 dari keluaran php artisan telemetry:ringkasan: Kategori Dominan = baris Kategori dominan (cukup nama kategorinya, misalnya Sedang). Rentang Nilai ppm = baris Rentang nilai ppm, misalnya CO₂ 18,20–64,50; NH₃ 3,10–4,00; CO 2,00–2,60; H₂ 1,00–1,40. Rekomendasi yang Tampil = baris Rekomendasi tampil, misalnya Normal → Waspada. Kesesuaian = Sesuai bila perubahan kategori sama dengan hasil yang diharapkan pada Tabel 3.22, atau Tidak sesuai bila berbeda (jelaskan alasannya di paragraf skenario).",
+   "tetap_komentar": true,
+   "komentar_bersih": true
+  },
+  {
+   "id": "B4-4.3-normal",
+   "cari": "[ISI: uraikan hasil skenario ruangan normal, yaitu kate…ekomendasi dengan Tabel 3.15.]",
+   "ganti": "[ISI: hasil skenario ruangan normal. Tuliskan kategori keseluruhan yang tampil, nilai awal keempat gas, dan rekomendasi yang tampil. Contoh kalimat: Pada skenario ruangan normal, kategori keseluruhan yang tampil adalah Baik selama seluruh skenario, dengan nilai awal CO₂ 18,20 ppm, NH₃ 3,10 ppm, CO 2,00 ppm, dan H₂ 1,00 ppm. Rekomendasi yang tampil adalah tingkat Normal, sesuai dengan Tabel 3.15.]",
+   "catatan": "Nilai awal = kolom Awal pada tabel gas di keluaran telemetry:ringkasan. Angka pada contoh hanya ilustrasi; ganti dengan hasil pengujianmu.",
+   "tetap_komentar": true,
+   "komentar_bersih": true
+  },
+  {
+   "id": "B4-4.3-tertutup",
+   "cari": "[ISI: uraikan hasil skenario ruangan tertutup, yaitu pe…dengan ambang pada Tabel 2.2.]",
+   "ganti": "[ISI: hasil skenario ruangan tertutup. Tuliskan nilai CO₂ di awal dan akhir skenario, jam ketika kategori berubah (bila berubah), dan apakah perubahan itu terjadi saat nilai melewati ambang Tabel 2.2. Contoh kalimat: Selama 30 menit pintu dan jendela ditutup, CO₂ naik dari 20,10 ppm menjadi 64,50 ppm. Kategori berubah dari Baik menjadi Sedang pukul 14.32 WIB, saat CO₂ pertama kali mencapai 50 ppm, dan rekomendasi berubah menjadi Waspada.]",
+   "catatan": "Jam perubahan kategori ada di tabel Perubahan kategori keseluruhan pada keluaran telemetry:ringkasan. Bila kategori tidak berubah, tuliskan nilai CO₂ tertinggi dan bahwa nilai itu masih di bawah ambang 50 ppm.",
+   "tetap_komentar": true,
+   "komentar_bersih": true
+  },
+  {
+   "id": "B4-4.3-berasap",
+   "cari": "[ISI: uraikan hasil skenario ruangan berasap, yaitu per…serta perubahan rekomendasi.]",
+   "ganti": "[ISI: hasil skenario ruangan berasap. Tuliskan nilai CO dan H₂ di awal dan puncaknya, kategori dan penyebab utama yang tampil, serta perubahan rekomendasi. Contoh kalimat: Setelah sumber asap dinyalakan, CO naik dari 2,10 ppm menjadi 58,00 ppm dan H₂ dari 1,00 ppm menjadi 22,40 ppm. Kategori keseluruhan berubah menjadi Tidak Sehat dengan penyebab utama CO, dan rekomendasi berubah menjadi Perlu Tindakan.]",
+   "catatan": "Nilai puncak = kolom Tertinggi pada keluaran telemetry:ringkasan. Penyebab utama ada di tabel Perubahan kategori keseluruhan.",
+   "tetap_komentar": true,
+   "komentar_bersih": true
+  },
+  {
+   "id": "B4-4.3-ventilasi",
+   "cari": "[ISI: uraikan hasil skenario ventilasi berbeda, yaitu p…lah pintu dan jendela dibuka.]",
+   "ganti": "[ISI: hasil skenario ventilasi berbeda. Tuliskan penurunan nilai ppm setelah pintu dan jendela dibuka dan berapa lama sampai kategori kembali membaik. Contoh kalimat: Setelah pintu dan jendela dibuka pukul 15.10 WIB, CO turun dari 58,00 ppm menjadi 6,30 ppm. Kategori kembali Baik pukul 15.17 WIB, atau sekitar 7 menit setelah ventilasi dibuka, dan rekomendasi kembali ke tingkat Normal.]",
+   "catatan": "Lama waktu membaik = selisih jam pintu dibuka dengan jam kategori kembali Baik (lihat tabel Perubahan kategori keseluruhan).",
+   "tetap_komentar": true,
+   "komentar_bersih": true
+  },
+  {
+   "id": "B4-4.3-simpulan",
+   "cari": "[ISI: simpulkan berapa dari empat skenario yang sesuai…ukan ketepatan nilai absolut.]",
+   "ganti": "[ISI: kesimpulan pengujian kondisi ruangan. Tuliskan berapa dari empat skenario yang sesuai dengan hasil yang diharapkan pada Tabel 3.22 (lihat kolom Kesesuaian Tabel 4.8) dan penyebab bila ada yang tidak sesuai. Yang dinilai adalah kesesuaian perubahan kategori dan rekomendasi dengan perubahan kondisi ruangan, bukan ketepatan angka ppm. Contoh kalimat: Keempat skenario sesuai dengan hasil yang diharapkan. Kategori dan rekomendasi memburuk saat ruangan ditutup atau diberi asap, lalu membaik kembali setelah ventilasi dibuka.]",
+   "catatan": "Bila ada skenario yang tidak sesuai, jelaskan kemungkinan penyebabnya, misalnya sumber asap terlalu jauh dari sensor atau durasi skenario terlalu singkat.",
+   "tetap_komentar": true,
+   "komentar_bersih": true
+  },
+  {
+   "id": "B4-4.4-1",
+   "cari": "Evaluasi pengalaman pengguna dilakukan dengan UEQ 26 bu…nggal atau periode pengisian].",
+   "ganti": "Evaluasi pengalaman pengguna dilakukan dengan UEQ 26 butir (Laugwitz et al., 2008) versi Bahasa Indonesia (Santoso et al., 2016) melalui halaman Kuesioner (Gambar 4.9 dan Gambar 4.10). Responden berjumlah [ISI: jumlah responden. Contoh: 30] orang, yaitu [ISI: siapa respondennya. Contoh: mahasiswa Universitas X berusia 18–25 tahun yang belum pernah memakai SIMKU], yang dipilih dengan [ISI: cara memilih responden. Contoh: purposive sampling, yaitu responden dipilih karena sesuai dengan target pengguna aplikasi]. Sebelum mengisi kuesioner, setiap responden menggunakan aplikasi untuk melihat kondisi ruangan di Beranda, membuka grafik di Detail Ruangan, memfilter dan mengunduh data di Riwayat, membaca saran di Rekomendasi Tindakan, dan membaca Panduan Sistem, lalu mengisi 26 butir pada halaman Kuesioner. Pengisian dilakukan pada [ISI: tanggal atau rentang tanggal pengisian. Contoh: 9–13 November 2026].",
+   "catatan": "Jumlah responden disarankan paling sedikit 20 orang agar perbandingan dengan benchmark UEQ bermakna. Bila tugas yang diberikan kepada responden berbeda dari kalimat ini, sesuaikan kalimatnya.",
+   "tetap_komentar": true,
+   "komentar_bersih": true
+  },
+  {
+   "id": "B4-4.4-2",
+   "cari": "Setelah pengisian selesai, jawaban diolah dengan perint…bawah −0,8 penilaian negatif.",
+   "ganti": "Setelah pengisian selesai, jawaban diolah dengan fitur pengolahan UEQ pada aplikasi. Jawaban 1 sampai 7 diubah ke rentang −3 sampai +3, nilai butir yang istilah positifnya berada di sebelah kiri dibalik, lalu dihitung rata-rata, simpangan baku, Cronbach's alpha, dan kategori benchmark untuk keenam skala. Data jawaban juga diekspor ke berkas CSV dan dimasukkan ke UEQ Data Analysis Tool untuk memperoleh rata-rata setiap butir dan memeriksa ulang perhitungan skala (Schrepp, 2023). Rata-rata skala dibandingkan dengan benchmark pada Tabel 3.24 (Schrepp et al., 2017). Menurut Schrepp (2023), rata-rata skala antara −0,8 dan 0,8 menunjukkan penilaian netral, di atas 0,8 penilaian positif, dan di bawah −0,8 penilaian negatif."
+  },
+  {
+   "id": "B4-T4.9-kisi",
+   "cari": "Tabel 4.9 Profil Responden",
+   "utuh": true,
+   "catatan": "Cara mengisi Tabel 4.9: hitung dari data responden (misalnya dari formulir identitas terpisah). Persentase = jumlah ÷ total responden × 100, dibulatkan satu desimal, misalnya 12 dari 30 = 40,0. Baris usia dan status boleh ditambah bila ada lebih dari satu kelompok.",
+   "tetap_komentar": true,
+   "komentar_bersih": true
+  },
+  {
+   "id": "B4-T4.10-kisi",
+   "cari": "Tabel 4.10 Hasil Skala UEQ dan Perbandingan dengan Benchmark",
+   "utuh": true,
+   "catatan": "Cara mengisi Tabel 4.10: jalankan php artisan ueq:report di folder aplikasi. Salin kolom Rerata ke Rata-rata, SD ke Simpangan Baku, Alpha ke Cronbach's Alpha, dan Benchmark ke Kategori Benchmark, dengan koma sebagai pemisah desimal (1,85 bukan 1.85).",
+   "tetap_komentar": true,
+   "komentar_bersih": true
+  },
+  {
+   "id": "B4-T4.11-kisi",
+   "cari": "Tabel 4.11 Rata-rata Setiap Butir UEQ",
+   "utuh": true,
+   "catatan": "Cara mengisi Tabel 4.11: perintah ueq:report juga menulis berkas storage/app/ueq-export.csv. Salin kolom i1 sampai i26 ke lembar Data pada UEQ Data Analysis Tool (unduh dari ueq-online.org), lalu salin rata-rata setiap butir dari lembar hasilnya ke kolom Rata-rata. Urutan butir pada tabel sama dengan urutan i1 sampai i26.",
+   "tetap_komentar": true,
+   "komentar_bersih": true
+  },
+  {
+   "id": "B4-4.4-jumlah",
+   "cari": "[ISI: jumlah jawaban yang diolah dan jawaban yang dikel…alnya karena tidak konsisten.]",
+   "ganti": "[ISI: jumlah jawaban yang diolah dan yang dikeluarkan bila ada. Contoh kalimat: Sebanyak 30 jawaban terkumpul dan seluruhnya diolah. Bila ada jawaban yang dikeluarkan, misalnya karena responden memilih nilai yang sama pada seluruh butir, sebutkan jumlah dan alasannya.]"
+  },
+  {
+   "id": "B4-4.4-skala",
+   "cari": "[ISI: skala dengan rata-rata tertinggi dan terendah, pe…skala berdasarkan Tabel 4.10.]",
+   "ganti": "[ISI: skala dengan rata-rata tertinggi dan terendah beserta penilaiannya berdasarkan Tabel 4.10. Contoh kalimat: Rata-rata tertinggi terdapat pada skala Perspicuity (1,85) dan terendah pada Novelty (0,62). Lima skala bernilai di atas 0,8 sehingga dinilai positif, sedangkan Novelty berada pada rentang netral. Dibandingkan benchmark, Perspicuity termasuk kategori Good dan Novelty termasuk Below Average.]"
+  },
+  {
+   "id": "B4-4.4-alpha",
+   "cari": "[ISI: nilai Cronbach's alpha setiap skala dan skala yang konsistensinya rendah bila ada.]",
+   "utuh": true,
+   "ganti": "[ISI: konsistensi jawaban setiap skala berdasarkan kolom Cronbach's Alpha Tabel 4.10. Nilai di atas 0,7 menunjukkan jawaban dalam satu skala konsisten. Contoh kalimat: Nilai Cronbach's alpha seluruh skala berada di atas 0,7 kecuali Dependability (0,58), sehingga hasil skala tersebut perlu dibaca dengan hati-hati.]"
+  },
+  {
+   "id": "B4-4.4-butir",
+   "cari": "[ISI: butir dengan rata-rata terendah pada Tabel 4.11 d…likasi yang perlu diperbaiki.]",
+   "ganti": "[ISI: butir dengan rata-rata terendah pada Tabel 4.11 dan halaman atau fitur yang berkaitan. Contoh kalimat: Butir dengan rata-rata terendah adalah konservatif – inovatif (0,40). Hal ini dapat dikaitkan dengan tampilan aplikasi yang sederhana dan mirip aplikasi pemantauan pada umumnya.]"
+  },
+  {
+   "id": "B4-4.5-1",
+   "cari": "Tujuan pertama adalah merancang dan membangun sistem be…data setiap sekitar 5 detik.]",
+   "ganti": "Tujuan pertama adalah merancang dan membangun sistem berbasis IoT untuk memantau kualitas udara ruangan secara real-time. Hasil implementasi pada subbab 4.1 menunjukkan bahwa aplikasi dapat menerima data dari perangkat, memeriksa dan menyimpannya, lalu menyajikannya pada tujuh halaman yang diperbarui otomatis setiap 5 detik. Pengujian pada subbab 4.2 menunjukkan bahwa penerimaan, penolakan, pengolahan, dan penyajian data berjalan sesuai harapan, termasuk perubahan tampilan Beranda sekitar 2 detik setelah data baru diterima tanpa memuat ulang halaman. Pembuktian dengan perangkat IoT nyata di ruangan uji diperoleh dari subbab 4.3. [ISI: ringkas Tabel 4.7, yaitu apakah data diterima sekitar setiap 5 detik selama keempat skenario. Contoh kalimat: Selama pengujian, aplikasi menerima 720 data dalam 60 menit atau rata-rata satu data setiap 5 detik, dan status perangkat tidak pernah menjadi Terputus.]"
+  },
+  {
+   "id": "B4-4.5-2",
+   "cari": "[ISI: ringkas kolom Rekomendasi yang Tampil dan Kesesuaian pada Tabel 4.8.]",
+   "ganti": "[ISI: ringkas kolom Rekomendasi yang Tampil dan Kesesuaian pada Tabel 4.8. Contoh kalimat: Pada pengujian ruangan, rekomendasi berubah dari Normal menjadi Waspada saat ruangan ditutup dan menjadi Perlu Tindakan saat ruangan berasap, lalu kembali Normal setelah ventilasi dibuka.]"
+  },
+  {
+   "id": "B4-4.5-3",
+   "cari": "Tujuan ketiga mencakup pengujian fungsional pada bebera…pakah tujuan ketiga tercapai.]",
+   "ganti": "Tujuan ketiga mencakup pengujian fungsional pada beberapa skenario kondisi di satu ruangan uji dan pengukuran pengalaman pengguna dengan UEQ. Pengujian black-box dengan data uji telah selesai: seluruh 29 skenario pada Tabel 3.18 sampai Tabel 3.21 berstatus Valid (Tabel 4.6), termasuk empat bagian tampilan yang diamati langsung di peramban. Pengujian empat kondisi ruangan dan evaluasi UEQ dilaksanakan setelah bab ini disusun. [ISI: ringkas Tabel 4.8 dan Tabel 4.10, lalu nyatakan apakah tujuan ketiga tercapai. Contoh kalimat: Keempat skenario kondisi ruangan sesuai harapan, dan kelima skala UEQ dinilai positif, sehingga tujuan ketiga tercapai.]"
+  },
+  {
+   "id": "B4-4.5-4",
+   "cari": " Keempat, pengujian otomatis dijalankan pada SQLite in-memory…dibentuk oleh migration yang sama.",
+   "ganti": ""
+  },
+  {
+   "id": "B4-4.5-5",
+   "cari": "[ISI: kaitkan dengan hasil UEQ bila sudah tersedia, misalnya skala Perspicuity dan Dependability.]",
+   "ganti": "[ISI: kaitkan dengan hasil UEQ. Contoh kalimat: Skala Perspicuity yang dinilai positif menunjukkan bahwa responden mudah memahami kategori dan saran yang ditampilkan.]"
+  },
+  {
+   "id": "B5",
+   "lokasi": "Bab V",
+   "cari": "Dibandingkan dengan penelitian terdahulu pada subbab 2.…erspicuity dan Dependability.]",
+   "sisip_paragraf": [
+    {
+     "teks": "BAB V\nPENUTUP",
+     "gaya": "Heading1",
+     "halaman_baru": true
+    },
+    {
+     "teks": "Kesimpulan",
+     "gaya": "Heading2",
+     "nomor": "5.%1"
+    },
+    {
+     "teks": "Berdasarkan hasil implementasi, pengujian, dan pembahasan pada Bab IV, kesimpulan penelitian ini sesuai dengan tujuan penelitian pada subbab 1.3 adalah sebagai berikut.",
+     "gaya": "Normal"
+    },
+    {
+     "teks": "1.\tAplikasi web SIMKU berhasil dirancang dan dibangun untuk memantau kualitas udara ruangan secara real-time. Aplikasi menerima data CO₂, NH₃, CO, dan H₂ dari perangkat IoT setiap 5 detik, menolak data yang tidak lengkap atau formatnya salah, menyimpan data yang valid, dan menampilkannya pada tujuh halaman yang diperbarui otomatis tanpa memuat ulang halaman. [ISI: tambahkan satu kalimat hasil pengujian dengan perangkat IoT nyata dari subbab 4.3. Contoh kalimat: Pada pengujian di ruangan uji, data diterima rata-rata setiap 5 detik tanpa terputus.]",
+     "butir": true
+    },
+    {
+     "teks": "2.\tSistem rekomendasi berbasis aturan berhasil memetakan setiap kategori kualitas udara ke satu saran tindakan preventif, yaitu tingkat Normal untuk kategori Baik, Waspada untuk Sedang, Perlu Tindakan untuk Tidak Sehat, dan Segera Bertindak untuk Berbahaya. Keempat aturan menghasilkan tingkat dan teks rekomendasi yang tepat, dan rekomendasi selalu mengikuti kategori data terbaru. [ISI: tambahkan apakah rekomendasi pada pengujian ruangan berubah sesuai perubahan kondisi ruangan (Tabel 4.8). Contoh kalimat: Pada pengujian ruangan, rekomendasi berubah sesuai kondisi, yaitu menjadi lebih tegas saat ruangan ditutup atau berasap dan kembali Normal setelah ventilasi dibuka.]",
+     "butir": true
+    },
+    {
+     "teks": "3.\tPengujian black-box terhadap 29 skenario, yang mencakup fungsi ketujuh halaman, validasi data, klasifikasi kualitas udara, nilai batas ambang, dan rekomendasi tindakan, menunjukkan seluruh skenario berstatus Valid. [ISI: tuliskan hasil pengujian kondisi ruangan dan UEQ. Contoh kalimat: Pengujian pada empat kondisi ruangan menunjukkan 4 dari 4 skenario sesuai harapan. Evaluasi UEQ terhadap 30 responden menghasilkan penilaian positif pada lima skala, dengan skala Perspicuity termasuk kategori Good dibandingkan benchmark.]",
+     "butir": true
+    },
+    {
+     "teks": "Saran",
+     "gaya": "Heading2",
+     "nomor": "5.%1"
+    },
+    {
+     "teks": "Berdasarkan hasil dan batasan penelitian ini, saran untuk pengembangan selanjutnya adalah sebagai berikut.",
+     "gaya": "Normal"
+    },
+    {
+     "teks": "1.\tNilai ppm yang dipakai masih merupakan indikator relatif terhadap kondisi udara saat perangkat dinyalakan. Penelitian selanjutnya dapat bekerja sama dengan pengembang perangkat IoT untuk mengalibrasi sensor terhadap alat ukur acuan, sehingga kategori dapat dibaca sebagai kadar gas yang sebenarnya.",
+     "butir": true
+    },
+    {
+     "teks": "2.\tPengujian dilakukan pada satu ruangan dengan satu perangkat. Pengujian berikutnya dapat dilakukan pada beberapa ruangan dengan ukuran, jumlah penghuni, dan sumber polutan yang berbeda.",
+     "butir": true
+    },
+    {
+     "teks": "3.\tAplikasi baru menyampaikan informasi ketika halamannya dibuka. Fitur pemberitahuan, misalnya melalui notifikasi peramban atau aplikasi pesan, dapat ditambahkan agar pengguna segera mengetahui ketika kualitas udara memburuk.",
+     "butir": true
+    },
+    {
+     "teks": "4.\tParameter yang dipantau dapat ditambah sesuai kemampuan perangkat, misalnya suhu, kelembapan, atau partikel debu PM2.5, dengan ambang batas yang bersumber dari rujukan resmi.",
+     "butir": true
+    },
+    {
+     "teks": "5.\t[ISI: saran perbaikan tampilan atau fitur berdasarkan butir UEQ dengan rata-rata terendah pada Tabel 4.11. Contoh kalimat: Butir konservatif – inovatif memperoleh rata-rata terendah, sehingga tampilan aplikasi dapat dibuat lebih menarik, misalnya dengan ilustrasi kondisi ruangan.]",
+     "butir": true
+    }
+   ],
+   "catatan": "Bab V baru. Setiap [ISI] diisi setelah pengujian ruangan dan UEQ selesai, dengan angka yang sama seperti pada Bab IV. Hapus tanda kurung siku beserta kata Contoh setelah diisi.",
+   "tetap_komentar": true,
+   "komentar_bersih": true
+  }
+ ]
+}

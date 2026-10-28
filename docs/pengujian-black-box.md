@@ -7,6 +7,7 @@ Dokumen ini menyajikan rancangan dan hasil pengujian aplikasi web SIMKU (Sistem 
 | Status | Arti |
 |---|---|
 | **Valid** | Skenario dibuktikan oleh kasus uji otomatis (PHPUnit) yang **lulus** pada eksekusi tanggal 26 Oktober 2026. Kasus ujinya disebut dalam format `KelasUji::metode` (kelas di `tests/Feature` atau `tests/Unit`). |
+| **Valid (peramban)** | Skenario diamati langsung pada peramban Chromium 141 tanggal 29 Oktober 2026 dengan data yang dikirim meniru perangkat IoT (skrip Playwright). Hasil Aktual berisi hasil pengamatan tersebut. |
 | **Belum diuji (manual)** | Belum ada kasus uji otomatis yang membuktikan skenario ini. Skenario harus diuji manual (di peramban atau dengan perangkat IoT), lalu kolom Hasil Aktual dan Status diisi dari pengamatan. |
 
 Kolom **Hasil Aktual** hanya berisi hasil yang benar-benar diperiksa oleh kasus uji yang disebut. Tidak ada hasil yang diisi tanpa eksekusi.
@@ -80,21 +81,21 @@ Data uji dibuat oleh kasus uji itu sendiri (ruangan, perangkat, dan log sensor d
 | F5 | Beranda `/` | Ruangan tanpa perangkat aktif / tanpa ruangan | Perangkat nonaktif; basis data tanpa ruangan | Ruangan tersebut tidak ditampilkan; pesan "Belum ada ruangan yang dipantau" | Sesuai harapan | Valid | `PublicDashboardTest::test_home_hides_rooms_without_active_nodes`, `PublicDashboardTest::test_home_shows_empty_state_without_rooms` |
 | F6 | Beranda `/` | Perangkat berhenti mengirim data | Data terakhir 31 detik lalu | Ruangan bertanda "Perangkat terputus"; ruangan dengan data baru bertanda "Perangkat terhubung" | Sesuai harapan | Valid | `PublicDashboardTest::test_home_marks_stale_devices_disconnected` |
 | F7 | Beranda `/` | Halaman memuat pembaruan berkala | Membuka beranda | Komponen memuat *polling* tiap 5 detik (`wire:poll.5s`) | Sesuai harapan | Valid | `PublicDashboardTest::test_home_with_single_room_focuses_on_that_room` |
-| F8 | Beranda `/` | Tampilan berubah sendiri saat data baru diterima | Perangkat IoT mengirim data baru dengan kategori berbeda saat beranda terbuka di peramban | Nilai ppm, kategori, dan rekomendasi berubah tanpa memuat ulang halaman | (diisi saat uji manual) | Belum diuji (manual) | — |
+| F8 | Beranda `/` | Tampilan berubah sendiri saat data baru diterima | Perangkat IoT mengirim data baru dengan kategori berbeda saat beranda terbuka di peramban | Nilai ppm, kategori, dan rekomendasi berubah tanpa memuat ulang halaman | Data CO₂ 70, NH₃ 30, CO 55, H₂ 10 dikirim pukul 02.05.51 WIB saat Beranda terbuka (data sebelumnya Baik); ±2,4 detik kemudian kategori berubah menjadi Tidak Sehat, penyebab CO, rekomendasi Perlu Tindakan, tanpa navigasi halaman | Valid (peramban) | — |
 | F9 | Detail Ruangan `/ruangan/{room}` | Membuka detail ruangan | 2 data CO₂ (30,5 dan 70) | Grafik CO₂ (bawaan) rentang 24 jam dengan 3 garis ambang putus-putus 50/100/150 ppm, statistik (rata-rata 50,25, min 30,5, maks 70), daftar "10 pembacaan terakhir", *polling* 5 detik | Sesuai harapan | Valid | `PublicDashboardTest::test_room_detail_defaults_to_co2_chart_with_threshold_lines` |
 | F10 | Detail Ruangan | Memilih parameter gas (CO₂, NH₃, CO, atau H₂) | `?gas=co`; aksi pilih H₂ | Grafik menampilkan gas terpilih dengan garis ambangnya (CO: 20/50/80) | Sesuai harapan | Valid | `PublicDashboardTest::test_room_detail_gas_query_selects_gas_and_its_thresholds`, `PublicDashboardTest::test_room_detail_unknown_gas_falls_back_to_co2` |
 | F11 | Detail Ruangan | Memilih gas yang tidak dikenal | `?gas=xyz`; aksi pilih `bogus` | Kembali ke CO₂ | Sesuai harapan | Valid | `PublicDashboardTest::test_room_detail_unknown_gas_falls_back_to_co2` |
 | F12 | Detail Ruangan | Mengganti rentang waktu 1 jam / 24 jam / 7 hari | Data 3 hari, 3 jam, dan baru saja | 1 jam: 1 data; 7 hari: 3 data; rentang tidak dikenal kembali ke 24 jam | Sesuai harapan | Valid | `PublicDashboardTest::test_room_detail_range_switching` |
 | F13 | Detail Ruangan | Daftar 10 pembacaan terakhir | 12 data per menit | Hanya 10 data terbaru, urut dari yang terbaru | Sesuai harapan | Valid | `PublicDashboardTest::test_room_detail_lists_ten_latest_readings_by_created_at` |
 | F14 | Detail Ruangan | Ruangan tanpa data / ruangan tidak ada | Ruangan tanpa log; ID ruangan 9999 | Pesan "Menunggu data dari perangkat IoT"; HTTP 404 untuk ruangan yang tidak ada | Sesuai harapan | Valid | `PublicDashboardTest::test_room_detail_without_data_shows_empty_state`, `PublicDashboardTest::test_unknown_room_returns_404` |
-| F15 | Detail Ruangan | Grafik tergambar di peramban | Membuka halaman di peramban | Grafik garis dan garis ambang terlihat, sumbu waktu terbaca | (diisi saat uji manual) | Belum diuji (manual) | — |
+| F15 | Detail Ruangan | Grafik tergambar di peramban | Membuka halaman di peramban | Grafik garis dan garis ambang terlihat, sumbu waktu terbaca | Grafik garis dan tiga garis ambang tergambar saat halaman dibuka; setelah tombol CO dan 7 Hari ditekan grafik berganti ke CO (ambang 20/50/80). Pengamatan pertama menemukan grafik tidak berganti (galat Maximum call stack size exceeded); diperbaiki di `resources/js/app.js`, lalu diamati ulang | Valid (peramban) | — |
 | F16 | Riwayat `/riwayat` | Membuka halaman riwayat | 3 data di 2 ruangan | Tabel data, tombol "Unduh CSV", *polling* 5 detik | Sesuai harapan | Valid | `PublicHistoryTest::test_history_page_renders_for_guests` |
 | F17 | Riwayat | Memfilter berdasarkan tanggal | Dari/sampai 2026-10-02; dari 2026-10-02 saja | Hanya data pada rentang tanggal tersebut (1 data; 2 data) | Sesuai harapan | Valid | `PublicHistoryTest::test_history_filters_by_date_range` |
 | F18 | Riwayat | Memfilter berdasarkan status (kategori) | Kategori "Tidak Sehat"; kategori tidak dikenal "Sangat Baik" | Hanya 1 data Tidak Sehat; kategori tidak dikenal diabaikan (3 data) | Sesuai harapan | Valid | `PublicHistoryTest::test_history_filters_by_category`, `PublicHistoryTest::test_history_ignores_unknown_category` |
 | F19 | Riwayat | Memfilter berdasarkan ruangan dan mengatur ulang filter | Ruangan "Kamar Tidur"; lalu atur ulang | 1 data Sedang; setelah atur ulang kembali 3 data | Sesuai harapan | Valid | `PublicHistoryTest::test_history_filters_by_room`, `PublicHistoryTest::test_reset_filters_clears_all_filters` |
 | F20 | Riwayat | Ringkasan periode mengikuti filter | Tanpa filter | Jumlah 3, kategori terburuk Tidak Sehat, distribusi per kategori | Sesuai harapan | Valid | `PublicHistoryTest::test_history_summary_reflects_filtered_set` |
 | F21 | Riwayat | Pembagian halaman (*pagination*) | 23 data | Halaman pertama 20 baris, total 2 halaman | Sesuai harapan | Valid | `PublicHistoryTest::test_history_paginates_twenty_rows_per_page` |
-| F22 | Riwayat | Berpindah ke halaman berikutnya | Menekan halaman 2 di peramban (23 data) | Halaman 2 menampilkan 3 data sisanya | (diisi saat uji manual) | Belum diuji (manual) | — |
+| F22 | Riwayat | Berpindah ke halaman berikutnya | Menekan halaman 2 di peramban (23 data) | Halaman 2 menampilkan 3 data sisanya | Dengan 234 data, tombol halaman berikutnya mengubah keterangan dari "Menampilkan 1 sampai 20 dari 234 data" menjadi "21 sampai 40", nomor 2 ditandai, dan baris pertama halaman 2 tepat sesudah baris terakhir halaman 1 | Valid (peramban) | — |
 | F23 | Riwayat | Tidak ada data yang cocok | Kategori "Berbahaya" | Pesan "Tidak ada pengukuran yang cocok dengan filter" | Sesuai harapan | Valid | `PublicHistoryTest::test_history_shows_empty_state` |
 | F24 | Riwayat | Menekan tombol ekspor CSV | Filter ruangan "Dapur Utama"; filter kategori Sedang + tanggal 2026-10-03 | Berkas `riwayat-kualitas-udara-<waktu>.csv` terunduh; kolom: waktu, ruangan, 4 ppm, 4 kategori, kategori keseluruhan, penyebab utama, rekomendasi; isinya hanya data sesuai filter | Sesuai harapan | Valid | `PublicHistoryTest::test_csv_download_has_exact_header_and_filtered_rows`, `PublicHistoryTest::test_csv_download_respects_category_and_date_filters` |
 | F25 | Rekomendasi `/rekomendasi` | Membuka halaman rekomendasi | Tanpa data | Bagian "Saran untuk setiap kategori" berisi 4 aturan (Normal, Waspada, Perlu Tindakan, Segera Bertindak) dengan teks lengkap dan pernyataan "bukan diagnosis medis" | Sesuai harapan | Valid | `RecommendationPageTest::test_page_shows_all_four_rules_and_disclaimer` |
@@ -105,7 +106,7 @@ Data uji dibuat oleh kasus uji itu sendiri (ruangan, perangkat, dan log sensor d
 | F30 | Status Perangkat | Status koneksi terhubung | Data terakhir 10 detik lalu; tepat 30 detik lalu | "Terhubung" (batas ≤ 30 detik) | Sesuai harapan | Valid | `DeviceStatusTest::test_device_is_connected_when_last_data_is_recent`, `DeviceStatusTest::test_device_is_connected_at_exactly_thirty_seconds` |
 | F31 | Status Perangkat | Status koneksi terputus | Data terakhir 120 detik lalu; perangkat belum pernah mengirim | "Terputus"; untuk perangkat tanpa data juga "Belum pernah mengirim data" | Sesuai harapan | Valid | `DeviceStatusTest::test_device_is_disconnected_when_last_data_is_old`, `DeviceStatusTest::test_device_without_data_is_disconnected` |
 | F32 | Status Perangkat | Penjelasan cara kerja | Membuka halaman | Tombol "Baca cara kerja SIMKU" menuju Panduan Sistem; rincian teknis (interval, alur data, penolakan) tidak ditampilkan | Sesuai harapan | Valid | `DeviceStatusTest::test_page_links_to_guide_instead_of_showing_technical_details` |
-| F33 | Status Perangkat | Waktu data terakhir (*last update*) ditampilkan | Perangkat mengirim data | Waktu data terakhir sesuai waktu kirim | (diisi saat uji manual) | Belum diuji (manual) | — |
+| F33 | Status Perangkat | Waktu data terakhir (*last update*) ditampilkan | Perangkat mengirim data | Waktu data terakhir sesuai waktu kirim | Data dikirim pukul 02.06.07 WIB; Status Perangkat menampilkan "0 detik yang lalu" dan 29 Okt 2026 02:06:07 | Valid (peramban) | — |
 | F34 | Status Perangkat | Belum ada perangkat | Tanpa ruangan dan perangkat | Pesan "Belum ada perangkat" | Sesuai harapan | Valid | `DeviceStatusTest::test_shows_empty_state_without_devices` |
 | F35 | Panduan Sistem | Cara kerja dan isi halaman | Membuka halaman | Enam langkah cara kerja SIMKU dan penjelasan isi setiap halaman | Sesuai harapan | Valid | `PublicGuideTest::test_guide_explains_how_simku_works_and_each_page` |
 | F36 | Panduan Sistem `/panduan` | Membuka halaman panduan | Tanpa login | Judul "Panduan Sistem" dan bagian "Cara membaca kategori" | Sesuai harapan | Valid | `PublicGuideTest::test_guide_page_renders_for_guests` |
@@ -215,7 +216,7 @@ Pengujian tambahan untuk rekomendasi:
 
 ## 3.12.5 Pengujian pada Beberapa Kondisi Ruangan
 
-Pengujian ini dilakukan manual dengan perangkat IoT nyata (`arduino/simku_monitor`) di ruang uji yang sama. Tidak ada kasus uji otomatis untuk bagian ini, sehingga seluruh skenario berstatus "Belum diuji (manual)" sampai lembar isian diisi.
+Pengujian ini dilakukan manual dengan perangkat IoT nyata (`arduino/simku_monitor`) di ruang uji yang sama. Tidak ada kasus uji otomatis untuk bagian ini, sehingga seluruh skenario berstatus "Belum diuji (manual)" sampai lembar isian diisi. Angka setiap skenario diambil dengan `php artisan telemetry:ringkasan --dari="<mulai>" --sampai="<selesai>"`; langkahnya ada di `docs/naskah/kisi-kisi-isian.md`.
 
 **Persiapan (wajib dibaca sebelum mulai):**
 
@@ -273,12 +274,12 @@ Kasus uji berikut mendukung evaluasi pengguna (UEQ) dan penyiapan data. Bagian i
 
 | Tabel | Jumlah Skenario | Valid | Belum diuji (manual) |
 |---|---|---|---|
-| Tabel 3.23 Pengujian Fungsional Aplikasi | 47 | 42 | 5 (F8, F15, F22, F33, F47) |
+| Tabel 3.23 Pengujian Fungsional Aplikasi | 47 | 46 (4 di antaranya Valid (peramban): F8, F15, F22, F33) | 1 (F47) |
 | Tabel 3.24 Pengujian Validasi Data | 14 | 14 | 0 |
 | Tabel 3.25 Pengujian Klasifikasi Kualitas Udara (termasuk pengujian tambahan) | 11 | 11 | 0 |
 | Tabel 3.26 Pengujian Rekomendasi Tindakan Preventif (termasuk pengujian tambahan) | 8 | 8 | 0 |
 | Tabel 3.27 Skenario Pengujian pada Beberapa Kondisi Ruangan | 4 | 0 | 4 |
 | Pengujian pendukung | 11 | 11 | 0 |
-| **Jumlah** | **95** | **86** | **9** |
+| **Jumlah** | **95** | **90** | **5** |
 
-Kesimpulan sementara (29 Oktober 2026): seluruh skenario yang diotomasi lulus (156 kasus uji, 638 *assertion*, 0 gagal). Kelima butir wajib Tabel 3.24 naskah, ketujuh baris Tabel 3.25, dan keempat baris Tabel 3.26 berstatus Valid. Skenario yang masih membutuhkan pengamatan di peramban atau dengan perangkat IoT nyata, termasuk seluruh Tabel 3.27, berstatus "Belum diuji (manual)" dan harus diisi dari pengujian lapangan sebelum dilaporkan di Bab IV.
+Kesimpulan sementara (29 Oktober 2026): seluruh skenario yang diotomasi lulus (156 kasus uji, 638 *assertion*, 0 gagal). Kelima butir wajib Tabel 3.24 naskah, ketujuh baris Tabel 3.25, dan keempat baris Tabel 3.26 berstatus Valid. F8, F15, F22, dan F33 diamati di peramban pada tanggal yang sama. Skenario yang masih membutuhkan pengamatan manual, yaitu F47 dan seluruh Tabel 3.27 (dengan perangkat IoT nyata), berstatus "Belum diuji (manual)" dan harus diisi dari pengujian lapangan sebelum dilaporkan di Bab IV.

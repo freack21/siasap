@@ -116,6 +116,8 @@ mengubah teks; sisipan berikutnya ke sasaran yang sama diletakkan berurutan.
     "pindah_pemisah_halaman": true (pada butir) memindahkan pemisah halaman di akhir
     paragraf "cari" ke akhir sisipan (terlacak), untuk sisipan di akhir bab.
       {"teks": "...", "seperti": "<cari>"}         salin pPr paragraf itu
+      {"teks": "1.\tisi", "butir": true}           butir bernomor ketikan dengan pPr paragraf
+                                                   "cari", indentasi gantung 1 cm
       {"tabel": [["sel", ...], ...], "seperti": "<judul atau isi tabel contoh>",
        "lebar": [1, 4, 5], "rata": "kiri", "rata_sel": "kiri"}
                                                    tabel baru (baris tersisip),
@@ -2516,6 +2518,8 @@ def op_insert_paragraphs(revision: Revision, workspace: Workspace) -> tuple[list
                                       style=style if source is anchor and style else None)
             if entry.get("nomor"):
                 number_heading(element, style or "", entry["nomor"], workspace)
+            if entry.get("butir"):
+                hang_list_item(element)
             if entry.get("halaman_baru"):
                 properties = element.find(w("pPr"))
                 if properties is None:
@@ -2532,6 +2536,17 @@ def op_insert_paragraphs(revision: Revision, workspace: Workspace) -> tuple[list
         move_page_break(anchor, [element for element in created if element.tag == w("p")], session)
     paragraphs = len(created) - tables
     return created, f"{paragraphs} paragraf" + (f" dan {tables} tabel" if tables else "") + " disisipkan"
+
+
+def hang_list_item(paragraph: etree._Element) -> None:
+    """Butir bernomor ketikan ("1.<tab>teks") pada paragraf isi: indentasi gantung 1 cm, tanpa inden baris pertama."""
+    properties = paragraph.find(w("pPr"))
+    if properties is None:
+        properties = etree.Element(w("pPr"))
+        paragraph.insert(0, properties)
+    for existing in properties.findall(w("ind")):
+        properties.remove(existing)
+    place_in_order(properties, etree.Element(w("ind"), {w("left"): "567", w("hanging"): "567"}), PARAGRAPH_PROPERTY_ORDER)
 
 
 def move_page_break(anchor: etree._Element, created: list[etree._Element], session: Session) -> None:
