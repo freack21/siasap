@@ -24,7 +24,7 @@ Kolom **Hasil Aktual** hanya berisi hasil yang benar-benar diperiksa oleh kasus 
 | Tanggal eksekusi | 26 Oktober 2026 |
 | Peramban (uji manual) | (diisi saat uji manual: nama dan versi peramban) |
 
-Hasil eksekusi `php artisan test --compact` pada 27 Oktober 2026: **158 kasus uji lulus, 634 *assertion*, 0 gagal** (durasi ±6 detik). Jumlah ini terdiri atas 102 kasus uji *feature* dan 56 kasus uji *unit*. Rangkaian yang sama dijalankan ulang pada MariaDB 10.11 (`DB_CONNECTION=mariadb`) dengan hasil identik: 158 lulus, 634 *assertion*. Kasus uji dengan *data provider* dihitung satu per set data, misalnya `TelemetryApiTest::test_table_3_8_classification_via_api` dihitung 7 kali (baris 1–7).
+Hasil eksekusi `php artisan test --compact` pada 29 Oktober 2026: **156 kasus uji lulus, 638 *assertion*, 0 gagal** (durasi ±10 detik). Jumlah ini terdiri atas 100 kasus uji *feature* dan 56 kasus uji *unit*. Rangkaian yang sama dijalankan ulang pada MariaDB 10.11 (`DB_CONNECTION=mariadb`) dengan hasil identik: 156 lulus, 638 *assertion*. Kasus uji dengan *data provider* dihitung satu per set data, misalnya `TelemetryApiTest::test_table_3_8_classification_via_api` dihitung 7 kali (baris 1–7).
 
 Pembagian kasus uji per kelas:
 
@@ -32,14 +32,16 @@ Pembagian kasus uji per kelas:
 |---|---|---|
 | `Feature\TelemetryApiTest` | 26 | API `POST /api/telemetry`: validasi (Tabel 3.24), klasifikasi lewat API (Tabel 3.25), format lama, API key, pembatasan laju, pembulatan ppm, JSON rusak |
 | `Feature\PublicDashboardTest` | 18 | Beranda `/` dan Detail Ruangan `/ruangan/{room}` |
-| `Feature\PublicHistoryTest` | 12 | Riwayat `/riwayat`: filter, *pagination*, ekspor CSV |
-| `Feature\DeviceStatusTest` | 11 | Status Perangkat `/perangkat` |
+| `Feature\PublicHistoryTest` | 13 | Riwayat `/riwayat`: filter, *pagination*, ekspor CSV |
+| `Feature\DeviceStatusTest` | 7 | Status Perangkat `/perangkat` |
 | `Feature\SurveyTest` | 9 | Kuesioner UEQ `/kuesioner` dan perintah `ueq:report` |
-| `Feature\PublicGuideTest` | 5 | Panduan `/panduan` |
+| `Feature\PublicGuideTest` | 7 | Panduan Sistem `/panduan` |
 | `Feature\RecommendationPageTest` | 4 | Rekomendasi `/rekomendasi` |
-| `Feature\PublicAccessTest` | 2 | Halaman publik tanpa login; rute login lama sudah dihapus |
+| `Feature\PublicAccessTest` | 3 | Halaman publik tanpa login; rute login lama sudah dihapus |
 | `Feature\RoomDeviceSeederTest` | 2 | *Seeder* ruangan/perangkat, perintah `telemetry:clear` |
 | `Feature\SensorLogNodeRelationTest` | 2 | *Foreign key* `sensor_logs.node_id` dan penghapusan berantai |
+| `Feature\SweepSensorLogsCommandTest` | 4 | Perintah `telemetry:sweep` |
+| `Feature\LegacyDemoRoomsMigrationTest` | 3 | Migrasi penghapusan ruangan contoh versi awal |
 | `Feature\NavigationTest` | 1 | Navigasi atas |
 | `Feature\ExampleTest` | 1 | Beranda dapat diakses tanpa login |
 | `Unit\AirQualityClassifierTest` | 35 | Klasifikasi per gas, nilai batas, kategori keseluruhan, penyebab utama |
@@ -95,21 +97,22 @@ Data uji dibuat oleh kasus uji itu sendiri (ruangan, perangkat, dan log sensor d
 | F22 | Riwayat | Berpindah ke halaman berikutnya | Menekan halaman 2 di peramban (23 data) | Halaman 2 menampilkan 3 data sisanya | (diisi saat uji manual) | Belum diuji (manual) | — |
 | F23 | Riwayat | Tidak ada data yang cocok | Kategori "Berbahaya" | Pesan "Tidak ada pengukuran yang cocok dengan filter" | Sesuai harapan | Valid | `PublicHistoryTest::test_history_shows_empty_state` |
 | F24 | Riwayat | Menekan tombol ekspor CSV | Filter ruangan "Dapur Utama"; filter kategori Sedang + tanggal 2026-10-03 | Berkas `riwayat-kualitas-udara-<waktu>.csv` terunduh; kolom: waktu, ruangan, 4 ppm, 4 kategori, kategori keseluruhan, penyebab utama, rekomendasi; isinya hanya data sesuai filter | Sesuai harapan | Valid | `PublicHistoryTest::test_csv_download_has_exact_header_and_filtered_rows`, `PublicHistoryTest::test_csv_download_respects_category_and_date_filters` |
-| F25 | Rekomendasi `/rekomendasi` | Membuka halaman rekomendasi | Tanpa data | Tabel 4 aturan (Normal, Waspada, Perlu Tindakan, Segera Bertindak) dengan teks lengkap, "Dasar rekomendasi", tautan sumber EPA, dan pernyataan "bukan diagnosis medis" | Sesuai harapan | Valid | `RecommendationPageTest::test_page_shows_all_four_rules_basis_sources_and_disclaimer` |
-| F26 | Rekomendasi | Strategi EPA pada tabel aturan | Membuka halaman | Strategi "Peningkatan ventilasi" dan "Kendali sumber" tampil | Sesuai harapan | Valid | `RecommendationPageTest::test_rule_table_lists_epa_strategies` |
+| F25 | Rekomendasi `/rekomendasi` | Membuka halaman rekomendasi | Tanpa data | Bagian "Saran untuk setiap kategori" berisi 4 aturan (Normal, Waspada, Perlu Tindakan, Segera Bertindak) dengan teks lengkap dan pernyataan "bukan diagnosis medis" | Sesuai harapan | Valid | `RecommendationPageTest::test_page_shows_all_four_rules_and_disclaimer` |
+| F26 | Rekomendasi | Dasar penyusunan saran | Membuka halaman | Tombol "Dasar penyusunan saran" menuju Panduan Sistem; strategi EPA tidak ditampilkan di halaman ini | Sesuai harapan | Valid | `RecommendationPageTest::test_basis_of_recommendations_is_linked_to_guide` |
 | F27 | Rekomendasi | Kondisi saat ini per ruangan | Data lama Baik, data terbaru CO 55 | Kondisi saat ini memakai data terbaru: Tidak Sehat, tingkat "Perlu Tindakan" | Sesuai harapan | Valid | `RecommendationPageTest::test_current_condition_shows_latest_category_and_recommendation_per_room` |
 | F28 | Rekomendasi | Ruangan belum memiliki data | Ruangan dan perangkat tanpa log | Pesan "Belum ada data" | Sesuai harapan | Valid | `RecommendationPageTest::test_current_condition_is_empty_without_data` |
-| F29 | Status Perangkat `/perangkat` | Membuka halaman IoT system | Perangkat AIR-001 dengan data 10 detik lalu | Menampilkan device ID AIR-001, ruangan, gas yang dikirim (CO₂, NH₃, CO, H₂), *polling* 5 detik | Sesuai harapan | Valid | `DeviceStatusTest::test_page_renders_device_with_room_and_gases` |
+| F29 | Status Perangkat `/perangkat` | Membuka halaman status perangkat | Perangkat AIR-001 dengan data 10 detik lalu | Menampilkan nama perangkat, ruangan, kode AIR-001, dan gas yang dipantau (CO₂, NH₃, CO, H₂) | Sesuai harapan | Valid | `DeviceStatusTest::test_page_renders_device_with_room_and_gases` |
 | F30 | Status Perangkat | Status koneksi terhubung | Data terakhir 10 detik lalu; tepat 30 detik lalu | "Terhubung" (batas ≤ 30 detik) | Sesuai harapan | Valid | `DeviceStatusTest::test_device_is_connected_when_last_data_is_recent`, `DeviceStatusTest::test_device_is_connected_at_exactly_thirty_seconds` |
 | F31 | Status Perangkat | Status koneksi terputus | Data terakhir 120 detik lalu; perangkat belum pernah mengirim | "Terputus"; untuk perangkat tanpa data juga "Belum pernah mengirim data" | Sesuai harapan | Valid | `DeviceStatusTest::test_device_is_disconnected_when_last_data_is_old`, `DeviceStatusTest::test_device_without_data_is_disconnected` |
-| F32 | Status Perangkat | Interval kirim terukur | 10 data berselang 6 detik (ditambah 2 data lama); 1 data saja | "6,0 detik"; interval tidak diketahui bila hanya 1 data | Sesuai harapan | Valid | `DeviceStatusTest::test_measured_interval_is_average_gap_of_last_ten_logs`, `DeviceStatusTest::test_interval_is_unknown_with_single_log` |
+| F32 | Status Perangkat | Penjelasan cara kerja | Membuka halaman | Tombol "Baca cara kerja SIMKU" menuju Panduan Sistem; rincian teknis (interval, alur data, penolakan) tidak ditampilkan | Sesuai harapan | Valid | `DeviceStatusTest::test_page_links_to_guide_instead_of_showing_technical_details` |
 | F33 | Status Perangkat | Waktu data terakhir (*last update*) ditampilkan | Perangkat mengirim data | Waktu data terakhir sesuai waktu kirim | (diisi saat uji manual) | Belum diuji (manual) | — |
-| F34 | Status Perangkat | Alur data | Membuka halaman | Urutan: sensor membaca gas → dikirim ke server → validasi format → klasifikasi → disimpan → ditampilkan | Sesuai harapan | Valid | `DeviceStatusTest::test_shows_data_flow_steps` |
-| F35 | Status Perangkat | Daftar penolakan data | 11 penolakan; penolakan tanpa device_id; tanpa penolakan | 10 penolakan terbaru beserta pesan galatnya; device_id kosong ditampilkan "Tidak ada"; tanpa penolakan tampil "Belum ada data yang ditolak" | Sesuai harapan | Valid | `DeviceStatusTest::test_shows_ten_latest_rejections_with_short_errors`, `DeviceStatusTest::test_rejection_without_device_id_is_shown_with_placeholder`, `DeviceStatusTest::test_shows_empty_state_without_rejections` |
-| F36 | Panduan `/panduan` | Membuka halaman panduan | Tanpa login | Judul "Panduan Kualitas Udara" dan bagian "Cara membaca kategori" | Sesuai harapan | Valid | `PublicGuideTest::test_guide_page_renders_for_guests` |
-| F37 | Panduan | Tabel ambang batas | Membuka halaman | Rentang ppm tiap kategori untuk 4 gas dan sitasi Solihat et al. (2026) dengan DOI 10.23960/jitet.v14i1.5568 | Sesuai harapan | Valid | `PublicGuideTest::test_guide_shows_threshold_table_with_solihat_citation` |
-| F38 | Panduan | Keterangan gas dan cara membaca | Membuka halaman | Penjelasan ppm sebagai indikator relatif, kategori keseluruhan = kategori gas terburuk, nama 4 gas, sensor MQ-135 dan MQ-2 | Sesuai harapan | Valid | `PublicGuideTest::test_guide_explains_relative_ppm_and_worst_category` |
-| F39 | Panduan | FAQ dan batasan | Membuka halaman | Bagian "Pertanyaan umum" memuat interval 5 detik, arti "Terputus", dan "bukan diagnosis medis"; tidak memuat istilah metode perhitungan indeks yang tidak dipakai | Sesuai harapan | Valid | `PublicGuideTest::test_guide_faq_covers_interval_disconnection_and_disclaimer`, `PublicGuideTest::test_guide_has_no_sub_index_ku_index_or_co_aqi` |
+| F34 | Status Perangkat | Belum ada perangkat | Tanpa ruangan dan perangkat | Pesan "Belum ada perangkat" | Sesuai harapan | Valid | `DeviceStatusTest::test_shows_empty_state_without_devices` |
+| F35 | Panduan Sistem | Cara kerja dan isi halaman | Membuka halaman | Enam langkah cara kerja SIMKU dan penjelasan isi setiap halaman | Sesuai harapan | Valid | `PublicGuideTest::test_guide_explains_how_simku_works_and_each_page` |
+| F36 | Panduan Sistem `/panduan` | Membuka halaman panduan | Tanpa login | Judul "Panduan Sistem" dan bagian "Cara membaca kategori" | Sesuai harapan | Valid | `PublicGuideTest::test_guide_page_renders_for_guests` |
+| F37 | Panduan Sistem | Tabel ambang batas | Membuka halaman | Rentang ppm tiap kategori untuk 4 gas dan sitasi Solihat et al. (2026) dengan DOI 10.23960/jitet.v14i1.5568 | Sesuai harapan | Valid | `PublicGuideTest::test_guide_shows_threshold_table_with_solihat_citation` |
+| F38 | Panduan Sistem | Keterangan gas dan cara membaca | Membuka halaman | Penjelasan ppm sebagai indikator relatif, kategori keseluruhan = kategori gas terburuk, nama 4 gas, sensor MQ-135 dan MQ-2 | Sesuai harapan | Valid | `PublicGuideTest::test_guide_explains_relative_ppm_and_worst_category` |
+| F39 | Panduan Sistem | FAQ dan batasan | Membuka halaman | Bagian "Pertanyaan umum" memuat interval 5 detik, arti "Terputus", dan "bukan diagnosis medis"; tidak memuat istilah metode perhitungan indeks yang tidak dipakai | Sesuai harapan | Valid | `PublicGuideTest::test_guide_faq_covers_interval_disconnection_and_disclaimer`, `PublicGuideTest::test_guide_has_no_sub_index_ku_index_or_co_aqi` |
+| F39a | Panduan Sistem | Dasar saran tindakan | Membuka halaman | Dasar penyusunan saran dan tautan sumber EPA | Sesuai harapan | Valid | `PublicGuideTest::test_guide_shows_basis_and_sources_of_recommendations` |
 | F40 | Kuesioner `/kuesioner` | Membuka kuesioner | Tanpa login | 26 butir UEQ, masing-masing 7 pilihan (182 tombol radio) | Sesuai harapan | Valid | `SurveyTest::test_guest_can_open_survey_page_with_26_items` |
 | F41 | Kuesioner | Mengirim jawaban lengkap | 26 jawaban 1–7, nama "Budi"; tanpa nama | Tersimpan, pesan "Terima kasih"; nama boleh kosong | Sesuai harapan | Valid | `SurveyTest::test_guest_can_submit_complete_answers`, `SurveyTest::test_name_is_optional` |
 | F42 | Kuesioner | Jawaban belum lengkap | Butir 7 kosong; semua kosong | Galat pada butir yang kosong, tidak tersimpan | Sesuai harapan | Valid | `SurveyTest::test_all_items_are_required` |
@@ -127,7 +130,7 @@ Data uji dibuat oleh kasus uji itu sendiri (ruangan, perangkat, dan log sensor d
 
 Data uji dasar (format naskah 3.9.1): `device_id` = `AIR-001` (terdaftar dan aktif), `timestamp` = `2026-05-01 10:00:00`, `co2_ppm` = 30, `nh3_ppm` = 20, `co_ppm` = 10, `h2_ppm` = 5. Setiap baris mengubah satu bagian dari data dasar.
 
-"Kesalahan dicatat" berarti data yang ditolak disimpan di tabel `telemetry_rejections` (device_id, payload, errors) dan ditulis ke log channel `telemetry` (`storage/logs/telemetry-*.log`). Penolakan juga terlihat di halaman Status Perangkat (Tabel 3.23 F35).
+"Kesalahan dicatat" berarti data yang ditolak disimpan di tabel `telemetry_rejections` (device_id, payload, errors) dan ditulis ke log channel `telemetry` (`storage/logs/telemetry-*.log`).
 
 **Tabel 3.24 Pengujian Validasi Data**
 
@@ -219,7 +222,7 @@ Pengujian ini dilakukan manual dengan perangkat IoT nyata (`arduino/simku_monito
 1. Firmware mengambil **baseline saat perangkat dinyalakan**: pemanasan sekitar 30 detik, lalu rata-rata 50 pembacaan ADC. Nilai ppm yang dikirim adalah selisih terhadap baseline ini (indikator relatif, sesuai metode Solihat et al., 2026). Karena itu:
    - Nyalakan perangkat di **udara ruangan normal** (pintu/jendela terbuka seperti biasa, tanpa sumber asap atau gas).
    - **Jangan me-*restart* atau mencabut daya perangkat di antara skenario.** Restart akan mengambil baseline baru dari udara saat itu sehingga nilai antar-skenario tidak dapat dibandingkan. Bila perangkat terlanjur restart, ulangi dari skenario 1.
-2. Pastikan perangkat sudah tersinkron NTP dan halaman **Status Perangkat** menunjukkan "Terhubung" dengan interval terukur sekitar 5 detik sebelum memulai.
+2. Pastikan perangkat sudah tersinkron NTP dan halaman **Status Perangkat** menunjukkan "Terhubung" sebelum memulai.
 3. Jalankan server dengan `php artisan serve --host=0.0.0.0 --port=8000` agar dapat dijangkau ESP32.
 4. Kosongkan data uji coba sebelumnya bila perlu (`php artisan telemetry:clear`).
 5. Untuk setiap skenario, catat waktu mulai dan selesai, lalu ekspor CSV dari halaman Riwayat dengan filter tanggal tersebut sebagai bukti.
@@ -278,4 +281,4 @@ Kasus uji berikut mendukung evaluasi pengguna (UEQ) dan penyiapan data. Bagian i
 | Pengujian pendukung | 11 | 11 | 0 |
 | **Jumlah** | **95** | **86** | **9** |
 
-Kesimpulan sementara (27 Oktober 2026): seluruh skenario yang diotomasi lulus (158 kasus uji, 634 *assertion*, 0 gagal). Kelima butir wajib Tabel 3.24 naskah, ketujuh baris Tabel 3.25, dan keempat baris Tabel 3.26 berstatus Valid. Skenario yang masih membutuhkan pengamatan di peramban atau dengan perangkat IoT nyata, termasuk seluruh Tabel 3.27, berstatus "Belum diuji (manual)" dan harus diisi dari pengujian lapangan sebelum dilaporkan di Bab IV.
+Kesimpulan sementara (29 Oktober 2026): seluruh skenario yang diotomasi lulus (156 kasus uji, 638 *assertion*, 0 gagal). Kelima butir wajib Tabel 3.24 naskah, ketujuh baris Tabel 3.25, dan keempat baris Tabel 3.26 berstatus Valid. Skenario yang masih membutuhkan pengamatan di peramban atau dengan perangkat IoT nyata, termasuk seluruh Tabel 3.27, berstatus "Belum diuji (manual)" dan harus diisi dari pengujian lapangan sebelum dilaporkan di Bab IV.

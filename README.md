@@ -13,9 +13,9 @@ Seluruh halaman bersifat publik (tanpa login) dan diakses lewat navigasi atas. H
 | Beranda | `/` | Kategori keseluruhan, penyebab utama, kartu 4 gas (ppm + kategori), rekomendasi tindakan, status perangkat. Bila hanya ada 1 ruangan, langsung menampilkan ruangan tersebut. |
 | Detail Ruangan | `/ruangan/{room}` | Grafik per gas (CO₂/NH₃/CO/H₂) dengan garis ambang kategori, rentang 1 jam / 24 jam / 7 hari, statistik, 10 pembacaan terakhir |
 | Riwayat | `/riwayat` | Filter ruangan, tanggal, dan kategori; ringkasan periode; *pagination*; unduh CSV |
-| Rekomendasi | `/rekomendasi` | Kategori dan rekomendasi saat ini, tabel 4 aturan, dasar rekomendasi (U.S. EPA), pernyataan bukan diagnosis medis |
-| Perangkat | `/perangkat` | Device ID, gas yang dikirim, waktu data terakhir, status koneksi (terhubung bila data terakhir ≤ 30 detik), interval terukur, alur data, 10 penolakan data terakhir |
-| Panduan | `/panduan` | Cara membaca kategori, tabel ambang batas, keterangan 4 gas, FAQ, batasan |
+| Rekomendasi | `/rekomendasi` | Kategori dan rekomendasi saat ini, saran untuk setiap kategori, pernyataan bukan diagnosis medis, tautan ke dasar penyusunan saran di Panduan Sistem |
+| Perangkat | `/perangkat` | Nama dan kode perangkat, ruangan, status koneksi dengan penjelasan sederhana (terhubung bila data terakhir ≤ 30 detik), waktu data terakhir, gas yang dipantau |
+| Panduan Sistem | `/panduan` | Cara kerja SIMKU, isi setiap halaman, cara membaca kategori, tabel ambang batas, keterangan 4 gas, dasar saran tindakan, FAQ, batasan |
 | Kuesioner | `/kuesioner` | Kuesioner UEQ 26 butir, skala 7 titik, nama responden opsional (maksimal 3 pengisian per jam per IP) |
 
 ## Klasifikasi dan rekomendasi

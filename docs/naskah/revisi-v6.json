@@ -1,0 +1,1133 @@
+{
+ "keterangan": "Revisi v6: Bab III lebih ringkas dan tidak terlalu teknis, uji keamanan dihapus dari uji nonfungsional, halaman Status Perangkat dan Panduan Sistem disederhanakan untuk pengguna awam, serta Bab IV diselaraskan dengan aplikasi dan bukti uji terbaru.",
+ "revisi": [
+  {
+   "id": "B3-3.1-1",
+   "cari": "Data yang digunakan berupa nilai konsentrasi gas CO₂, N…anya tanpa melakukan konversi.",
+   "ganti": "Data yang diolah adalah nilai kadar gas CO₂, NH₃, CO, dan H₂ dalam satuan parts per million (ppm) yang dikirim perangkat IoT setiap 5 detik. Nilai tersebut dihitung oleh perangkat sebagai indikator relatif kualitas udara ruangan (subbab 2.5), sehingga aplikasi menerimanya apa adanya tanpa konversi."
+  },
+  {
+   "id": "B3-3.1-2",
+   "cari": "Alur sistem dilakukan melalui beberapa tahapan. Pertama…tau mengurangi sumber polutan.",
+   "ganti": "Pengolahan data pada sistem meliputi validasi data, klasifikasi setiap gas berdasarkan ambang batas (threshold-based classification), penentuan kategori keseluruhan dari kategori terburuk, dan pemberian rekomendasi tindakan preventif berbasis aturan (rule-based). Rincian alur tersebut dijelaskan pada subbab 3.7 dan 3.9."
+  },
+  {
+   "id": "B3-3.2-1",
+   "cari": "Data yang digunakan oleh sistem berupa nilai pembacaan…t ditampilkan kepada pengguna.",
+   "hapus": "paragraf"
+  },
+  {
+   "id": "B3-3.2-2",
+   "cari": "Fokus utama penelitian ini berada pada pengembangan per…i PM2.5, PM10, atau AQI resmi.",
+   "ganti": "Fokus penelitian ini adalah pengembangan perangkat lunak. Perangkat IoT hanya berperan sebagai penyedia data (data provider), sehingga perancangan, konfigurasi, kalibrasi, dan pengoperasiannya tidak dibahas, begitu pula pengukuran polutan spesifik seperti PM2.5, PM10, atau AQI resmi. Ruang lingkup objek penelitian dirangkum pada Tabel 3.1."
+  },
+  {
+   "id": "B3-3.2-3",
+   "cari": "Pada sistem yang dikembangkan, data pembacaan sensor ak…berbasis aturan (rule-based).",
+   "hapus": "paragraf"
+  },
+  {
+   "id": "B3-3.2-4",
+   "cari": "Dengan demikian, objek penelitian ini dapat dipahami se…esuai kondisi yang terdeteksi.",
+   "hapus": "paragraf"
+  },
+  {
+   "id": "B3-3.3-1",
+   "cari": "Sumber data dalam penelitian ini berasal dari perangkat…serta identitas perangkat IoT.",
+   "ganti": "Data penelitian berasal dari perangkat Internet of Things (IoT) yang mengirim nilai kadar gas karbon dioksida (CO₂), amonia (NH₃), karbon monoksida (CO), dan hidrogen (H₂) dalam satuan ppm, waktu pembacaan, serta identitas perangkat ke aplikasi web melalui jaringan internet."
+  },
+  {
+   "id": "B3-3.3-2",
+   "cari": "Pemilihan parameter gas pada penelitian ini disesuaikan…an dijelaskan sebagai berikut.",
+   "ganti": "Keempat gas dipilih karena berkaitan dengan kondisi ruangan tertutup: CO₂ dengan ventilasi dan jumlah penghuni (Persily & de Jonge, 2017), NH₃ dengan pemakaian bahan pembersih (Agency for Toxic Substances and Disease Registry, 2011), serta CO dan H₂ dengan asap atau gas mudah terbakar (U.S. Environmental Protection Agency, 2026a). Gas tersebut dibaca oleh sensor MQ-135 (CO₂ dan NH₃) dan MQ-2 (CO dan H₂) pada perangkat IoT."
+  },
+  {
+   "id": "B3-3.3-3",
+   "cari": "1.\tKarbon dioksida (CO₂). Di dalam ruangan, CO₂ dihasil…pada pengujian (subbab 3.12).",
+   "hapus": "paragraf"
+  },
+  {
+   "id": "B3-3.3-4",
+   "cari": "2.\tAmonia (NH₃). Di dalam ruangan, amonia dapat berasal…bahan kimia di sekitar sensor.",
+   "hapus": "paragraf"
+  },
+  {
+   "id": "B3-3.3-5",
+   "cari": "3.\tKarbon monoksida (CO). CO dihasilkan dari pembakaran…ngan skenario ruangan berasap.",
+   "hapus": "paragraf"
+  },
+  {
+   "id": "B3-3.3-6",
+   "cari": "4.\tHidrogen (H₂). H₂ pada penelitian ini tidak dimaksud…gas mudah terbakar di ruangan.",
+   "hapus": "paragraf"
+  },
+  {
+   "id": "B3-3.3-7",
+   "cari": "Pemilihan jenis sensor, perhitungan nilai ppm, dan kali…rupakan baku mutu udara resmi.",
+   "ganti": "Pemilihan sensor, perhitungan nilai ppm, dan kalibrasi merupakan bagian penelitian IoT yang dikerjakan rekan satu proyek. Karena sensor MQ tidak selektif terhadap satu jenis gas, aplikasi web memperlakukan nilai keempat gas sebagai indikator relatif perubahan kondisi udara (subbab 2.5), bukan konsentrasi absolut. Ambang batas pada Tabel 2.2 dipakai sebagai acuan kategori aplikasi, bukan baku mutu udara resmi."
+  },
+  {
+   "id": "B3-3.3-8",
+   "cari": "Data utama yang digunakan adalah nilai ppm CO₂, NH₃, CO…g batas yang telah ditetapkan.",
+   "hapus": "paragraf"
+  },
+  {
+   "id": "B3-3.3-9",
+   "cari": "Data yang diterima server bersifat real-time dan juga d…atan log sistem (audit trail).",
+   "ganti": "Data yang diterima ditampilkan sebagai kondisi terkini dan disimpan sebagai data historis untuk halaman Riwayat. Jenis data penelitian dirangkum pada Tabel 3.2."
+  },
+  {
+   "id": "B3-3.3-10",
+   "cari": "Dengan demikian, sumber data dalam penelitian ini tidak…kalibrasi perangkat keras IoT.",
+   "hapus": "paragraf"
+  },
+  {
+   "id": "B3-3.4-1",
+   "cari": "Teknik pengumpulan data dalam penelitian ini dilakukan…kan preventif berbasis aturan.",
+   "ganti": "Data dan informasi untuk pengembangan sistem dikumpulkan dengan metode berikut."
+  },
+  {
+   "id": "B3-3.4-2",
+   "cari": "Metode pengumpulan data yang digunakan dalam penelitian ini adalah sebagai berikut:",
+   "utuh": true,
+   "hapus": "paragraf"
+  },
+  {
+   "id": "B3-3.4-3",
+   "cari": "Observasi dilakukan dengan mengamati proses penerimaan…or pada perangkat itu sendiri.",
+   "ganti": "Observasi dilakukan terhadap data yang diterima aplikasi dari perangkat IoT untuk mengetahui format data, interval pengiriman, dan cara penyimpanannya, tanpa mengamati proses pembacaan sensor pada perangkat."
+  },
+  {
+   "id": "B3-3.4-4",
+   "cari": "Wawancara dilakukan dengan calon pengguna atau pihak ya…tindakan preventif sederhana.",
+   "ganti": "Wawancara dilakukan dengan calon pengguna untuk mengetahui informasi yang perlu ditampilkan, bentuk tampilan, dan bentuk rekomendasi yang mudah dipahami."
+  },
+  {
+   "id": "B3-3.4-5",
+   "cari": "Studi literatur dilakukan dengan mempelajari berbagai r…yang terkalibrasi atau resmi.",
+   "ganti": "Studi literatur dilakukan terhadap jurnal, buku, dan dokumentasi teknis tentang kualitas udara ruangan, Internet of Things, aplikasi web, klasifikasi berbasis ambang batas, dan sistem rekomendasi berbasis aturan sebagai dasar perancangan sistem."
+  },
+  {
+   "id": "B3-3.4-6",
+   "cari": "Dokumentasi dilakukan dengan mencatat data hasil penguj…i dengan kebutuhan penelitian.",
+   "ganti": "Dokumentasi dilakukan dengan mencatat hasil pengujian, yaitu nilai ppm keempat gas, waktu pengiriman, kategori, dan rekomendasi yang dihasilkan sistem, sebagai bahan evaluasi."
+  },
+  {
+   "id": "B3-3.5-1",
+   "cari": "Tahap analisis kebutuhan sistem dilakukan untuk mengide…n disajikan pada subbab 3.5.1.",
+   "ganti": "Tahap ini mengidentifikasi kebutuhan pengguna dari hasil observasi, wawancara, dan studi literatur. Hasilnya berupa kebutuhan fungsional dan non-fungsional sistem yang dirinci pada subbab 3.5.1."
+  },
+  {
+   "id": "B3-3.5-2",
+   "cari": "Tahap perancangan sistem dilakukan setelah kebutuhan si…am sistem saling berinteraksi.",
+   "ganti": "Tahap ini menghasilkan rancangan arsitektur sistem, flowchart, use case diagram beserta skenarionya, activity diagram, rancangan basis data dalam bentuk Entity Relationship Diagram (ERD), dan rancangan antarmuka (wireframe)."
+  },
+  {
+   "id": "B3-3.5-3",
+   "cari": "Tahap implementasi merupakan proses pembangunan sistem…indakan melalui dashboard web.",
+   "ganti": "Tahap ini membangun aplikasi web sesuai rancangan, yang terdiri atas bagian backend untuk menerima dan mengolah data serta bagian frontend untuk menampilkan informasi kepada pengguna."
+  },
+  {
+   "id": "B3-3.5-4",
+   "cari": "Tahap pengujian dilakukan untuk memastikan bahwa sistem…an pengguna terhadap aplikasi.",
+   "ganti": "Tahap ini memastikan sistem berjalan sesuai kebutuhan melalui black-box testing (subbab 3.12) dan mengukur pengalaman pengguna dengan User Experience Questionnaire (UEQ) 26 butir."
+  },
+  {
+   "id": "B3-3.5-5",
+   "cari": "Tahap pemeliharaan sistem dilakukan setelah sistem sele…jangka waktu yang lebih lama.",
+   "ganti": "Tahap ini memperbaiki kesalahan yang ditemukan dan menambahkan fitur bila diperlukan agar sistem tetap dapat digunakan."
+  },
+  {
+   "id": "B3-3.5.1-1",
+   "cari": "Analisis kebutuhan merupakan keluaran tahap Requirement…io pengujian pada subbab 3.12.",
+   "ganti": "Kebutuhan sistem dirumuskan dari hasil observasi, wawancara, dan studi literatur, lalu dikelompokkan menjadi kebutuhan fungsional dan non-fungsional. Setiap kebutuhan diberi kode agar dapat ditelusuri ke use case (subbab 3.7) dan skenario pengujian (subbab 3.12)."
+  },
+  {
+   "id": "B3-KF-01",
+   "cari": "Sistem menerima data dari perangkat IoT melalui endpoin…, nh3_ppm, co_ppm, dan h2_ppm.",
+   "ganti": "Sistem menerima data dari perangkat IoT melalui API dalam format JSON yang memuat identitas perangkat, waktu pembacaan, dan nilai ppm keempat gas."
+  },
+  {
+   "id": "B3-KF-02",
+   "cari": "Sistem memvalidasi data: seluruh atribut wajib ada, nil…olakan data beserta alasannya.",
+   "ganti": "Sistem memvalidasi kelengkapan dan format data. Data yang tidak valid ditolak dan dicatat beserta alasannya."
+  },
+  {
+   "id": "B3-KF-06",
+   "cari": "Sistem menyimpan data yang valid beserta kategori per g…jawab dengan respons HTTP 201.",
+   "ganti": "Sistem menyimpan data yang valid beserta kategori per gas, kategori keseluruhan, gas penyebab utama, dan tingkat rekomendasi ke basis data."
+  },
+  {
+   "id": "B3-KF-08",
+   "cari": "Halaman Detail Ruangan menampilkan grafik nilai ppm per…an sepuluh pembacaan terakhir.",
+   "ganti": "Halaman Detail Ruangan menampilkan grafik nilai ppm per gas dengan pilihan rentang 1 jam, 24 jam, atau 7 hari, garis batas kategori, statistik, proporsi waktu per kategori, dan sepuluh data terakhir."
+  },
+  {
+   "id": "B3-KF-10",
+   "cari": "Halaman Rekomendasi menampilkan rekomendasi untuk kondi…mendasi bukan diagnosis medis.",
+   "ganti": "Halaman Rekomendasi menampilkan saran untuk kondisi saat ini, daftar saran untuk setiap kategori, dan keterangan bahwa rekomendasi bukan diagnosis medis."
+  },
+  {
+   "id": "B3-KF-11",
+   "cari": "Halaman Status Perangkat menampilkan device_id, gas yan…ang ditolak beserta alasannya.",
+   "ganti": "Halaman Status Perangkat menampilkan status koneksi setiap perangkat (terhubung atau terputus), waktu data terakhir diterima, dan gas yang dipantau."
+  },
+  {
+   "id": "B3-KF-12",
+   "cari": "Halaman Panduan menampilkan cara membaca kategori, tabe…yaan umum, dan batasan sistem.",
+   "ganti": "Halaman Panduan Sistem menampilkan penjelasan cara kerja sistem, isi setiap halaman, cara membaca kategori, tabel ambang batas beserta sumbernya, arti setiap kategori, keterangan keempat gas, dasar penyusunan rekomendasi, pertanyaan umum, dan batasan sistem."
+  },
+  {
+   "id": "B3-KNF-03",
+   "cari": "Endpoint API dapat dilindungi kunci API (header X-Api-K…ya disimpan dalam bentuk hash.",
+   "hapus": "baris"
+  },
+  {
+   "id": "B3-KNF-04",
+   "cari": "KNF-04",
+   "utuh": true,
+   "ganti": "KNF-03"
+  },
+  {
+   "id": "B3-KNF-05",
+   "cari": "KNF-05",
+   "utuh": true,
+   "ganti": "KNF-04"
+  },
+  {
+   "id": "B3-KNF-06",
+   "cari": "KNF-06",
+   "utuh": true,
+   "ganti": "KNF-05"
+  },
+  {
+   "id": "B3-KNF-07",
+   "cari": "KNF-07",
+   "utuh": true,
+   "ganti": "KNF-06"
+  },
+  {
+   "id": "B3-KNF-isi",
+   "cari": "Antarmuka berbahasa Indonesia dengan warna kategori yan…engguna dievaluasi dengan UEQ.",
+   "ganti": "Antarmuka memakai bahasa Indonesia sehari-hari yang mudah dipahami pengguna awam, dengan warna kategori yang konsisten di semua halaman. Penjelasan rinci sistem disediakan pada halaman Panduan Sistem."
+  },
+  {
+   "id": "B3-3.6-1",
+   "cari": "IoT Layer merupakan sumber data berupa perangkat IoT ya…ran terkalibrasi laboratorium.",
+   "ganti": "IoT Layer adalah perangkat IoT yang berada di luar lingkup pengembangan penelitian ini. Perangkat membaca sensor gas dan mengirim nilai ppm CO₂, NH₃, CO, dan H₂ ke aplikasi web setiap 5 detik melalui REST API."
+  },
+  {
+   "id": "B3-3.6-2",
+   "cari": "Data dikirim secara berkala setiap 5–10 detik (perangka…an kalibrasinya tidak dibahas.",
+   "hapus": "paragraf"
+  },
+  {
+   "id": "B3-3.6-3",
+   "cari": "status koneksi perangkat dan data yang ditolak;",
+   "utuh": true,
+   "ganti": "status koneksi perangkat;"
+  },
+  {
+   "id": "B3-3.6-4",
+   "cari": "panduan membaca kategori beserta tabel ambang;",
+   "utuh": true,
+   "ganti": "panduan sistem, termasuk cara membaca kategori dan tabel ambang;"
+  },
+  {
+   "id": "B3-3.6-5",
+   "cari": "Perangkat IoT mengirimkan nilai ppm CO₂, NH₃, CO, dan H…p ke server setiap 5–10 detik.",
+   "ganti": "Perangkat IoT mengirim nilai ppm CO₂, NH₃, CO, dan H₂ beserta identitas perangkat dan waktu pembacaan ke server setiap 5 detik."
+  },
+  {
+   "id": "B3-3.6-6",
+   "cari": "Sistem memvalidasi data. Data yang tidak valid ditolak…penolakan data sebagai error.",
+   "ganti": "Sistem memvalidasi data; data yang tidak valid ditolak dan dicatat."
+  },
+  {
+   "id": "B3-3.7-1",
+   "cari": "Data yang diterima oleh sistem terlebih dahulu melalui…ra keempat parameter tersebut.",
+   "hapus": "paragraf"
+  },
+  {
+   "id": "B3-3.7-2",
+   "cari": "Selain menampilkan kondisi udara saat ini, sistem membe…tus, dan rekomendasi tindakan.",
+   "hapus": "paragraf"
+  },
+  {
+   "id": "B3-3.7.1-1",
+   "cari": "Gambar 3.1 menunjukkan alur kerja aplikasi web secara k…tan terkalibrasi laboratorium.",
+   "ganti": "Gambar 3.1 menunjukkan alur kerja aplikasi web, mulai dari penerimaan data dari perangkat IoT sampai penyajian hasil pengolahan kepada pengguna melalui dashboard."
+  },
+  {
+   "id": "B3-3.7.1-2",
+   "cari": "Data yang diterima server terlebih dahulu divalidasi un…disimpan ke dalam basis data.",
+   "ganti": "Data yang diterima divalidasi terlebih dahulu. Data yang tidak valid ditolak dan dicatat, sedangkan data yang valid disimpan ke basis data."
+  },
+  {
+   "id": "B3-3.7.1-3",
+   "cari": "Selanjutnya, setiap nilai ppm diklasifikasikan ke dalam…da dashboard secara real-time.",
+   "ganti": "Setiap nilai ppm kemudian diklasifikasikan berdasarkan ambang batas, kategori keseluruhan ditentukan dari kategori terburuk beserta gas penyebab utamanya, lalu sistem menghasilkan rekomendasi tindakan berbasis aturan. Hasilnya disimpan dan ditampilkan pada dashboard."
+  },
+  {
+   "id": "B3-3.7.1-4",
+   "cari": "Setelah kategori keseluruhan ditentukan, sistem menghas…mudah dipahami oleh pengguna.",
+   "hapus": "paragraf"
+  },
+  {
+   "id": "B3-3.7.2-1",
+   "cari": "Fungsi Menerima dan Memvalidasi Data ppm dipicu oleh pe…arkan dengan relasi «include».",
+   "ganti": "Fungsi Menerima dan Memvalidasi Data ppm dipicu oleh perangkat IoT dan menyertakan («include») fungsi Menentukan Kategori Kualitas Udara serta Menghasilkan Rekomendasi Tindakan Preventif. Fungsi-fungsi yang diakses pengguna menampilkan hasil ketiga fungsi tersebut."
+  },
+  {
+   "id": "B3-3.7.2-2",
+   "cari": "Dengan use case diagram ini, hubungan antara aktor dan…tindakan preventif sederhana.",
+   "hapus": "paragraf"
+  },
+  {
+   "id": "B3-UC01-1a",
+   "cari": "1a. Jika kunci API diaktifkan dan header X-Api-Key tida…HTTP 401 tanpa memproses data.",
+   "hapus": "paragraf"
+  },
+  {
+   "id": "B3-UC01-1b",
+   "cari": "1b. Jika permintaan melebihi 60 kali per menit, sistem…utnya dengan respons HTTP 429.",
+   "hapus": "paragraf"
+  },
+  {
+   "id": "B3-UC01-post",
+   "cari": "Data yang valid tersimpan beserta hasil klasifikasi dan…l di halaman Status Perangkat.",
+   "ganti": "Data yang valid tersimpan beserta hasil klasifikasi dan rekomendasinya. Data yang tidak valid tercatat pada log penolakan data."
+  },
+  {
+   "id": "B3-UC07-desc",
+   "cari": "Pengguna melihat rekomendasi tindakan preventif untuk k…i beserta dasar penyusunannya.",
+   "ganti": "Pengguna melihat rekomendasi tindakan preventif untuk kondisi saat ini dan saran untuk setiap kategori."
+  },
+  {
+   "id": "B3-UC07-3",
+   "cari": "3. Sistem menampilkan kategori dan rekomendasi saat ini…mendasi bukan diagnosis medis.",
+   "ganti": "3. Sistem menampilkan kategori dan rekomendasi saat ini, saran untuk setiap kategori, keterangan bahwa rekomendasi bukan diagnosis medis, dan tautan ke dasar penyusunan saran pada halaman Panduan Sistem."
+  },
+  {
+   "id": "B3-UC08-desc",
+   "cari": "Pengguna memeriksa apakah data dari perangkat IoT diterima oleh aplikasi.",
+   "utuh": true,
+   "ganti": "Pengguna memeriksa apakah perangkat sedang mengirim data ke aplikasi."
+  },
+  {
+   "id": "B3-UC08-2",
+   "cari": "2. Sistem menampilkan device_id, ruangan, gas yang diki…irim terukur setiap perangkat.",
+   "ganti": "2. Sistem menampilkan nama perangkat, ruangan, status koneksi beserta penjelasannya, waktu data terakhir diterima, dan gas yang dipantau."
+  },
+  {
+   "id": "B3-UC08-3",
+   "cari": "3. Sistem menampilkan alur data dari perangkat IoT ke aplikasi web.",
+   "utuh": true,
+   "ganti": "3. Sistem menampilkan arti status Terputus dan tautan ke penjelasan cara kerja sistem pada halaman Panduan Sistem."
+  },
+  {
+   "id": "B3-UC08-4",
+   "cari": "4. Sistem menampilkan sepuluh data terakhir yang ditolak beserta alasan penolakannya.",
+   "utuh": true,
+   "hapus": "paragraf"
+  },
+  {
+   "id": "B3-UC08-2a",
+   "cari": "2a. Jika belum ada perangkat terdaftar, sistem menampil…elum ada perangkat terdaftar\".",
+   "ganti": "2a. Jika belum ada perangkat, sistem menampilkan pesan \"Belum ada perangkat\"."
+  },
+  {
+   "id": "B3-UC08-4a",
+   "cari": "4a. Jika belum ada data yang ditolak, sistem menampilka…\"Belum ada data yang ditolak\".",
+   "hapus": "paragraf"
+  },
+  {
+   "id": "B3-UC08-post",
+   "cari": "Pengguna mengetahui status penerimaan data dan penyebab data yang ditolak.",
+   "utuh": true,
+   "ganti": "Pengguna mengetahui apakah perangkat sedang mengirim data dan kapan data terakhir diterima."
+  },
+  {
+   "id": "B3-UC09-desc",
+   "cari": "Pengguna membaca penjelasan cara memahami informasi kualitas udara pada aplikasi.",
+   "utuh": true,
+   "ganti": "Pengguna membaca penjelasan cara kerja sistem dan cara memahami informasi kualitas udara pada aplikasi."
+  },
+  {
+   "id": "B3-UC09-2",
+   "cari": "2. Sistem menampilkan cara membaca kategori, tabel amba…yaan umum, dan batasan sistem.",
+   "ganti": "2. Sistem menampilkan cara kerja sistem, isi setiap halaman, cara membaca kategori, arti setiap kategori, tabel ambang batas beserta sumbernya, keterangan keempat gas, dasar penyusunan rekomendasi, pertanyaan umum, dan batasan sistem."
+  },
+  {
+   "id": "B3-UC09-post",
+   "cari": "Pengguna memahami arti kategori, ambang batas, dan batasan informasi pada aplikasi.",
+   "utuh": true,
+   "ganti": "Pengguna memahami cara kerja aplikasi, arti kategori, ambang batas, dan batasan informasi pada aplikasi."
+  },
+  {
+   "id": "B3-UC10-5",
+   "cari": "5. Sistem memeriksa batas pengisian, yaitu paling banya…jam dari perangkat yang sama.",
+   "hapus": "paragraf"
+  },
+  {
+   "id": "B3-UC10-6",
+   "cari": "6. Sistem menyimpan jawaban dan hash alamat IP ke basis data.",
+   "utuh": true,
+   "ganti": "5. Sistem menyimpan jawaban ke basis data."
+  },
+  {
+   "id": "B3-UC10-7",
+   "cari": "7. Sistem menampilkan ucapan terima kasih.",
+   "utuh": true,
+   "ganti": "6. Sistem menampilkan ucapan terima kasih."
+  },
+  {
+   "id": "B3-UC10-5a",
+   "cari": "5a. Jika batas pengisian terlampaui, sistem menampilkan…an dan jawaban tidak disimpan.",
+   "hapus": "paragraf"
+  },
+  {
+   "id": "B3-3.7.4-1",
+   "cari": "Activity diagram menggambarkan urutan aktivitas pada al…i kejadian waktu (time event).",
+   "ganti": "Activity diagram menggambarkan urutan aktivitas pada alur utama sistem. Diagram dibagi ke dalam swimlane sesuai pihak yang menjalankan aktivitas, yaitu Perangkat IoT, Pengguna, dan Aplikasi Web."
+  },
+  {
+   "id": "B3-3.7.4-2",
+   "cari": "Gambar 3.3 menunjukkan alur penerimaan data dari perang…arkan sebagai titik awal alur.",
+   "ganti": "Gambar 3.3 menunjukkan alur penerimaan data. Perangkat mengirim data ke aplikasi web, lalu aplikasi memvalidasinya. Data yang tidak valid ditolak dan dicatat beserta alasannya. Data yang valid diklasifikasikan per gas, ditentukan kategori keseluruhan dan penyebab utamanya, diberi rekomendasi, lalu disimpan ke basis data."
+  },
+  {
+   "id": "B3-GBR-3.3",
+   "cari": "Gambar 3.3 Activity Diagram Penerimaan dan Pengolahan Data",
+   "ganti_gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/awam/diagram/activity-penerimaan-data.png"
+  },
+  {
+   "id": "B3-3.7.4-3",
+   "cari": "Gambar 3.4 menunjukkan alur pengguna saat memantau kond…mendasi bukan diagnosis medis.",
+   "ganti": "Gambar 3.4 menunjukkan alur pengguna saat memantau kondisi udara. Ketika Beranda dibuka, sistem menampilkan kategori keseluruhan, penyebab utama, nilai keempat gas, dan rekomendasi dari data terakhir, atau pesan menunggu data bila belum ada data. Tampilan diperbarui otomatis setiap 5 detik. Pengguna juga dapat membuka halaman Rekomendasi untuk melihat saran saat ini dan saran untuk setiap kategori."
+  },
+  {
+   "id": "B3-GBR-3.4",
+   "cari": "Gambar 3.4 Activity Diagram Melihat Beranda dan Rekomendasi",
+   "ganti_gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/awam/diagram/activity-beranda-rekomendasi.png"
+  },
+  {
+   "id": "B3-3.7.4-4",
+   "cari": "Gambar 3.5 menunjukkan alur pengisian kuesioner UEQ. Si…nampilkan ucapan terima kasih.",
+   "ganti": "Gambar 3.5 menunjukkan alur pengisian kuesioner UEQ. Pengguna menjawab 26 butir lalu menekan tombol Kirim. Bila ada butir yang belum dijawab atau tidak valid, sistem menampilkan pesan galat; bila lengkap, jawaban disimpan dan sistem menampilkan ucapan terima kasih."
+  },
+  {
+   "id": "B3-GBR-3.5",
+   "cari": "Gambar 3.5 Activity Diagram Mengisi Kuesioner UEQ",
+   "ganti_gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/awam/diagram/activity-kuesioner-ueq.png"
+  },
+  {
+   "id": "B3-3.7.5-1",
+   "cari": "Basis data dirancang untuk menyimpan data ruangan, pera…a tabel users tidak digunakan.",
+   "ganti": "Basis data dirancang untuk menyimpan data ruangan, perangkat, pembacaan sensor beserta hasil pengolahannya, data yang ditolak, dan jawaban kuesioner UEQ. Rancangannya digambarkan dengan Entity Relationship Diagram (ERD) notasi crow's foot pada Gambar 3.6."
+  },
+  {
+   "id": "B3-3.7.5-2",
+   "cari": "Relasi antartabel pada Gambar 3.6 dijelaskan sebagai berikut.",
+   "utuh": true,
+   "ganti": "Satu ruangan dapat memiliki beberapa perangkat, dan satu perangkat mencatat banyak data pembacaan. Data yang ditolak dicatat terpisah beserta identitas perangkat pengirimnya, sedangkan jawaban kuesioner UEQ disimpan tersendiri karena tidak berkaitan dengan perangkat maupun data pembacaan."
+  },
+  {
+   "id": "B3-3.7.5-3",
+   "cari": "1.\trooms dan nodes: satu ruangan memiliki nol atau bany…ilainya menjadi kosong (NULL).",
+   "hapus": "paragraf"
+  },
+  {
+   "id": "B3-3.7.5-4",
+   "cari": "2.\tnodes dan sensor_logs: satu perangkat mencatat nol a…ta pembacaannya ikut terhapus.",
+   "hapus": "paragraf"
+  },
+  {
+   "id": "B3-3.7.5-5",
+   "cari": "3.\tnodes dan telemetry_rejections: relasi bersifat logi…ak dibuat sebagai foreign key.",
+   "hapus": "paragraf"
+  },
+  {
+   "id": "B3-3.7.5-6",
+   "cari": "4.\tueq_responses tidak berelasi dengan tabel lain karen…rangkat maupun data pembacaan.",
+   "hapus": "paragraf"
+  },
+  {
+   "id": "B3-3.7.5-7",
+   "cari": "Struktur setiap tabel ditunjukkan pada Tabel 3.15 sampa…silkan oleh migration Laravel.",
+   "hapus": "paragraf"
+  },
+  {
+   "id": "B3-T3.15",
+   "cari": "Tabel 3.15 Struktur Tabel rooms",
+   "hapus": "paragraf+tabel"
+  },
+  {
+   "id": "B3-T3.16",
+   "cari": "Tabel 3.16 Struktur Tabel nodes",
+   "hapus": "paragraf+tabel"
+  },
+  {
+   "id": "B3-T3.17",
+   "cari": "Tabel 3.17 Struktur Tabel sensor_logs",
+   "hapus": "paragraf+tabel"
+  },
+  {
+   "id": "B3-T3.18",
+   "cari": "Tabel 3.18 Struktur Tabel telemetry_rejections",
+   "hapus": "paragraf+tabel"
+  },
+  {
+   "id": "B3-T3.19",
+   "cari": "Tabel 3.19 Struktur Tabel ueq_responses",
+   "hapus": "paragraf+tabel"
+  },
+  {
+   "id": "B3-3.8-1",
+   "cari": "Aplikasi web terdiri atas tujuh halaman publik yang dia…val kirim perangkat (5 detik).",
+   "ganti": "Aplikasi web terdiri atas tujuh halaman yang dapat dibuka tanpa login melalui menu di bagian atas: Beranda, Detail Ruangan, Riwayat, Rekomendasi Tindakan, Status Perangkat, Panduan Sistem, dan Kuesioner UEQ. Tampilan memakai bahasa sehari-hari karena penggunanya adalah masyarakat umum, seperti mahasiswa dan orang awam usia remaja sampai dewasa. Penjelasan rinci tentang cara kerja sistem dikumpulkan pada halaman Panduan Sistem, sehingga halaman lain cukup menampilkan informasi inti. Data pada halaman diperbarui otomatis setiap 5 detik."
+  },
+  {
+   "id": "B3-3.8.1-1",
+   "cari": "Halaman dashboard merupakan halaman utama pada aplikasi…kat Internet of Things (IoT). ",
+   "ganti": "Halaman Beranda menampilkan ringkasan kondisi udara ruangan uji (Gambar 3.7), yaitu nama ruangan, status koneksi perangkat, waktu pembaruan terakhir, kategori kualitas udara keseluruhan beserta gas penyebab utamanya, kartu rekomendasi, empat kartu gas yang memuat nilai ppm dan kategorinya, serta legenda kategori dengan tautan ke halaman Panduan Sistem."
+  },
+  {
+   "id": "B3-3.8.1-2",
+   "cari": "Bagian navigasi atas menyediakan menu Beranda, Riwayat,…waktu pembaruan data terakhir.",
+   "hapus": "paragraf"
+  },
+  {
+   "id": "B3-3.8.1-3",
+   "cari": "Bagian kartu gas menampilkan satu kartu untuk masing-ma…ra keempat parameter tersebut.",
+   "hapus": "paragraf"
+  },
+  {
+   "id": "B3-3.8.1-4",
+   "cari": "Pada bagian bawah halaman, terdapat legenda kategori ku…as udara ruangan dengan cepat.",
+   "hapus": "paragraf"
+  },
+  {
+   "id": "B3-GBR-3.7",
+   "cari": "Gambar 3.7 Wireframe Halaman Beranda",
+   "ganti_gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/awam/wf-out/wireframe-beranda.png"
+  },
+  {
+   "id": "B3-3.8.2-1",
+   "cari": "Halaman detail ruangan merupakan halaman yang menampilk…gan data yang diterima sistem.",
+   "ganti": "Halaman Detail Ruangan menampilkan informasi ruangan secara lebih rinci (Gambar 3.8). Selain kategori, penyebab utama, rekomendasi, dan kartu gas seperti pada Beranda, halaman ini memuat grafik nilai gas terpilih (CO₂, NH₃, CO, atau H₂) pada rentang 1 jam, 24 jam, atau 7 hari dengan garis batas kategori, nilai rata-rata, terendah, dan tertinggi, proporsi waktu setiap kategori, serta sepuluh data terakhir."
+  },
+  {
+   "id": "B3-3.8.2-2",
+   "cari": "Bagian informasi ruangan menampilkan nama ruangan, wakt…kasan kondisi seluruh ruangan.",
+   "hapus": "paragraf"
+  },
+  {
+   "id": "B3-3.8.2-3",
+   "cari": "Bagian ringkasan menampilkan kategori kualitas udara ke…itas udara secara keseluruhan.",
+   "hapus": "paragraf"
+  },
+  {
+   "id": "B3-3.8.2-4",
+   "cari": "Bagian informasi parameter gas menampilkan informasi un…ambang batas yang ditetapkan.",
+   "hapus": "paragraf"
+  },
+  {
+   "id": "B3-3.8.2-5",
+   "cari": "Bagian grafik sensor menampilkan grafik nilai ppm gas t…g dipilih tanpa analisis tren.",
+   "hapus": "paragraf"
+  },
+  {
+   "id": "B3-3.8.2-6",
+   "cari": "Bagian statistik menyajikan nilai rata-rata, terendah,…data pemantauan yang tersedia.",
+   "hapus": "paragraf"
+  },
+  {
+   "id": "B3-3.8.2-7",
+   "cari": "Bagian proporsi waktu per kategori menampilkan persenta…ara selama periode pemantauan.",
+   "hapus": "paragraf"
+  },
+  {
+   "id": "B3-3.8.2-8",
+   "cari": "Bagian riwayat pembacaan terakhir menampilkan sepuluh p…udara pada waktu yang berbeda.",
+   "hapus": "paragraf"
+  },
+  {
+   "id": "B3-GBR-3.8",
+   "cari": "Gambar 3.8 Wireframe Halaman Detail Ruangan",
+   "ganti_gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/awam/wf-out/wireframe-detail-ruangan.png"
+  },
+  {
+   "id": "B3-3.8.3-1",
+   "cari": "Halaman riwayat kualitas udara menampilkan data pembaca…unduhan data dalam format CSV.",
+   "ganti": "Halaman Riwayat menampilkan data yang tersimpan dengan filter ruangan, kategori, dan rentang tanggal, ringkasan periode, tabel data yang dibagi per halaman (pagination), serta tombol unduh CSV (Gambar 3.9)."
+  },
+  {
+   "id": "B3-3.8.3-2",
+   "cari": "Selain itu, sistem menyediakan fitur pagination untuk m…trasi gas pada waktu tertentu.",
+   "hapus": "paragraf"
+  },
+  {
+   "id": "B3-GBR-3.9",
+   "cari": "Gambar 3.9 Wireframe Halaman Riwayat",
+   "ganti_gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/awam/wf-out/wireframe-riwayat.png"
+  },
+  {
+   "id": "B3-3.8.4-judul",
+   "cari": "Wireframe Halaman Panduan Kualitas Udara",
+   "utuh": true,
+   "ganti": "Wireframe Halaman Panduan Sistem"
+  },
+  {
+   "id": "B3-3.8.4-1",
+   "cari": "Halaman panduan kualitas udara berfungsi memberikan inf…untuk melihat kondisi ruangan.",
+   "ganti": "Halaman Panduan Sistem menjadi tempat penjelasan lengkap tentang aplikasi, sehingga halaman lain cukup menampilkan informasi inti dengan bahasa sederhana. Bagian atas halaman (Gambar 3.10) memuat pengantar, cara kerja sistem dalam enam langkah mulai dari perangkat membaca udara sampai hasil ditampilkan, isi setiap halaman, cara membaca kategori, arti setiap kategori, dan tabel ambang batas beserta sumbernya."
+  },
+  {
+   "id": "B3-3.8.4-2",
+   "cari": "Bagian Cara Membaca Kategori menjelaskan tahapan penent…masuk ke kategori berikutnya.",
+   "ganti": "Bagian bawah halaman, yang ditunjukkan pada gambar sesudahnya, memuat keterangan keempat gas yang dipantau, dasar penyusunan saran tindakan beserta sumbernya, pertanyaan umum, dan batasan informasi, yaitu nilai ppm merupakan indikator relatif, ambang batas bukan baku mutu resmi, dan informasi bukan diagnosis medis."
+  },
+  {
+   "id": "B3-3.8.4-3",
+   "cari": "Selanjutnya, bagian Arti Setiap Kategori menampilkan em…sumber umum, serta dampaknya.",
+   "hapus": "paragraf"
+  },
+  {
+   "id": "B3-3.8.4-4",
+   "cari": "Pada bagian Pertanyaan Umum, pengguna dapat membuka per…kan merupakan diagnosis medis.",
+   "hapus": "paragraf"
+  },
+  {
+   "id": "B3-GBR-3.10",
+   "cari": "Gambar 3.10 Wireframe Halaman Panduan",
+   "utuh": true,
+   "ganti": "Gambar 3.10 Wireframe Halaman Panduan Sistem (Bagian Atas)",
+   "ganti_gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/awam/wf-out/wireframe-panduan-atas.png",
+   "lebar_cm": 13.0,
+   "sisip_paragraf": [
+    {
+     "gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/awam/wf-out/wireframe-panduan-bawah.png",
+     "lebar_cm": 13.0
+    },
+    {
+     "teks": "Gambar 3.10 Wireframe Halaman Panduan Sistem (Bagian Bawah)",
+     "gaya": "Heading5"
+    }
+   ]
+  },
+  {
+   "id": "B3-3.8.5-1",
+   "cari": "Halaman rekomendasi tindakan menampilkan saran preventi…isis tren atau durasi paparan.",
+   "ganti": "Halaman Rekomendasi Tindakan menampilkan saran preventif sederhana sesuai kategori kualitas udara saat ini (Gambar 3.11). Setiap kategori dipetakan ke satu saran yang bersifat umum, seperti meningkatkan ventilasi atau mengurangi sumber polutan, tanpa analisis tren maupun durasi paparan."
+  },
+  {
+   "id": "B3-3.8.5-2",
+   "cari": "Halaman ini juga menampilkan daftar aturan rekomendasi…ventif, bukan diagnosis medis.",
+   "ganti": "Halaman ini juga menampilkan daftar saran untuk setiap kategori, keterangan bahwa rekomendasi bukan diagnosis medis, dan tautan ke dasar penyusunan saran pada halaman Panduan Sistem."
+  },
+  {
+   "id": "B3-GBR-3.11",
+   "cari": "Gambar 3.11 Wireframe Halaman Rekomendasi Tindakan",
+   "ganti_gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/awam/wf-out/wireframe-rekomendasi.png"
+  },
+  {
+   "id": "B3-3.8.6-judul",
+   "cari": "Wireframe Halaman Status Perangkat (IoT System)",
+   "utuh": true,
+   "ganti": "Wireframe Halaman Status Perangkat"
+  },
+  {
+   "id": "B3-3.8.6-1",
+   "cari": "Halaman Status Perangkat (IoT System) menampilkan statu…engonfigurasi perangkat keras.",
+   "ganti": "Halaman Status Perangkat menunjukkan apakah perangkat sedang mengirim data (Gambar 3.12). Setiap perangkat ditampilkan dalam satu kartu yang memuat nama, ruangan, kode perangkat, status Terhubung atau Terputus beserta penjelasannya dalam kalimat sehari-hari, waktu data terakhir diterima, dan gas yang dipantau. Perangkat dinyatakan terhubung bila data terakhir diterima paling lama 30 detik yang lalu. Halaman ini juga memuat tautan ke penjelasan cara kerja sistem pada halaman Panduan Sistem."
+  },
+  {
+   "id": "B3-3.8.6-2",
+   "cari": "Halaman ini juga menampilkan alur data (data pipeline)…k beserta alasan penolakannya.",
+   "hapus": "paragraf"
+  },
+  {
+   "id": "B3-GBR-3.12",
+   "cari": "Gambar 3.12 Wireframe Halaman Status Perangkat (IoT System)",
+   "utuh": true,
+   "ganti": "Gambar 3.12 Wireframe Halaman Status Perangkat",
+   "ganti_gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/awam/wf-out/wireframe-status-perangkat.png"
+  },
+  {
+   "id": "B3-3.8.7-1",
+   "cari": "Halaman Kuesioner menampilkan 26 butir UEQ versi Bahasa…ditunjukkan pada Gambar 3.13.",
+   "ganti": "Halaman Kuesioner menampilkan 26 butir UEQ versi Bahasa Indonesia berupa pasangan kata berlawanan dengan tujuh pilihan, serta isian nama yang bersifat opsional. Wireframe halaman ditunjukkan pada Gambar 3.13."
+  },
+  {
+   "id": "B3-3.9-1",
+   "cari": "Pengolahan data merupakan tahap utama untuk mengolah ni…ameter (CO₂, NH₃, CO, dan H₂).",
+   "ganti": "Pengolahan data mengubah nilai ppm dari perangkat IoT menjadi informasi kualitas udara yang mudah dipahami."
+  },
+  {
+   "id": "B3-3.9-2",
+   "cari": "Nilai ppm yang diterima dari perangkat IoT merupakan ha…dengan ambang pada Tabel 2.2.",
+   "hapus": "paragraf"
+  },
+  {
+   "id": "B3-3.9.1-1",
+   "cari": "Data input berupa nilai konsentrasi gas dalam satuan pa…sistem adalah sebagai berikut:",
+   "ganti": "Data input berupa nilai ppm CO₂, NH₃, CO, dan H₂ yang dikirim perangkat IoT setiap 5 detik, beserta identitas perangkat (device_id) dan waktu pembacaan (timestamp). Contoh format data yang diterima sistem adalah sebagai berikut:"
+  },
+  {
+   "id": "B3-3.9.1-2",
+   "cari": "Data dikirim ke endpoint POST /api/telemetry dalam form…catat pada log penolakan data.",
+   "ganti": "Data dikirim ke endpoint POST /api/telemetry dalam format JSON. Data dinyatakan valid bila semua atribut ada, nilai ppm berupa angka ≥ 0, device_id terdaftar, dan timestamp berformat YYYY-MM-DD HH:MM:SS. Data yang tidak valid ditolak dan dicatat pada log penolakan data."
+  },
+  {
+   "id": "B3-3.9.3-1",
+   "cari": "Setelah kategori tiap parameter diperoleh, sistem menen…ra ruangan secara keseluruhan.",
+   "hapus": "paragraf"
+  },
+  {
+   "id": "B3-3.9.3-2",
+   "cari": "Kategori ini merupakan kategori internal sistem yang di…ri terburuk pada subbab 3.9.2.",
+   "ganti": "Kategori ini merupakan kategori internal aplikasi, bukan nilai AQI, ISPU, standar WHO, maupun hasil pengukuran polutan terkalibrasi. Kriterianya mengikuti ambang pada Tabel 2.2 dan aturan kategori terburuk pada subbab 3.9.2."
+  },
+  {
+   "id": "B3-3.9.3-3",
+   "cari": "Hasil klasifikasi, baik kategori per parameter maupun k…status kualitas udara ruangan.",
+   "ganti": "Hasil klasifikasi disimpan bersama data pembacaan dan ditampilkan pada dashboard."
+  },
+  {
+   "id": "B3-3.10.1-1",
+   "cari": "Fitur ini hanya menggunakan satu masukan, yaitu kategor…udara, maupun riwayat paparan.",
+   "ganti": "Satu-satunya masukan fitur ini adalah kategori kualitas udara keseluruhan dari data terbaru. Fitur ini tidak memakai analisis tren, prediksi, maupun riwayat paparan."
+  },
+  {
+   "id": "B3-3.10.1-2",
+   "cari": "Rekomendasi tindakan preventif dihasilkan berdasarkan k…ai diagnosis atau saran medis.",
+   "ganti": "Jenis tindakan pada Tabel 3.20 mengacu pada tiga strategi perbaikan kualitas udara dalam ruangan dari U.S. Environmental Protection Agency (2026b), yaitu kendali sumber polutan, peningkatan ventilasi, dan pembersihan udara. Kategori Baik dan Sedang memakai peningkatan ventilasi, sedangkan Tidak Sehat dan Berbahaya memakai peningkatan ventilasi dan kendali sumber. Tingkat urgensi (Normal, Waspada, Perlu Tindakan, Segera Bertindak) mengikuti prinsip penyampaian AQI, yaitu anjuran makin tegas seiring kategori memburuk (U.S. Environmental Protection Agency, 2026c). Pemetaan ini merupakan rancangan peneliti yang bersifat umum dan bukan saran medis."
+  },
+  {
+   "id": "B3-3.10.3-1",
+   "cari": "Rekomendasi ditampilkan pada dashboard sebagai kartu at…val kirim perangkat (5 detik).",
+   "ganti": "Rekomendasi ditampilkan sebagai kartu di samping kategori kualitas udara pada Beranda dan Detail Ruangan, serta dalam daftar lengkap pada halaman Rekomendasi. Dasar penyusunannya dijelaskan pada halaman Panduan Sistem."
+  },
+  {
+   "id": "B3-3.11-1",
+   "cari": "Implementasi sistem pada penelitian ini difokuskan pada…perangkat lunak berbasis web.",
+   "ganti": "Implementasi difokuskan pada aplikasi web yang mengolah dan menyajikan data kualitas udara dari perangkat IoT; perancangan perangkat keras IoT tidak termasuk di dalamnya."
+  },
+  {
+   "id": "B3-3.11.1-1",
+   "cari": "Data yang diperoleh dari perangkat IoT berupa nilai pem…atat pada tabel log penolakan.",
+   "ganti": "Aplikasi web menerima data dari perangkat IoT melalui endpoint API, memvalidasinya, menyimpannya, lalu mengolahnya menjadi kategori dan rekomendasi."
+  },
+  {
+   "id": "B3-3.11.1-2",
+   "cari": "Data yang diterima oleh backend terlebih dahulu divalid…ekomendasi tindakan preventif.",
+   "hapus": "paragraf"
+  },
+  {
+   "id": "B3-3.11.2-1",
+   "cari": "Sistem dikembangkan dalam bentuk aplikasi berbasis web…ualitas udara kepada pengguna.",
+   "ganti": "Aplikasi terdiri atas tiga komponen utama, yaitu backend, database, dan frontend dashboard."
+  },
+  {
+   "id": "B3-3.11.2-2",
+   "cari": "Backend system berfungsi sebagai pusat pengolahan data.…berbasis aturan (rule-based).",
+   "ganti": "Backend menerima dan memvalidasi data, menyimpannya, mengklasifikasikan kualitas udara, dan menghasilkan rekomendasi tindakan."
+  },
+  {
+   "id": "B3-3.11.2-3",
+   "cari": "Database menyimpan data yang dibutuhkan sistem, yaitu n…n dan penerapan memakai MySQL.",
+   "ganti": "Database menyimpan data pembacaan beserta hasil pengolahannya, data yang ditolak, dan jawaban kuesioner UEQ. Aplikasi dapat memakai SQLite pada tahap pengembangan, sedangkan penerapan memakai MySQL."
+  },
+  {
+   "id": "B3-3.11.2-4",
+   "cari": "Frontend dashboard berfungsi sebagai antarmuka pengguna…n dengan lebih mudah dan cepat",
+   "ganti": "Frontend dashboard menampilkan hasil pengolahan dengan bahasa sederhana melalui tujuh halaman aplikasi."
+  },
+  {
+   "id": "B3-3.12-1",
+   "cari": "Pengujian menggunakan data kualitas udara yang dikirimk…tindakan preventif sederhana.",
+   "hapus": "paragraf"
+  },
+  {
+   "id": "B3-3.12.1-1",
+   "cari": "Setiap aspek diuji berdasarkan masukan dan keluaran yan…n sesuai kebutuhan penelitian.",
+   "hapus": "paragraf"
+  },
+  {
+   "id": "B3-3.12.2-1",
+   "cari": "Pengujian ini memastikan aplikasi dapat menampilkan inf…imaan data dari perangkat IoT.",
+   "hapus": "paragraf"
+  },
+  {
+   "id": "B3-T3.23-7",
+   "cari": "Menampilkan device ID, gas yang dikirim, waktu data ter…dan sepuluh penolakan terakhir",
+   "ganti": "Menampilkan status koneksi perangkat (terhubung bila data terakhir ≤ 30 detik), waktu data terakhir, dan gas yang dipantau"
+  },
+  {
+   "id": "B3-T3.23-8",
+   "cari": "Menampilkan cara membaca kategori, tabel ambang (Tabel…, pertanyaan umum, dan batasan",
+   "ganti": "Menampilkan cara kerja sistem, isi setiap halaman, cara membaca kategori, tabel ambang (Tabel 2.2), keterangan empat gas, dasar saran tindakan, pertanyaan umum, dan batasan"
+  },
+  {
+   "id": "B3-3.12.3-1",
+   "cari": "Pengujian validasi data. Pengujian ini memastikan hanya…t di halaman Status Perangkat.",
+   "ganti": "Pengujian validasi data. Pengujian ini memastikan hanya data lengkap dan berformat benar yang diproses dan disimpan, sedangkan data tidak valid ditolak dengan respons HTTP 422 dan dicatat pada log penolakan data."
+  },
+  {
+   "id": "B3-3.12.3-2",
+   "cari": "Berdasarkan pengujian tersebut, sistem diharapkan mampu…ng digunakan dalam penelitian.",
+   "hapus": "paragraf"
+  },
+  {
+   "id": "B3-3.12.7-1",
+   "cari": "Berdasarkan rancangan pengujian yang telah disusun, sis…t, Panduan, dan Kuesioner UEQ.",
+   "ganti": "Rancangan pengujian ini mencakup pengujian fungsional ketujuh halaman aplikasi, pengujian validasi dan klasifikasi data sensor, pengujian rekomendasi tindakan, pengujian pada empat kondisi ruangan, dan evaluasi pengalaman pengguna dengan UEQ. Seluruhnya digunakan untuk memastikan bahwa sistem dapat menerima, mengolah, dan menampilkan data kualitas udara serta memberikan rekomendasi sesuai tujuan penelitian."
+  },
+  {
+   "id": "B3-3.12.7-2",
+   "cari": "Pengujian pengolahan data dilakukan untuk memastikan ba…iambil dari kategori terburuk.",
+   "hapus": "paragraf"
+  },
+  {
+   "id": "B3-3.12.7-3",
+   "cari": "Pengujian rekomendasi dilakukan untuk memastikan bahwa…tif dan bukan diagnosis medis.",
+   "hapus": "paragraf"
+  },
+  {
+   "id": "B3-3.12.7-4",
+   "cari": "Pengujian pada beberapa kondisi ruangan dilakukan untuk…ngkannya dengan benchmark UEQ.",
+   "hapus": "paragraf"
+  },
+  {
+   "id": "B3-3.12.7-5",
+   "cari": "Dengan demikian, rancangan pengujian ini digunakan untu…as udara ruangan berbasis IoT.",
+   "hapus": "paragraf"
+  },
+  {
+   "id": "B4-T4.1-3",
+   "cari": "Tingkat dan teks rekomendasi sesuai Tabel 3.20 beserta strategi EPA",
+   "utuh": true,
+   "ganti": "Tingkat dan teks rekomendasi sesuai Tabel 3.20"
+  },
+  {
+   "id": "B4-T4.1-8",
+   "cari": "Kondisi saat ini, daftar aturan, dan dasar rekomendasi",
+   "utuh": true,
+   "ganti": "Kondisi saat ini, saran untuk setiap kategori, dan pernyataan bukan diagnosis medis"
+  },
+  {
+   "id": "B4-T4.1-9",
+   "cari": "Status koneksi, interval terukur, alur data, dan penolakan data",
+   "utuh": true,
+   "ganti": "Status koneksi, waktu data terakhir, dan gas yang dipantau"
+  },
+  {
+   "id": "B4-T4.1-10a",
+   "cari": "Halaman Panduan",
+   "utuh": true,
+   "ganti": "Halaman Panduan Sistem"
+  },
+  {
+   "id": "B4-T4.1-10b",
+   "cari": "Cara membaca kategori, tabel ambang, dan batasan",
+   "utuh": true,
+   "ganti": "Cara kerja sistem, isi setiap halaman, cara membaca kategori, tabel ambang, dasar saran, dan batasan"
+  },
+  {
+   "id": "B4-4.1.1-1",
+   "cari": "Server menjawab dengan kode HTTP 201 Created. Respons b…ndentasinya agar mudah dibaca:",
+   "ganti": "Server menjawab dengan kode HTTP 201 Created. Respons berikut disalin dari keluaran curl; header yang tidak berkaitan dengan isi data tidak ditampilkan, dan isi JSON-nya hanya dirapikan indentasinya agar mudah dibaca:"
+  },
+  {
+   "id": "B4-4.1.1-2",
+   "cari": "X-RateLimit-Limit: 60",
+   "utuh": true,
+   "hapus": "paragraf"
+  },
+  {
+   "id": "B4-4.1.1-3",
+   "cari": "X-RateLimit-Remaining: 59",
+   "utuh": true,
+   "hapus": "paragraf"
+  },
+  {
+   "id": "B4-4.1.1-4",
+   "cari": "Data yang ditolak tidak disimpan ke tabel sensor_logs,…HTTP (Fielding et al., 2022).",
+   "ganti": "Data yang ditolak tidak disimpan ke tabel sensor_logs, tetapi dicatat pada tabel telemetry_rejections dan log aplikasi beserta alasannya agar dapat ditelusuri. Kode status 201 dan 422 dipakai sesuai semantik HTTP (Fielding et al., 2022)."
+  },
+  {
+   "id": "B4-4.1.1-5",
+   "cari": "Endpoint juga dilindungi dua mekanisme. Pertama, bila v…ji otomatis pada subbab 4.2.2.",
+   "hapus": "paragraf"
+  },
+  {
+   "id": "B4-4.1.2-1",
+   "cari": "sesuai ERD pada Gambar 3.6 dan struktur tabel pada Tabel 3.15 sampai 3.19.",
+   "ganti": "sesuai ERD pada Gambar 3.6."
+  },
+  {
+   "id": "B4-4.1.2-2",
+   "cari": "Selain tabel inti, migration bawaan Laravel membuat tab…aplikasi diakses tanpa login.",
+   "hapus": "paragraf"
+  },
+  {
+   "id": "B4-4.1.3-1",
+   "cari": "pembacaan setiap 5 detik selama tangkapan layar diambil, serta tiga data tidak valid…tidak terdaftar).",
+   "ganti": "pembacaan setiap 5 detik selama tangkapan layar diambil."
+  },
+  {
+   "id": "B4-4.1.3-2",
+   "cari": "legenda empat kategori dengan tautan ke halaman Panduan.",
+   "ganti": "legenda empat kategori dengan tautan ke halaman Panduan Sistem."
+  },
+  {
+   "id": "B4-4.1.3-3",
+   "cari": "Selain elemen pada wireframe, implementasi menambahkan…menuju halaman Detail Ruangan.",
+   "ganti": "Selain elemen pada wireframe, implementasi menambahkan keterangan rentang ambang pada setiap kartu gas, catatan singkat bahwa angka ppm menunjukkan perubahan kadar gas dibandingkan saat perangkat mulai menyala dan bukan hasil alat ukur laboratorium, serta tombol Grafik sensor menuju halaman Detail Ruangan."
+  },
+  {
+   "id": "B4-4.1.3-4",
+   "cari": " Teks keterangan navigasi halaman masih memakai bahasa Inggris bawaan Laravel (Showing 1 to 20 of 155 results) dan dapat diterjemahkan pada pengembangan berikutnya.",
+   "ganti": ""
+  },
+  {
+   "id": "B4-4.1.3-5",
+   "cari": "Halaman Rekomendasi Tindakan (Gambar 4.5) mengikuti wir…tif dan bukan diagnosis medis.",
+   "ganti": "Halaman Rekomendasi Tindakan (Gambar 4.5) mengikuti wireframe pada Gambar 3.11. Bagian Kondisi saat ini menampilkan kategori terbaru setiap ruangan beserta tingkat dan teks rekomendasinya serta penyebab utama. Bagian Saran untuk setiap kategori menampilkan keempat aturan pada Tabel 3.20 dalam tabel berisi kategori, tingkat, dan saran tindakan. Bagian akhir halaman menyatakan bahwa rekomendasi bersifat informatif dan bukan diagnosis medis, serta menyediakan tombol Dasar penyusunan saran menuju halaman Panduan Sistem, tempat acuan penyusunan aturan dijelaskan (U.S. Environmental Protection Agency, 2026b, 2026c)."
+  },
+  {
+   "id": "B4-4.1.3-6",
+   "cari": "Halaman Status Perangkat (Gambar 4.6) mengikuti wirefra…tidak valid pada subbab 4.1.1.",
+   "ganti": "Halaman Status Perangkat (Gambar 4.6) mengikuti wireframe pada Gambar 3.12. Setiap perangkat ditampilkan dalam satu kartu yang memuat nama perangkat, ruangan, kode AIR-001, status Terhubung atau Terputus, penjelasan status dalam kalimat sederhana, waktu data terakhir diterima, dan gas yang dipantau. Status Terhubung berlaku bila data terakhir diterima paling lama 30 detik yang lalu. Halaman ini tidak menampilkan rincian teknis pengiriman data; penjelasan cara kerja sistem disediakan pada halaman Panduan Sistem melalui tombol Baca cara kerja SIMKU."
+  },
+  {
+   "id": "B4-4.1.3-7",
+   "cari": "Halaman ini hanya membaca data yang sudah diterima serv…konfigurasi ke perangkat IoT.",
+   "hapus": "paragraf"
+  },
+  {
+   "id": "B4-4.1.3-8",
+   "cari": "6.\tHalaman Panduan",
+   "utuh": true,
+   "ganti": "6.\tHalaman Panduan Sistem"
+  },
+  {
+   "id": "B4-4.1.3-9",
+   "cari": "Halaman Panduan diimplementasikan sesuai wireframe pada…dan tindakan yang disarankan.",
+   "ganti": "Halaman Panduan Sistem menjadi tempat penjelasan lengkap tentang aplikasi dan diimplementasikan sesuai wireframe pada Gambar 3.10 dalam dua bagian. Bagian atas (Gambar 4.7) memuat pengantar, cara kerja SIMKU dalam enam langkah mulai dari perangkat membaca udara sampai hasil ditampilkan, isi setiap halaman, cara membaca kategori (setiap gas dinilai sendiri, kategori keseluruhan diambil dari kategori terburuk, dan gas pada kategori terburuk ditampilkan sebagai penyebab utama), serta arti setiap kategori beserta tingkat dan tindakan yang disarankan."
+  },
+  {
+   "id": "B4-4.1.3-10",
+   "cari": "Bagian kedua (Gambar 4.8) memuat tabel ambang batas kee…mendasi bukan diagnosis medis.",
+   "ganti": "Bagian bawah (Gambar 4.8) memuat tabel ambang batas keempat gas sesuai Tabel 2.2 beserta sumbernya (Solihat et al., 2026), keterangan gas yang dipantau, dasar penyusunan saran tindakan beserta sumbernya, pertanyaan umum yang dapat dibuka satu per satu, serta bagian Batasan. Bagian Batasan menyatakan tiga hal yang juga menjadi batasan penelitian ini, yaitu nilai ppm merupakan indikator relatif terhadap kondisi udara saat perangkat dinyalakan, ambang batas merupakan acuan kategori aplikasi dan bukan baku mutu udara resmi, dan rekomendasi bukan diagnosis medis."
+  },
+  {
+   "id": "B4-4.1.3-11",
+   "cari": ", dan satu alamat IP dibatasi tiga kali pengiriman per jam.",
+   "ganti": "."
+  },
+  {
+   "id": "B4-GBR-4.1",
+   "cari": "Gambar 4.1 Tampilan Halaman Beranda",
+   "utuh": true,
+   "ganti_gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/awam/bab4/4-01-beranda.png"
+  },
+  {
+   "id": "B4-GBR-4.2",
+   "cari": "Gambar 4.2 Tampilan Halaman Detail Ruangan (Bagian Atas)",
+   "utuh": true,
+   "ganti_gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/awam/bab4/4-02-detail-ruangan-atas.png"
+  },
+  {
+   "id": "B4-GBR-4.3",
+   "cari": "Gambar 4.3 Tampilan Halaman Detail Ruangan (Bagian Bawah)",
+   "utuh": true,
+   "ganti_gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/awam/bab4/4-03-detail-ruangan-bawah.png"
+  },
+  {
+   "id": "B4-GBR-4.4",
+   "cari": "Gambar 4.4 Tampilan Halaman Riwayat",
+   "utuh": true,
+   "ganti_gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/awam/bab4/4-04-riwayat.png"
+  },
+  {
+   "id": "B4-GBR-4.5",
+   "cari": "Gambar 4.5 Tampilan Halaman Rekomendasi Tindakan",
+   "utuh": true,
+   "ganti_gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/awam/bab4/4-05-rekomendasi.png"
+  },
+  {
+   "id": "B4-GBR-4.6",
+   "cari": "Gambar 4.6 Tampilan Halaman Status Perangkat",
+   "utuh": true,
+   "ganti_gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/awam/bab4/4-06-status-perangkat.png"
+  },
+  {
+   "id": "B4-GBR-4.9",
+   "cari": "Gambar 4.9 Tampilan Halaman Kuesioner UEQ (Bagian Awal)",
+   "utuh": true,
+   "ganti_gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/awam/bab4/4-09-kuesioner-atas.png"
+  },
+  {
+   "id": "B4-GBR-4.10",
+   "cari": "Gambar 4.10 Tampilan Halaman Kuesioner UEQ (Bagian Akhir)",
+   "utuh": true,
+   "ganti_gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/awam/bab4/4-10-kuesioner-bawah.png"
+  },
+  {
+   "id": "B4-GBR-4.12",
+   "cari": "Gambar 4.12 Tampilan Beranda saat Belum Ada Data",
+   "utuh": true,
+   "ganti_gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/awam/bab4/4-11-beranda-tanpa-data.png"
+  },
+  {
+   "id": "B4-GBR-4.14",
+   "cari": "Gambar 4.14 Grafik Detail Ruangan dengan Parameter CO",
+   "utuh": true,
+   "ganti_gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/awam/bab4/4-12-detail-ruangan-co.png"
+  },
+  {
+   "id": "B4-GBR-4.16",
+   "cari": "Gambar 4.16 Tampilan Riwayat dengan Filter Kategori Tidak Sehat",
+   "utuh": true,
+   "ganti_gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/awam/bab4/4-13-riwayat-filter-tidak-sehat.png"
+  },
+  {
+   "id": "B4-GBR-4.7",
+   "cari": "Gambar 4.7 Tampilan Halaman Panduan (Bagian Atas)",
+   "utuh": true,
+   "ganti": "Gambar 4.7 Tampilan Halaman Panduan Sistem (Bagian Atas)",
+   "ganti_gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/awam/bab4/4-07-panduan-atas.png"
+  },
+  {
+   "id": "B4-GBR-4.8",
+   "cari": "Gambar 4.8 Tampilan Halaman Panduan (Bagian Bawah)",
+   "utuh": true,
+   "ganti": "Gambar 4.8 Tampilan Halaman Panduan Sistem (Bagian Bawah)",
+   "ganti_gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/awam/bab4/4-08-panduan-bawah.png"
+  },
+  {
+   "id": "B4-4.2-1",
+   "cari": "Seluruh kasus uji dijalankan dengan perintah php artisa…ili satu kasus uji yang lulus.",
+   "ganti": "Seluruh kasus uji dijalankan dengan perintah php artisan test pada 29 Oktober 2026 menggunakan PHP 8.3.6, Laravel Framework 13.34.0, Livewire 4.4.7, dan PHPUnit 12.5.37, dengan basis data SQLite in-memory yang dikosongkan untuk setiap kasus uji. Hasilnya, 156 kasus uji lulus dengan 638 assertion dan tidak ada kasus uji yang gagal (Gambar 4.11). Jumlah tersebut terdiri atas 100 kasus uji feature dan 56 kasus uji unit. Rangkaian uji yang sama dijalankan ulang pada MariaDB 10.11 yang kompatibel dengan MySQL dan memberikan hasil yang sama, yaitu 156 kasus uji lulus dengan 638 assertion. Kasus uji yang memakai data provider dihitung satu kali untuk setiap set data; misalnya, pengujian klasifikasi Tabel 3.25 dihitung tujuh kali, satu untuk setiap baris. Setiap titik pada Gambar 4.11 mewakili satu kasus uji yang lulus."
+  },
+  {
+   "id": "B4-4.2.1-S1",
+   "cari": "dan pesan Menunggu data dari perangkat IoT tanpa kartu rekomendasi.",
+   "ganti": "dan pesan Menunggu data dari perangkat tanpa kartu rekomendasi."
+  },
+  {
+   "id": "B4-4.2.1-S6",
+   "cari": "Hasil aktual: bagian Kondisi saat ini memakai data terb…(Gambar 4.21). Status: Valid.",
+   "ganti": "Hasil aktual: bagian Kondisi saat ini memakai data terbaru, keempat aturan beserta tingkat dan saran tindakannya serta pernyataan bukan diagnosis medis tampil, dan dasar penyusunan saran ditautkan ke halaman Panduan Sistem. Tampilan hasilnya ditunjukkan pada Gambar 4.5. Hasil ini dibuktikan oleh 3 kasus uji pada kelas RecommendationPageTest (test​_current​_condition​_shows​_latest​_category​_and​_recommendation​_per​_room, test​_page​_shows​_all​_four​_rules​_and​_disclaimer, dan test​_basis​_of​_recommendations​_is​_linked​_to​_guide) yang seluruhnya lulus saat dijalankan (Gambar 4.21). Status: Valid."
+  },
+  {
+   "id": "B4-4.2.1-S7a",
+   "cari": "Skenario: pengguna membuka halaman Status Perangkat. Ha…an sepuluh penolakan terakhir.",
+   "ganti": "Skenario: pengguna membuka halaman Status Perangkat. Hasil yang diharapkan: halaman menampilkan status koneksi perangkat (terhubung bila data terakhir paling lama 30 detik), waktu data terakhir, dan gas yang dipantau."
+  },
+  {
+   "id": "B4-4.2.1-S7b",
+   "cari": "Hasil aktual: device ID, ruangan, dan empat gas tampil;…(Gambar 4.22). Status: Valid.",
+   "ganti": "Hasil aktual: nama perangkat, ruangan, kode perangkat, dan empat gas yang dipantau tampil; status Terhubung pada data 10 detik dan tepat 30 detik yang lalu, serta Terputus pada data 120 detik yang lalu dan pada perangkat yang belum pernah mengirim data; halaman menautkan penjelasan cara kerja ke Panduan Sistem tanpa menampilkan rincian teknis. Tampilan hasilnya ditunjukkan pada Gambar 4.6. Hasil ini dibuktikan oleh 6 kasus uji pada kelas DeviceStatusTest (test​_page​_renders​_device​_with​_room​_and​_gases, test​_device​_is​_connected​_when​_last​_data​_is​_recent, test​_device​_is​_connected​_at​_exactly​_thirty​_seconds, test​_device​_is​_disconnected​_when​_last​_data​_is​_old, test​_device​_without​_data​_is​_disconnected, dan test​_page​_links​_to​_guide​_instead​_of​_showing​_technical​_details) yang seluruhnya lulus saat dijalankan (Gambar 4.22). Status: Valid."
+  },
+  {
+   "id": "B4-4.2.1-S8h",
+   "cari": "8.\tPanduan: membuka halaman panduan",
+   "utuh": true,
+   "ganti": "8.\tPanduan Sistem: membuka halaman panduan"
+  },
+  {
+   "id": "B4-4.2.1-S8a",
+   "cari": "Skenario: pengguna membuka halaman Panduan. Hasil yang…pertanyaan umum, dan batasan.",
+   "ganti": "Skenario: pengguna membuka halaman Panduan Sistem. Hasil yang diharapkan: halaman menampilkan cara kerja sistem, isi setiap halaman, cara membaca kategori, tabel ambang (Tabel 2.2), keterangan empat gas, dasar saran tindakan, pertanyaan umum, dan batasan."
+  },
+  {
+   "id": "B4-4.2.1-S8b",
+   "cari": "Hasil aktual: seluruh bagian tampil, termasuk rentang p…(Gambar 4.23). Status: Valid.",
+   "ganti": "Hasil aktual: seluruh bagian tampil, termasuk enam langkah cara kerja SIMKU, isi ketujuh halaman, rentang ppm keempat gas beserta sumber ambang, dasar penyusunan saran beserta sumbernya, dan pernyataan bukan diagnosis medis. Tampilan hasilnya ditunjukkan pada Gambar 4.7 dan Gambar 4.8. Hasil ini dibuktikan oleh 6 kasus uji pada kelas PublicGuideTest (test​_guide​_page​_renders​_for​_guests, test​_guide​_explains​_how​_simku​_works​_and​_each​_page, test​_guide​_explains​_relative​_ppm​_and​_worst​_category, test​_guide​_shows​_threshold​_table​_with​_solihat​_citation, test​_guide​_shows​_basis​_and​_sources​_of​_recommendations, dan test​_guide​_faq​_covers​_interval​_disconnection​_and​_disclaimer) yang seluruhnya lulus saat dijalankan (Gambar 4.23). Status: Valid."
+  },
+  {
+   "id": "B4-GBR-4.23",
+   "cari": "Gambar 4.23 Hasil Eksekusi Kasus Uji Panduan",
+   "utuh": true,
+   "ganti": "Gambar 4.23 Hasil Eksekusi Kasus Uji Panduan Sistem",
+   "ganti_gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/uji-terminal2/s8-panduan.png"
+  },
+  {
+   "id": "B4-4.2.1-S9",
+   "cari": "Hasil aktual: 26 butir tampil, jawaban lengkap tersimpa…(Gambar 4.26). Status: Valid.",
+   "ganti": "Hasil aktual: 26 butir tampil, jawaban lengkap tersimpan dengan pesan terima kasih, dan butir kosong atau di luar 1–7 ditolak. Tampilan hasilnya ditunjukkan pada Gambar 4.9, Gambar 4.10, Gambar 4.24, dan Gambar 4.25. Hasil ini dibuktikan oleh 4 kasus uji pada kelas SurveyTest (test​_guest​_can​_open​_survey​_page​_with​_26​_items, test​_guest​_can​_submit​_complete​_answers, test​_all​_items​_are​_required, dan test​_answers​_must​_be​_between​_one​_and​_seven) yang seluruhnya lulus saat dijalankan (Gambar 4.26). Status: Valid."
+  },
+  {
+   "id": "B4-GBR-4.11",
+   "cari": "Gambar 4.11 Hasil Eksekusi Seluruh Kasus Uji",
+   "utuh": true,
+   "ganti_gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/uji-terminal2/semua.png"
+  },
+  {
+   "id": "B4-GBR-4.13",
+   "cari": "Gambar 4.13 Hasil Eksekusi Kasus Uji Beranda",
+   "utuh": true,
+   "ganti_gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/uji-terminal2/s1-beranda.png"
+  },
+  {
+   "id": "B4-GBR-4.15",
+   "cari": "Gambar 4.15 Hasil Eksekusi Kasus Uji Detail Ruangan",
+   "utuh": true,
+   "ganti_gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/uji-terminal2/s2-detail.png"
+  },
+  {
+   "id": "B4-GBR-4.17",
+   "cari": "Gambar 4.17 Hasil Eksekusi Kasus Uji Riwayat (memfilter berdasarkan tanggal dan status)",
+   "utuh": true,
+   "ganti_gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/uji-terminal2/s3-riwayat-filter.png"
+  },
+  {
+   "id": "B4-GBR-4.19",
+   "cari": "Gambar 4.19 Hasil Eksekusi Kasus Uji Riwayat (menekan tombol ekspor CSV)",
+   "utuh": true,
+   "ganti_gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/uji-terminal2/s4-csv.png"
+  },
+  {
+   "id": "B4-GBR-4.20",
+   "cari": "Gambar 4.20 Hasil Eksekusi Kasus Uji Riwayat (pembagian halaman data)",
+   "utuh": true,
+   "ganti_gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/uji-terminal2/s5-pagination.png"
+  },
+  {
+   "id": "B4-GBR-4.21",
+   "cari": "Gambar 4.21 Hasil Eksekusi Kasus Uji Rekomendasi Tindakan",
+   "utuh": true,
+   "ganti_gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/uji-terminal2/s6-rekomendasi.png"
+  },
+  {
+   "id": "B4-GBR-4.22",
+   "cari": "Gambar 4.22 Hasil Eksekusi Kasus Uji Status Perangkat",
+   "utuh": true,
+   "ganti_gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/uji-terminal2/s7-perangkat.png"
+  },
+  {
+   "id": "B4-GBR-4.26",
+   "cari": "Gambar 4.26 Hasil Eksekusi Kasus Uji Kuesioner UEQ",
+   "utuh": true,
+   "ganti_gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/uji-terminal2/s9-kuesioner.png"
+  },
+  {
+   "id": "B4-4.2.2-1",
+   "cari": "penyimpanan waktu perangkat terpisah dari waktu terima server…minute).",
+   "ganti": "serta penyimpanan waktu perangkat terpisah dari waktu terima server (TelemetryApiTest::​test​_device​_timestamp​_is​_kept​_while​_created​_at​_is​_server​_time)."
+  },
+  {
+   "id": "B4-4.3-1",
+   "cari": "menunjukkan status Terhubung dengan interval terukur sekitar 5 detik.",
+   "ganti": "menunjukkan status Terhubung."
+  },
+  {
+   "id": "B4-4.5-1",
+   "cari": "Bagian pengujian fungsional dengan data uji telah selesai: 158 kasus uji otomatis lulus",
+   "ganti": "Bagian pengujian fungsional dengan data uji telah selesai: 156 kasus uji otomatis lulus"
+  }
+ ]
+}
