@@ -7,6 +7,6 @@
     <x-tabler-alert-triangle class="mt-0.5 size-5 shrink-0" />
     <p>
         Data terakhir diterima <span class="font-semibold">{{ $updatedAt->locale('id')->diffForHumans() }}</span>
-        — bukan kondisi terkini. Periksa perangkat IoT.
+        — bukan kondisi terkini. Periksa perangkat pemantau.
     </p>
 </div>

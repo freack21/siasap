@@ -43,9 +43,11 @@ class DeviceStatusTest extends TestCase
             ->assertOk()
             ->assertSee('Status Perangkat')
             ->assertSee('wire:poll.5s', false)
-            ->assertSee('AIR-001')
+            ->assertSee('Sensor Lab')
+            ->assertSee('Kode AIR-001')
             ->assertSee('Laboratorium Jaringan')
-            ->assertSee(['CO₂', 'NH₃', 'CO', 'H₂']);
+            ->assertSee(['CO₂', 'NH₃', 'CO', 'H₂'])
+            ->assertSee(['Karbon Dioksida', 'Amonia', 'Karbon Monoksida', 'Hidrogen']);
     }
 
     public function test_device_is_connected_when_last_data_is_recent(): void
@@ -54,7 +56,8 @@ class DeviceStatusTest extends TestCase
 
         Livewire::test(DeviceStatus::class)
             ->assertSee('Terhubung')
-            ->assertDontSee('Terputus')
+            ->assertSee('Perangkat sedang mengirim data.')
+            ->assertSee('10 detik yang lalu')
             ->assertViewHas('devices', fn ($devices) => $devices->first()['connected'] === true);
     }
 
@@ -71,103 +74,40 @@ class DeviceStatusTest extends TestCase
         $this->logAt(120);
 
         Livewire::test(DeviceStatus::class)
-            ->assertSee('Terputus')
-            ->assertDontSee('Terhubung')
+            ->assertSee('Tidak ada data baru lebih dari 30 detik.')
+            ->assertDontSee('Perangkat sedang mengirim data.')
             ->assertViewHas('devices', fn ($devices) => $devices->first()['connected'] === false);
     }
 
     public function test_device_without_data_is_disconnected(): void
     {
         Livewire::test(DeviceStatus::class)
-            ->assertSee('Terputus')
-            ->assertSee('Belum pernah mengirim data')
+            ->assertSee('Perangkat belum pernah mengirim data.')
             ->assertViewHas('devices', fn ($devices) => $devices->first()['connected'] === false
-                && $devices->first()['interval'] === null);
+                && $devices->first()['last_seen'] === null);
     }
 
-    public function test_measured_interval_is_average_gap_of_last_ten_logs(): void
+    public function test_page_links_to_guide_instead_of_showing_technical_details(): void
     {
-        // Data lama dengan selisih besar tidak ikut dihitung (di luar 10 data terakhir).
-        $this->logAt(1000);
-        $this->logAt(900);
-
-        foreach (range(9, 0) as $i) {
-            $this->logAt($i * 6);
-        }
-
-        Livewire::test(DeviceStatus::class)
-            ->assertSee('6,0 detik')
-            ->assertViewHas('devices', fn ($devices) => abs($devices->first()['interval'] - 6.0) < 0.001);
-    }
-
-    public function test_interval_is_unknown_with_single_log(): void
-    {
-        $this->logAt(5);
-
-        Livewire::test(DeviceStatus::class)
-            ->assertViewHas('devices', fn ($devices) => $devices->first()['interval'] === null);
-    }
-
-    public function test_shows_data_flow_steps(): void
-    {
-        Livewire::test(DeviceStatus::class)
-            ->assertSeeInOrder(['Alur data', 'Sensor membaca gas', 'Dikirim ke server', 'Validasi format', 'Klasifikasi', 'Disimpan', 'Ditampilkan']);
-    }
-
-    public function test_shows_ten_latest_rejections_with_short_errors(): void
-    {
-        TelemetryRejection::create([
-            'device_id' => 'AIR-OLD',
-            'payload' => ['device_id' => 'AIR-OLD'],
-            'errors' => ['timestamp' => ['Format timestamp lama.']],
-            'created_at' => now()->subHour(),
-        ]);
-
-        foreach (range(1, 9) as $i) {
-            TelemetryRejection::create([
-                'device_id' => 'AIR-001',
-                'payload' => [],
-                'errors' => ['co2_ppm' => ['co2_ppm (CO₂) harus berupa angka.']],
-                'created_at' => now()->subMinutes($i),
-            ]);
-        }
-
         TelemetryRejection::create([
             'device_id' => 'AIR-999',
-            'payload' => ['device_id' => 'AIR-999'],
-            'errors' => [
-                'device_id' => ['device_id tidak terdaftar atau tidak aktif.'],
-                'timestamp' => ['timestamp wajib diisi.'],
-            ],
-            'created_at' => now(),
-        ]);
-
-        Livewire::test(DeviceStatus::class)
-            ->assertSee('Penolakan data terakhir')
-            ->assertSee('AIR-999')
-            ->assertSee('device_id tidak terdaftar atau tidak aktif.')
-            ->assertSee('timestamp wajib diisi.')
-            ->assertDontSee('AIR-OLD')
-            ->assertViewHas('rejections', fn ($rejections) => $rejections->count() === 10
-                && $rejections->first()->device_id === 'AIR-999');
-    }
-
-    public function test_rejection_without_device_id_is_shown_with_placeholder(): void
-    {
-        TelemetryRejection::create([
-            'device_id' => null,
             'payload' => [],
-            'errors' => ['device_id' => ['device_id wajib diisi.']],
+            'errors' => ['device_id' => ['device_id tidak terdaftar atau tidak aktif.']],
         ]);
 
         Livewire::test(DeviceStatus::class)
-            ->assertSee('device_id wajib diisi.')
-            ->assertSee('Tidak ada');
+            ->assertSee('Baca cara kerja SIMKU')
+            ->assertSee(route('guide').'#cara-kerja', false)
+            ->assertDontSee('Alur data')
+            ->assertDontSee('/api/telemetry')
+            ->assertDontSee('device_id tidak terdaftar atau tidak aktif.');
     }
 
-    public function test_shows_empty_state_without_rejections(): void
+    public function test_shows_empty_state_without_devices(): void
     {
+        $this->node->delete();
+
         Livewire::test(DeviceStatus::class)
-            ->assertSee('Belum ada data yang ditolak');
+            ->assertSee('Belum ada perangkat');
     }
 }

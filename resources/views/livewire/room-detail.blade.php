@@ -43,8 +43,8 @@
     @if (! $current)
         <div class="card">
             <x-ui.empty-state icon="tabler-hourglass-high"
-                              title="Menunggu data dari perangkat IoT"
-                              description="Perangkat belum mengirim pembacaan. Halaman diperbarui otomatis setiap 5 detik begitu data pertama masuk." />
+                              title="Menunggu data dari perangkat"
+                              description="Perangkat belum mengirim data. Halaman akan diperbarui sendiri begitu data pertama masuk." />
         </div>
     @else
         @if (! $devices->contains('online', true) && $lastUpdate)
@@ -110,7 +110,7 @@
         <div class="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
             <div>
                 <h2 class="text-base font-semibold text-slate-900">Grafik sensor</h2>
-                <p class="mt-0.5 text-sm text-slate-500">Rata-rata per interval waktu untuk gas dan rentang yang dipilih.</p>
+                <p class="mt-0.5 text-sm text-slate-500">Perubahan kadar gas yang dipilih dalam rentang waktu tertentu.</p>
             </div>
             <div class="flex flex-wrap gap-2">
                 <div class="inline-flex rounded-xl border border-slate-200 bg-white p-1" role="group" aria-label="Pilih gas">
@@ -142,7 +142,7 @@
         </div>
 
         <x-ui.card :icon="$selectedGas['icon']" :title="$selectedGas['symbol'].' — '.$selectedGas['name']"
-                   description="Garis putus-putus menandai batas atas kategori Baik, Sedang, dan Tidak Sehat (Solihat dkk., 2026).">
+                   description="Garis putus-putus menandai batas antarkategori. Di atas garis teratas, udara masuk kategori Berbahaya.">
             <x-ui.line-chart :chart="$gasChart" height="h-72" />
         </x-ui.card>
 
@@ -158,7 +158,7 @@
             </div>
 
             <x-ui.card :icon="'tabler-chart-pie-2'" title="Proporsi kategori keseluruhan"
-                       :description="$stats['count'] ? 'Berdasarkan '.number_format($stats['count'], 0, ',', '.').' pembacaan dalam '.$ranges[$range]['label'].' terakhir' : 'Belum ada pembacaan dalam rentang ini'">
+                       :description="$stats['count'] ? 'Berdasarkan '.number_format($stats['count'], 0, ',', '.').' data dalam '.$ranges[$range]['label'].' terakhir' : 'Belum ada pembacaan dalam rentang ini'">
                 @if ($stats['count'])
                     <div class="flex h-3 w-full overflow-hidden rounded-full bg-slate-100" role="img" aria-label="Proporsi kategori keseluruhan">
                         @foreach ($categories as $name => $category)
@@ -185,9 +185,9 @@
     </section>
 
     {{-- Pembacaan terakhir --}}
-    <x-ui.card :icon="'tabler-list'" title="10 pembacaan terakhir" description="Nilai gas dalam ppm (indikator relatif)." :padded="false">
+    <x-ui.card :icon="'tabler-list'" title="10 data terakhir" description="Kadar gas dalam satuan ppm." :padded="false">
         @if ($recent->isEmpty())
-            <x-ui.empty-state icon="tabler-history" title="Belum ada pembacaan" description="Data akan muncul di sini setelah perangkat mengirim pembacaan." />
+            <x-ui.empty-state icon="tabler-history" title="Belum ada data" description="Data akan muncul di sini setelah perangkat mengirim data." />
         @else
             <div class="overflow-x-auto">
                 <table class="table whitespace-nowrap">

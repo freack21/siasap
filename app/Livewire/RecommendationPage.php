@@ -14,7 +14,7 @@ use Livewire\Component;
 
 /**
  * Halaman Rekomendasi Tindakan: kondisi terkini per ruangan, tabel 4 aturan
- * (Tabel 3.3 naskah), dasar rekomendasi, dan disclaimer.
+ * (Tabel 3.3 naskah), dan disclaimer; dasar penyusunan saran ada di Panduan.
  */
 #[Layout('layouts::public')]
 #[Title('Rekomendasi Tindakan — SIMKU')]
@@ -25,9 +25,6 @@ class RecommendationPage extends Component
         return view('livewire.recommendation-page', [
             'conditions' => $this->currentConditions(),
             'rules' => Recommendation::all(),
-            'strategyLabels' => config('recommendations.strategy_labels'),
-            'basis' => config('recommendations.basis'),
-            'sources' => Recommendation::sources(),
             'disclaimer' => config('recommendations.disclaimer'),
         ]);
     }

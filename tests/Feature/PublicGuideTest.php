@@ -15,7 +15,7 @@ class PublicGuideTest extends TestCase
     {
         $this->get(route('guide'))
             ->assertOk()
-            ->assertSee('Panduan Kualitas Udara')
+            ->assertSee('Panduan Sistem')
             ->assertSee('Cara membaca kategori');
     }
 
@@ -32,10 +32,28 @@ class PublicGuideTest extends TestCase
     public function test_guide_explains_relative_ppm_and_worst_category(): void
     {
         Livewire::test(AirQualityGuide::class)
-            ->assertSee('indikator relatif terhadap kondisi udara saat perangkat dinyalakan')
+            ->assertSee('dibandingkan dengan kondisi udara saat perangkat dinyalakan (indikator relatif)')
             ->assertSee('kategori gas yang paling buruk')
             ->assertSee(['Karbon Dioksida', 'Amonia', 'Karbon Monoksida', 'Hidrogen'])
             ->assertSee(['MQ-135', 'MQ-2']);
+    }
+
+    public function test_guide_explains_how_simku_works_and_each_page(): void
+    {
+        Livewire::test(AirQualityGuide::class)
+            ->assertSee('id="cara-kerja"', false)
+            ->assertSeeInOrder(['Cara kerja SIMKU', 'Perangkat membaca udara', 'Data dikirim ke SIMKU', 'Data diperiksa',
+                'Kategori ditentukan', 'Saran disiapkan dan disimpan', 'Hasil ditampilkan'])
+            ->assertSeeInOrder(['Isi setiap halaman', 'Beranda', 'Detail Ruangan', 'Riwayat', 'Rekomendasi', 'Perangkat', 'Panduan', 'Kuesioner']);
+    }
+
+    public function test_guide_shows_basis_and_sources_of_recommendations(): void
+    {
+        Livewire::test(AirQualityGuide::class)
+            ->assertSee('Dasar saran tindakan')
+            ->assertSee(config('recommendations.basis'))
+            ->assertSee('https://www.epa.gov/indoor-air-quality-iaq/improving-indoor-air-quality', false)
+            ->assertSee('https://document.airnow.gov/technical-assistance-document-for-the-reporting-of-daily-air-quailty.pdf', false);
     }
 
     public function test_guide_faq_covers_interval_disconnection_and_disclaimer(): void
