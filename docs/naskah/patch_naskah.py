@@ -116,6 +116,8 @@ mengubah teks; sisipan berikutnya ke sasaran yang sama diletakkan berurutan.
     "pindah_pemisah_halaman": true (pada butir) memindahkan pemisah halaman di akhir
     paragraf "cari" ke akhir sisipan (terlacak), untuk sisipan di akhir bab.
       {"teks": "...", "seperti": "<cari>"}         salin pPr paragraf itu
+      {"teks": "1.\tisi", "butir": true}           butir bernomor ketikan dengan pPr paragraf
+                                                   "cari", indentasi gantung 1 cm
       {"tabel": [["sel", ...], ...], "seperti": "<judul atau isi tabel contoh>",
        "lebar": [1, 4, 5], "rata": "kiri", "rata_sel": "kiri"}
                                                    tabel baru (baris tersisip),
@@ -138,9 +140,10 @@ mengubah teks; sisipan berikutnya ke sasaran yang sama diletakkan berurutan.
     tetapi entri itu hilang bila Mendeley memperbarui daftar pustaka.
   - "sisip_baris": [["sel1", "sel2", ...], ...] sisipkan baris tabel sesudah
     baris yang memuat "cari"; format baris disalin; w:trPr/w:ins + run di w:ins.
-  - "hapus": "paragraf" | "tabel" | "paragraf+tabel" | "baris" hapus paragraf
-    "cari", tabel sesudah judul "cari", keduanya, atau baris tabel yang memuat
-    "cari" (w:del pada tanda paragraf dan run; w:trPr/w:del pada baris).
+  - "hapus": "paragraf" | "tabel" | "paragraf+tabel" | "baris" | "gambar" hapus paragraf
+    "cari", tabel sesudah judul "cari", keduanya, baris tabel yang memuat
+    "cari", atau judul gambar "cari" beserta paragraf gambar di atasnya
+    (w:del pada tanda paragraf dan run; w:trPr/w:del pada baris).
   - "sisip_dokumen": {"file": "lain.docx", "bagian": "<penanda>" atau [...],
     "tanpa_penanda": false, "judul_otomatis": false, "penanda": [...],
     "tanpa_paragraf_kosong": false}
@@ -2515,6 +2518,8 @@ def op_insert_paragraphs(revision: Revision, workspace: Workspace) -> tuple[list
                                       style=style if source is anchor and style else None)
             if entry.get("nomor"):
                 number_heading(element, style or "", entry["nomor"], workspace)
+            if entry.get("butir"):
+                hang_list_item(element)
             if entry.get("halaman_baru"):
                 properties = element.find(w("pPr"))
                 if properties is None:
@@ -2531,6 +2536,17 @@ def op_insert_paragraphs(revision: Revision, workspace: Workspace) -> tuple[list
         move_page_break(anchor, [element for element in created if element.tag == w("p")], session)
     paragraphs = len(created) - tables
     return created, f"{paragraphs} paragraf" + (f" dan {tables} tabel" if tables else "") + " disisipkan"
+
+
+def hang_list_item(paragraph: etree._Element) -> None:
+    """Butir bernomor ketikan ("1.<tab>teks") pada paragraf isi: indentasi gantung 1 cm, tanpa inden baris pertama."""
+    properties = paragraph.find(w("pPr"))
+    if properties is None:
+        properties = etree.Element(w("pPr"))
+        paragraph.insert(0, properties)
+    for existing in properties.findall(w("ind")):
+        properties.remove(existing)
+    place_in_order(properties, etree.Element(w("ind"), {w("left"): "567", w("hanging"): "567"}), PARAGRAPH_PROPERTY_ORDER)
 
 
 def move_page_break(anchor: etree._Element, created: list[etree._Element], session: Session) -> None:
@@ -2648,6 +2664,16 @@ def op_delete(revision: Revision, workspace: Workspace) -> tuple[list[etree._Ele
             return [row], "baris tabel dihapus"
         row.getparent().remove(row)
         return [anchor], "baris tabel dihapus"
+    if mode == "gambar":
+        image = paragraph.getprevious()
+        while image is not None and image.tag == w("p") and image.find(f".//{w('drawing')}") is None \
+                and not paragraph_plain_text(image).strip():
+            image = image.getprevious()
+        if image is None or image.tag != w("p") or image.find(f".//{w('drawing')}") is None:
+            raise ValueError("tidak ada gambar di atas judul ini")
+        delete_paragraph(image, workspace.session)
+        delete_paragraph(paragraph, workspace.session)
+        return [image], "gambar dan judulnya dihapus"
     done = []
     affected: list[etree._Element] = []
     if "tabel" in mode:
@@ -4413,7 +4439,7 @@ def serialize(root: etree._Element) -> bytes:
     return etree.tostring(root, xml_declaration=True, encoding="UTF-8", standalone=True)
 
 
-HAPUS_MODES = ("paragraf", "tabel", "paragraf+tabel", "baris")
+HAPUS_MODES = ("paragraf", "tabel", "paragraf+tabel", "baris", "gambar")
 
 
 def load_revisions(path: Path, only: set[str] | None) -> list[Revision]:
