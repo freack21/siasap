@@ -173,3 +173,8 @@
         @apply border-slate-200 bg-slate-50 text-slate-700;
     }
 }
+
+/* Nomor halaman aktif pada pagination bawaan Livewire. Di luar @layer agar mengalahkan utilitas bg-white bawaannya. */
+[aria-current='page'] > span {
+    @apply border-accent-600 bg-accent-600 text-white;
+}

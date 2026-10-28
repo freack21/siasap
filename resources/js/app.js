@@ -27,10 +27,15 @@ Chart.defaults.locale = 'id-ID';
  *
  * Format data: { labels: [...], datasets: [{ label, data: [...], color, dashed? }], yTitle?: string }
  * Dataset `dashed: true` digambar sebagai garis ambang putus-putus (tanpa titik/isian).
+ *
+ * Objek Chart disimpan di luar data Alpine: bila dibungkus proxy reaktif Alpine,
+ * chart.update() berulang tanpa henti (Maximum call stack size exceeded) dan grafik
+ * tidak berganti saat gas/rentang dipilih atau saat polling.
  */
 function lineChart() {
+    let chart = null;
+
     return {
-        chart: null,
         observer: null,
 
         init() {
@@ -42,7 +47,7 @@ function lineChart() {
 
         destroy() {
             this.observer?.disconnect();
-            this.chart?.destroy();
+            chart?.destroy();
         },
 
         read() {
@@ -93,7 +98,7 @@ function lineChart() {
         },
 
         render(payload) {
-            this.chart = new Chart(this.$refs.canvas, {
+            chart = new Chart(this.$refs.canvas, {
                 type: 'line',
                 data: { labels: payload.labels || [], datasets: this.datasets(payload) },
                 options: {
@@ -133,15 +138,15 @@ function lineChart() {
         },
 
         update(payload) {
-            if (!this.chart) {
+            if (!chart) {
                 return;
             }
 
-            this.chart.data.labels = payload.labels || [];
-            this.chart.data.datasets = this.datasets(payload);
-            this.chart.options.scales.y.title.display = !!payload.yTitle;
-            this.chart.options.scales.y.title.text = payload.yTitle || '';
-            this.chart.update('none');
+            chart.data.labels = payload.labels || [];
+            chart.data.datasets = this.datasets(payload);
+            chart.options.scales.y.title.display = !!payload.yTitle;
+            chart.options.scales.y.title.text = payload.yTitle || '';
+            chart.update('none');
         },
     };
 }
