@@ -55,7 +55,7 @@ php artisan migrate --seed
 npm run build
 ```
 
-`php artisan migrate --seed` membuat tabel dan mengisi data awal: satu ruangan **Ruang Uji** (kode `ROOM-01`) dengan satu perangkat aktif **Perangkat IoT 1** (kode `AIR-001`). Kode perangkat harus sama dengan `DEVICE_ID` di firmware.
+`php artisan migrate --seed` membuat tabel dan mengisi data awal: satu ruangan **RC1TI** (kode `ROOM-01`), yaitu ruang kelas tempat pengujian, dengan satu perangkat aktif **Perangkat IoT 1** (kode `AIR-001`). Kode perangkat harus sama dengan `DEVICE_ID` di firmware.
 
 Mode pengembangan (server, *queue*, dan Vite sekaligus):
 

@@ -15,7 +15,7 @@ class RoomDeviceSeeder extends Seeder
     {
         $room = Room::updateOrCreate(
             ['code' => 'ROOM-01'],
-            ['name' => 'Ruang Uji', 'description' => 'Ruangan tempat perangkat pemantau kualitas udara dipasang.'],
+            ['name' => 'RC1TI', 'description' => 'Ruangan tempat perangkat pemantau kualitas udara dipasang.'],
         );
 
         Node::updateOrCreate(
