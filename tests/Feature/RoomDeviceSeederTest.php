@@ -23,7 +23,7 @@ class RoomDeviceSeederTest extends TestCase
         $this->assertSame(1, Node::count());
 
         $room = Room::firstOrFail();
-        $this->assertSame('Ruang Uji', $room->name);
+        $this->assertSame('RC1TI', $room->name);
         $this->assertSame('ROOM-01', $room->code);
 
         $node = Node::firstOrFail();
