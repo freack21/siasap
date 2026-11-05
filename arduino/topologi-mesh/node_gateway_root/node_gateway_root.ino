@@ -1,25 +1,28 @@
 /* =========================================================================================
- * SISTEM PEMANTAUAN KUALITAS UDARA LINGKUNGAN (SIMKU)
- * TOPOLOGI MESH - ESP32 NODE 1 (ROOT GATEWAY / SINK NODE)
+ * SIMKU - TOPOLOGI MESH: ESP32 NODE 1 (ROOT GATEWAY / SINK)
  * =========================================================================================
- * Deskripsi Peran Node 1:
- * 1. Terkoneksi ke WiFi Router ("cargo") dan server backend Laravel SIMKU.
- * 2. Membaca sensor gas lokal miliknya sendiri (Node ID 1 - Ruang Tamu, Hop Count = 1,
- *    RSSI = WiFi.RSSI() link Node 1 -> AP).
- * 3. Berfungsi sebagai Sink / Gateway: Mendengarkan paket data dari Node 2 dan Node 3 melalui
- *    protokol ESP-NOW (RSSI link terakhir diukur dari rx_ctrl->rssi), kemudian meneruskan
- *    (forward) paket tersebut ke REST API Laravel (hop_count +1 dan RSSI digabung dengan
- *    WiFi.RSSI() karena paket melewati satu link nirkabel lagi: Gateway -> AP).
- * 4. Deduplikasi: semua paket ESP-NOW bersifat broadcast, sehingga paket Node 3 bisa diterima
- *    langsung DAN via relay (seq_number sama). Paket dengan seq_number sama dengan seq terakhir
- *    yang sudah di-forward untuk node tersebut dibuang (dicatat di Serial Monitor).
+ * Deskripsi peran Node 1:
+ * 1. Terhubung ke WiFi Access Point dan aplikasi SIMKU (HTTP POST /api/telemetry).
+ * 2. Membaca sensor MQ-135 dan MQ-2 miliknya sendiri dengan logika yang SAMA dengan
+ *    arduino/simku_monitor: pemanasan 30 detik, baseline = rata-rata 50 pembacaan ADC, lalu
+ *    konversi Solihat, S. M., Salsabila, S., & Susilawati, S. (2026), JITET 14(1), hlm. 1596:
+ *      ppm = max(0, adc - baseline) * (5.0 / 4096.0) * k,  k: CO2 100, NH3 80, CO 50, H2 30.
+ *    Nilai adalah INDIKATOR RELATIF terhadap kondisi udara saat perangkat dinyalakan.
+ *    Data lokal dikirim sebagai device_id AIR-001.
+ * 3. Menerima paket ESP-NOW dari Node 2 (Relay) dan Node 3 (Leaf), lalu meneruskannya ke
+ *    aplikasi sebagai AIR-002 / AIR-003. Node tersebut tidak punya NTP, sehingga gateway
+ *    mengisi timestamp dari jam NTP-nya sendiri sesuai waktu paket diterima. Penerusan
+ *    ditahan sampai waktu tersinkron.
+ * 4. Deduplikasi: paket broadcast Node 3 bisa tiba langsung DAN via relay dengan seq_number
+ *    sama; salinan kedua dibuang.
  *
- * Definisi metrik (seragam untuk semua topologi, lihat arduino/README.md):
- * - rssi      : RSSI TERLEMAH (minimum) dari seluruh link nirkabel yang dilalui paket sampai
- *               ke WiFi Access Point.
- * - hop_count : jumlah transmisi nirkabel sampai paket mencapai WiFi AP.
+ * Payload mengikuti format aplikasi (device_id, timestamp, co2_ppm, nh3_ppm, co_ppm, h2_ppm).
+ * Metrik jaringan (rssi, seq_number, hop_count, topology_type) ikut dikirim untuk analisis
+ * penelitian IoT; aplikasi SIMKU mengabaikannya.
+ * - rssi      : RSSI terlemah sepanjang jalur sampai WiFi AP.
+ * - hop_count : jumlah transmisi nirkabel sampai WiFi AP.
  *
- * Kebutuhan: ESP32 Arduino core >= 3.0 (signature callback esp_now_recv_info_t).
+ * Kebutuhan: ESP32 Arduino core versi 3 atau lebih baru (callback esp_now_recv_info_t).
  * ========================================================================================= */
 
 #include <esp_arduino_version.h>
@@ -31,39 +34,54 @@
 #include <esp_now.h>
 #include <esp_wifi.h>
 #include <HTTPClient.h>
-#include <math.h>
+#include <time.h>
 
 // ======================== KONFIGURASI JARINGAN & SERVER ========================
 const char* WIFI_SSID     = "cargo";
 const char* WIFI_PASSWORD = "cargocargo";
 
-// URL Endpoint Laravel SIMKU
-const char* SERVER_URL    = "http://192.168.137.1:8000/api/telemetry";
+// Ganti dengan URL aplikasi SIMKU, contoh lokal: "http://192.168.137.1:8000/api/telemetry".
+const char* SERVER_URL    = "https://siasap.ptsigmamutuindonesia.com/api/telemetry";
 
-// API Key opsional. Isi dengan nilai TELEMETRY_API_KEY di file .env Laravel bila backend
-// mewajibkannya. Biarkan kosong ("") bila backend tidak memakai API key.
+// Opsional: isi dengan TELEMETRY_API_KEY di .env Laravel. Kosongkan ("") bila tidak dipakai.
 const char* API_KEY       = "";
 
 const unsigned long INTERVAL_KIRIM = 5000;
 
 // ======================== IDENTITAS NODE ========================
-#define NODE_ID 1  // Node 1 (Ruang Tamu / Root Gateway)
+#define NODE_ID 1  // dikirim ke aplikasi sebagai AIR-001
 
-// ======================== PIN HARDWARE SENSOR ========================
-#define PIN_MQ2   34
-#define PIN_MQ135 35
+// ======================== PIN SENSOR (sesuai rangkaian perangkat; dapat diubah) ========================
+const int PIN_MQ135 = 35;  // CO2, NH3 (AO MQ-135 ke GPIO35)
+const int PIN_MQ2   = 34;  // CO, H2 (AO MQ-2 ke GPIO34)
 
-const float RL        = 1.0;
-// PENTING: R0 berbeda untuk setiap sensor fisik. Setiap board WAJIB memakai R0 hasil
-// kalibrasinya sendiri dari sketch arduino/kalibrasi_r0/kalibrasi_r0.ino (udara bersih,
-// setelah burn-in 24-48 jam). Nilai di bawah hanya nilai awal/contoh.
-const float R0_MQ2    = 0.174;
-const float R0_MQ135  = 19.30;
+// ======================== PARAMETER KONVERSI & BASELINE ========================
+const unsigned long DURASI_PEMANASAN_MS = 30000;  // pemanasan sensor 30 detik
+const int JUMLAH_SAMPEL_BASELINE        = 50;     // rata-rata 50 pembacaan
+const int JEDA_SAMPEL_BASELINE_MS       = 100;
 
+const float K_CO2 = 100.0;  // MQ-135
+const float K_NH3 = 80.0;   // MQ-135
+const float K_CO  = 50.0;   // MQ-2
+const float K_H2  = 30.0;   // MQ-2
+
+// ======================== DIAGNOSIS ========================
+const bool TAMPILKAN_ADC_MENTAH = true;
+const int JUMLAH_SAMPEL_SEBARAN = 10;
+const int JEDA_SAMPEL_SEBARAN_MS = 2;
+
+// Tahun minimum agar waktu dianggap sudah tersinkron NTP (sebelum sinkron, tahun = 1970).
+const int TAHUN_MINIMUM_VALID = 2024;
+
+bool sensorSiap = false;          // true setelah pemanasan dan baseline selesai
+unsigned long waktuMenyala = 0;
+int baselineMq135 = 0;
+int baselineMq2   = 0;
 unsigned long seqNumber = 0;
 unsigned long lastSendTime = 0;
 
 // ======================== STRUKTUR PAKET MESH ESP-NOW ========================
+// Harus identik di Root Gateway, Relay, dan Leaf.
 typedef struct struct_mesh_packet {
   int node_id;
   float co2;
@@ -75,26 +93,28 @@ typedef struct struct_mesh_packet {
   int hop_count;
 } struct_mesh_packet;
 
+// Paket di antrean beserta waktu diterima (millis) untuk mengisi timestamp.
+typedef struct paket_antrean {
+  struct_mesh_packet paket;
+  unsigned long diterimaMs;
+} paket_antrean;
+
 // ======================== ANTREAN PAKET ESP-NOW ========================
-// HTTP POST bersifat blocking (bisa ratusan ms), sehingga paket ESP-NOW yang datang selama
-// itu ditampung di antrean melingkar (ring buffer). Akses dilindungi critical section karena
-// callback ESP-NOW berjalan di task WiFi, sedangkan loop() berjalan di task Arduino.
+// HTTP POST bersifat blocking, sehingga paket ESP-NOW yang datang selama itu ditampung di
+// ring buffer. Akses dilindungi critical section karena callback berjalan di task WiFi.
 #define MAX_QUEUE 20
-struct_mesh_packet packetQueue[MAX_QUEUE];
-volatile int queueHead  = 0;   // indeks paket terdepan
-volatile int queueCount = 0;   // jumlah paket dalam antrean
+paket_antrean packetQueue[MAX_QUEUE];
+volatile int queueHead  = 0;
+volatile int queueCount = 0;
 volatile unsigned long queueDropped = 0;  // paket dibuang karena antrean penuh
 unsigned long queueDroppedReported = 0;
 portMUX_TYPE queueMux = portMUX_INITIALIZER_UNLOCKED;
 
 // ======================== DEDUPLIKASI ========================
-// seq_number terakhir yang sudah di-forward per node_id (0 = belum ada; seq dimulai dari 1)
+// seq_number terakhir yang sudah diteruskan per node_id (0 = belum ada; seq dimulai dari 1).
 #define MAX_NODE_ID 10
 int lastSeq[MAX_NODE_ID + 1] = {0};
 unsigned long duplicateCount = 0;
-
-// Forward Declaration
-void forwardPacketToLaravel(const struct_mesh_packet &pkt);
 
 // Gabungkan RSSI terukur ke paket: ambil nilai TERLEMAH (minimum) sepanjang jalur.
 // rssi == 0 berarti belum ada link yang terukur.
@@ -103,21 +123,17 @@ int gabungRssi(int rssiPaket, int rssiTerukur) {
   return (rssiTerukur < rssiPaket) ? rssiTerukur : rssiPaket;
 }
 
-// Callback saat menerima paket ESP-NOW dari Node 2 atau Node 3 (signature core 3.x)
 void OnDataRecv(const esp_now_recv_info_t *info, const uint8_t *incomingData, int len) {
   if (len != sizeof(struct_mesh_packet)) return;
 
-  struct_mesh_packet pkt;
-  memcpy(&pkt, incomingData, sizeof(struct_mesh_packet));
-
-  // Ukur RSSI link terakhir (pengirim -> Gateway) dari paket yang diterima
-  int rssiTerukur = info->rx_ctrl->rssi;
-  pkt.rssi = gabungRssi(pkt.rssi, rssiTerukur);
+  paket_antrean masuk;
+  memcpy(&masuk.paket, incomingData, sizeof(struct_mesh_packet));
+  masuk.paket.rssi = gabungRssi(masuk.paket.rssi, info->rx_ctrl->rssi);  // link pengirim -> Gateway
+  masuk.diterimaMs = millis();
 
   portENTER_CRITICAL(&queueMux);
   if (queueCount < MAX_QUEUE) {
-    int tail = (queueHead + queueCount) % MAX_QUEUE;
-    packetQueue[tail] = pkt;
+    packetQueue[(queueHead + queueCount) % MAX_QUEUE] = masuk;
     queueCount++;
   } else {
     queueDropped++;
@@ -125,8 +141,7 @@ void OnDataRecv(const esp_now_recv_info_t *info, const uint8_t *incomingData, in
   portEXIT_CRITICAL(&queueMux);
 }
 
-// Ambil satu paket dari antrean (true jika ada)
-bool ambilPaketAntrean(struct_mesh_packet &out) {
+bool ambilPaketAntrean(paket_antrean &out) {
   bool ada = false;
   portENTER_CRITICAL(&queueMux);
   if (queueCount > 0) {
@@ -139,25 +154,121 @@ bool ambilPaketAntrean(struct_mesh_packet &out) {
   return ada;
 }
 
-// ======================== FUNGSI KALKULASI SENSOR ========================
-float hitungRsMQ2(int adcValue) {
-  if (adcValue >= 4080) adcValue = 4080;
-  if (adcValue <= 50)   adcValue = 50;
-  float vOut = (adcValue / 4095.0) * 3.3;
-  return ((3.3 - vOut) / vOut) * RL;
+// ======================== FUNGSI SENSOR ========================
+
+/**
+ * Konversi nilai ADC ke indikator ppm relatif (Solihat dkk., 2026, hlm. 1596).
+ * Selisih negatif (lebih bersih dari baseline) dipotong menjadi 0.
+ */
+float hitungPpm(int nilaiAdc, int baseline, float konstanta) {
+  int selisih = nilaiAdc - baseline;
+  if (selisih < 0) {
+    selisih = 0;
+  }
+  return (float)selisih * (5.0 / 4096.0) * konstanta;
 }
 
-float hitungRsMQ135(int adcValue) {
-  if (adcValue >= 4080) adcValue = 4080;
-  if (adcValue <= 20)   adcValue = 20;
-  float vOut = (adcValue / 4095.0) * 3.3;
-  return ((5.0 - vOut) / vOut) * RL;
+int rataRataBaseline(int pin) {
+  long total = 0;
+  for (int i = 0; i < JUMLAH_SAMPEL_BASELINE; i++) {
+    total += analogRead(pin);
+    delay(JEDA_SAMPEL_BASELINE_MS);
+  }
+  return (int)(total / JUMLAH_SAMPEL_BASELINE);
 }
 
-float hitungPPM(float rs, float r0, float a, float b) {
-  float rasio = rs / r0;
-  if (rasio <= 0.0) return 0.0;
-  return a * pow(rasio, b);
+/**
+ * Cetak ADC mentah satu sensor untuk diagnosis kabel/daya. Rentang besar dalam beberapa
+ * milidetik menandakan pin mengambang atau daya tidak stabil.
+ */
+void cetakAdcMentah(const char* nama, int pin, int nilaiAdc, int baseline) {
+  int minimum = 4095;
+  int maksimum = 0;
+  for (int i = 0; i < JUMLAH_SAMPEL_SEBARAN; i++) {
+    int sampel = analogRead(pin);
+    if (sampel < minimum) {
+      minimum = sampel;
+    }
+    if (sampel > maksimum) {
+      maksimum = sampel;
+    }
+    delay(JEDA_SAMPEL_SEBARAN_MS);
+  }
+  Serial.print(nama);
+  Serial.print(" adc="); Serial.print(nilaiAdc);
+  Serial.print(" base="); Serial.print(baseline);
+  Serial.print(" selisih="); Serial.print(nilaiAdc - baseline);
+  Serial.print(" ("); Serial.print(analogReadMilliVolts(pin)); Serial.print(" mV)");
+  Serial.print(" | "); Serial.print(JUMLAH_SAMPEL_SEBARAN); Serial.print("x: min="); Serial.print(minimum);
+  Serial.print(" maks="); Serial.print(maksimum);
+  Serial.print(" rentang="); Serial.println(maksimum - minimum);
+}
+
+// ======================== FUNGSI WAKTU ========================
+
+/**
+ * Mengisi buffer dengan waktu lokal (WIB) berformat "Y-m-d H:i:s" untuk saat
+ * (sekarang - mundurDetik). Mengembalikan false bila waktu belum tersinkron lewat NTP.
+ */
+bool ambilTimestamp(char* buffer, size_t ukuran, unsigned long mundurDetik) {
+  time_t sekarang = time(nullptr) - (time_t) mundurDetik;
+  struct tm waktu;
+  localtime_r(&sekarang, &waktu);
+  if ((waktu.tm_year + 1900) < TAHUN_MINIMUM_VALID) {
+    return false;
+  }
+  strftime(buffer, ukuran, "%Y-%m-%d %H:%M:%S", &waktu);
+  return true;
+}
+
+bool waktuTersinkron() {
+  char buffer[20];
+  return ambilTimestamp(buffer, sizeof(buffer), 0);
+}
+
+// ======================== KIRIM KE APLIKASI ========================
+void kirimKeServer(const struct_mesh_packet &paket, const char* timestamp) {
+  if (WiFi.status() != WL_CONNECTED) {
+    Serial.print("[OFFLINE] WiFi terputus, data AIR-00"); Serial.print(paket.node_id);
+    Serial.print(" Seq #"); Serial.print(paket.seq_number); Serial.println(" tidak terkirim.");
+    return;
+  }
+
+  char deviceId[12];
+  snprintf(deviceId, sizeof(deviceId), "AIR-%03d", paket.node_id);
+
+  String payload = "{";
+  payload += "\"device_id\":\"" + String(deviceId) + "\",";
+  payload += "\"timestamp\":\"" + String(timestamp) + "\",";
+  payload += "\"co2_ppm\":" + String(paket.co2, 2) + ",";
+  payload += "\"nh3_ppm\":" + String(paket.nh3, 2) + ",";
+  payload += "\"co_ppm\":"  + String(paket.co, 2) + ",";
+  payload += "\"h2_ppm\":"  + String(paket.h2, 2) + ",";
+  payload += "\"rssi\":" + String(paket.rssi) + ",";
+  payload += "\"seq_number\":" + String(paket.seq_number) + ",";
+  payload += "\"hop_count\":" + String(paket.hop_count) + ",";
+  payload += "\"topology_type\":\"mesh\"";
+  payload += "}";
+
+  HTTPClient http;
+  http.begin(SERVER_URL);
+  http.addHeader("Content-Type", "application/json");
+  http.addHeader("Accept", "application/json");
+  if (strlen(API_KEY) > 0) {
+    http.addHeader("X-Api-Key", API_KEY);
+  }
+
+  int kodeRespons = http.POST(payload);
+  if (kodeRespons > 0) {
+    Serial.print("[KIRIM] "); Serial.print(payload);
+    Serial.print(" -> HTTP "); Serial.println(kodeRespons);
+    if (kodeRespons == 422) {
+      Serial.print("[GALAT 422] "); Serial.println(http.getString());
+    }
+  } else {
+    Serial.print("[GAGAL] Pengiriman data: "); Serial.println(http.errorToString(kodeRespons));
+  }
+  http.end();
 }
 
 // ======================== SETUP ========================
@@ -167,113 +278,85 @@ void setup() {
 
   Serial.println("\n=======================================================");
   Serial.println("  SIMKU - ESP32 TOPOLOGI MESH [NODE 1: ROOT GATEWAY]");
+  Serial.print("  Device ID : AIR-00"); Serial.println(NODE_ID);
   Serial.println("=======================================================");
 
   analogReadResolution(12);
 
-  // Inisialisasi WiFi Mode Station
   WiFi.mode(WIFI_STA);
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
-
-  Serial.print("Menghubungkan ke WiFi Gateway ["); Serial.print(WIFI_SSID); Serial.print("]");
-  int retry = 0;
-  while (WiFi.status() != WL_CONNECTED && retry < 30) {
+  Serial.print("Menghubungkan ke WiFi ["); Serial.print(WIFI_SSID); Serial.print("]");
+  int percobaan = 0;
+  while (WiFi.status() != WL_CONNECTED && percobaan < 30) {
     delay(500);
     Serial.print(".");
-    retry++;
+    percobaan++;
   }
-
   if (WiFi.status() == WL_CONNECTED) {
-    Serial.println("\n[OK] Terhubung ke WiFi!");
-    Serial.print("IP Address Root : "); Serial.println(WiFi.localIP());
-    Serial.print("MAC Address     : "); Serial.println(WiFi.macAddress());
-    Serial.print("WiFi Channel    : "); Serial.println(WiFi.channel());
+    Serial.println("\n[OK] Terhubung ke WiFi.");
+    Serial.print("IP Perangkat : "); Serial.println(WiFi.localIP());
+    Serial.print("MAC Address  : "); Serial.println(WiFi.macAddress());
+    Serial.print("Kanal WiFi   : "); Serial.print(WiFi.channel());
+    Serial.println(" (samakan WIFI_CHANNEL di sketsa relay dan leaf)");
   } else {
-    Serial.println("\n[PERINGATAN] Gagal WiFi, akan terus mencoba di background.");
+    Serial.println("\n[PERINGATAN] Gagal terhubung ke WiFi, akan dicoba lagi di loop.");
   }
 
-  // Inisialisasi Protokol ESP-NOW
+  // Sinkronisasi waktu NTP, zona WIB (UTC+7).
+  configTime(7 * 3600, 0, "pool.ntp.org", "time.google.com");
+
   if (esp_now_init() == ESP_OK) {
-    Serial.println("[OK] ESP-NOW Berhasil Diinisialisasi pada Root Gateway.");
     esp_now_register_recv_cb(OnDataRecv);
+    Serial.println("[OK] ESP-NOW aktif pada Root Gateway.");
   } else {
     Serial.println("[ERROR] Gagal menginisialisasi ESP-NOW!");
   }
-}
 
-// ======================== FUNGSI FORWARD KE LARAVEL ========================
-void forwardPacketToLaravel(const struct_mesh_packet &pkt) {
-  if (WiFi.status() != WL_CONNECTED) {
-    Serial.print("[OFFLINE] WiFi terputus, paket Node #"); Serial.print(pkt.node_id);
-    Serial.print(" Seq #"); Serial.print(pkt.seq_number); Serial.println(" tidak terkirim.");
-    return;
-  }
-
-  HTTPClient http;
-  http.begin(SERVER_URL);
-  http.addHeader("Content-Type", "application/json");
-  if (strlen(API_KEY) > 0) {
-    http.addHeader("X-Api-Key", API_KEY);
-  }
-
-  String json = "{";
-  json += "\"node_id\":"        + String(pkt.node_id) + ",";
-  json += "\"co2\":"            + String(pkt.co2, 2) + ",";
-  json += "\"nh3\":"            + String(pkt.nh3, 2) + ",";
-  json += "\"co\":"             + String(pkt.co, 2) + ",";
-  json += "\"h2\":"             + String(pkt.h2, 2) + ",";
-  json += "\"rssi\":"           + String(pkt.rssi) + ",";
-  json += "\"seq_number\":"     + String(pkt.seq_number) + ",";
-  json += "\"hop_count\":"      + String(pkt.hop_count) + ",";
-  json += "\"topology_type\":\"mesh\"";
-  json += "}";
-
-  int code = http.POST(json);
-  Serial.print("[MESH FORWARD] Node #"); Serial.print(pkt.node_id);
-  Serial.print(" (Hop: "); Serial.print(pkt.hop_count);
-  Serial.print(", RSSI: "); Serial.print(pkt.rssi);
-  Serial.print(" dBm, Seq: #"); Serial.print(pkt.seq_number);
-  Serial.print(") -> HTTP Response: "); Serial.println(code);
-  if (code <= 0) {
-    Serial.print("[ERROR HTTP] "); Serial.println(http.errorToString(code).c_str());
-  }
-
-  http.end();
+  waktuMenyala = millis();
+  Serial.println("Memanaskan sensor selama 30 detik (penerusan paket tetap berjalan)...");
 }
 
 // ======================== LOOP UTAMA ========================
 void loop() {
-  // 1. Proses paket yang diterima dari Node 2 / Node 3 melalui antrean ESP-NOW
-  struct_mesh_packet pkt;
-  while (ambilPaketAntrean(pkt)) {
-    // Validasi node_id agar indeks lastSeq aman
-    if (pkt.node_id < 1 || pkt.node_id > MAX_NODE_ID || pkt.node_id == NODE_ID) {
-      Serial.print("[MESH DROP] node_id tidak valid: "); Serial.println(pkt.node_id);
-      continue;
+  if (WiFi.status() != WL_CONNECTED) {
+    static unsigned long terakhirSambung = 0;
+    if (millis() - terakhirSambung >= INTERVAL_KIRIM) {
+      terakhirSambung = millis();
+      Serial.println("[PERINGATAN] WiFi terputus, mencoba menyambung ulang...");
+      WiFi.reconnect();
     }
-
-    // Deduplikasi: paket yang sama bisa tiba langsung DAN via relay (broadcast)
-    if (pkt.seq_number == lastSeq[pkt.node_id]) {
-      duplicateCount++;
-      Serial.print("[MESH DUPLIKAT] Node #"); Serial.print(pkt.node_id);
-      Serial.print(" Seq #"); Serial.print(pkt.seq_number);
-      Serial.print(" (Hop: "); Serial.print(pkt.hop_count);
-      Serial.print(") sudah di-forward, dibuang. Total duplikat: ");
-      Serial.println(duplicateCount);
-      continue;
-    }
-    lastSeq[pkt.node_id] = pkt.seq_number;
-
-    // Paket melewati satu link nirkabel lagi: Gateway -> WiFi AP
-    pkt.hop_count += 1;
-    pkt.rssi = gabungRssi(pkt.rssi, (int) WiFi.RSSI());
-
-    // Forward ke Laravel Backend
-    forwardPacketToLaravel(pkt);
   }
 
-  // Laporkan paket yang terbuang karena antrean gateway penuh (drop di sisi gateway,
-  // BUKAN kehilangan pada link radio)
+  // 1. Teruskan paket Node 2 / Node 3. Ditahan di antrean sampai waktu NTP tersinkron.
+  if (waktuTersinkron()) {
+    paket_antrean masuk;
+    while (ambilPaketAntrean(masuk)) {
+      struct_mesh_packet &paket = masuk.paket;
+
+      if (paket.node_id < 1 || paket.node_id > MAX_NODE_ID || paket.node_id == NODE_ID) {
+        Serial.print("[MESH DROP] node_id tidak valid: "); Serial.println(paket.node_id);
+        continue;
+      }
+
+      if (paket.seq_number == lastSeq[paket.node_id]) {
+        duplicateCount++;
+        Serial.print("[MESH DUPLIKAT] AIR-00"); Serial.print(paket.node_id);
+        Serial.print(" Seq #"); Serial.print(paket.seq_number);
+        Serial.print(" sudah diteruskan, dibuang. Total duplikat: "); Serial.println(duplicateCount);
+        continue;
+      }
+      lastSeq[paket.node_id] = paket.seq_number;
+
+      // Paket melewati satu link nirkabel lagi: Gateway -> WiFi AP
+      paket.hop_count += 1;
+      paket.rssi = gabungRssi(paket.rssi, (int) WiFi.RSSI());
+
+      char timestamp[20];
+      ambilTimestamp(timestamp, sizeof(timestamp), (millis() - masuk.diterimaMs) / 1000);
+      kirimKeServer(paket, timestamp);
+    }
+  }
+
   unsigned long droppedNow;
   portENTER_CRITICAL(&queueMux);
   droppedNow = queueDropped;
@@ -284,49 +367,50 @@ void loop() {
     queueDroppedReported = droppedNow;
   }
 
-  // 2. Baca sensor lokal milik Node 1 secara berkala
-  if (millis() - lastSendTime >= INTERVAL_KIRIM) {
-    lastSendTime = millis();
-
-    // Sampling ADC sensor lokal
-    long sum_mq2 = 0;
-    long sum_mq135 = 0;
-    for (int i = 0; i < 15; i++) {
-      sum_mq2   += analogRead(PIN_MQ2);
-      sum_mq135 += analogRead(PIN_MQ135);
-      delay(10);
+  // 2. Pemanasan dan baseline sensor lokal (tanpa menghentikan penerusan)
+  if (!sensorSiap) {
+    if (millis() - waktuMenyala < DURASI_PEMANASAN_MS) {
+      return;
     }
-    int adc_mq2   = sum_mq2 / 15;
-    int adc_mq135 = sum_mq135 / 15;
-
-    float rs_mq2   = hitungRsMQ2(adc_mq2);
-    float rs_mq135 = hitungRsMQ135(adc_mq135);
-
-    float ppm_co2 = 400.0 * pow((rs_mq135 / R0_MQ135), -2.762);
-    float rasio_mq135 = rs_mq135 / R0_MQ135;
-    float ppm_nh3 = 10.0 * pow(rasio_mq135, -2.473);
-    if (rasio_mq135 >= 0.9) {
-      ppm_nh3 = (1.1 - rasio_mq135) * 15.0;
-      if (ppm_nh3 < 0.5) ppm_nh3 = 0.5;
-    }
-
-    float ppm_co  = hitungPPM(rs_mq2, R0_MQ2, 3697.4, -3.109);
-    float ppm_h2  = hitungPPM(rs_mq2, R0_MQ2, 987.99, -2.162);
-
-    seqNumber++;
-
-    // Buat struct paket untuk data Node 1 sendiri (Hop Count = 1)
-    struct_mesh_packet myPacket;
-    myPacket.node_id    = NODE_ID;
-    myPacket.co2        = ppm_co2;
-    myPacket.nh3        = ppm_nh3;
-    myPacket.co         = ppm_co;
-    myPacket.h2         = ppm_h2;
-    myPacket.rssi       = WiFi.RSSI();  // Link Node 1 -> AP (satu-satunya link nirkabel)
-    myPacket.seq_number = seqNumber;
-    myPacket.hop_count  = 1;  // Satu transmisi nirkabel: Node 1 -> AP
-
-    // Kirim data sensor lokal ke server Laravel
-    forwardPacketToLaravel(myPacket);
+    Serial.println("Mengukur baseline (udara saat perangkat menyala)...");
+    baselineMq135 = rataRataBaseline(PIN_MQ135);
+    baselineMq2   = rataRataBaseline(PIN_MQ2);
+    Serial.print("Baseline MQ-135 : "); Serial.println(baselineMq135);
+    Serial.print("Baseline MQ-2   : "); Serial.println(baselineMq2);
+    sensorSiap = true;
   }
+
+  // 3. Kirim data sensor lokal Node 1 secara berkala
+  if (millis() - lastSendTime < INTERVAL_KIRIM) {
+    return;
+  }
+  lastSendTime = millis();
+
+  char timestamp[20];
+  if (!ambilTimestamp(timestamp, sizeof(timestamp), 0)) {
+    Serial.println("[MENUNGGU] Waktu belum tersinkron NTP, data belum dikirim.");
+    return;
+  }
+
+  int adcMq135 = analogRead(PIN_MQ135);
+  int adcMq2   = analogRead(PIN_MQ2);
+
+  if (TAMPILKAN_ADC_MENTAH) {
+    Serial.print("[ADC] "); cetakAdcMentah("MQ-135", PIN_MQ135, adcMq135, baselineMq135);
+    Serial.print("[ADC] "); cetakAdcMentah("MQ-2  ", PIN_MQ2, adcMq2, baselineMq2);
+  }
+
+  seqNumber++;
+
+  struct_mesh_packet paket;
+  paket.node_id    = NODE_ID;
+  paket.co2        = hitungPpm(adcMq135, baselineMq135, K_CO2);
+  paket.nh3        = hitungPpm(adcMq135, baselineMq135, K_NH3);
+  paket.co         = hitungPpm(adcMq2, baselineMq2, K_CO);
+  paket.h2         = hitungPpm(adcMq2, baselineMq2, K_H2);
+  paket.rssi       = WiFi.RSSI();  // satu-satunya link nirkabel: Node 1 -> AP
+  paket.seq_number = seqNumber;
+  paket.hop_count  = 1;
+
+  kirimKeServer(paket, timestamp);
 }
