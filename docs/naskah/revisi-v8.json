@@ -1,0 +1,233 @@
+{
+ "keterangan": "Revisi v8: ruangan uji ditetapkan sebagai ruang kelas RC1TI dan responden UEQ dikerucutkan menjadi mahasiswa yang belajar di ruangan tersebut; wireframe memakai placeholder untuk teks dinamis; tangkapan layar dan pengamatan peramban diambil ulang dengan nama ruangan RC1TI.uji nonfungsional, halaman Status Perangkat dan Panduan Sistem disederhanakan untuk pengguna awam, serta Bab IV diselaraskan dengan aplikasi dan bukti uji terbaru.",
+ "revisi": [
+  {
+   "id": "R-1.1",
+   "cari": "pada beberapa skenario kondisi di satu ruangan uji, serta mengevaluasi pengalaman pengguna dengan User Experience Questionnaire (UEQ).",
+   "ganti": "pada beberapa skenario kondisi di ruang kelas RC1TI, serta mengevaluasi pengalaman pengguna dengan User Experience Questionnaire (UEQ) kepada mahasiswa yang belajar di ruangan tersebut."
+  },
+  {
+   "id": "R-1.4-a",
+   "cari": "Pengujian sistem dilakukan pada satu ruangan uji dengan…erasap, dan ventilasi berbeda.",
+   "ganti": "Pengujian sistem dilakukan pada satu ruangan uji, yaitu ruang kelas RC1TI, dengan empat skenario kondisi: ruangan normal, ruangan tertutup, ruangan berasap, dan ventilasi berbeda.",
+   "sisip_paragraf": [
+    "Responden evaluasi pengalaman pengguna (UEQ) dibatasi pada mahasiswa yang mengikuti perkuliahan di ruang kelas RC1TI."
+   ]
+  },
+  {
+   "id": "R-3.1",
+   "cari": "Pengujian dilakukan pada satu ruangan uji.",
+   "ganti": "Pengujian dilakukan pada satu ruangan uji, yaitu ruang kelas RC1TI."
+  },
+  {
+   "id": "R-3.2-T1",
+   "cari": "[ISI: nama dan lokasi ruangan]",
+   "ganti": "ruang kelas RC1TI"
+  },
+  {
+   "id": "R-3.3-T2",
+   "cari": "Responden (pengguna aplikasi)",
+   "utuh": true,
+   "ganti": "Responden (mahasiswa yang belajar di ruang kelas RC1TI)"
+  },
+  {
+   "id": "R-3.4",
+   "cari": "Kuesioner User Experience Questionnaire (UEQ) 26 butir…a responden bersifat opsional.",
+   "ganti": "Kuesioner User Experience Questionnaire (UEQ) 26 butir versi Bahasa Indonesia diberikan kepada responden setelah mereka menggunakan aplikasi. Responden adalah mahasiswa yang mengikuti perkuliahan di ruang kelas RC1TI, yaitu ruangan yang dipantau aplikasi pada penelitian ini. Responden dipilih secara purposive sampling, yaitu hanya mahasiswa yang belajar di ruangan tersebut, karena merekalah yang merasakan langsung kondisi udara ruangan dan menjadi pengguna informasi yang ditampilkan aplikasi. Setiap butir berupa pasangan kata berlawanan dengan skala 7 titik. Kuesioner diisi melalui halaman Kuesioner pada aplikasi, dan nama responden bersifat opsional."
+  },
+  {
+   "id": "R-3.12.5",
+   "cari": "pada empat situasi di satu ruangan uji. Pengujian memakai perangkat IoT yang telah tersedia, dan perubahan kondisi udara dibuat secara terkontrol di satu ruangan uji yang sama.",
+   "ganti": "pada empat situasi di ruang kelas RC1TI. Pengujian memakai perangkat IoT yang telah tersedia, dan perubahan kondisi udara dibuat secara terkontrol di ruangan yang sama."
+  },
+  {
+   "id": "R-3.12.6",
+   "cari": "Evaluasi pengguna memakai User Experience Questionnaire (UEQ) 26 butir (Laugwitz et al., 2008) versi Bahasa Indonesia (Santoso et al., 2016).",
+   "ganti": "Evaluasi pengguna memakai User Experience Questionnaire (UEQ) 26 butir (Laugwitz et al., 2008) versi Bahasa Indonesia (Santoso et al., 2016) yang diisi oleh mahasiswa yang mengikuti perkuliahan di ruang kelas RC1TI."
+  },
+  {
+   "id": "R-GBR-3.7",
+   "cari": "Gambar 3.7 Wireframe Halaman Beranda",
+   "utuh": true,
+   "ganti_gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/rc1ti/wf-out/wireframe-beranda.png"
+  },
+  {
+   "id": "R-GBR-3.8",
+   "cari": "Gambar 3.8 Wireframe Halaman Detail Ruangan (Grafik Sensor)",
+   "utuh": true,
+   "ganti_gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/rc1ti/wf-out/wireframe-detail-ruangan.png"
+  },
+  {
+   "id": "R-GBR-3.9",
+   "cari": "Gambar 3.9 Wireframe Halaman Riwayat",
+   "utuh": true,
+   "ganti_gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/rc1ti/wf-out/wireframe-riwayat.png"
+  },
+  {
+   "id": "R-GBR-3.10",
+   "cari": "Gambar 3.10 Wireframe Halaman Panduan Sistem (Bagian Atas)",
+   "utuh": true,
+   "ganti_gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/rc1ti/wf-out/wireframe-panduan-atas.png"
+  },
+  {
+   "id": "R-GBR-3.11",
+   "cari": "Gambar 3.11 Wireframe Halaman Panduan Sistem (Bagian Bawah)",
+   "utuh": true,
+   "ganti_gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/rc1ti/wf-out/wireframe-panduan-bawah.png"
+  },
+  {
+   "id": "R-GBR-3.12",
+   "cari": "Gambar 3.12 Wireframe Halaman Rekomendasi Tindakan",
+   "utuh": true,
+   "ganti_gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/rc1ti/wf-out/wireframe-rekomendasi.png"
+  },
+  {
+   "id": "R-4.1.2",
+   "cari": "satu ruangan uji (Ruang Uji) dan satu perangkat (AIR-001)",
+   "ganti": "satu ruangan uji (RC1TI) dan satu perangkat (AIR-001)"
+  },
+  {
+   "id": "R-4.1.3",
+   "cari": "ringkasan utama langsung menampilkan Ruang Uji beserta",
+   "ganti": "ringkasan utama langsung menampilkan ruang kelas RC1TI beserta"
+  },
+  {
+   "id": "R-GBR-4.1",
+   "cari": "Gambar 4.1 Tampilan Halaman Beranda",
+   "utuh": true,
+   "ganti_gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/rc1ti/bab4/4-01-beranda.png"
+  },
+  {
+   "id": "R-GBR-4.2",
+   "cari": "Gambar 4.2 Tampilan Halaman Detail Ruangan (Bagian Atas)",
+   "utuh": true,
+   "ganti_gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/rc1ti/bab4/4-02-detail-ruangan-atas.png"
+  },
+  {
+   "id": "R-GBR-4.3",
+   "cari": "Gambar 4.3 Tampilan Halaman Detail Ruangan (Bagian Bawah)",
+   "utuh": true,
+   "ganti_gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/rc1ti/bab4/4-03-detail-ruangan-bawah.png"
+  },
+  {
+   "id": "R-GBR-4.4",
+   "cari": "Gambar 4.4 Tampilan Halaman Riwayat",
+   "utuh": true,
+   "ganti_gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/rc1ti/bab4/4-04-riwayat.png"
+  },
+  {
+   "id": "R-GBR-4.5",
+   "cari": "Gambar 4.5 Tampilan Halaman Rekomendasi Tindakan",
+   "utuh": true,
+   "ganti_gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/rc1ti/bab4/4-05-rekomendasi.png"
+  },
+  {
+   "id": "R-GBR-4.6",
+   "cari": "Gambar 4.6 Tampilan Halaman Status Perangkat",
+   "utuh": true,
+   "ganti_gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/rc1ti/bab4/4-06-status-perangkat.png"
+  },
+  {
+   "id": "R-GBR-4.11",
+   "cari": "Gambar 4.11 Tampilan Beranda saat Belum Ada Data",
+   "utuh": true,
+   "ganti_gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/rc1ti/bab4/4-11-beranda-tanpa-data.png"
+  },
+  {
+   "id": "R-GBR-4.12",
+   "cari": "Gambar 4.12 Beranda Sebelum dan Sesudah Data Baru Diterima",
+   "utuh": true,
+   "ganti_gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/rc1ti/bab4/4-beranda-sebelum-sesudah.png"
+  },
+  {
+   "id": "R-GBR-4.13",
+   "cari": "Gambar 4.13 Grafik Detail Ruangan setelah Memilih CO dan Rentang 7 Hari",
+   "utuh": true,
+   "ganti_gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/rc1ti/bab4/4-grafik-co-7hari.png"
+  },
+  {
+   "id": "R-GBR-4.14",
+   "cari": "Gambar 4.14 Tampilan Riwayat dengan Filter Kategori Tidak Sehat",
+   "utuh": true,
+   "ganti_gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/rc1ti/bab4/4-13-riwayat-filter-tidak-sehat.png"
+  },
+  {
+   "id": "R-GBR-4.15",
+   "cari": "Gambar 4.15 Isi Berkas CSV Hasil Unduhan Riwayat",
+   "utuh": true,
+   "ganti_gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/rc1ti/bab4/4-14-isi-csv-riwayat.png"
+  },
+  {
+   "id": "R-GBR-4.16",
+   "cari": "Gambar 4.16 Halaman Kedua Riwayat setelah Tombol Halaman Berikutnya Ditekan",
+   "utuh": true,
+   "ganti_gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/rc1ti/bab4/4-riwayat-hal2.png"
+  },
+  {
+   "id": "R-4.2-tgl",
+   "cari": "pengujian otomatis terakhir dijalankan pada 29 Oktober 2026",
+   "ganti": "pengujian otomatis terakhir dijalankan pada 5 November 2026"
+  },
+  {
+   "id": "R-S1",
+   "cari": "dikirim pada 29 Oktober 2026 pukul 02.05.51 WIB.",
+   "ganti": "dikirim pada 5 November 2026 pukul 19.13.51 WIB."
+  },
+  {
+   "id": "R-S5",
+   "cari": "Perpindahan halaman diamati di peramban dengan 234 data pada halaman Riwayat.…dari 234 data menjadi Menampilkan 21 sampai 40 dari 234 data,",
+   "ganti": "Perpindahan halaman diamati di peramban dengan 192 data pada halaman Riwayat. Setelah tombol halaman berikutnya ditekan, keterangan berubah dari Menampilkan 1 sampai 20 dari 192 data menjadi Menampilkan 21 sampai 40 dari 192 data,"
+  },
+  {
+   "id": "R-S7",
+   "cari": "Data dikirim pada 29 Oktober 2026 pukul 02.06.07 WIB…dengan waktu 29 Okt 2026 02:06:07,",
+   "ganti": "Data dikirim pada 5 November 2026 pukul 19.14.06 WIB, dan halaman Status Perangkat menampilkan Data terakhir diterima 0 detik yang lalu dengan waktu 05 Nov 2026 19:14:06,"
+  },
+  {
+   "id": "R-4.2.1-akhir",
+   "cari": "pengamatan pada peramban Chromium 141 tanggal 29 Oktober 2026.",
+   "ganti": "pengamatan pada peramban Chromium 141 tanggal 5 November 2026."
+  },
+  {
+   "id": "R-4.3",
+   "cari": "di satu ruangan uji, yaitu [ISI: nama ruangan, ukuran panjang × lebar dalam meter, serta jumlah pintu dan jendela. Contoh: kamar kos berukuran 3 × 4 meter dengan satu pintu dan satu jendela],",
+   "ganti": "di satu ruangan uji, yaitu ruang kelas RC1TI yang berukuran [ISI: panjang × lebar ruangan dalam meter serta jumlah pintu dan jendela. Contoh: 8 × 9 meter dengan dua pintu dan empat jendela],"
+  },
+  {
+   "id": "R-4.4",
+   "cari": "orang, yaitu [ISI: siapa respondennya. Contoh: mahasiswa Universitas X berusia 18–25 tahun yang belum pernah memakai SIMKU], yang dipilih dengan [ISI: cara memilih responden. Contoh: purposive sampling, yaitu responden dipilih karena sesuai dengan target pengguna aplikasi].",
+   "ganti": "orang, yaitu mahasiswa yang mengikuti perkuliahan di ruang kelas RC1TI. Responden dipilih secara purposive sampling, yaitu hanya mahasiswa yang belajar di ruangan tersebut, karena merekalah yang merasakan langsung kondisi udara ruangan yang dipantau aplikasi."
+  },
+  {
+   "id": "R-4.4-T4.9",
+   "cari": "Status atau pekerjaan",
+   "utuh": true,
+   "ganti": "Angkatan"
+  },
+  {
+   "id": "R-4.5-1",
+   "cari": "Pembuktian dengan perangkat IoT nyata di ruangan uji diperoleh dari subbab 4.3.",
+   "ganti": "Pembuktian dengan perangkat IoT nyata di ruang kelas RC1TI diperoleh dari subbab 4.3."
+  },
+  {
+   "id": "R-4.5-batasan",
+   "cari": "Ketiga, pengujian kondisi ruangan dilakukan pada satu ruangan uji dengan satu perangkat, sehingga hasilnya belum dapat digeneralisasi",
+   "ganti": "Ketiga, pengujian kondisi ruangan dilakukan pada satu ruangan, yaitu ruang kelas RC1TI, dengan satu perangkat, dan evaluasi UEQ hanya melibatkan mahasiswa yang belajar di ruangan tersebut, sehingga hasilnya belum dapat digeneralisasi"
+  },
+  {
+   "id": "R-5.1-1",
+   "cari": "Contoh kalimat: Pada pengujian di ruangan uji, data diterima",
+   "ganti": "Contoh kalimat: Pada pengujian di ruang kelas RC1TI, data diterima"
+  },
+  {
+   "id": "R-5.1-3",
+   "cari": "Evaluasi UEQ terhadap 30 responden menghasilkan",
+   "ganti": "Evaluasi UEQ terhadap 30 mahasiswa yang belajar di ruang kelas RC1TI menghasilkan"
+  },
+  {
+   "id": "R-5.2-2",
+   "cari": "2.\tPengujian dilakukan pada satu ruangan dengan satu pe…n sumber polutan yang berbeda.",
+   "ganti": "2.\tPengujian dilakukan pada satu ruang kelas dengan satu perangkat, dan responden UEQ terbatas pada mahasiswa yang belajar di ruangan tersebut. Pengujian berikutnya dapat dilakukan pada beberapa ruangan dengan ukuran, jumlah penghuni, dan sumber polutan yang berbeda, dengan responden dari pengguna setiap ruangan."
+  }
+ ]
+}

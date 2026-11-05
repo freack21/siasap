@@ -19,7 +19,7 @@ Urutan kerjanya:
 
 - Perangkat IoT AIR-001 (`arduino/simku_monitor`) dan aplikasi SIMKU yang berjalan di laptop.
   Perangkat dan laptop terhubung ke WiFi yang sama.
-- Ruangan uji dengan pintu dan jendela yang bisa dibuka-tutup.
+- Ruang kelas RC1TI (pintu dan jendelanya bisa dibuka-tutup). Ukur panjang × lebarnya dan hitung pintu serta jendelanya untuk paragraf pembuka 4.3.
 - Sumber asap yang aman dan terkontrol, misalnya satu batang obat nyamuk bakar atau dupa.
 - Jam atau ponsel untuk mencatat jam mulai dan selesai setiap skenario.
 - Lembar catatan berisi kolom: skenario, jam mulai, jam selesai, dan kejadian penting
@@ -75,7 +75,7 @@ Perubahan kategori keseluruhan:
 
 | Bagian naskah | Diisi dengan |
 |---|---|
-| Paragraf pembuka 4.3 | Nama dan ukuran ruangan (panjang × lebar meter, jumlah pintu dan jendela), tanggal pengujian, perangkat yang menjalankan aplikasi, nama dan versi peramban |
+| Paragraf pembuka 4.3 | Ukuran ruang kelas RC1TI (panjang × lebar meter, jumlah pintu dan jendela), tanggal pengujian, perangkat yang menjalankan aplikasi, nama dan versi peramban |
 | Sumber asap | Jenis sumber asap dan jaraknya dari sensor |
 | Tabel 4.7 Waktu Mulai / Selesai | Jam dari lembar catatan, misalnya 14.05 WIB |
 | Tabel 4.7 Jumlah Data Diterima | Baris **Jumlah data diterima**. Patokan: 5 detik sekali berarti ± 12 data per menit |
@@ -93,13 +93,14 @@ angka ppm-nya tepat.
 
 ## 2. Evaluasi UEQ (subbab 4.4)
 
-1. Tentukan responden, disarankan paling sedikit 20 orang yang sesuai target pengguna (remaja sampai
-   dewasa, misalnya mahasiswa). Catat cara memilihnya, misalnya *purposive sampling*.
+1. Responden adalah mahasiswa yang mengikuti perkuliahan di ruang kelas RC1TI (*purposive sampling*;
+   kriteria ini sudah tertulis di Bab I, Bab III, dan subbab 4.4). Usahakan paling sedikit 20 orang.
+   Yang tinggal diisi di naskah hanya jumlah responden dan tanggal pengisian.
 2. Minta setiap responden mencoba aplikasi: melihat Beranda, membuka grafik di Detail Ruangan,
    memfilter dan mengunduh data di Riwayat, membaca Rekomendasi Tindakan, dan membaca Panduan Sistem.
    Bila tugasnya berbeda, sesuaikan kalimat di naskah.
 3. Responden mengisi 26 butir di halaman **Kuesioner**. Data identitas untuk Tabel 4.9 (jenis
-   kelamin, usia, status) dikumpulkan terpisah, misalnya lewat formulir singkat.
+   kelamin, usia, angkatan) dikumpulkan terpisah, misalnya lewat formulir singkat.
 4. Setelah semua mengisi, jalankan:
 
    ```bash
