@@ -1,102 +1,142 @@
 /* =========================================================================================
- * SISTEM PEMANTAUAN KUALITAS UDARA LINGKUNGAN (SIMKU)
- * TOPOLOGI STAR - ESP32 SENSOR NODE (STANDALONE / DIRECT WIFI)
+ * SIMKU - TOPOLOGI STAR: ESP32 SENSOR NODE (WiFi LANGSUNG)
  * =========================================================================================
  * Deskripsi:
- * Perangkat ESP32 membaca 4 konsentrasi gas (CO2, NH3, CO, H2) dari sensor MQ-135 & MQ-2,
- * lalu mengirimkan data telemetri secara berkala langsung ke server Laravel SIMKU via HTTP POST.
+ * Setiap node ESP32 terhubung langsung ke WiFi Access Point dan mengirim data tiap
+ * INTERVAL_KIRIM ke aplikasi SIMKU lewat HTTP POST /api/telemetry. Satu sketsa ini dipakai
+ * untuk semua node star; yang dibedakan hanya NODE_ID (menjadi device_id AIR-00x).
  *
- * Konfigurasi Node:
- * - Ubah NODE_ID (1: Ruang Tamu, 2: Kamar, 3: Dapur) sesuai penempatan perangkat.
- * - Ubah SSID, PASSWORD WiFi, dan IP_SERVER sesuai jaringan lokal Anda.
- * - Isi API_KEY bila backend Laravel mengaktifkan TELEMETRY_API_KEY.
+ * Logika pembacaan sensor SAMA dengan arduino/simku_monitor (perangkat tunggal):
+ * pemanasan 30 detik, baseline = rata-rata 50 pembacaan ADC, lalu konversi Solihat, S. M.,
+ * Salsabila, S., & Susilawati, S. (2026), JITET 14(1), hlm. 1596 (fungsi calculatePPM):
+ *   ppm = max(0, adc - baseline) * (5.0 / 4096.0) * k,  k: CO2 100, NH3 80, CO 50, H2 30.
+ * Nilai adalah INDIKATOR RELATIF terhadap kondisi udara saat perangkat dinyalakan, bukan
+ * konsentrasi absolut. Penyesuaian rumus dan kalibrasi adalah tanggung jawab penelitian IoT.
  *
- * Definisi metrik (seragam untuk semua topologi, lihat arduino/README.md):
- * - rssi      : RSSI TERLEMAH dari seluruh link nirkabel sampai WiFi AP. Pada Star hanya ada
- *               satu link (Node -> AP), sehingga rssi = WiFi.RSSI().
- * - hop_count : jumlah transmisi nirkabel sampai paket mencapai WiFi AP. Pada Star = 1.
+ * Payload mengikuti format aplikasi (device_id, timestamp, co2_ppm, nh3_ppm, co_ppm, h2_ppm).
+ * Metrik jaringan (rssi, seq_number, hop_count, topology_type) ikut dikirim untuk analisis
+ * penelitian IoT; aplikasi SIMKU mengabaikannya.
+ * - rssi      : RSSI terlemah sampai WiFi AP. Star hanya punya satu link (Node -> AP).
+ * - hop_count : jumlah transmisi nirkabel sampai WiFi AP. Star = 1.
+ *
+ * Kebutuhan: ESP32 Arduino core versi 3 atau lebih baru.
  * ========================================================================================= */
 
 #include <WiFi.h>
 #include <HTTPClient.h>
-#include <math.h>
+#include <time.h>
 
 // ======================== KONFIGURASI JARINGAN & SERVER ========================
 const char* WIFI_SSID     = "cargo";
 const char* WIFI_PASSWORD = "cargocargo";
 
-// URL Endpoint Laravel SIMKU (Ganti IP dengan IP komputer/server Anda yang menjalankan Laravel)
-// Contoh: "http://192.168.137.1:8000/api/telemetry"
-// const char* SERVER_URL    = "http://192.168.137.1:8000/api/telemetry";
+// Ganti dengan URL aplikasi SIMKU, contoh lokal: "http://192.168.137.1:8000/api/telemetry".
 const char* SERVER_URL    = "https://siasap.ptsigmamutuindonesia.com/api/telemetry";
 
-// API Key opsional. Isi dengan nilai TELEMETRY_API_KEY di file .env Laravel bila backend
-// mewajibkannya. Biarkan kosong ("") bila backend tidak memakai API key.
+// Opsional: isi dengan TELEMETRY_API_KEY di .env Laravel. Kosongkan ("") bila tidak dipakai.
 const char* API_KEY       = "";
 
-// Interval pengiriman data (milidetik) -> Default: 5000 ms (5 detik)
+// Interval pengiriman data (milidetik): 5 detik.
 const unsigned long INTERVAL_KIRIM = 5000;
 
-// ======================== IDENTITAS NODE PERANGKAT ========================
-// Pilihan: 1 (Ruang Tamu), 2 (Kamar), 3 (Dapur)
+// ======================== IDENTITAS NODE ========================
+// 1 -> AIR-001, 2 -> AIR-002, 3 -> AIR-003. device_id harus sudah terdaftar di aplikasi.
 #define NODE_ID 1
 
-// ======================== PIN HARDWARE SENSOR ========================
-#define PIN_MQ2   34  // Pin ADC untuk Sensor MQ-2 (CO, H2)
-#define PIN_MQ135 35  // Pin ADC untuk Sensor MQ-135 (CO2, NH3)
+// ======================== PIN SENSOR (sesuai rangkaian perangkat; dapat diubah) ========================
+const int PIN_MQ135 = 35;  // CO2, NH3 (AO MQ-135 ke GPIO35)
+const int PIN_MQ2   = 34;  // CO, H2 (AO MQ-2 ke GPIO34)
 
-// Parameter Hambatan Beban & Kalibrasi R0
-const float RL        = 1.0;
-// PENTING: R0 berbeda untuk setiap sensor fisik. Setiap board WAJIB memakai R0 hasil
-// kalibrasinya sendiri dari sketch arduino/kalibrasi_r0/kalibrasi_r0.ino (udara bersih,
-// setelah burn-in 24-48 jam). Nilai di bawah hanya nilai awal/contoh.
-const float R0_MQ2    = 0.174;
-const float R0_MQ135  = 19.30;
+// ======================== PARAMETER KONVERSI & BASELINE ========================
+const unsigned long DURASI_PEMANASAN_MS = 30000;  // pemanasan sensor 30 detik
+const int JUMLAH_SAMPEL_BASELINE        = 50;     // rata-rata 50 pembacaan
+const int JEDA_SAMPEL_BASELINE_MS       = 100;
 
-// Variabel Global Telemetri
-unsigned long seqNumber = 0;       // Sequence counter untuk perhitungan PDR & Packet Loss
+const float K_CO2 = 100.0;  // MQ-135
+const float K_NH3 = 80.0;   // MQ-135
+const float K_CO  = 50.0;   // MQ-2
+const float K_H2  = 30.0;   // MQ-2
+
+// ======================== DIAGNOSIS ========================
+// true: setiap kiriman juga mencetak ADC mentah, baseline, tegangan pin, dan sebaran
+// 10 pembacaan cepat. Hanya untuk Serial Monitor; nilai yang dikirim tidak berubah.
+const bool TAMPILKAN_ADC_MENTAH = true;
+const int JUMLAH_SAMPEL_SEBARAN = 10;
+const int JEDA_SAMPEL_SEBARAN_MS = 2;
+
+// Tahun minimum agar waktu dianggap sudah tersinkron NTP (sebelum sinkron, tahun = 1970).
+const int TAHUN_MINIMUM_VALID = 2024;
+
+char deviceId[12];
+int baselineMq135 = 0;
+int baselineMq2   = 0;
+unsigned long seqNumber = 0;
 unsigned long lastSendTime = 0;
 
-// ======================== FUNGSI KALKULASI SENSOR ========================
+// ======================== FUNGSI SENSOR ========================
 
-// Hitung Rs MQ-2 (Skala operasi ADC 3.3V ESP32)
-float hitungRsMQ2(int adcValue) {
-  if (adcValue >= 4080) adcValue = 4080;
-  if (adcValue <= 50)   adcValue = 50;
-  float vOut = (adcValue / 4095.0) * 3.3;
-  return ((3.3 - vOut) / vOut) * RL;
-}
-
-// Hitung Rs MQ-135 (Skala referensi 5.0V pembagi tegangan)
-float hitungRsMQ135(int adcValue) {
-  if (adcValue >= 4080) adcValue = 4080;
-  if (adcValue <= 20)   adcValue = 20;
-  float vOut = (adcValue / 4095.0) * 3.3;
-  return ((5.0 - vOut) / vOut) * RL;
-}
-
-// Rumus kurva karakteristik PPM: PPM = a * (Rs/R0)^b
-float hitungPPM(float rs, float r0, float a, float b) {
-  float rasio = rs / r0;
-  if (rasio <= 0.0) return 0.0;
-  return a * pow(rasio, b);
-}
-
-// Klasifikasi Kualitas Udara Sesuai Tabel 2.2 (Solihat et al., 2025)
-String tentukanStatusKU(float co2, float nh3, float co, float h2) {
-  int k_co2 = (co2 < 600.0) ? 1 : (co2 < 1000.0 ? 2 : (co2 < 1500.0 ? 3 : 4));
-  int k_nh3 = (nh3 < 40.0)  ? 1 : (nh3 < 80.0   ? 2 : (nh3 < 120.0  ? 3 : 4));
-  int k_co  = (co < 20.0)   ? 1 : (co < 50.0    ? 2 : (co < 80.0    ? 3 : 4));
-  int k_h2  = (h2 < 15.0)   ? 1 : (h2 < 40.0    ? 2 : (h2 < 60.0    ? 3 : 4));
-
-  int ku_score = max(max(k_co2, k_nh3), max(k_co, k_h2));
-  switch (ku_score) {
-    case 1: return "Baik";
-    case 2: return "Sedang";
-    case 3: return "Tidak Sehat";
-    case 4: return "Berbahaya";
-    default: return "Tidak Diketahui";
+/**
+ * Konversi nilai ADC ke indikator ppm relatif (Solihat dkk., 2026, hlm. 1596).
+ * Selisih negatif (lebih bersih dari baseline) dipotong menjadi 0.
+ */
+float hitungPpm(int nilaiAdc, int baseline, float konstanta) {
+  int selisih = nilaiAdc - baseline;
+  if (selisih < 0) {
+    selisih = 0;
   }
+  return (float)selisih * (5.0 / 4096.0) * konstanta;
+}
+
+int rataRataBaseline(int pin) {
+  long total = 0;
+  for (int i = 0; i < JUMLAH_SAMPEL_BASELINE; i++) {
+    total += analogRead(pin);
+    delay(JEDA_SAMPEL_BASELINE_MS);
+  }
+  return (int)(total / JUMLAH_SAMPEL_BASELINE);
+}
+
+/**
+ * Cetak ADC mentah satu sensor untuk diagnosis kabel/daya, contoh:
+ * "MQ-135 adc=2450 base=450 selisih=2000 (1975 mV) | 10x: min=2380 maks=2510 rentang=130"
+ * Rentang besar dalam beberapa milidetik menandakan pin mengambang atau daya tidak stabil.
+ */
+void cetakAdcMentah(const char* nama, int pin, int nilaiAdc, int baseline) {
+  int minimum = 4095;
+  int maksimum = 0;
+  for (int i = 0; i < JUMLAH_SAMPEL_SEBARAN; i++) {
+    int sampel = analogRead(pin);
+    if (sampel < minimum) {
+      minimum = sampel;
+    }
+    if (sampel > maksimum) {
+      maksimum = sampel;
+    }
+    delay(JEDA_SAMPEL_SEBARAN_MS);
+  }
+  Serial.print(nama);
+  Serial.print(" adc="); Serial.print(nilaiAdc);
+  Serial.print(" base="); Serial.print(baseline);
+  Serial.print(" selisih="); Serial.print(nilaiAdc - baseline);
+  Serial.print(" ("); Serial.print(analogReadMilliVolts(pin)); Serial.print(" mV)");
+  Serial.print(" | "); Serial.print(JUMLAH_SAMPEL_SEBARAN); Serial.print("x: min="); Serial.print(minimum);
+  Serial.print(" maks="); Serial.print(maksimum);
+  Serial.print(" rentang="); Serial.println(maksimum - minimum);
+}
+
+// ======================== FUNGSI WAKTU ========================
+
+/**
+ * Mengisi buffer dengan waktu lokal (WIB) berformat "Y-m-d H:i:s".
+ * Mengembalikan false bila waktu belum tersinkron lewat NTP.
+ */
+bool ambilTimestamp(char* buffer, size_t ukuran) {
+  struct tm waktu;
+  if (!getLocalTime(&waktu, 0) || (waktu.tm_year + 1900) < TAHUN_MINIMUM_VALID) {
+    return false;
+  }
+  strftime(buffer, ukuran, "%Y-%m-%d %H:%M:%S", &waktu);
+  return true;
 }
 
 // ======================== SETUP ========================
@@ -104,124 +144,109 @@ void setup() {
   Serial.begin(115200);
   delay(1000);
 
+  snprintf(deviceId, sizeof(deviceId), "AIR-%03d", NODE_ID);
+
   Serial.println("\n=======================================================");
-  Serial.println("  SIMKU - ESP32 TOPOLOGI STAR SENSOR NODE");
-  Serial.print("  Node ID Terpasang : "); Serial.println(NODE_ID);
+  Serial.println("  SIMKU - ESP32 TOPOLOGI STAR");
+  Serial.print("  Device ID : "); Serial.println(deviceId);
   Serial.println("=======================================================");
 
-  // Set resolusi pembacaan ADC ESP32 (12-bit: 0 - 4095)
   analogReadResolution(12);
 
-  // Inisialisasi Koneksi WiFi (Station Mode)
   WiFi.mode(WIFI_STA);
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
-
   Serial.print("Menghubungkan ke WiFi ["); Serial.print(WIFI_SSID); Serial.print("]");
-  int retry = 0;
-  while (WiFi.status() != WL_CONNECTED && retry < 30) {
+  int percobaan = 0;
+  while (WiFi.status() != WL_CONNECTED && percobaan < 30) {
     delay(500);
     Serial.print(".");
-    retry++;
+    percobaan++;
+  }
+  if (WiFi.status() == WL_CONNECTED) {
+    Serial.println("\n[OK] Terhubung ke WiFi.");
+    Serial.print("IP Perangkat : "); Serial.println(WiFi.localIP());
+  } else {
+    Serial.println("\n[PERINGATAN] Gagal terhubung ke WiFi, akan dicoba lagi di loop.");
   }
 
-  if (WiFi.status() == WL_CONNECTED) {
-    Serial.println("\n[OK] Terhubung ke WiFi!");
-    Serial.print("IP Address Node : "); Serial.println(WiFi.localIP());
-    Serial.print("Target Server   : "); Serial.println(SERVER_URL);
-  } else {
-    Serial.println("\n[PERINGATAN] Gagal terhubung ke WiFi, akan mencoba kembali di loop...");
-  }
+  // Sinkronisasi waktu NTP, zona WIB (UTC+7).
+  configTime(7 * 3600, 0, "pool.ntp.org", "time.google.com");
+
+  Serial.println("Memanaskan sensor selama 30 detik...");
+  delay(DURASI_PEMANASAN_MS);
+
+  Serial.println("Mengukur baseline (udara saat perangkat menyala)...");
+  baselineMq135 = rataRataBaseline(PIN_MQ135);
+  baselineMq2   = rataRataBaseline(PIN_MQ2);
+  Serial.print("Baseline MQ-135 : "); Serial.println(baselineMq135);
+  Serial.print("Baseline MQ-2   : "); Serial.println(baselineMq2);
 }
 
 // ======================== LOOP UTAMA ========================
 void loop() {
-  // Cek interval pengiriman berkala
   if (millis() - lastSendTime < INTERVAL_KIRIM) {
     return;
   }
   lastSendTime = millis();
 
-  // 1. Sampling ADC dengan averaging 15 kali untuk stabilitas
-  long sum_mq2 = 0;
-  long sum_mq135 = 0;
-  for (int i = 0; i < 15; i++) {
-    sum_mq2   += analogRead(PIN_MQ2);
-    sum_mq135 += analogRead(PIN_MQ135);
-    delay(10);
-  }
-  int adc_mq2   = sum_mq2 / 15;
-  int adc_mq135 = sum_mq135 / 15;
-
-  // 2. Hitung Resistansi Sensor (Rs)
-  float rs_mq2   = hitungRsMQ2(adc_mq2);
-  float rs_mq135 = hitungRsMQ135(adc_mq135);
-
-  // 3. Hitung Konsentrasi 4 Parameter Gas (PPM)
-  // MQ-135: CO2 & NH3
-  float ppm_co2 = 400.0 * pow((rs_mq135 / R0_MQ135), -2.762);
-  float rasio_mq135 = rs_mq135 / R0_MQ135;
-  float ppm_nh3 = 10.0 * pow(rasio_mq135, -2.473);
-  if (rasio_mq135 >= 0.9) {
-    ppm_nh3 = (1.1 - rasio_mq135) * 15.0;
-    if (ppm_nh3 < 0.5) ppm_nh3 = 0.5;
+  if (WiFi.status() != WL_CONNECTED) {
+    Serial.println("[PERINGATAN] WiFi terputus, mencoba menyambung ulang...");
+    WiFi.reconnect();
+    return;
   }
 
-  // MQ-2: CO & H2
-  float ppm_co  = hitungPPM(rs_mq2, R0_MQ2, 3697.4, -3.109);
-  float ppm_h2  = hitungPPM(rs_mq2, R0_MQ2, 987.99, -2.162);
+  char timestamp[20];
+  if (!ambilTimestamp(timestamp, sizeof(timestamp))) {
+    Serial.println("[MENUNGGU] Waktu belum tersinkron NTP, data belum dikirim.");
+    return;
+  }
 
-  // 4. Evaluasi Kualitas Udara & Indikator Sinyal
-  String status_ku = tentukanStatusKU(ppm_co2, ppm_nh3, ppm_co, ppm_h2);
+  int adcMq135 = analogRead(PIN_MQ135);
+  int adcMq2   = analogRead(PIN_MQ2);
+
+  if (TAMPILKAN_ADC_MENTAH) {
+    Serial.print("[ADC] "); cetakAdcMentah("MQ-135", PIN_MQ135, adcMq135, baselineMq135);
+    Serial.print("[ADC] "); cetakAdcMentah("MQ-2  ", PIN_MQ2, adcMq2, baselineMq2);
+  }
+
+  float co2 = hitungPpm(adcMq135, baselineMq135, K_CO2);
+  float nh3 = hitungPpm(adcMq135, baselineMq135, K_NH3);
+  float co  = hitungPpm(adcMq2, baselineMq2, K_CO);
+  float h2  = hitungPpm(adcMq2, baselineMq2, K_H2);
+
   long rssi = WiFi.RSSI();  // Satu-satunya link nirkabel: Node -> AP
   seqNumber++;
 
-  // 5. Susun Payload JSON Sesuai Kebutuhan Backend Laravel SIMKU
-  String jsonPayload = "{";
-  jsonPayload += "\"node_id\":"        + String(NODE_ID) + ",";
-  jsonPayload += "\"co2\":"            + String(ppm_co2, 2) + ",";
-  jsonPayload += "\"nh3\":"            + String(ppm_nh3, 2) + ",";
-  jsonPayload += "\"co\":"             + String(ppm_co, 2) + ",";
-  jsonPayload += "\"h2\":"             + String(ppm_h2, 2) + ",";
-  jsonPayload += "\"rssi\":"           + String(rssi) + ",";
-  jsonPayload += "\"seq_number\":"     + String(seqNumber) + ",";
-  jsonPayload += "\"hop_count\":1,";  // Satu transmisi nirkabel: Node -> AP
-  jsonPayload += "\"topology_type\":\"star\"";
-  jsonPayload += "}";
+  String payload = "{";
+  payload += "\"device_id\":\"" + String(deviceId) + "\",";
+  payload += "\"timestamp\":\"" + String(timestamp) + "\",";
+  payload += "\"co2_ppm\":" + String(co2, 2) + ",";
+  payload += "\"nh3_ppm\":" + String(nh3, 2) + ",";
+  payload += "\"co_ppm\":"  + String(co, 2) + ",";
+  payload += "\"h2_ppm\":"  + String(h2, 2) + ",";
+  payload += "\"rssi\":" + String(rssi) + ",";
+  payload += "\"seq_number\":" + String(seqNumber) + ",";
+  payload += "\"hop_count\":1,";
+  payload += "\"topology_type\":\"star\"";
+  payload += "}";
 
-  // 6. Pengiriman ke Server Backend Melalui HTTP POST
-  if (WiFi.status() == WL_CONNECTED) {
-    HTTPClient http;
-    http.begin(SERVER_URL);
-    http.addHeader("Content-Type", "application/json");
-    if (strlen(API_KEY) > 0) {
-      http.addHeader("X-Api-Key", API_KEY);
-    }
-
-    int httpResponseCode = http.POST(jsonPayload);
-
-    Serial.println("-------------------------------------------------------");
-    Serial.print("Transmisi Paket #"); Serial.print(seqNumber);
-    Serial.print(" [Node "); Serial.print(NODE_ID); Serial.print("] -> HTTP Code: ");
-    Serial.println(httpResponseCode);
-
-    if (httpResponseCode > 0) {
-      String response = http.getString();
-      Serial.print("Response Server: "); Serial.println(response);
-    } else {
-      Serial.print("[ERROR HTTP] Gagal mengirim paket: ");
-      Serial.println(http.errorToString(httpResponseCode).c_str());
-    }
-    http.end();
-  } else {
-    Serial.println("[OFFLINE] WiFi terputus. Mencoba rekoneksi...");
-    WiFi.reconnect();
+  HTTPClient http;
+  http.begin(SERVER_URL);
+  http.addHeader("Content-Type", "application/json");
+  http.addHeader("Accept", "application/json");
+  if (strlen(API_KEY) > 0) {
+    http.addHeader("X-Api-Key", API_KEY);
   }
 
-  // 7. Debug Monitor Data Sensor
-  Serial.print("CO2: "); Serial.print(ppm_co2, 2); Serial.print(" ppm | ");
-  Serial.print("NH3: "); Serial.print(ppm_nh3, 2); Serial.print(" ppm | ");
-  Serial.print("CO: "); Serial.print(ppm_co, 2); Serial.print(" ppm | ");
-  Serial.print("H2: "); Serial.print(ppm_h2, 2); Serial.print(" ppm | ");
-  Serial.print("KU: "); Serial.print(status_ku); Serial.print(" | RSSI: ");
-  Serial.print(rssi); Serial.println(" dBm");
+  int kodeRespons = http.POST(payload);
+  if (kodeRespons > 0) {
+    Serial.print("[KIRIM] "); Serial.print(payload);
+    Serial.print(" -> HTTP "); Serial.println(kodeRespons);
+    if (kodeRespons == 422) {
+      Serial.print("[GALAT 422] "); Serial.println(http.getString());
+    }
+  } else {
+    Serial.print("[GAGAL] Pengiriman data: "); Serial.println(http.errorToString(kodeRespons));
+  }
+  http.end();
 }
