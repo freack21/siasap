@@ -6,8 +6,8 @@ Semua sketsa di folder ini membaca sensor dengan **logika yang sama** dan mengir
 | Sketsa | Dipakai untuk | Jalur data |
 |---|---|---|
 | [`simku_monitor/`](simku_monitor/simku_monitor.ino) | Satu perangkat (AIR-001), dipakai aplikasi dan penelitian saat ini | ESP32 → WiFi → SIMKU |
-| [`topologi-star/node_sensor_star/`](topologi-star/node_sensor_star/node_sensor_star.ino) | Beberapa perangkat, masing-masing langsung ke WiFi | Setiap node → WiFi → SIMKU |
-| [`topologi-mesh/`](topologi-mesh/) | Tiga perangkat, node yang jauh dari WiFi meneruskan lewat node lain | Node 3 → Node 2 → Node 1 (ESP-NOW) → WiFi → SIMKU |
+| [`topologi-star/node_sensor_star/`](topologi-star/node_sensor_star/node_sensor_star.ino) | Uji topologi star, tiga perangkat masing-masing langsung ke WiFi | Setiap node → WiFi → halaman uji topologi |
+| [`topologi-mesh/`](topologi-mesh/) | Uji topologi mesh, node yang jauh dari WiFi meneruskan lewat node lain | Node 3 → Node 2 → Node 1 (ESP-NOW) → WiFi → halaman uji topologi |
 
 Kebutuhan: **ESP32 Arduino core versi 3 atau lebih baru** (Boards Manager: *esp32 by Espressif
 Systems* 3.x). Board: DOIT ESP32 DEVKIT V1. Serial Monitor 115200 baud.
@@ -47,30 +47,43 @@ Systems* 3.x). Board: DOIT ESP32 DEVKIT V1. Serial Monitor 115200 baud.
 }
 ```
 
-Enam kolom pertama dipakai aplikasi. `simku_monitor` hanya mengirim enam kolom tersebut. Sketsa
-star dan mesh menambahkan metrik jaringan (`rssi`, `seq_number`, `hop_count`, `topology_type`)
-untuk analisis penelitian IoT; aplikasi SIMKU menerimanya tetapi tidak menyimpannya.
+Enam kolom pertama sama dengan yang diterima SIMKU. `simku_monitor` hanya mengirim enam kolom
+tersebut. Sketsa star dan mesh menambahkan metrik jaringan (`rssi`, `seq_number`, `hop_count`,
+`topology_type`).
 
-## Mendaftarkan perangkat AIR-002 dan AIR-003
+## Halaman uji topologi (star dan mesh)
 
-Aplikasi hanya menerima `device_id` yang terdaftar. Data awal hanya berisi **AIR-001**. Sebelum
-memakai star atau mesh dengan lebih dari satu perangkat, daftarkan perangkat lainnya sekali saja
-dari folder aplikasi:
+Sketsa star dan mesh mengirim ke **`POST /api/uji-topologi`**, bukan ke `/api/telemetry`. Datanya
+disimpan terpisah, sehingga tidak tampil di Beranda, Riwayat, atau halaman SIMKU lain. Hasilnya
+dilihat di halaman **`/uji-topologi`**. Halaman ini tidak ada di menu dan tidak diindeks mesin
+pencari, jadi hanya bisa dibuka dengan mengetik alamatnya. Isinya:
+
+- status ketiga perangkat (terhubung/terputus, data terakhir, topologi, RSSI, hop, seq);
+- ringkasan QoS per perangkat dan topologi: paket diterima dan diharapkan, PDR, packet loss,
+  duplikat, RSSI rata-rata dan terlemah, hop rata-rata, selang antardata, selisih waktu;
+- daftar paket dan tombol Unduh CSV, dengan filter topologi dan rentang waktu sesi uji.
+
+Perangkat yang diterima: AIR-001, AIR-002, AIR-003 (atur di `config/topology_test.php`). Perangkat ini
+**tidak perlu didaftarkan** di SIMKU.
+
+Alamatnya diatur `TOPOLOGY_TEST_PATH` di `.env` (bawaan `uji-topologi`). Ganti dengan kata yang sulit
+ditebak, misalnya `TOPOLOGY_TEST_PATH=uji-topologi-7f3k`, lalu samakan `SERVER_URL` di sketsa star dan
+gateway (`https://<domain>/api/uji-topologi-7f3k`) dan jalankan `php artisan config:clear`. Bila
+`TELEMETRY_API_KEY` diisi, endpoint ini juga mewajibkan header `X-Api-Key`.
+
+Untuk mengirim data star/mesh ke SIMKU utama, ganti `SERVER_URL` ke `/api/telemetry` dan daftarkan
+dulu AIR-002 dan AIR-003 dari folder aplikasi:
 
 ```bash
 php artisan tinker --execute '$r = App\Models\Room::where("code", "ROOM-01")->firstOrFail(); foreach (["AIR-002" => "Perangkat IoT 2", "AIR-003" => "Perangkat IoT 3"] as $kode => $nama) { App\Models\Node::updateOrCreate(["code" => $kode], ["room_id" => $r->id, "name" => $nama, "is_active" => true]); }'
 ```
-
-Perintah di atas memasang ketiga perangkat di ruangan RC1TI. Aplikasi menampilkan data terbaru
-per ruangan, jadi bila perangkat dipasang di lokasi berbeda, buat ruangan terpisah untuk masing-masing.
-Tanpa pendaftaran ini, data AIR-002/AIR-003 ditolak dengan HTTP 422 (`device_id tidak terdaftar`).
 
 ## Konfigurasi di bagian atas sketsa
 
 | Konstanta | Ada di | Isi |
 |---|---|---|
 | `WIFI_SSID`, `WIFI_PASSWORD` | simku_monitor, star, gateway | Jaringan WiFi |
-| `SERVER_URL` | simku_monitor, star, gateway | URL aplikasi, mis. `http://192.168.137.1:8000/api/telemetry` |
+| `SERVER_URL` | simku_monitor, star, gateway | `simku_monitor`: `…/api/telemetry`. Star dan gateway: `…/api/uji-topologi` |
 | `API_KEY` | simku_monitor, star, gateway | Opsional, sama dengan `TELEMETRY_API_KEY` di `.env` |
 | `DEVICE_ID` / `NODE_ID` | semua | `simku_monitor`: `DEVICE_ID`. Star dan mesh: `NODE_ID` 1/2/3 → `AIR-001`/`AIR-002`/`AIR-003` |
 | `WIFI_CHANNEL` | relay, leaf | Kanal WiFi AP; lihat baris `Kanal WiFi` di Serial Monitor gateway |

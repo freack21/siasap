@@ -20,7 +20,7 @@ class TelemetryApiController extends Controller
     /**
      * Format timestamp perangkat (naskah 3.9.1).
      */
-    private const TIMESTAMP_FORMAT = 'Y-m-d H:i:s';
+    public const TIMESTAMP_FORMAT = 'Y-m-d H:i:s';
 
     /**
      * Kunci payload yang disimpan saat data ditolak (format utama + format lama).
@@ -41,9 +41,9 @@ class TelemetryApiController extends Controller
     private const REJECTION_RAW_LENGTH = 1000;
 
     /**
-     * Pesan validasi berbahasa Indonesia (juga tampil di kolom Galat halaman Perangkat).
+     * Pesan validasi berbahasa Indonesia (dipakai juga endpoint uji topologi).
      */
-    private const VALIDATION_MESSAGES = [
+    public const VALIDATION_MESSAGES = [
         'required' => ':attribute wajib diisi.',
         'string' => ':attribute harus berupa teks.',
         'numeric' => ':attribute harus berupa angka.',
@@ -56,7 +56,7 @@ class TelemetryApiController extends Controller
     /**
      * Nama field yang mudah dibaca pada pesan validasi.
      */
-    private const VALIDATION_ATTRIBUTES = [
+    public const VALIDATION_ATTRIBUTES = [
         'device_id' => 'device_id',
         'timestamp' => 'timestamp',
         'co2_ppm' => 'co2_ppm (CO₂)',
@@ -73,7 +73,7 @@ class TelemetryApiController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
-        if ($unauthorized = $this->rejectInvalidApiKey($request)) {
+        if ($unauthorized = self::rejectInvalidApiKey($request)) {
             return $unauthorized;
         }
 
@@ -149,7 +149,7 @@ class TelemetryApiController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        if ($unauthorized = $this->rejectInvalidApiKey($request)) {
+        if ($unauthorized = self::rejectInvalidApiKey($request)) {
             return $unauthorized;
         }
 
@@ -256,7 +256,7 @@ class TelemetryApiController extends Controller
      * Validasi header X-Api-Key jika TELEMETRY_API_KEY dikonfigurasi.
      * Mengembalikan respons 401 bila kunci tidak cocok, atau null bila lolos.
      */
-    private function rejectInvalidApiKey(Request $request): ?JsonResponse
+    public static function rejectInvalidApiKey(Request $request): ?JsonResponse
     {
         $configuredKey = (string) config('services.telemetry.api_key');
 

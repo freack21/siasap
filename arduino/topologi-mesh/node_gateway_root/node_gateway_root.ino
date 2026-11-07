@@ -2,7 +2,8 @@
  * SIMKU - TOPOLOGI MESH: ESP32 NODE 1 (ROOT GATEWAY / SINK)
  * =========================================================================================
  * Deskripsi peran Node 1:
- * 1. Terhubung ke WiFi Access Point dan aplikasi SIMKU (HTTP POST /api/telemetry).
+ * 1. Terhubung ke WiFi Access Point dan halaman uji topologi SIMKU (HTTP POST
+ *    /api/uji-topologi; data terpisah dari halaman SIMKU).
  * 2. Membaca sensor MQ-135 dan MQ-2 miliknya sendiri dengan logika yang SAMA dengan
  *    arduino/simku_monitor: pemanasan 30 detik, baseline = rata-rata 50 pembacaan ADC, lalu
  *    konversi Solihat, S. M., Salsabila, S., & Susilawati, S. (2026), JITET 14(1), hlm. 1596:
@@ -17,8 +18,8 @@
  *    sama; salinan kedua dibuang.
  *
  * Payload mengikuti format aplikasi (device_id, timestamp, co2_ppm, nh3_ppm, co_ppm, h2_ppm).
- * Metrik jaringan (rssi, seq_number, hop_count, topology_type) ikut dikirim untuk analisis
- * penelitian IoT; aplikasi SIMKU mengabaikannya.
+ * Metrik jaringan (rssi, seq_number, hop_count, topology_type) ikut dikirim dan diringkas
+ * (PDR, packet loss, RSSI, hop) di halaman uji topologi.
  * - rssi      : RSSI terlemah sepanjang jalur sampai WiFi AP.
  * - hop_count : jumlah transmisi nirkabel sampai WiFi AP.
  *
@@ -40,8 +41,10 @@
 const char* WIFI_SSID     = "cargo";
 const char* WIFI_PASSWORD = "cargocargo";
 
-// Ganti dengan URL aplikasi SIMKU, contoh lokal: "http://192.168.137.1:8000/api/telemetry".
-const char* SERVER_URL    = "https://siasap.ptsigmamutuindonesia.com/api/telemetry";
+// Endpoint uji topologi (tersembunyi, data terpisah dari SIMKU): /api/<TOPOLOGY_TEST_PATH>.
+// Contoh lokal: "http://192.168.137.1:8000/api/uji-topologi". Untuk mengirim ke SIMKU utama,
+// ganti dengan /api/telemetry (device_id harus terdaftar di aplikasi).
+const char* SERVER_URL    = "https://siasap.ptsigmamutuindonesia.com/api/uji-topologi";
 
 // Opsional: isi dengan TELEMETRY_API_KEY di .env Laravel. Kosongkan ("") bila tidak dipakai.
 const char* API_KEY       = "";

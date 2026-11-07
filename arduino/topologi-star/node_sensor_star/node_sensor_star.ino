@@ -3,8 +3,9 @@
  * =========================================================================================
  * Deskripsi:
  * Setiap node ESP32 terhubung langsung ke WiFi Access Point dan mengirim data tiap
- * INTERVAL_KIRIM ke aplikasi SIMKU lewat HTTP POST /api/telemetry. Satu sketsa ini dipakai
- * untuk semua node star; yang dibedakan hanya NODE_ID (menjadi device_id AIR-00x).
+ * INTERVAL_KIRIM ke halaman uji topologi SIMKU lewat HTTP POST /api/uji-topologi (data
+ * terpisah dari halaman SIMKU). Satu sketsa ini dipakai untuk semua node star; yang dibedakan
+ * hanya NODE_ID (menjadi device_id AIR-00x).
  *
  * Logika pembacaan sensor SAMA dengan arduino/simku_monitor (perangkat tunggal):
  * pemanasan 30 detik, baseline = rata-rata 50 pembacaan ADC, lalu konversi Solihat, S. M.,
@@ -14,8 +15,8 @@
  * konsentrasi absolut. Penyesuaian rumus dan kalibrasi adalah tanggung jawab penelitian IoT.
  *
  * Payload mengikuti format aplikasi (device_id, timestamp, co2_ppm, nh3_ppm, co_ppm, h2_ppm).
- * Metrik jaringan (rssi, seq_number, hop_count, topology_type) ikut dikirim untuk analisis
- * penelitian IoT; aplikasi SIMKU mengabaikannya.
+ * Metrik jaringan (rssi, seq_number, hop_count, topology_type) ikut dikirim dan diringkas
+ * (PDR, packet loss, RSSI, hop) di halaman uji topologi.
  * - rssi      : RSSI terlemah sampai WiFi AP. Star hanya punya satu link (Node -> AP).
  * - hop_count : jumlah transmisi nirkabel sampai WiFi AP. Star = 1.
  *
@@ -30,8 +31,10 @@
 const char* WIFI_SSID     = "cargo";
 const char* WIFI_PASSWORD = "cargocargo";
 
-// Ganti dengan URL aplikasi SIMKU, contoh lokal: "http://192.168.137.1:8000/api/telemetry".
-const char* SERVER_URL    = "https://siasap.ptsigmamutuindonesia.com/api/telemetry";
+// Endpoint uji topologi (tersembunyi, data terpisah dari SIMKU): /api/<TOPOLOGY_TEST_PATH>.
+// Contoh lokal: "http://192.168.137.1:8000/api/uji-topologi". Untuk mengirim ke SIMKU utama,
+// ganti dengan /api/telemetry (device_id harus terdaftar di aplikasi).
+const char* SERVER_URL    = "https://siasap.ptsigmamutuindonesia.com/api/uji-topologi";
 
 // Opsional: isi dengan TELEMETRY_API_KEY di .env Laravel. Kosongkan ("") bila tidak dipakai.
 const char* API_KEY       = "";
