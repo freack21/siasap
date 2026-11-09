@@ -15,12 +15,16 @@ use Illuminate\Validation\Rule;
 /**
  * Endpoint tersembunyi untuk uji topologi star dan mesh. Payload sama dengan
  * POST /api/telemetry (ditambah metrik jaringan opsional), tetapi data disimpan
- * di topology_test_logs sehingga tidak tercampur dengan data SIMKU.
+ * di topology_test_logs sehingga tidak tercampur dengan data SIMKU. Setiap paket
+ * dicatat delay-nya (waktu terima server dikurangi waktu kirim perangkat) dan
+ * ukuran payload-nya untuk menghitung delay, jitter, dan throughput.
  */
 class TopologyTestController extends Controller
 {
     public function store(Request $request): JsonResponse
     {
+        $receivedAt = now();
+
         if ($unauthorized = TelemetryApiController::rejectInvalidApiKey($request)) {
             return $unauthorized;
         }
@@ -32,6 +36,7 @@ class TopologyTestController extends Controller
         $validator = Validator::make($request->all(), [
             'device_id' => ['required', 'string', Rule::in(array_keys(config('topology_test.devices')))],
             'timestamp' => 'required|date_format:'.TelemetryApiController::TIMESTAMP_FORMAT,
+            'timestamp_ms' => 'nullable|integer|between:0,999',
             'co2_ppm' => 'required|numeric|min:0|max:999999.99',
             'nh3_ppm' => 'required|numeric|min:0|max:999999.99',
             'co_ppm' => 'required|numeric|min:0|max:999999.99',
@@ -62,6 +67,12 @@ class TopologyTestController extends Controller
         $result = AirQualityClassifier::classify($co2, $nh3, $co, $h2);
         $recommendation = Recommendation::forCategory($result['overall']);
 
+        // Waktu kirim perangkat = timestamp + timestamp_ms (opsional). Tanpa timestamp_ms,
+        // delay hanya berketelitian detik.
+        $sentAt = Carbon::createFromFormat(TelemetryApiController::TIMESTAMP_FORMAT, $input['timestamp'])
+            ->microsecond(0)
+            ->addMilliseconds((int) ($input['timestamp_ms'] ?? 0));
+
         $log = TopologyTestLog::create([
             'device_id' => $input['device_id'],
             'topology' => $input['topology_type'] ?? null,
@@ -80,6 +91,8 @@ class TopologyTestController extends Controller
             'rssi' => $input['rssi'] ?? null,
             'seq_number' => $input['seq_number'] ?? null,
             'hop_count' => $input['hop_count'] ?? null,
+            'delay_ms' => (int) round($receivedAt->getPreciseTimestamp(3) - $sentAt->getPreciseTimestamp(3)),
+            'payload_bytes' => strlen($request->getContent()),
         ]);
 
         return response()->json([

@@ -15,8 +15,9 @@
  * konsentrasi absolut. Penyesuaian rumus dan kalibrasi adalah tanggung jawab penelitian IoT.
  *
  * Payload mengikuti format aplikasi (device_id, timestamp, co2_ppm, nh3_ppm, co_ppm, h2_ppm).
- * Metrik jaringan (rssi, seq_number, hop_count, topology_type) ikut dikirim dan diringkas
- * (PDR, packet loss, RSSI, hop) di halaman uji topologi.
+ * Metrik jaringan (rssi, seq_number, hop_count, topology_type) dan timestamp_ms ikut dikirim
+ * dan diringkas (PDR, packet loss, delay, jitter, throughput, RSSI, hop) di halaman uji
+ * topologi. Node 1 (AIR-001) juga mengirim ke monitoring SIMKU bila KIRIM_KE_SIMKU = true.
  * - rssi      : RSSI terlemah sampai WiFi AP. Star hanya punya satu link (Node -> AP).
  * - hop_count : jumlah transmisi nirkabel sampai WiFi AP. Star = 1.
  *
@@ -26,15 +27,21 @@
 #include <WiFi.h>
 #include <HTTPClient.h>
 #include <time.h>
+#include <sys/time.h>
 
 // ======================== KONFIGURASI JARINGAN & SERVER ========================
 const char* WIFI_SSID     = "cargo";
 const char* WIFI_PASSWORD = "cargocargo";
 
 // Endpoint uji topologi (tersembunyi, data terpisah dari SIMKU): /api/<TOPOLOGY_TEST_PATH>.
-// Contoh lokal: "http://192.168.137.1:8000/api/uji-topologi". Untuk mengirim ke SIMKU utama,
-// ganti dengan /api/telemetry (device_id harus terdaftar di aplikasi).
+// Contoh lokal: "http://192.168.137.1:8000/api/uji-topologi".
 const char* SERVER_URL    = "https://siasap.ptsigmamutuindonesia.com/api/uji-topologi";
+
+// Node 1 (AIR-001) juga mengirim data yang sama ke monitoring SIMKU (ruangan RC1TI) bila
+// KIRIM_KE_SIMKU = true. SIMKU hanya menerima AIR-001; node lain hanya ke endpoint uji.
+// Pengiriman ke SIMKU dilakukan sesudah pengiriman uji sehingga tidak menambah delay uji.
+const bool  KIRIM_KE_SIMKU = true;
+const char* SIMKU_URL     = "https://siasap.ptsigmamutuindonesia.com/api/telemetry";
 
 // Opsional: isi dengan TELEMETRY_API_KEY di .env Laravel. Kosongkan ("") bila tidak dipakai.
 const char* API_KEY       = "";
@@ -43,7 +50,7 @@ const char* API_KEY       = "";
 const unsigned long INTERVAL_KIRIM = 5000;
 
 // ======================== IDENTITAS NODE ========================
-// 1 -> AIR-001, 2 -> AIR-002, 3 -> AIR-003. device_id harus sudah terdaftar di aplikasi.
+// 1 -> AIR-001, 2 -> AIR-002, 3 -> AIR-003.
 #define NODE_ID 1
 
 // ======================== PIN SENSOR (sesuai rangkaian perangkat; dapat diubah) ========================
@@ -130,16 +137,46 @@ void cetakAdcMentah(const char* nama, int pin, int nilaiAdc, int baseline) {
 // ======================== FUNGSI WAKTU ========================
 
 /**
- * Mengisi buffer dengan waktu lokal (WIB) berformat "Y-m-d H:i:s".
- * Mengembalikan false bila waktu belum tersinkron lewat NTP.
+ * Mengisi buffer dengan waktu lokal (WIB) berformat "Y-m-d H:i:s" dan milidetik-nya
+ * (timestamp_ms, untuk menghitung delay). Mengembalikan false bila waktu belum tersinkron NTP.
  */
-bool ambilTimestamp(char* buffer, size_t ukuran) {
+bool ambilTimestamp(char* buffer, size_t ukuran, int* milidetik) {
+  struct timeval sekarang;
+  gettimeofday(&sekarang, nullptr);
   struct tm waktu;
-  if (!getLocalTime(&waktu, 0) || (waktu.tm_year + 1900) < TAHUN_MINIMUM_VALID) {
+  localtime_r(&sekarang.tv_sec, &waktu);
+  if ((waktu.tm_year + 1900) < TAHUN_MINIMUM_VALID) {
     return false;
   }
   strftime(buffer, ukuran, "%Y-%m-%d %H:%M:%S", &waktu);
+  *milidetik = (int) (sekarang.tv_usec / 1000);
   return true;
+}
+
+// ======================== FUNGSI KIRIM ========================
+
+/**
+ * Kirim payload JSON ke satu alamat dan cetak hasilnya.
+ */
+void kirimPost(const char* url, const String &payload, const char* label) {
+  HTTPClient http;
+  http.begin(url);
+  http.addHeader("Content-Type", "application/json");
+  http.addHeader("Accept", "application/json");
+  if (strlen(API_KEY) > 0) {
+    http.addHeader("X-Api-Key", API_KEY);
+  }
+
+  int kodeRespons = http.POST(payload);
+  if (kodeRespons > 0) {
+    Serial.print("["); Serial.print(label); Serial.print("] HTTP "); Serial.println(kodeRespons);
+    if (kodeRespons == 422) {
+      Serial.print("[GALAT 422] "); Serial.println(http.getString());
+    }
+  } else {
+    Serial.print("[GAGAL "); Serial.print(label); Serial.print("] "); Serial.println(http.errorToString(kodeRespons));
+  }
+  http.end();
 }
 
 // ======================== SETUP ========================
@@ -199,7 +236,8 @@ void loop() {
   }
 
   char timestamp[20];
-  if (!ambilTimestamp(timestamp, sizeof(timestamp))) {
+  int timestampMs = 0;
+  if (!ambilTimestamp(timestamp, sizeof(timestamp), &timestampMs)) {
     Serial.println("[MENUNGGU] Waktu belum tersinkron NTP, data belum dikirim.");
     return;
   }
@@ -220,9 +258,13 @@ void loop() {
   long rssi = WiFi.RSSI();  // Satu-satunya link nirkabel: Node -> AP
   seqNumber++;
 
+  // Waktu kirim diambil tepat sebelum dikirim agar delay mencakup jaringan saja.
+  ambilTimestamp(timestamp, sizeof(timestamp), &timestampMs);
+
   String payload = "{";
   payload += "\"device_id\":\"" + String(deviceId) + "\",";
   payload += "\"timestamp\":\"" + String(timestamp) + "\",";
+  payload += "\"timestamp_ms\":" + String(timestampMs) + ",";
   payload += "\"co2_ppm\":" + String(co2, 2) + ",";
   payload += "\"nh3_ppm\":" + String(nh3, 2) + ",";
   payload += "\"co_ppm\":"  + String(co, 2) + ",";
@@ -233,23 +275,9 @@ void loop() {
   payload += "\"topology_type\":\"star\"";
   payload += "}";
 
-  HTTPClient http;
-  http.begin(SERVER_URL);
-  http.addHeader("Content-Type", "application/json");
-  http.addHeader("Accept", "application/json");
-  if (strlen(API_KEY) > 0) {
-    http.addHeader("X-Api-Key", API_KEY);
+  Serial.print("[DATA] "); Serial.println(payload);
+  kirimPost(SERVER_URL, payload, "UJI");
+  if (KIRIM_KE_SIMKU && NODE_ID == 1) {
+    kirimPost(SIMKU_URL, payload, "SIMKU");
   }
-
-  int kodeRespons = http.POST(payload);
-  if (kodeRespons > 0) {
-    Serial.print("[KIRIM] "); Serial.print(payload);
-    Serial.print(" -> HTTP "); Serial.println(kodeRespons);
-    if (kodeRespons == 422) {
-      Serial.print("[GALAT 422] "); Serial.println(http.getString());
-    }
-  } else {
-    Serial.print("[GAGAL] Pengiriman data: "); Serial.println(http.errorToString(kodeRespons));
-  }
-  http.end();
 }

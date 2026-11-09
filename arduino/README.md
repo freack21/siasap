@@ -30,12 +30,13 @@ Systems* 3.x). Board: DOIT ESP32 DEVKIT V1. Serial Monitor 115200 baud.
 - Waktu pembacaan diambil dari NTP (WIB). Data tidak dikirim sebelum waktu tersinkron.
 - Penyesuaian rumus dan kalibrasi adalah tanggung jawab penelitian IoT dan perlu ditinjau rekan IoT.
 
-## Format data ke `POST /api/telemetry`
+## Format data
 
 ```json
 {
   "device_id": "AIR-002",
   "timestamp": "2026-11-07 14:05:30",
+  "timestamp_ms": 512,
   "co2_ppm": 12.50,
   "nh3_ppm": 10.00,
   "co_ppm": 6.25,
@@ -47,9 +48,10 @@ Systems* 3.x). Board: DOIT ESP32 DEVKIT V1. Serial Monitor 115200 baud.
 }
 ```
 
-Enam kolom pertama sama dengan yang diterima SIMKU. `simku_monitor` hanya mengirim enam kolom
-tersebut. Sketsa star dan mesh menambahkan metrik jaringan (`rssi`, `seq_number`, `hop_count`,
-`topology_type`).
+Kolom `device_id`, `timestamp`, dan keempat `*_ppm` sama dengan yang diterima SIMKU
+(`POST /api/telemetry`). `simku_monitor` hanya mengirim kolom tersebut. Sketsa star dan mesh
+menambahkan `timestamp_ms` (milidetik waktu kirim, untuk delay) dan metrik jaringan (`rssi`,
+`seq_number`, `hop_count`, `topology_type`).
 
 ## Halaman uji topologi (star dan mesh)
 
@@ -60,7 +62,8 @@ pencari, jadi hanya bisa dibuka dengan mengetik alamatnya. Isinya:
 
 - status ketiga perangkat (terhubung/terputus, data terakhir, topologi, RSSI, hop, seq);
 - ringkasan QoS per perangkat dan topologi: paket diterima dan diharapkan, PDR, packet loss,
-  duplikat, RSSI rata-rata dan terlemah, hop rata-rata, selang antardata, selisih waktu;
+  duplikat, **delay**, **jitter**, **throughput**, RSSI rata-rata dan terlemah, hop rata-rata,
+  selang antardata;
 - daftar paket dan tombol Unduh CSV, dengan filter topologi dan rentang waktu sesi uji.
 
 Perangkat yang diterima: AIR-001, AIR-002, AIR-003 (atur di `config/topology_test.php`). Perangkat ini
@@ -71,12 +74,23 @@ ditebak, misalnya `TOPOLOGY_TEST_PATH=uji-topologi-7f3k`, lalu samakan `SERVER_U
 gateway (`https://<domain>/api/uji-topologi-7f3k`) dan jalankan `php artisan config:clear`. Bila
 `TELEMETRY_API_KEY` diisi, endpoint ini juga mewajibkan header `X-Api-Key`.
 
-Untuk mengirim data star/mesh ke SIMKU utama, ganti `SERVER_URL` ke `/api/telemetry` dan daftarkan
-dulu AIR-002 dan AIR-003 dari folder aplikasi:
+### Delay, jitter, dan throughput
 
-```bash
-php artisan tinker --execute '$r = App\Models\Room::where("code", "ROOM-01")->firstOrFail(); foreach (["AIR-002" => "Perangkat IoT 2", "AIR-003" => "Perangkat IoT 3"] as $kode => $nama) { App\Models\Node::updateOrCreate(["code" => $kode], ["room_id" => $r->id, "name" => $nama, "is_active" => true]); }'
-```
+- **Delay** setiap paket = waktu terima server − waktu kirim (`timestamp` + `timestamp_ms`), dalam
+  milidetik. Waktu kirim diambil tepat sebelum HTTP POST. Ketelitiannya bergantung pada jam NTP
+  perangkat dan server.
+- Pada mesh, Node 2 dan Node 3 tidak punya NTP. Relay menambahkan lama paket ditahan di antreannya ke
+  `umur_ms`, lalu gateway memundurkan timestamp sebesar `umur_ms` + lama paket di antrean gateway.
+  Hasilnya, delay mesh mencakup perjalanan dari node asal sampai server.
+- **Jitter** = rata-rata selisih mutlak delay dua paket berurutan.
+- **Throughput** = total bit payload yang diterima ÷ rentang waktu paket pertama sampai terakhir (bit/s).
+
+### Data Node 1 ke monitoring SIMKU
+
+SIMKU utama (`POST /api/telemetry`, monitoring ruangan RC1TI) hanya menerima **AIR-001**. Dengan
+`KIRIM_KE_SIMKU = true` (bawaan), Node 1 star dan gateway mesh juga mengirim data AIR-001 ke
+`SIMKU_URL`, sesudah pengiriman ke endpoint uji agar tidak menambah delay uji. Data AIR-002 dan
+AIR-003 hanya masuk ke halaman uji topologi.
 
 ## Konfigurasi di bagian atas sketsa
 
@@ -84,6 +98,7 @@ php artisan tinker --execute '$r = App\Models\Room::where("code", "ROOM-01")->fi
 |---|---|---|
 | `WIFI_SSID`, `WIFI_PASSWORD` | simku_monitor, star, gateway | Jaringan WiFi |
 | `SERVER_URL` | simku_monitor, star, gateway | `simku_monitor`: `…/api/telemetry`. Star dan gateway: `…/api/uji-topologi` |
+| `KIRIM_KE_SIMKU`, `SIMKU_URL` | star, gateway | Data AIR-001 juga dikirim ke `…/api/telemetry` |
 | `API_KEY` | simku_monitor, star, gateway | Opsional, sama dengan `TELEMETRY_API_KEY` di `.env` |
 | `DEVICE_ID` / `NODE_ID` | semua | `simku_monitor`: `DEVICE_ID`. Star dan mesh: `NODE_ID` 1/2/3 → `AIR-001`/`AIR-002`/`AIR-003` |
 | `WIFI_CHANNEL` | relay, leaf | Kanal WiFi AP; lihat baris `Kanal WiFi` di Serial Monitor gateway |
@@ -116,7 +131,7 @@ berbeda (1, 2, 3). Setiap node terhubung langsung ke WiFi dan mengirim datanya s
   Gateway membuang salinan kedua berdasarkan `seq_number` (log `[MESH DUPLIKAT]`).
 - Paket yang terbuang karena antrean penuh dicatat (`[GATEWAY OVERFLOW]`, `[RELAY OVERFLOW]`),
   agar tidak tertukar dengan kehilangan di link radio.
-- Struktur paket ESP-NOW harus sama di ketiga sketsa; ubah ketiganya bersamaan.
+- Struktur paket ESP-NOW (termasuk `umur_ms`) harus sama di ketiga sketsa; flash ulang ketiganya bersamaan.
 
 ### Metrik jaringan
 

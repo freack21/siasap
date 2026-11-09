@@ -103,12 +103,14 @@
                             <th class="text-right">Diharapkan</th>
                             <th class="text-right">PDR</th>
                             <th class="text-right">Packet loss</th>
+                            <th class="text-right">Delay</th>
+                            <th class="text-right">Jitter</th>
+                            <th class="text-right">Throughput</th>
                             <th class="text-right">Duplikat</th>
                             <th class="text-right">RSSI rata-rata</th>
                             <th class="text-right">RSSI terlemah</th>
                             <th class="text-right">Hop rata-rata</th>
                             <th class="text-right">Selang rata-rata</th>
-                            <th class="text-right">Selisih waktu</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -120,12 +122,14 @@
                                 <td class="text-right num">{{ $row['expected'] ?? '—' }}</td>
                                 <td class="text-right num font-semibold text-slate-900">{{ $row['pdr'] !== null ? number_format($row['pdr'], 1, ',', '.').'%' : '—' }}</td>
                                 <td class="text-right num">{{ $row['loss'] !== null ? number_format($row['loss'], 1, ',', '.').'%' : '—' }}</td>
+                                <td class="text-right num font-semibold text-slate-900">{{ $row['delay_avg'] !== null ? number_format($row['delay_avg'], 1, ',', '.').' ms' : '—' }}</td>
+                                <td class="text-right num font-semibold text-slate-900">{{ $row['jitter'] !== null ? number_format($row['jitter'], 1, ',', '.').' ms' : '—' }}</td>
+                                <td class="text-right num font-semibold text-slate-900">{{ $row['throughput_bps'] !== null ? number_format($row['throughput_bps'], 1, ',', '.').' bit/s' : '—' }}</td>
                                 <td class="text-right num">{{ $row['duplicates'] }}</td>
                                 <td class="text-right num">{{ $row['rssi_avg'] !== null ? number_format($row['rssi_avg'], 1, ',', '.').' dBm' : '—' }}</td>
                                 <td class="text-right num">{{ $row['rssi_min'] !== null ? $row['rssi_min'].' dBm' : '—' }}</td>
                                 <td class="text-right num">{{ $row['hop_avg'] !== null ? number_format($row['hop_avg'], 2, ',', '.') : '—' }}</td>
                                 <td class="text-right num">{{ $row['interval_avg'] !== null ? number_format($row['interval_avg'], 1, ',', '.').' dtk' : '—' }}</td>
-                                <td class="text-right num">{{ $row['latency_avg'] !== null ? number_format($row['latency_avg'], 1, ',', '.').' dtk' : '—' }}</td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -134,7 +138,8 @@
             <ul class="space-y-1 border-t border-slate-100 px-5 py-4 text-xs text-slate-500 sm:px-6">
                 <li><b class="text-slate-700">Diterima</b>: paket unik (seq_number berbeda). <b class="text-slate-700">Diharapkan</b>: rentang seq_number setiap sesi; sesi baru dimulai saat seq_number kembali kecil karena perangkat dinyalakan ulang.</li>
                 <li><b class="text-slate-700">PDR</b> = diterima ÷ diharapkan; <b class="text-slate-700">packet loss</b> = 100% − PDR. Paket yang hilang tepat di awal atau akhir rentang waktu tidak terhitung, jadi beri jeda sebelum dan sesudah sesi saat mengisi filter.</li>
-                <li><b class="text-slate-700">Selisih waktu</b>: rata-rata waktu terima server dikurangi timestamp. Pada mesh, timestamp Node 2 dan Node 3 diisi gateway, sehingga selisih ini hanya mencakup gateway → server.</li>
+                <li><b class="text-slate-700">Delay</b>: rata-rata waktu terima server dikurangi waktu kirim perangkat (timestamp + timestamp_ms). Ketelitiannya bergantung pada sinkronisasi jam NTP perangkat dan server; tanpa timestamp_ms ketelitiannya hanya detik. Pada mesh, waktu kirim Node 2 dan Node 3 dihitung gateway dari waktu terima dikurangi lama paket ditahan di relay dan gateway.</li>
+                <li><b class="text-slate-700">Jitter</b>: rata-rata selisih mutlak delay dua paket berurutan. <b class="text-slate-700">Throughput</b>: total bit payload yang diterima dibagi rentang waktu paket pertama sampai terakhir.</li>
             </ul>
         @endif
     </x-ui.card>

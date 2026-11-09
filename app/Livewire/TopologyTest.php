@@ -65,7 +65,7 @@ class TopologyTest extends Component
             fwrite($out, "\xEF\xBB\xBF"); // BOM agar terbaca rapi di Excel
 
             fputcsv($out, [
-                'waktu_terima', 'waktu_perangkat', 'device_id', 'topologi', 'seq_number', 'hop_count', 'rssi',
+                'waktu_terima', 'waktu_perangkat', 'device_id', 'topologi', 'seq_number', 'hop_count', 'rssi', 'delay_ms', 'payload_bytes',
                 'co2_ppm', 'nh3_ppm', 'co_ppm', 'h2_ppm', 'kategori_keseluruhan', 'penyebab_utama', 'rekomendasi',
             ], escape: '');
 
@@ -78,6 +78,8 @@ class TopologyTest extends Component
                     $log->seq_number,
                     $log->hop_count,
                     $log->rssi,
+                    $log->delay_ms,
+                    $log->payload_bytes,
                     $log->co2,
                     $log->nh3,
                     $log->co,
@@ -140,7 +142,7 @@ class TopologyTest extends Component
         return $this->filteredQuery()
             ->orderBy('created_at')
             ->orderBy('id')
-            ->get(['device_id', 'topology', 'recorded_at', 'rssi', 'seq_number', 'hop_count', 'created_at'])
+            ->get(['device_id', 'topology', 'recorded_at', 'rssi', 'seq_number', 'hop_count', 'delay_ms', 'payload_bytes', 'created_at'])
             ->groupBy(fn (TopologyTestLog $log) => $log->device_id.'|'.($log->topology ?? '-'))
             ->sortKeys()
             ->map(function (Collection $logs, string $key): array {

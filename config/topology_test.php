@@ -18,9 +18,9 @@ return [
 
     // Perangkat yang diterima endpoint uji (device_id => nama).
     'devices' => [
-        'AIR-001' => 'Node 1',
-        'AIR-002' => 'Node 2',
-        'AIR-003' => 'Node 3',
+        'AIR-001' => 'Perangkat IoT 1',
+        'AIR-002' => 'Perangkat IoT 2',
+        'AIR-003' => 'Perangkat IoT 3',
     ],
 
     'topologies' => ['star', 'mesh'],

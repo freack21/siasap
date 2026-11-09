@@ -6,6 +6,7 @@ use App\Models\SensorLog;
 use App\Models\TelemetryRejection;
 use App\Models\TopologyTestLog;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Carbon;
 use Tests\TestCase;
 
 class TopologyTestApiTest extends TestCase
@@ -59,6 +60,27 @@ class TopologyTestApiTest extends TestCase
         $this->assertSame(0, SensorLog::count());
     }
 
+    public function test_delay_and_payload_size_are_recorded(): void
+    {
+        Carbon::setTestNow(Carbon::parse('2026-11-07 10:00:01.250'));
+        $payload = $this->payload(['timestamp' => '2026-11-07 10:00:01', 'timestamp_ms' => 100]);
+
+        $this->postJson(self::ENDPOINT, $payload)->assertCreated();
+
+        $log = TopologyTestLog::sole();
+        $this->assertSame(150, $log->delay_ms);
+        $this->assertSame(strlen(json_encode($payload)), $log->payload_bytes);
+    }
+
+    public function test_delay_without_milliseconds_uses_whole_seconds(): void
+    {
+        Carbon::setTestNow(Carbon::parse('2026-11-07 10:00:02.400'));
+
+        $this->postJson(self::ENDPOINT, $this->payload(['timestamp' => '2026-11-07 10:00:01']))->assertCreated();
+
+        $this->assertSame(1400, TopologyTestLog::sole()->delay_ms);
+    }
+
     public function test_simku_payload_without_network_metrics_is_accepted(): void
     {
         $payload = $this->payload(['device_id' => 'AIR-001']);
@@ -79,9 +101,9 @@ class TopologyTestApiTest extends TestCase
             ->assertUnprocessable()
             ->assertJsonValidationErrors(['co2_ppm', 'timestamp']);
 
-        $this->postJson(self::ENDPOINT, $this->payload(['topology_type' => 'ring', 'hop_count' => 0, 'rssi' => 5]))
+        $this->postJson(self::ENDPOINT, $this->payload(['topology_type' => 'ring', 'hop_count' => 0, 'rssi' => 5, 'timestamp_ms' => 1000]))
             ->assertUnprocessable()
-            ->assertJsonValidationErrors(['topology_type', 'hop_count', 'rssi']);
+            ->assertJsonValidationErrors(['topology_type', 'hop_count', 'rssi', 'timestamp_ms']);
 
         $this->assertSame(0, TopologyTestLog::count());
         $this->assertSame(0, TelemetryRejection::count());

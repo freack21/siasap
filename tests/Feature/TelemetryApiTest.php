@@ -351,4 +351,26 @@ class TelemetryApiTest extends TestCase
         $this->postJson('/api/telemetry', $this->payload())->assertStatus(201);
         $this->getJson('/api/telemetry')->assertStatus(200);
     }
+
+    public function test_device_running_topology_firmware_is_accepted_with_extra_fields(): void
+    {
+        $payload = $this->payload([
+            'timestamp_ms' => 512,
+            'rssi' => -58,
+            'seq_number' => 40,
+            'hop_count' => 1,
+            'topology_type' => 'mesh',
+        ]);
+
+        $this->postJson('/api/telemetry', $payload)
+            ->assertCreated()
+            ->assertJsonPath('data.device_id', 'AIR-001');
+
+        $this->postJson('/api/telemetry', array_merge($payload, ['device_id' => 'AIR-002']))
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors('device_id');
+
+        $this->assertSame(1, SensorLog::count());
+        $this->assertSame(1, Node::count());
+    }
 }
