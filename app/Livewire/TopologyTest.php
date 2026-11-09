@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\TopologyTestDevice;
 use App\Models\TopologyTestLog;
 use App\Support\AirQuality;
 use App\Support\TopologyQos;
@@ -109,13 +110,14 @@ class TopologyTest extends Component
     /**
      * Data terbaru setiap perangkat uji (sesuai filter topologi, tanpa filter waktu).
      *
-     * @return Collection<int, array{id: string, name: string, latest: ?TopologyTestLog, connected: bool}>
+     * @return Collection<int, array{id: string, name: string, latest: ?TopologyTestLog, connected: bool, handshake: ?TopologyTestDevice}>
      */
     protected function devices(): Collection
     {
         $threshold = now()->subSeconds(AirQuality::onlineThresholdSeconds());
+        $handshakes = TopologyTestDevice::all()->keyBy('device_id');
 
-        return collect(config('topology_test.devices'))->map(function (string $name, string $id) use ($threshold): array {
+        return collect(config('topology_test.devices'))->map(function (string $name, string $id) use ($threshold, $handshakes): array {
             $latest = TopologyTestLog::query()
                 ->where('device_id', $id)
                 ->when($this->topology !== '', fn (Builder $query) => $query->where('topology', $this->topology))
@@ -128,6 +130,7 @@ class TopologyTest extends Component
                 'name' => $name,
                 'latest' => $latest,
                 'connected' => $latest !== null && $latest->created_at->gte($threshold),
+                'handshake' => $handshakes->get($id),
             ];
         })->values();
     }

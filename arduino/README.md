@@ -74,6 +74,43 @@ ditebak, misalnya `TOPOLOGY_TEST_PATH=uji-topologi-7f3k`, lalu samakan `SERVER_U
 gateway (`https://<domain>/api/uji-topologi-7f3k`) dan jalankan `php artisan config:clear`. Bila
 `TELEMETRY_API_KEY` diisi, endpoint ini juga mewajibkan header `X-Api-Key`.
 
+### Uji lokal dan Wireshark
+
+Alamat bawaan sketsa star dan gateway mesh adalah server lokal **`http://192.168.137.1:8000`**
+(IP laptop saat hotspot Windows aktif), sehingga lalu lintas HTTP bisa direkam Wireshark tanpa enkripsi.
+
+1. Nyalakan hotspot laptop dan sambungkan ESP32 ke hotspot itu (`WIFI_SSID`, `WIFI_PASSWORD`).
+2. Jalankan aplikasi agar bisa diakses dari jaringan hotspot, bukan hanya dari laptop:
+
+   ```bash
+   php artisan serve --host=0.0.0.0 --port=8000
+   ```
+
+   Izinkan port 8000 di Windows Firewall bila diminta.
+3. Hotspot harus meneruskan internet agar jam NTP perangkat tersinkron. Tanpa internet, jalankan
+   server NTP di laptop dan isi `NTP_SERVER = "192.168.137.1"`.
+4. Di Wireshark, rekam antarmuka hotspot (biasanya *Local Area Connection\** atau *Microsoft Wi-Fi
+   Direct Virtual Adapter*) dengan filter tampilan `tcp.port == 8000` atau `http.request.method == "POST"`.
+
+Bila server dijalankan di alamat lain, ganti `SERVER_URL` dan `HANDSHAKE_URL` di sketsa.
+
+### Handshake
+
+Setelah tersambung ke WiFi, node star dan gateway mesh mengirim handshake ke
+`POST /api/uji-topologi/handshake` sebelum mengirim data:
+
+```json
+{ "device_id": "AIR-001", "ip": "192.168.137.23", "mac": "A4:CF:12:9B:3E:01", "topology_type": "star", "rssi": -58 }
+```
+
+- Server menjawab HTTP 200 berisi `server_time`; data baru dikirim setelah jawaban ini diterima.
+  Bila gagal, handshake diulang setiap 5 detik.
+- Handshake diulang setiap kali WiFi tersambung ulang atau IP berubah.
+- Halaman `/uji-topologi` menampilkan IP setiap perangkat, IP yang terlihat oleh server (berbeda bila
+  ada NAT), MAC, jumlah handshake, dan waktu handshake terakhir.
+- Node 2 dan Node 3 mesh tidak punya IP (komunikasinya lewat ESP-NOW), sehingga hanya gateway yang
+  melakukan handshake.
+
 ### Delay, jitter, dan throughput
 
 - **Delay** setiap paket = waktu terima server − waktu kirim (`timestamp` + `timestamp_ms`), dalam
@@ -90,14 +127,17 @@ gateway (`https://<domain>/api/uji-topologi-7f3k`) dan jalankan `php artisan con
 SIMKU utama (`POST /api/telemetry`, monitoring ruangan RC1TI) hanya menerima **AIR-001**. Dengan
 `KIRIM_KE_SIMKU = true` (bawaan), Node 1 star dan gateway mesh juga mengirim data AIR-001 ke
 `SIMKU_URL`, sesudah pengiriman ke endpoint uji agar tidak menambah delay uji. Data AIR-002 dan
-AIR-003 hanya masuk ke halaman uji topologi.
+AIR-003 hanya masuk ke halaman uji topologi. `SIMKU_URL` bawaan mengarah ke server online (HTTPS); saat uji lokal
+dengan Wireshark, isi `KIRIM_KE_SIMKU = false` bila rekaman hanya boleh berisi lalu lintas ke laptop.
 
 ## Konfigurasi di bagian atas sketsa
 
 | Konstanta | Ada di | Isi |
 |---|---|---|
 | `WIFI_SSID`, `WIFI_PASSWORD` | simku_monitor, star, gateway | Jaringan WiFi |
-| `SERVER_URL` | simku_monitor, star, gateway | `simku_monitor`: `…/api/telemetry`. Star dan gateway: `…/api/uji-topologi` |
+| `SERVER_URL` | simku_monitor, star, gateway | `simku_monitor`: `…/api/telemetry`. Star dan gateway: `http://192.168.137.1:8000/api/uji-topologi` |
+| `HANDSHAKE_URL` | star, gateway | `http://192.168.137.1:8000/api/uji-topologi/handshake` |
+| `NTP_SERVER` | star, gateway | Server waktu, bawaan `pool.ntp.org` |
 | `KIRIM_KE_SIMKU`, `SIMKU_URL` | star, gateway | Data AIR-001 juga dikirim ke `…/api/telemetry` |
 | `API_KEY` | simku_monitor, star, gateway | Opsional, sama dengan `TELEMETRY_API_KEY` di `.env` |
 | `DEVICE_ID` / `NODE_ID` | semua | `simku_monitor`: `DEVICE_ID`. Star dan mesh: `NODE_ID` 1/2/3 → `AIR-001`/`AIR-002`/`AIR-003` |

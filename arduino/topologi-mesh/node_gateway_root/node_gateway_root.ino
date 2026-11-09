@@ -26,6 +26,10 @@
  * - rssi      : RSSI terlemah sepanjang jalur sampai WiFi AP.
  * - hop_count : jumlah transmisi nirkabel sampai WiFi AP.
  *
+ * Handshake: setelah tersambung ke WiFi (dan setiap kali tersambung ulang), gateway mengirim
+ * device_id, IP, MAC, topologi, dan RSSI ke HANDSHAKE_URL. Data baru dikirim atau diteruskan
+ * setelah server menjawab HTTP 200.
+ *
  * Kebutuhan: ESP32 Arduino core versi 3 atau lebih baru (callback esp_now_recv_info_t).
  * ========================================================================================= */
 
@@ -46,14 +50,20 @@ const char* WIFI_SSID     = "cargo";
 const char* WIFI_PASSWORD = "cargocargo";
 
 // Endpoint uji topologi (tersembunyi, data terpisah dari SIMKU): /api/<TOPOLOGY_TEST_PATH>.
-// Contoh lokal: "http://192.168.137.1:8000/api/uji-topologi".
-const char* SERVER_URL    = "https://siasap.ptsigmamutuindonesia.com/api/uji-topologi";
+// Bawaan: server lokal 192.168.137.1:8000 (laptop hotspot) agar lalu lintas bisa direkam Wireshark.
+const char* SERVER_URL    = "http://192.168.137.1:8000/api/uji-topologi";
+// Handshake: setelah tersambung WiFi, gateway melaporkan IP-nya sebelum mengirim data.
+const char* HANDSHAKE_URL = "http://192.168.137.1:8000/api/uji-topologi/handshake";
 
 // Data Node 1 (AIR-001) juga dikirim ke monitoring SIMKU (ruangan RC1TI) bila KIRIM_KE_SIMKU =
 // true. SIMKU hanya menerima AIR-001; data Node 2 dan Node 3 hanya ke endpoint uji.
 // Pengiriman ke SIMKU dilakukan sesudah pengiriman uji sehingga tidak menambah delay uji.
 const bool  KIRIM_KE_SIMKU = true;
 const char* SIMKU_URL     = "https://siasap.ptsigmamutuindonesia.com/api/telemetry";
+
+// Server waktu NTP. Hotspot laptop harus meneruskan internet; bila tidak, jalankan server NTP di
+// laptop dan isi NTP_SERVER dengan "192.168.137.1". Data tidak dikirim sebelum waktu tersinkron.
+const char* NTP_SERVER    = "pool.ntp.org";
 
 // Opsional: isi dengan TELEMETRY_API_KEY di .env Laravel. Kosongkan ("") bila tidak dipakai.
 const char* API_KEY       = "";
@@ -90,6 +100,9 @@ unsigned long waktuMenyala = 0;
 int baselineMq135 = 0;
 int baselineMq2   = 0;
 unsigned long seqNumber = 0;
+bool handshakeOk = false;  // diulang setiap kali WiFi tersambung ulang atau IP berubah
+String ipHandshake = "";
+unsigned long terakhirHandshake = 0;
 unsigned long lastSendTime = 0;
 
 // ======================== STRUKTUR PAKET MESH ESP-NOW ========================
@@ -309,6 +322,44 @@ void kirimKeServer(const struct_mesh_packet &paket, unsigned long mundurMs) {
   }
 }
 
+/**
+ * Handshake ke server uji: kirim device_id, IP, MAC, topologi, dan RSSI. Berhasil bila HTTP 200.
+ * Node 2 dan Node 3 tidak punya IP (ESP-NOW), sehingga hanya gateway yang melakukan handshake.
+ */
+bool lakukanHandshake() {
+  char deviceId[12];
+  snprintf(deviceId, sizeof(deviceId), "AIR-%03d", NODE_ID);
+
+  String payload = "{";
+  payload += "\"device_id\":\"" + String(deviceId) + "\",";
+  payload += "\"ip\":\"" + WiFi.localIP().toString() + "\",";
+  payload += "\"mac\":\"" + WiFi.macAddress() + "\",";
+  payload += "\"topology_type\":\"mesh\",";
+  payload += "\"rssi\":" + String(WiFi.RSSI());
+  payload += "}";
+
+  HTTPClient http;
+  http.begin(HANDSHAKE_URL);
+  http.addHeader("Content-Type", "application/json");
+  http.addHeader("Accept", "application/json");
+  if (strlen(API_KEY) > 0) {
+    http.addHeader("X-Api-Key", API_KEY);
+  }
+  int kodeRespons = http.POST(payload);
+  bool berhasil = kodeRespons == 200;
+  if (berhasil) {
+    ipHandshake = WiFi.localIP().toString();
+  }
+  Serial.print("[HANDSHAKE] "); Serial.print(payload); Serial.print(" -> ");
+  if (kodeRespons > 0) {
+    Serial.print("HTTP "); Serial.print(kodeRespons); Serial.print(" "); Serial.println(http.getString());
+  } else {
+    Serial.println(http.errorToString(kodeRespons));
+  }
+  http.end();
+  return berhasil;
+}
+
 // ======================== SETUP ========================
 void setup() {
   Serial.begin(115200);
@@ -341,7 +392,7 @@ void setup() {
   }
 
   // Sinkronisasi waktu NTP, zona WIB (UTC+7).
-  configTime(7 * 3600, 0, "pool.ntp.org", "time.google.com");
+  configTime(7 * 3600, 0, NTP_SERVER, "time.google.com");
 
   if (esp_now_init() == ESP_OK) {
     esp_now_register_recv_cb(OnDataRecv);
@@ -363,10 +414,21 @@ void loop() {
       Serial.println("[PERINGATAN] WiFi terputus, mencoba menyambung ulang...");
       WiFi.reconnect();
     }
+    handshakeOk = false;
+  } else {
+    if (handshakeOk && WiFi.localIP().toString() != ipHandshake) {
+      handshakeOk = false;  // IP berubah setelah tersambung ulang
+    }
+    // Handshake dulu sebelum mengirim data; dicoba lagi tiap INTERVAL_KIRIM sampai berhasil.
+    if (!handshakeOk && millis() - terakhirHandshake >= INTERVAL_KIRIM) {
+      terakhirHandshake = millis();
+      handshakeOk = lakukanHandshake();
+    }
   }
 
-  // 1. Teruskan paket Node 2 / Node 3. Ditahan di antrean sampai waktu NTP tersinkron.
-  if (waktuTersinkron()) {
+  // 1. Teruskan paket Node 2 / Node 3. Ditahan di antrean sampai handshake berhasil dan waktu
+  //    NTP tersinkron.
+  if (handshakeOk && waktuTersinkron()) {
     paket_antrean masuk;
     while (ambilPaketAntrean(masuk)) {
       struct_mesh_packet &paket = masuk.paket;
@@ -423,6 +485,10 @@ void loop() {
   }
   lastSendTime = millis();
 
+  if (!handshakeOk) {
+    Serial.println("[MENUNGGU] Handshake belum berhasil, data belum dikirim.");
+    return;
+  }
   if (!waktuTersinkron()) {
     Serial.println("[MENUNGGU] Waktu belum tersinkron NTP, data belum dikirim.");
     return;

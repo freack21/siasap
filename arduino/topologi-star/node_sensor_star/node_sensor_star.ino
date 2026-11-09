@@ -21,6 +21,10 @@
  * - rssi      : RSSI terlemah sampai WiFi AP. Star hanya punya satu link (Node -> AP).
  * - hop_count : jumlah transmisi nirkabel sampai WiFi AP. Star = 1.
  *
+ * Handshake: setelah tersambung ke WiFi (dan setiap kali tersambung ulang), node mengirim
+ * device_id, IP, MAC, topologi, dan RSSI ke HANDSHAKE_URL. Data baru dikirim setelah server
+ * menjawab HTTP 200.
+ *
  * Kebutuhan: ESP32 Arduino core versi 3 atau lebih baru.
  * ========================================================================================= */
 
@@ -34,14 +38,20 @@ const char* WIFI_SSID     = "cargo";
 const char* WIFI_PASSWORD = "cargocargo";
 
 // Endpoint uji topologi (tersembunyi, data terpisah dari SIMKU): /api/<TOPOLOGY_TEST_PATH>.
-// Contoh lokal: "http://192.168.137.1:8000/api/uji-topologi".
-const char* SERVER_URL    = "https://siasap.ptsigmamutuindonesia.com/api/uji-topologi";
+// Bawaan: server lokal 192.168.137.1:8000 (laptop hotspot) agar lalu lintas bisa direkam Wireshark.
+const char* SERVER_URL    = "http://192.168.137.1:8000/api/uji-topologi";
+// Handshake: setelah tersambung WiFi, node melaporkan IP-nya sebelum mengirim data.
+const char* HANDSHAKE_URL = "http://192.168.137.1:8000/api/uji-topologi/handshake";
 
 // Node 1 (AIR-001) juga mengirim data yang sama ke monitoring SIMKU (ruangan RC1TI) bila
 // KIRIM_KE_SIMKU = true. SIMKU hanya menerima AIR-001; node lain hanya ke endpoint uji.
 // Pengiriman ke SIMKU dilakukan sesudah pengiriman uji sehingga tidak menambah delay uji.
 const bool  KIRIM_KE_SIMKU = true;
 const char* SIMKU_URL     = "https://siasap.ptsigmamutuindonesia.com/api/telemetry";
+
+// Server waktu NTP. Hotspot laptop harus meneruskan internet; bila tidak, jalankan server NTP di
+// laptop dan isi NTP_SERVER dengan "192.168.137.1". Data tidak dikirim sebelum waktu tersinkron.
+const char* NTP_SERVER    = "pool.ntp.org";
 
 // Opsional: isi dengan TELEMETRY_API_KEY di .env Laravel. Kosongkan ("") bila tidak dipakai.
 const char* API_KEY       = "";
@@ -81,6 +91,8 @@ char deviceId[12];
 int baselineMq135 = 0;
 int baselineMq2   = 0;
 unsigned long seqNumber = 0;
+bool handshakeOk = false;  // diulang setiap kali WiFi tersambung ulang atau IP berubah
+String ipHandshake = "";
 unsigned long lastSendTime = 0;
 
 // ======================== FUNGSI SENSOR ========================
@@ -179,6 +191,40 @@ void kirimPost(const char* url, const String &payload, const char* label) {
   http.end();
 }
 
+/**
+ * Handshake ke server uji: kirim device_id, IP, MAC, topologi, dan RSSI. Berhasil bila HTTP 200.
+ */
+bool lakukanHandshake() {
+  String payload = "{";
+  payload += "\"device_id\":\"" + String(deviceId) + "\",";
+  payload += "\"ip\":\"" + WiFi.localIP().toString() + "\",";
+  payload += "\"mac\":\"" + WiFi.macAddress() + "\",";
+  payload += "\"topology_type\":\"star\",";
+  payload += "\"rssi\":" + String(WiFi.RSSI());
+  payload += "}";
+
+  HTTPClient http;
+  http.begin(HANDSHAKE_URL);
+  http.addHeader("Content-Type", "application/json");
+  http.addHeader("Accept", "application/json");
+  if (strlen(API_KEY) > 0) {
+    http.addHeader("X-Api-Key", API_KEY);
+  }
+  int kodeRespons = http.POST(payload);
+  bool berhasil = kodeRespons == 200;
+  if (berhasil) {
+    ipHandshake = WiFi.localIP().toString();
+  }
+  Serial.print("[HANDSHAKE] "); Serial.print(payload); Serial.print(" -> ");
+  if (kodeRespons > 0) {
+    Serial.print("HTTP "); Serial.print(kodeRespons); Serial.print(" "); Serial.println(http.getString());
+  } else {
+    Serial.println(http.errorToString(kodeRespons));
+  }
+  http.end();
+  return berhasil;
+}
+
 // ======================== SETUP ========================
 void setup() {
   Serial.begin(115200);
@@ -210,7 +256,7 @@ void setup() {
   }
 
   // Sinkronisasi waktu NTP, zona WIB (UTC+7).
-  configTime(7 * 3600, 0, "pool.ntp.org", "time.google.com");
+  configTime(7 * 3600, 0, NTP_SERVER, "time.google.com");
 
   Serial.println("Memanaskan sensor selama 30 detik...");
   delay(DURASI_PEMANASAN_MS);
@@ -231,8 +277,21 @@ void loop() {
 
   if (WiFi.status() != WL_CONNECTED) {
     Serial.println("[PERINGATAN] WiFi terputus, mencoba menyambung ulang...");
+    handshakeOk = false;
     WiFi.reconnect();
     return;
+  }
+
+  // Handshake dulu sebelum mengirim data; dicoba lagi tiap INTERVAL_KIRIM sampai berhasil.
+  if (handshakeOk && WiFi.localIP().toString() != ipHandshake) {
+    handshakeOk = false;  // IP berubah setelah tersambung ulang
+  }
+  if (!handshakeOk) {
+    handshakeOk = lakukanHandshake();
+    if (!handshakeOk) {
+      Serial.println("[MENUNGGU] Handshake belum berhasil, data belum dikirim.");
+      return;
+    }
   }
 
   char timestamp[20];

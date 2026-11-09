@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\SensorLog;
 use App\Models\TelemetryRejection;
+use App\Models\TopologyTestDevice;
 use App\Models\TopologyTestLog;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
@@ -115,5 +116,36 @@ class TopologyTestApiTest extends TestCase
 
         $this->postJson(self::ENDPOINT, $this->payload())->assertUnauthorized();
         $this->postJson(self::ENDPOINT, $this->payload(), ['X-Api-Key' => 'rahasia'])->assertCreated();
+    }
+
+    public function test_handshake_records_device_ip_and_counts_repeats(): void
+    {
+        Carbon::setTestNow('2026-11-10 09:00:00');
+        $handshake = ['device_id' => 'AIR-002', 'ip' => '192.168.137.23', 'mac' => 'a4:cf:12:9b:3e:01', 'topology_type' => 'star', 'rssi' => -61];
+
+        $this->postJson(self::ENDPOINT.'/handshake', $handshake, ['REMOTE_ADDR' => '192.168.137.23'])
+            ->assertOk()
+            ->assertJsonPath('data.ip', '192.168.137.23')
+            ->assertJsonPath('data.handshake_count', 1)
+            ->assertJsonPath('data.server_time', '2026-11-10 09:00:00');
+
+        $this->postJson(self::ENDPOINT.'/handshake', array_merge($handshake, ['ip' => '192.168.137.40']))
+            ->assertOk()
+            ->assertJsonPath('data.handshake_count', 2);
+
+        $device = TopologyTestDevice::sole();
+        $this->assertSame('192.168.137.40', $device->ip);
+        $this->assertSame('A4:CF:12:9B:3E:01', $device->mac);
+        $this->assertSame('star', $device->topology);
+        $this->assertSame(0, TopologyTestLog::count());
+    }
+
+    public function test_invalid_handshake_is_rejected(): void
+    {
+        $this->postJson(self::ENDPOINT.'/handshake', ['device_id' => 'AIR-009', 'ip' => '999.1.1.1', 'mac' => 'xx'])
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors(['device_id', 'ip', 'mac']);
+
+        $this->assertSame(0, TopologyTestDevice::count());
     }
 }
