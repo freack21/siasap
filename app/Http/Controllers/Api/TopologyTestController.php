@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\TopologyTestDevice;
 use App\Models\TopologyTestLog;
 use App\Support\AirQualityClassifier;
 use App\Support\Recommendation;
@@ -115,6 +116,61 @@ class TopologyTestController extends Controller
                 ],
             ],
         ], 201);
+    }
+
+    /**
+     * Handshake perangkat sebelum mengirim data: perangkat melaporkan IP, MAC, dan topologinya.
+     * Server menyimpan IP tersebut beserta IP yang terlihat dari sisi server, lalu menjawab
+     * dengan waktu server.
+     */
+    public function handshake(Request $request): JsonResponse
+    {
+        if ($unauthorized = TelemetryApiController::rejectInvalidApiKey($request)) {
+            return $unauthorized;
+        }
+
+        $validator = Validator::make($request->all(), [
+            'device_id' => ['required', 'string', Rule::in(array_keys(config('topology_test.devices')))],
+            'ip' => 'required|ipv4',
+            'mac' => ['nullable', 'string', 'regex:/^([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$/'],
+            'topology_type' => ['nullable', Rule::in(config('topology_test.topologies'))],
+            'rssi' => 'nullable|integer|between:-127,0',
+        ], [
+            ...TelemetryApiController::VALIDATION_MESSAGES,
+            'device_id.in' => ':attribute bukan perangkat uji topologi.',
+            'in' => ':attribute tidak dikenal.',
+            'ipv4' => ':attribute harus berupa alamat IPv4.',
+            'regex' => ':attribute harus berformat AA:BB:CC:DD:EE:FF.',
+            'integer' => ':attribute harus berupa bilangan bulat.',
+            'between' => ':attribute harus di antara :min dan :max.',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->reject($validator->errors()->toArray());
+        }
+
+        $input = $validator->validated();
+        $device = TopologyTestDevice::firstOrNew(['device_id' => $input['device_id']]);
+        $device->fill([
+            'ip' => $input['ip'],
+            'remote_ip' => $request->ip(),
+            'mac' => isset($input['mac']) ? strtoupper($input['mac']) : null,
+            'topology' => $input['topology_type'] ?? null,
+            'rssi' => $input['rssi'] ?? null,
+            'handshake_count' => $device->handshake_count + 1,
+            'last_handshake_at' => now(),
+        ])->save();
+
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'device_id' => $device->device_id,
+                'ip' => $device->ip,
+                'remote_ip' => $device->remote_ip,
+                'handshake_count' => $device->handshake_count,
+                'server_time' => now()->format(TelemetryApiController::TIMESTAMP_FORMAT),
+            ],
+        ]);
     }
 
     /**

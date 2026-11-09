@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Livewire\TopologyTest;
+use App\Models\TopologyTestDevice;
 use App\Models\TopologyTestLog;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
@@ -92,5 +93,23 @@ class TopologyTestPageTest extends TestCase
         $this->assertStringStartsWith('waktu_terima,waktu_perangkat,device_id,topologi,seq_number,hop_count,rssi', $lines[0]);
         $this->assertCount(2, $lines);
         $this->assertStringContainsString('AIR-001,star,7,1,-55', $lines[1]);
+    }
+
+    public function test_device_card_shows_handshake_ip(): void
+    {
+        TopologyTestDevice::create([
+            'device_id' => 'AIR-001',
+            'ip' => '192.168.137.23',
+            'remote_ip' => '192.168.137.23',
+            'topology' => 'mesh',
+            'handshake_count' => 3,
+            'last_handshake_at' => now(),
+        ]);
+
+        $this->get('/uji-topologi')
+            ->assertOk()
+            ->assertSee('192.168.137.23')
+            ->assertSee('Belum melakukan handshake.')
+            ->assertSee(url('api/uji-topologi').'/handshake');
     }
 }

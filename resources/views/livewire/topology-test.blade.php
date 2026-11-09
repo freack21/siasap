@@ -16,6 +16,8 @@
     <section class="card card-body flex flex-col gap-2 text-sm text-slate-600">
         <p class="inline-flex items-center gap-2 font-medium text-slate-900"><x-tabler-plug-connected class="size-4 text-accent-600" /> Alamat pengiriman data</p>
         <code class="w-fit rounded-lg bg-slate-100 px-3 py-1.5 font-mono text-xs text-slate-800">POST {{ $endpoint }}</code>
+        <code class="w-fit rounded-lg bg-slate-100 px-3 py-1.5 font-mono text-xs text-slate-800">POST {{ $endpoint }}/handshake</code>
+        <p>Setelah tersambung ke WiFi, setiap perangkat yang punya IP (node star dan gateway mesh) mengirim handshake berisi device_id, ip, mac, topology_type, dan rssi sebelum mengirim data.</p>
         <p>Isi sama dengan pengiriman ke SIMKU (device_id, timestamp, co2_ppm, nh3_ppm, co_ppm, h2_ppm), ditambah rssi, seq_number, hop_count, dan topology_type ("star" atau "mesh"). Perangkat yang diterima: {{ collect(config('topology_test.devices'))->keys()->implode(', ') }}.</p>
     </section>
 
@@ -63,6 +65,16 @@
                         <span class="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-semibold text-slate-600"><x-tabler-plug-connected-x class="size-3.5" /> Terputus</span>
                     @endif
                 </div>
+
+                @if ($device['handshake'])
+                    @php($handshake = $device['handshake'])
+                    <div class="rounded-lg bg-slate-50 px-3 py-2 text-xs text-slate-600">
+                        <p><span class="text-slate-500">IP perangkat</span> <span class="font-mono font-semibold text-slate-900">{{ $handshake->ip }}</span>@if ($handshake->remote_ip && $handshake->remote_ip !== $handshake->ip) <span class="text-slate-500">· terlihat server</span> <span class="font-mono">{{ $handshake->remote_ip }}</span>@endif</p>
+                        <p class="mt-0.5">Handshake {{ $handshake->last_handshake_at->locale('id')->diffForHumans() }} · {{ $handshake->handshake_count }}× @if ($handshake->topology)· {{ ucfirst($handshake->topology) }}@endif @if ($handshake->mac)· <span class="font-mono">{{ $handshake->mac }}</span>@endif</p>
+                    </div>
+                @else
+                    <p class="rounded-lg bg-slate-50 px-3 py-2 text-xs text-slate-500">Belum melakukan handshake.</p>
+                @endif
 
                 @if ($device['latest'])
                     @php($latest = $device['latest'])
