@@ -94,6 +94,7 @@ class TopologyTestController extends Controller
             'hop_count' => $input['hop_count'] ?? null,
             'delay_ms' => (int) round($receivedAt->getPreciseTimestamp(3) - $sentAt->getPreciseTimestamp(3)),
             'payload_bytes' => strlen($request->getContent()),
+            'source_ip' => $request->ip(),
         ]);
 
         return response()->json([

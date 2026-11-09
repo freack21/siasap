@@ -71,6 +71,7 @@ class TopologyTestApiTest extends TestCase
         $log = TopologyTestLog::sole();
         $this->assertSame(150, $log->delay_ms);
         $this->assertSame(strlen(json_encode($payload)), $log->payload_bytes);
+        $this->assertSame('127.0.0.1', $log->source_ip);
     }
 
     public function test_delay_without_milliseconds_uses_whole_seconds(): void
