@@ -66,15 +66,53 @@
                     @endif
                 </div>
 
-                @if ($device['handshake'])
-                    @php($handshake = $device['handshake'])
-                    <div class="rounded-lg bg-slate-50 px-3 py-2 text-xs text-slate-600">
-                        <p><span class="text-slate-500">IP perangkat</span> <span class="font-mono font-semibold text-slate-900">{{ $handshake->ip }}</span>@if ($handshake->remote_ip && $handshake->remote_ip !== $handshake->ip) <span class="text-slate-500">· terlihat server</span> <span class="font-mono">{{ $handshake->remote_ip }}</span>@endif</p>
-                        <p class="mt-0.5">Handshake {{ $handshake->last_handshake_at->locale('id')->diffForHumans() }} · {{ $handshake->handshake_count }}× @if ($handshake->topology)· {{ ucfirst($handshake->topology) }}@endif @if ($handshake->mac)· <span class="font-mono">{{ $handshake->mac }}</span>@endif</p>
+                {{-- IP node untuk dicari di Wireshark --}}
+                @php($network = $device['network'])
+                @php($handshake = $device['handshake'])
+                @php($filterIp = $network['ip'] ?? $network['gateway_ip'])
+                <div class="rounded-xl border border-slate-200 bg-slate-50 p-3" x-data="{ copied: false }">
+                    <div class="flex items-center justify-between gap-2">
+                        <p class="text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+                            {{ $network['source'] === 'gateway' ? 'IP gateway (node tanpa IP)' : 'IP node' }}
+                        </p>
+                        @if ($network['source'] === 'handshake')
+                            <span class="rounded-full bg-emerald-100 px-2 py-0.5 text-[11px] font-semibold text-emerald-700">dari handshake</span>
+                        @elseif ($network['source'] === 'data')
+                            <span class="rounded-full bg-sky-100 px-2 py-0.5 text-[11px] font-semibold text-sky-700">dari paket data</span>
+                        @elseif ($network['source'] === 'gateway')
+                            <span class="rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-semibold text-amber-700">lewat ESP-NOW</span>
+                        @endif
                     </div>
-                @else
-                    <p class="rounded-lg bg-slate-50 px-3 py-2 text-xs text-slate-500">Belum melakukan handshake.</p>
-                @endif
+
+                    @if ($filterIp)
+                        <p class="mt-1 font-mono text-2xl font-bold tracking-tight text-slate-900" data-ip="{{ $device['id'] }}">{{ $filterIp }}</p>
+                        <div class="mt-2 flex items-center gap-2">
+                            <code class="min-w-0 flex-1 truncate rounded-md bg-white px-2 py-1 font-mono text-xs text-slate-700 ring-1 ring-slate-200">ip.addr == {{ $filterIp }}</code>
+                            <button type="button" class="btn btn-secondary btn-sm shrink-0"
+                                    x-on:click="navigator.clipboard?.writeText('ip.addr == {{ $filterIp }}'); copied = true; setTimeout(() => copied = false, 1500)"
+                                    aria-label="Salin filter Wireshark untuk {{ $device['id'] }}">
+                                <x-tabler-copy class="size-3.5" x-show="!copied" />
+                                <x-tabler-check class="size-3.5" x-show="copied" x-cloak />
+                                <span x-text="copied ? 'Tersalin' : 'Salin filter'">Salin filter</span>
+                            </button>
+                        </div>
+                        @if ($network['source'] === 'gateway')
+                            <p class="mt-2 text-xs text-slate-500">Node ini memakai ESP-NOW; paketnya muncul di Wireshark dari IP gateway di atas (hop {{ $device['latest']->hop_count }}).</p>
+                        @endif
+                    @else
+                        <p class="mt-1 text-sm text-slate-500">IP belum diketahui. IP muncul setelah node melakukan handshake atau mengirim data.</p>
+                    @endif
+
+                    @if ($handshake)
+                        <dl class="mt-2 grid grid-cols-2 gap-x-3 gap-y-1 border-t border-slate-200 pt-2 text-xs">
+                            <div><dt class="text-slate-500">MAC</dt><dd class="font-mono text-slate-800">{{ $handshake->mac ?? '—' }}</dd></div>
+                            <div><dt class="text-slate-500">Terlihat server</dt><dd class="font-mono text-slate-800">{{ $handshake->remote_ip ?? '—' }}</dd></div>
+                            <div class="col-span-2"><dt class="text-slate-500">Handshake terakhir</dt><dd class="text-slate-800">{{ $handshake->last_handshake_at->locale('id')->diffForHumans() }} · {{ $handshake->handshake_count }}×{{ $handshake->topology ? ' · '.ucfirst($handshake->topology) : '' }}</dd></div>
+                        </dl>
+                    @elseif ($network['source'] !== 'gateway')
+                        <p class="mt-2 border-t border-slate-200 pt-2 text-xs text-slate-500">Belum melakukan handshake.</p>
+                    @endif
+                </div>
 
                 @if ($device['latest'])
                     @php($latest = $device['latest'])

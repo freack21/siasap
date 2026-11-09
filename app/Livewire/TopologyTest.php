@@ -110,7 +110,7 @@ class TopologyTest extends Component
     /**
      * Data terbaru setiap perangkat uji (sesuai filter topologi, tanpa filter waktu).
      *
-     * @return Collection<int, array{id: string, name: string, latest: ?TopologyTestLog, connected: bool, handshake: ?TopologyTestDevice}>
+     * @return Collection<int, array{id: string, name: string, latest: ?TopologyTestLog, connected: bool, handshake: ?TopologyTestDevice, network: array{ip: ?string, source: ?string, gateway_ip: ?string}}>
      */
     protected function devices(): Collection
     {
@@ -131,8 +131,33 @@ class TopologyTest extends Component
                 'latest' => $latest,
                 'connected' => $latest !== null && $latest->created_at->gte($threshold),
                 'handshake' => $handshakes->get($id),
+                'network' => $this->network($handshakes->get($id), $latest),
             ];
         })->values();
+    }
+
+    /**
+     * IP node untuk dicari di Wireshark. Paket yang tiba lewat relay/gateway mesh (hop > 1)
+     * berasal dari node tanpa IP, sehingga yang ditampilkan adalah IP gateway pengirimnya.
+     * Selain itu dipakai IP dari handshake, atau IP pengirim paket data terakhir.
+     *
+     * @return array{ip: ?string, source: ?string, gateway_ip: ?string}
+     */
+    protected function network(?TopologyTestDevice $handshake, ?TopologyTestLog $latest): array
+    {
+        if ($latest !== null && ($latest->hop_count ?? 1) > 1) {
+            return ['ip' => null, 'source' => 'gateway', 'gateway_ip' => $latest->source_ip];
+        }
+
+        if ($handshake?->ip !== null) {
+            return ['ip' => $handshake->ip, 'source' => 'handshake', 'gateway_ip' => null];
+        }
+
+        if ($latest?->source_ip !== null) {
+            return ['ip' => $latest->source_ip, 'source' => 'data', 'gateway_ip' => null];
+        }
+
+        return ['ip' => null, 'source' => null, 'gateway_ip' => null];
     }
 
     /**

@@ -108,8 +108,26 @@ class TopologyTestPageTest extends TestCase
 
         $this->get('/uji-topologi')
             ->assertOk()
-            ->assertSee('192.168.137.23')
+            ->assertSee('ip.addr == 192.168.137.23')
+            ->assertSee('dari handshake')
             ->assertSee('Belum melakukan handshake.')
             ->assertSee(url('api/uji-topologi').'/handshake');
+    }
+
+    public function test_ip_falls_back_to_data_sender_and_gateway_for_mesh_nodes(): void
+    {
+        TopologyTestLog::factory()->create(['device_id' => 'AIR-001', 'topology' => 'mesh', 'hop_count' => 1, 'source_ip' => '192.168.137.50']);
+        TopologyTestLog::factory()->create(['device_id' => 'AIR-003', 'topology' => 'mesh', 'hop_count' => 3, 'source_ip' => '192.168.137.50']);
+
+        $devices = Livewire::test(TopologyTest::class)->viewData('devices')->keyBy('id');
+
+        $this->assertSame(['ip' => '192.168.137.50', 'source' => 'data', 'gateway_ip' => null], $devices['AIR-001']['network']);
+        $this->assertSame(['ip' => null, 'source' => 'gateway', 'gateway_ip' => '192.168.137.50'], $devices['AIR-003']['network']);
+        $this->assertSame(['ip' => null, 'source' => null, 'gateway_ip' => null], $devices['AIR-002']['network']);
+
+        $this->get('/uji-topologi')
+            ->assertSee('ip.addr == 192.168.137.50')
+            ->assertSee('IP gateway (node tanpa IP)')
+            ->assertSee('IP belum diketahui.');
     }
 }

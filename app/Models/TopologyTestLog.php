@@ -32,6 +32,7 @@ class TopologyTestLog extends Model
         'hop_count',
         'delay_ms',
         'payload_bytes',
+        'source_ip',
     ];
 
     protected $casts = [
