@@ -77,6 +77,7 @@ typedef struct struct_mesh_packet {
   int rssi;
   int seq_number;
   int hop_count;
+  uint32_t umur_ms;  // total lama paket ditahan di relay sebelum dipancarkan ulang
 } struct_mesh_packet;
 
 // ======================== FUNGSI SENSOR ========================
@@ -199,6 +200,7 @@ void loop() {
   paket.rssi       = 0;
   paket.seq_number = seqNumber;
   paket.hop_count  = 1;
+  paket.umur_ms    = 0;
 
   esp_err_t hasil = esp_now_send(broadcastAddress, (uint8_t *) &paket, sizeof(struct_mesh_packet));
 

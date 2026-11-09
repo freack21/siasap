@@ -37,7 +37,34 @@ class TopologyQosTest extends TestCase
         $this->assertSame(80.0, $summary['pdr']);
         $this->assertSame(20.0, $summary['loss']);
         $this->assertSame(6.7, $summary['interval_avg']);
-        $this->assertSame(1.0, $summary['latency_avg']);
+    }
+
+    public function test_delay_jitter_and_throughput(): void
+    {
+        $logs = $this->logs([[1, 0], [2, 5], [3, 10], [4, 20]]);
+        foreach ([[100, 200], [140, 200], [120, 200], [180, 200]] as $i => [$delay, $bytes]) {
+            $logs[$i]->delay_ms = $delay;
+            $logs[$i]->payload_bytes = $bytes;
+        }
+
+        $summary = TopologyQos::summarize($logs);
+
+        $this->assertSame(135.0, $summary['delay_avg']);
+        $this->assertSame(40.0, $summary['jitter']);
+        $this->assertSame(320.0, $summary['throughput_bps']);
+    }
+
+    public function test_single_packet_has_no_jitter_or_throughput(): void
+    {
+        $logs = $this->logs([[1, 0]]);
+        $logs[0]->delay_ms = 90;
+        $logs[0]->payload_bytes = 200;
+
+        $summary = TopologyQos::summarize($logs);
+
+        $this->assertSame(90.0, $summary['delay_avg']);
+        $this->assertNull($summary['jitter']);
+        $this->assertNull($summary['throughput_bps']);
     }
 
     public function test_duplicates_are_counted_once(): void

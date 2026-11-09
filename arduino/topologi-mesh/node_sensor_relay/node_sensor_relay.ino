@@ -78,6 +78,7 @@ typedef struct struct_mesh_packet {
   int rssi;
   int seq_number;
   int hop_count;
+  uint32_t umur_ms;  // total lama paket ditahan di relay sebelum dipancarkan ulang
 } struct_mesh_packet;
 
 // ======================== FUNGSI SENSOR ========================
@@ -134,7 +135,14 @@ void cetakAdcMentah(const char* nama, int pin, int nilaiAdc, int baseline) {
 // Callback ESP-NOW berjalan di task WiFi, sehingga paket yang akan di-relay dimasukkan ke
 // antrean dan dipancarkan ulang dari loop() (bukan dari dalam callback).
 #define MAX_RELAY_QUEUE 10
-struct_mesh_packet relayQueue[MAX_RELAY_QUEUE];
+
+// Paket di antrean beserta waktu diterima (millis) untuk menghitung umur_ms.
+typedef struct paket_relay {
+  struct_mesh_packet paket;
+  unsigned long diterimaMs;
+} paket_relay;
+
+paket_relay relayQueue[MAX_RELAY_QUEUE];
 volatile int relayHead  = 0;
 volatile int relayCount = 0;
 volatile unsigned long relayDropped = 0;  // paket dibuang karena antrean penuh
@@ -162,7 +170,7 @@ void OnDataRecv(const esp_now_recv_info_t *info, const uint8_t *incomingData, in
 
   portENTER_CRITICAL(&relayMux);
   if (relayCount < MAX_RELAY_QUEUE) {
-    relayQueue[(relayHead + relayCount) % MAX_RELAY_QUEUE] = paket;
+    relayQueue[(relayHead + relayCount) % MAX_RELAY_QUEUE] = {paket, millis()};
     relayCount++;
   } else {
     relayDropped++;
@@ -170,7 +178,7 @@ void OnDataRecv(const esp_now_recv_info_t *info, const uint8_t *incomingData, in
   portEXIT_CRITICAL(&relayMux);
 }
 
-bool ambilPaketRelay(struct_mesh_packet &out) {
+bool ambilPaketRelay(paket_relay &out) {
   bool ada = false;
   portENTER_CRITICAL(&relayMux);
   if (relayCount > 0) {
@@ -224,8 +232,10 @@ void setup() {
 // ======================== LOOP UTAMA ========================
 void loop() {
   // 1. Pancarkan ulang paket Node 3 yang menunggu di antrean
-  struct_mesh_packet relayPkt;
-  while (ambilPaketRelay(relayPkt)) {
+  paket_relay masuk;
+  while (ambilPaketRelay(masuk)) {
+    struct_mesh_packet &relayPkt = masuk.paket;
+    relayPkt.umur_ms += millis() - masuk.diterimaMs;  // lama ditahan di relay, untuk delay
     esp_err_t res = esp_now_send(broadcastAddress, (uint8_t *) &relayPkt, sizeof(struct_mesh_packet));
     Serial.print("[RELAY] Node #"); Serial.print(relayPkt.node_id);
     Serial.print(" Seq #"); Serial.print(relayPkt.seq_number);
@@ -283,6 +293,7 @@ void loop() {
   paket.rssi       = 0;
   paket.seq_number = seqNumber;
   paket.hop_count  = 1;
+  paket.umur_ms    = 0;
 
   esp_err_t hasil = esp_now_send(broadcastAddress, (uint8_t *) &paket, sizeof(struct_mesh_packet));
 

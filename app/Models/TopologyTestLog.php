@@ -30,6 +30,8 @@ class TopologyTestLog extends Model
         'rssi',
         'seq_number',
         'hop_count',
+        'delay_ms',
+        'payload_bytes',
     ];
 
     protected $casts = [
@@ -41,6 +43,8 @@ class TopologyTestLog extends Model
         'rssi' => 'integer',
         'seq_number' => 'integer',
         'hop_count' => 'integer',
+        'delay_ms' => 'integer',
+        'payload_bytes' => 'integer',
     ];
 
     /**

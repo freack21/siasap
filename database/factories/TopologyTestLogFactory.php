@@ -25,6 +25,8 @@ class TopologyTestLogFactory extends Factory
             'rssi' => -60,
             'seq_number' => 1,
             'hop_count' => 1,
+            'delay_ms' => 120,
+            'payload_bytes' => 220,
         ];
     }
 

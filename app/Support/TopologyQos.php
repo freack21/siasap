@@ -24,8 +24,12 @@ class TopologyQos
      * ulang). Paket ber-seq sama dalam satu sesi dihitung sekali sebagai paket unik; sisanya
      * duplikat.
      *
+     * Delay = rata-rata delay_ms (waktu terima server − waktu kirim perangkat). Jitter = rata-rata
+     * selisih mutlak delay dua paket berurutan. Throughput = total bit payload yang diterima dibagi
+     * rentang waktu dari paket pertama sampai terakhir diterima.
+     *
      * @param  Collection<int, TopologyTestLog>  $logs
-     * @return array{received: int, unique: int, expected: ?int, duplicates: int, pdr: ?float, loss: ?float, sessions: int, rssi_avg: ?float, rssi_min: ?int, hop_avg: ?float, interval_avg: ?float, latency_avg: ?float}
+     * @return array{received: int, unique: int, expected: ?int, duplicates: int, pdr: ?float, loss: ?float, sessions: int, rssi_avg: ?float, rssi_min: ?int, hop_avg: ?float, interval_avg: ?float, delay_avg: ?float, jitter: ?float, throughput_bps: ?float}
      */
     public static function summarize(Collection $logs): array
     {
@@ -36,7 +40,10 @@ class TopologyQos
         $hops = $logs->pluck('hop_count')->filter(fn ($value) => $value !== null);
 
         $gaps = $logs->sliding(2)->map(fn (Collection $pair) => $pair->first()->created_at->diffInSeconds($pair->last()->created_at));
-        $latencies = $logs->map(fn (TopologyTestLog $log) => $log->recorded_at->diffInSeconds($log->created_at, false));
+        $delays = $logs->pluck('delay_ms')->filter(fn ($value) => $value !== null)->values();
+        $jitters = $delays->sliding(2)->map(fn (Collection $pair) => abs($pair->last() - $pair->first()));
+        $bytes = $logs->pluck('payload_bytes')->filter(fn ($value) => $value !== null);
+        $span = $logs->count() > 1 ? $logs->first()->created_at->diffInSeconds($logs->last()->created_at) : 0;
 
         $pdr = $expected > 0 ? round($unique / $expected * 100, 1) : null;
 
@@ -52,7 +59,9 @@ class TopologyQos
             'rssi_min' => $rssi->isEmpty() ? null : (int) $rssi->min(),
             'hop_avg' => $hops->isEmpty() ? null : round($hops->avg(), 2),
             'interval_avg' => $gaps->isEmpty() ? null : round($gaps->avg(), 1),
-            'latency_avg' => $latencies->isEmpty() ? null : round($latencies->avg(), 1),
+            'delay_avg' => $delays->isEmpty() ? null : round($delays->avg(), 1),
+            'jitter' => $jitters->isEmpty() ? null : round($jitters->avg(), 1),
+            'throughput_bps' => $bytes->isEmpty() || $span <= 0 ? null : round($bytes->sum() * 8 / $span, 1),
         ];
     }
 

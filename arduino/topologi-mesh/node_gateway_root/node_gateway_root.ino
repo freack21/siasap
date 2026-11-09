@@ -11,15 +11,18 @@
  *    Nilai adalah INDIKATOR RELATIF terhadap kondisi udara saat perangkat dinyalakan.
  *    Data lokal dikirim sebagai device_id AIR-001.
  * 3. Menerima paket ESP-NOW dari Node 2 (Relay) dan Node 3 (Leaf), lalu meneruskannya ke
- *    aplikasi sebagai AIR-002 / AIR-003. Node tersebut tidak punya NTP, sehingga gateway
- *    mengisi timestamp dari jam NTP-nya sendiri sesuai waktu paket diterima. Penerusan
- *    ditahan sampai waktu tersinkron.
+ *    endpoint uji sebagai AIR-002 / AIR-003. Node tersebut tidak punya NTP, sehingga gateway
+ *    mengisi timestamp dari jam NTP-nya sendiri: waktu terima dikurangi lama paket ditahan.
+ *    Penerusan ditahan sampai waktu tersinkron.
  * 4. Deduplikasi: paket broadcast Node 3 bisa tiba langsung DAN via relay dengan seq_number
  *    sama; salinan kedua dibuang.
  *
  * Payload mengikuti format aplikasi (device_id, timestamp, co2_ppm, nh3_ppm, co_ppm, h2_ppm).
- * Metrik jaringan (rssi, seq_number, hop_count, topology_type) ikut dikirim dan diringkas
- * (PDR, packet loss, RSSI, hop) di halaman uji topologi.
+ * Metrik jaringan (rssi, seq_number, hop_count, topology_type) dan timestamp_ms ikut dikirim
+ * dan diringkas (PDR, packet loss, delay, jitter, throughput, RSSI, hop) di halaman uji
+ * topologi. Untuk paket Node 2 dan Node 3, timestamp dimundurkan sebesar lama paket ditahan
+ * di relay (umur_ms) dan di antrean gateway, sehingga menunjuk waktu kirim node asal.
+ * Data Node 1 (AIR-001) juga dikirim ke monitoring SIMKU bila KIRIM_KE_SIMKU = true.
  * - rssi      : RSSI terlemah sepanjang jalur sampai WiFi AP.
  * - hop_count : jumlah transmisi nirkabel sampai WiFi AP.
  *
@@ -36,15 +39,21 @@
 #include <esp_wifi.h>
 #include <HTTPClient.h>
 #include <time.h>
+#include <sys/time.h>
 
 // ======================== KONFIGURASI JARINGAN & SERVER ========================
 const char* WIFI_SSID     = "cargo";
 const char* WIFI_PASSWORD = "cargocargo";
 
 // Endpoint uji topologi (tersembunyi, data terpisah dari SIMKU): /api/<TOPOLOGY_TEST_PATH>.
-// Contoh lokal: "http://192.168.137.1:8000/api/uji-topologi". Untuk mengirim ke SIMKU utama,
-// ganti dengan /api/telemetry (device_id harus terdaftar di aplikasi).
+// Contoh lokal: "http://192.168.137.1:8000/api/uji-topologi".
 const char* SERVER_URL    = "https://siasap.ptsigmamutuindonesia.com/api/uji-topologi";
+
+// Data Node 1 (AIR-001) juga dikirim ke monitoring SIMKU (ruangan RC1TI) bila KIRIM_KE_SIMKU =
+// true. SIMKU hanya menerima AIR-001; data Node 2 dan Node 3 hanya ke endpoint uji.
+// Pengiriman ke SIMKU dilakukan sesudah pengiriman uji sehingga tidak menambah delay uji.
+const bool  KIRIM_KE_SIMKU = true;
+const char* SIMKU_URL     = "https://siasap.ptsigmamutuindonesia.com/api/telemetry";
 
 // Opsional: isi dengan TELEMETRY_API_KEY di .env Laravel. Kosongkan ("") bila tidak dipakai.
 const char* API_KEY       = "";
@@ -94,6 +103,7 @@ typedef struct struct_mesh_packet {
   int rssi;
   int seq_number;
   int hop_count;
+  uint32_t umur_ms;  // total lama paket ditahan di relay sebelum dipancarkan ulang
 } struct_mesh_packet;
 
 // Paket di antrean beserta waktu diterima (millis) untuk mengisi timestamp.
@@ -210,27 +220,61 @@ void cetakAdcMentah(const char* nama, int pin, int nilaiAdc, int baseline) {
 // ======================== FUNGSI WAKTU ========================
 
 /**
- * Mengisi buffer dengan waktu lokal (WIB) berformat "Y-m-d H:i:s" untuk saat
- * (sekarang - mundurDetik). Mengembalikan false bila waktu belum tersinkron lewat NTP.
+ * Mengisi buffer dengan waktu lokal (WIB) berformat "Y-m-d H:i:s" dan milidetik-nya untuk saat
+ * (sekarang - mundurMs). Mengembalikan false bila waktu belum tersinkron lewat NTP.
  */
-bool ambilTimestamp(char* buffer, size_t ukuran, unsigned long mundurDetik) {
-  time_t sekarang = time(nullptr) - (time_t) mundurDetik;
+bool ambilTimestamp(char* buffer, size_t ukuran, int* milidetik, unsigned long mundurMs) {
+  struct timeval sekarang;
+  gettimeofday(&sekarang, nullptr);
+  long long epochMs = (long long) sekarang.tv_sec * 1000 + sekarang.tv_usec / 1000 - (long long) mundurMs;
+  time_t detik = (time_t) (epochMs / 1000);
   struct tm waktu;
-  localtime_r(&sekarang, &waktu);
+  localtime_r(&detik, &waktu);
   if ((waktu.tm_year + 1900) < TAHUN_MINIMUM_VALID) {
     return false;
   }
   strftime(buffer, ukuran, "%Y-%m-%d %H:%M:%S", &waktu);
+  *milidetik = (int) (epochMs % 1000);
   return true;
 }
 
 bool waktuTersinkron() {
   char buffer[20];
-  return ambilTimestamp(buffer, sizeof(buffer), 0);
+  int milidetik;
+  return ambilTimestamp(buffer, sizeof(buffer), &milidetik, 0);
 }
 
 // ======================== KIRIM KE APLIKASI ========================
-void kirimKeServer(const struct_mesh_packet &paket, const char* timestamp) {
+
+/**
+ * Kirim payload JSON ke satu alamat dan cetak hasilnya.
+ */
+void kirimPost(const char* url, const String &payload, const char* label) {
+  HTTPClient http;
+  http.begin(url);
+  http.addHeader("Content-Type", "application/json");
+  http.addHeader("Accept", "application/json");
+  if (strlen(API_KEY) > 0) {
+    http.addHeader("X-Api-Key", API_KEY);
+  }
+
+  int kodeRespons = http.POST(payload);
+  if (kodeRespons > 0) {
+    Serial.print("["); Serial.print(label); Serial.print("] HTTP "); Serial.println(kodeRespons);
+    if (kodeRespons == 422) {
+      Serial.print("[GALAT 422] "); Serial.println(http.getString());
+    }
+  } else {
+    Serial.print("[GAGAL "); Serial.print(label); Serial.print("] "); Serial.println(http.errorToString(kodeRespons));
+  }
+  http.end();
+}
+
+/**
+ * Kirim satu paket ke endpoint uji (dan ke SIMKU untuk data Node 1). mundurMs = lama sejak
+ * paket dikirim node asalnya, sehingga timestamp menunjuk waktu kirim asli untuk menghitung delay.
+ */
+void kirimKeServer(const struct_mesh_packet &paket, unsigned long mundurMs) {
   if (WiFi.status() != WL_CONNECTED) {
     Serial.print("[OFFLINE] WiFi terputus, data AIR-00"); Serial.print(paket.node_id);
     Serial.print(" Seq #"); Serial.print(paket.seq_number); Serial.println(" tidak terkirim.");
@@ -240,9 +284,14 @@ void kirimKeServer(const struct_mesh_packet &paket, const char* timestamp) {
   char deviceId[12];
   snprintf(deviceId, sizeof(deviceId), "AIR-%03d", paket.node_id);
 
+  char timestamp[20];
+  int timestampMs = 0;
+  ambilTimestamp(timestamp, sizeof(timestamp), &timestampMs, mundurMs);
+
   String payload = "{";
   payload += "\"device_id\":\"" + String(deviceId) + "\",";
   payload += "\"timestamp\":\"" + String(timestamp) + "\",";
+  payload += "\"timestamp_ms\":" + String(timestampMs) + ",";
   payload += "\"co2_ppm\":" + String(paket.co2, 2) + ",";
   payload += "\"nh3_ppm\":" + String(paket.nh3, 2) + ",";
   payload += "\"co_ppm\":"  + String(paket.co, 2) + ",";
@@ -253,25 +302,11 @@ void kirimKeServer(const struct_mesh_packet &paket, const char* timestamp) {
   payload += "\"topology_type\":\"mesh\"";
   payload += "}";
 
-  HTTPClient http;
-  http.begin(SERVER_URL);
-  http.addHeader("Content-Type", "application/json");
-  http.addHeader("Accept", "application/json");
-  if (strlen(API_KEY) > 0) {
-    http.addHeader("X-Api-Key", API_KEY);
+  Serial.print("[DATA] "); Serial.println(payload);
+  kirimPost(SERVER_URL, payload, "UJI");
+  if (KIRIM_KE_SIMKU && paket.node_id == NODE_ID) {
+    kirimPost(SIMKU_URL, payload, "SIMKU");
   }
-
-  int kodeRespons = http.POST(payload);
-  if (kodeRespons > 0) {
-    Serial.print("[KIRIM] "); Serial.print(payload);
-    Serial.print(" -> HTTP "); Serial.println(kodeRespons);
-    if (kodeRespons == 422) {
-      Serial.print("[GALAT 422] "); Serial.println(http.getString());
-    }
-  } else {
-    Serial.print("[GAGAL] Pengiriman data: "); Serial.println(http.errorToString(kodeRespons));
-  }
-  http.end();
 }
 
 // ======================== SETUP ========================
@@ -354,9 +389,8 @@ void loop() {
       paket.hop_count += 1;
       paket.rssi = gabungRssi(paket.rssi, (int) WiFi.RSSI());
 
-      char timestamp[20];
-      ambilTimestamp(timestamp, sizeof(timestamp), (millis() - masuk.diterimaMs) / 1000);
-      kirimKeServer(paket, timestamp);
+      // Waktu kirim asli = sekarang - (lama di antrean gateway + lama ditahan relay).
+      kirimKeServer(paket, (millis() - masuk.diterimaMs) + paket.umur_ms);
     }
   }
 
@@ -389,8 +423,7 @@ void loop() {
   }
   lastSendTime = millis();
 
-  char timestamp[20];
-  if (!ambilTimestamp(timestamp, sizeof(timestamp), 0)) {
+  if (!waktuTersinkron()) {
     Serial.println("[MENUNGGU] Waktu belum tersinkron NTP, data belum dikirim.");
     return;
   }
@@ -414,6 +447,7 @@ void loop() {
   paket.rssi       = WiFi.RSSI();  // satu-satunya link nirkabel: Node 1 -> AP
   paket.seq_number = seqNumber;
   paket.hop_count  = 1;
+  paket.umur_ms    = 0;
 
-  kirimKeServer(paket, timestamp);
+  kirimKeServer(paket, 0);
 }
