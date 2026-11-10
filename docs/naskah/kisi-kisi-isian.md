@@ -19,7 +19,7 @@ Urutan kerjanya:
 
 - Perangkat IoT AIR-001 (`arduino/simku_monitor`) dan aplikasi SIMKU yang berjalan di laptop.
   Perangkat dan laptop terhubung ke WiFi yang sama.
-- Ruang kelas RC1TI (pintu dan jendelanya bisa dibuka-tutup). Ukur panjang × lebarnya dan hitung pintu serta jendelanya untuk paragraf pembuka 4.3.
+- Lab. DSK (Laboratorium Dasar Sistem Kendali); pintu dan jendelanya bisa dibuka-tutup. Ukur panjang × lebarnya dan hitung pintu serta jendelanya untuk paragraf pembuka 4.3.
 - Sumber asap yang aman dan terkontrol, misalnya satu batang obat nyamuk bakar atau dupa.
 - Jam atau ponsel untuk mencatat jam mulai dan selesai setiap skenario.
 - Lembar catatan berisi kolom: skenario, jam mulai, jam selesai, dan kejadian penting
@@ -75,7 +75,7 @@ Perubahan kategori keseluruhan:
 
 | Bagian naskah | Diisi dengan |
 |---|---|
-| Paragraf pembuka 4.3 | Ukuran ruang kelas RC1TI (panjang × lebar meter, jumlah pintu dan jendela), tanggal pengujian, perangkat yang menjalankan aplikasi, nama dan versi peramban |
+| Paragraf pembuka 4.3 | Ukuran Lab. DSK (panjang × lebar meter, jumlah pintu dan jendela), tanggal pengujian, perangkat yang menjalankan aplikasi, nama dan versi peramban |
 | Sumber asap | Jenis sumber asap dan jaraknya dari sensor |
 | Tabel 4.7 Waktu Mulai / Selesai | Jam dari lembar catatan, misalnya 14.05 WIB |
 | Tabel 4.7 Jumlah Data Diterima | Baris **Jumlah data diterima**. Patokan: 5 detik sekali berarti ± 12 data per menit |
@@ -93,7 +93,7 @@ angka ppm-nya tepat.
 
 ## 2. Evaluasi UEQ (subbab 4.4)
 
-1. Responden adalah mahasiswa yang mengikuti perkuliahan di ruang kelas RC1TI (*purposive sampling*;
+1. Responden adalah mahasiswa Jurusan Teknik Elektro Universitas Riau yang menggunakan Lab. DSK (*purposive sampling*;
    kriteria ini sudah tertulis di Bab I, Bab III, dan subbab 4.4). Usahakan paling sedikit 20 orang.
    Yang tinggal diisi di naskah hanya jumlah responden dan tanggal pengisian.
 2. Minta setiap responden mencoba aplikasi: melihat Beranda, membuka grafik di Detail Ruangan,

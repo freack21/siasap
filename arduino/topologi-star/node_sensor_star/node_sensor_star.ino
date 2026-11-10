@@ -44,7 +44,7 @@ const char* SERVER_URL    = "http://192.168.137.1:8000/api/uji-topologi";
 // Handshake: setelah tersambung WiFi, node melaporkan IP-nya sebelum mengirim data.
 const char* HANDSHAKE_URL = "http://192.168.137.1:8000/api/uji-topologi/handshake";
 
-// Node 1 (AIR-001) juga mengirim data yang sama ke monitoring SIMKU (ruangan RC1TI) bila
+// Node 1 (AIR-001) juga mengirim data yang sama ke monitoring SIMKU (ruangan Lab. DSK) bila
 // KIRIM_KE_SIMKU = true. SIMKU hanya menerima AIR-001; node lain hanya ke endpoint uji.
 // Pengiriman ke SIMKU dilakukan sesudah pengiriman uji sehingga tidak menambah delay uji.
 const bool  KIRIM_KE_SIMKU = true;
