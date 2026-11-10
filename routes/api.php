@@ -9,6 +9,7 @@ Route::post('/telemetry', [TelemetryApiController::class, 'store'])->middleware(
 Route::get('/telemetry', [TelemetryApiController::class, 'index']);
 
 // Endpoint uji topologi star/mesh (tersembunyi). Gateway mesh meneruskan data tiga perangkat
-// dari satu IP (36/menit), sehingga batasnya lebih longgar.
-Route::post('/'.config('topology_test.path'), [TopologyTestController::class, 'store'])->middleware('throttle:120,1');
-Route::post('/'.config('topology_test.path').'/handshake', [TopologyTestController::class, 'handshake'])->middleware('throttle:120,1');
+// dari satu IP (36/menit), sehingga batasnya lebih longgar. Awalan 'uji-topologi' memisahkan
+// hitungan batasnya dari /api/telemetry (tanpa awalan, semua rute berbagi hitungan per IP).
+Route::post('/'.config('topology_test.path'), [TopologyTestController::class, 'store'])->middleware('throttle:120,1,uji-topologi');
+Route::post('/'.config('topology_test.path').'/handshake', [TopologyTestController::class, 'handshake'])->middleware('throttle:120,1,uji-topologi');

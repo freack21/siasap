@@ -21,9 +21,9 @@
  * - rssi      : RSSI terlemah sampai WiFi AP. Star hanya punya satu link (Node -> AP).
  * - hop_count : jumlah transmisi nirkabel sampai WiFi AP. Star = 1.
  *
- * Handshake: setelah tersambung ke WiFi (dan setiap kali tersambung ulang), node mengirim
- * device_id, IP, MAC, topologi, dan RSSI ke HANDSHAKE_URL. Data baru dikirim setelah server
- * menjawab HTTP 200.
+ * Handshake: setelah tersambung ke WiFi (dan setiap kali tersambung ulang atau IP berubah), node
+ * mengirim device_id, IP, MAC, topologi, dan RSSI ke HANDSHAKE_URL. Handshake dicoba paling
+ * banyak 3 kali; bila tetap gagal, Serial Monitor mencetak penyebabnya dan data tetap dikirim.
  *
  * Kebutuhan: ESP32 Arduino core versi 3 atau lebih baru.
  * ========================================================================================= */
@@ -32,6 +32,7 @@
 #include <HTTPClient.h>
 #include <time.h>
 #include <sys/time.h>
+#include <esp_system.h>
 
 // ======================== KONFIGURASI JARINGAN & SERVER ========================
 const char* WIFI_SSID     = "cargo";
@@ -91,8 +92,12 @@ char deviceId[12];
 int baselineMq135 = 0;
 int baselineMq2   = 0;
 unsigned long seqNumber = 0;
-bool handshakeOk = false;  // diulang setiap kali WiFi tersambung ulang atau IP berubah
-String ipHandshake = "";
+// Handshake dicoba paling banyak MAKS_PERCOBAAN_HANDSHAKE kali setiap kali WiFi tersambung.
+// Bila tetap gagal, handshake dilewati dan data tetap dikirim (server mencatat IP dari paket data).
+const int MAKS_PERCOBAAN_HANDSHAKE = 3;
+bool handshakeSelesai = false;   // true bila berhasil atau sudah dilewati
+int percobaanHandshake = 0;
+String ipHandshake = "";         // IP saat handshake berhasil ("" bila belum/dilewati)
 unsigned long lastSendTime = 0;
 
 // ======================== FUNGSI SENSOR ========================
@@ -192,7 +197,49 @@ void kirimPost(const char* url, const String &payload, const char* label) {
 }
 
 /**
- * Handshake ke server uji: kirim device_id, IP, MAC, topologi, dan RSSI. Berhasil bila HTTP 200.
+ * Cetak kemungkinan penyebab handshake gagal agar mudah diperbaiki dari Serial Monitor.
+ */
+void jelaskanGagalHandshake(int kode) {
+  Serial.print("[HANDSHAKE GAGAL] ");
+  if (kode < 0) {
+    Serial.println("server tidak terjangkau. Jalankan 'php artisan serve --host=0.0.0.0 --port=8000',"
+                   " izinkan port 8000 di firewall, dan cek HANDSHAKE_URL.");
+  } else if (kode == 404) {
+    Serial.println("alamat tidak ditemukan. Pastikan server sudah git pull dan path sama dengan TOPOLOGY_TEST_PATH.");
+  } else if (kode == 401) {
+    Serial.println("API_KEY tidak sama dengan TELEMETRY_API_KEY di .env server.");
+  } else if (kode == 422) {
+    Serial.println("device_id tidak dikenal endpoint uji (lihat config/topology_test.php).");
+  } else if (kode == 429) {
+    Serial.println("terlalu banyak permintaan; tunggu sebentar.");
+  } else if (kode >= 500) {
+    Serial.println("galat server. Jalankan 'php artisan migrate' lalu cek storage/logs/laravel.log.");
+  } else {
+    Serial.println("jawaban server tidak terduga.");
+  }
+}
+
+/**
+ * Cetak alasan ESP32 menyala ulang. Handshake yang terus berulang bisa berarti board terus
+ * restart (mis. daya kurang saat WiFi aktif), bukan handshake yang gagal.
+ */
+void cetakAlasanRestart() {
+  esp_reset_reason_t alasan = esp_reset_reason();
+  Serial.print("Alasan menyala: ");
+  switch (alasan) {
+    case ESP_RST_POWERON:  Serial.println("daya dinyalakan"); break;
+    case ESP_RST_SW:       Serial.println("restart oleh program"); break;
+    case ESP_RST_PANIC:    Serial.println("PANIC/crash program"); break;
+    case ESP_RST_INT_WDT:
+    case ESP_RST_TASK_WDT:
+    case ESP_RST_WDT:      Serial.println("watchdog (program macet)"); break;
+    case ESP_RST_BROWNOUT: Serial.println("BROWNOUT (tegangan turun, periksa catu daya)"); break;
+    default:               Serial.print("kode "); Serial.println((int) alasan); break;
+  }
+}
+
+/**
+ * Handshake ke server uji: kirim device_id, IP, MAC, topologi, dan RSSI. Berhasil bila HTTP 2xx.
  */
 bool lakukanHandshake() {
   String payload = "{";
@@ -204,6 +251,8 @@ bool lakukanHandshake() {
   payload += "}";
 
   HTTPClient http;
+  http.setConnectTimeout(3000);
+  http.setTimeout(3000);
   http.begin(HANDSHAKE_URL);
   http.addHeader("Content-Type", "application/json");
   http.addHeader("Accept", "application/json");
@@ -211,17 +260,21 @@ bool lakukanHandshake() {
     http.addHeader("X-Api-Key", API_KEY);
   }
   int kodeRespons = http.POST(payload);
-  bool berhasil = kodeRespons == 200;
-  if (berhasil) {
-    ipHandshake = WiFi.localIP().toString();
-  }
-  Serial.print("[HANDSHAKE] "); Serial.print(payload); Serial.print(" -> ");
+  bool berhasil = kodeRespons >= 200 && kodeRespons < 300;
+  Serial.print("[HANDSHAKE "); Serial.print(percobaanHandshake); Serial.print("/"); Serial.print(MAKS_PERCOBAAN_HANDSHAKE);
+  Serial.print("] "); Serial.print(payload); Serial.print(" -> ");
   if (kodeRespons > 0) {
     Serial.print("HTTP "); Serial.print(kodeRespons); Serial.print(" "); Serial.println(http.getString());
   } else {
     Serial.println(http.errorToString(kodeRespons));
   }
   http.end();
+
+  if (berhasil) {
+    ipHandshake = WiFi.localIP().toString();
+  } else {
+    jelaskanGagalHandshake(kodeRespons);
+  }
   return berhasil;
 }
 
@@ -236,6 +289,7 @@ void setup() {
   Serial.println("  SIMKU - ESP32 TOPOLOGI STAR");
   Serial.print("  Device ID : "); Serial.println(deviceId);
   Serial.println("=======================================================");
+  cetakAlasanRestart();
 
   analogReadResolution(12);
 
@@ -277,19 +331,29 @@ void loop() {
 
   if (WiFi.status() != WL_CONNECTED) {
     Serial.println("[PERINGATAN] WiFi terputus, mencoba menyambung ulang...");
-    handshakeOk = false;
+    handshakeSelesai = false;  // handshake lagi setelah tersambung ulang
+    percobaanHandshake = 0;
     WiFi.reconnect();
     return;
   }
 
-  // Handshake dulu sebelum mengirim data; dicoba lagi tiap INTERVAL_KIRIM sampai berhasil.
-  if (handshakeOk && WiFi.localIP().toString() != ipHandshake) {
-    handshakeOk = false;  // IP berubah setelah tersambung ulang
+  // IP berubah setelah handshake berhasil (tersambung ulang otomatis): handshake lagi.
+  if (handshakeSelesai && ipHandshake != "" && WiFi.localIP().toString() != ipHandshake) {
+    handshakeSelesai = false;
+    percobaanHandshake = 0;
   }
-  if (!handshakeOk) {
-    handshakeOk = lakukanHandshake();
-    if (!handshakeOk) {
-      Serial.println("[MENUNGGU] Handshake belum berhasil, data belum dikirim.");
+
+  // Handshake dulu sebelum mengirim data, paling banyak MAKS_PERCOBAAN_HANDSHAKE kali.
+  if (!handshakeSelesai) {
+    percobaanHandshake++;
+    if (lakukanHandshake()) {
+      handshakeSelesai = true;
+    } else if (percobaanHandshake >= MAKS_PERCOBAAN_HANDSHAKE) {
+      handshakeSelesai = true;
+      ipHandshake = "";
+      Serial.println("[HANDSHAKE] Dilewati setelah gagal berulang. Data tetap dikirim; IP tercatat dari paket data.");
+    } else {
+      Serial.println("[MENUNGGU] Handshake dicoba lagi 5 detik lagi, data belum dikirim.");
       return;
     }
   }

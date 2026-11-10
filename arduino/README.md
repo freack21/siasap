@@ -104,8 +104,13 @@ Setelah tersambung ke WiFi, node star dan gateway mesh mengirim handshake ke
 ```
 
 - Server menjawab HTTP 200 berisi `server_time`; data baru dikirim setelah jawaban ini diterima.
-  Bila gagal, handshake diulang setiap 5 detik.
-- Handshake diulang setiap kali WiFi tersambung ulang atau IP berubah.
+- Bila gagal, handshake dicoba lagi tiap 5 detik **paling banyak 3 kali**. Setelah itu handshake
+  dilewati dan data tetap dikirim (server mencatat IP dari paket data). Serial Monitor mencetak
+  penyebab gagalnya, misalnya server tidak terjangkau, alamat 404, atau galat 500 (`php artisan migrate`).
+- Handshake diulang hanya saat WiFi tersambung ulang atau IP berubah.
+- Saat menyala, Serial Monitor mencetak alasan board menyala (mis. `BROWNOUT`). Bila handshake
+  terus muncul dengan alasan selain "daya dinyalakan", board-nya yang terus restart; periksa catu daya.
+- Server hanya mewajibkan `device_id`; isian lain yang formatnya salah diabaikan, bukan ditolak.
 - Halaman `/uji-topologi` menampilkan IP setiap perangkat, IP yang terlihat oleh server (berbeda bila
   ada NAT), MAC, jumlah handshake, dan waktu handshake terakhir.
 - Node 2 dan Node 3 mesh tidak punya IP (komunikasinya lewat ESP-NOW), sehingga hanya gateway yang
