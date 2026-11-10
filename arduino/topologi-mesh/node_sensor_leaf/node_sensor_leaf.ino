@@ -35,8 +35,13 @@
 // ======================== IDENTITAS NODE ========================
 #define NODE_ID 3  // dikirim ke aplikasi sebagai AIR-003
 
-// Kanal WiFi: harus sama dengan kanal WiFi AP yang dipakai Root Gateway.
+// ESP-NOW hanya sampai bila semua node berada di kanal yang sama dengan Root Gateway, dan kanal
+// gateway ditentukan oleh hotspot/AP tempat gateway terhubung. Saat menyala, node ini memindai
+// SSID di bawah dan memakai kanalnya. Isi sama dengan WIFI_SSID di sketsa gateway.
+const char* WIFI_SSID_GATEWAY = "cargo";
+// Kanal cadangan bila SSID di atas tidak ditemukan saat pemindaian.
 #define WIFI_CHANNEL 1
+int kanalEspNow = WIFI_CHANNEL;
 
 const unsigned long INTERVAL_KIRIM = 5000;
 
@@ -131,6 +136,27 @@ void cetakAdcMentah(const char* nama, int pin, int nilaiAdc, int baseline) {
 }
 
 // ======================== SETUP ========================
+// Cari kanal hotspot gateway lewat pemindaian WiFi; kembalikan WIFI_CHANNEL bila tidak ketemu.
+int cariKanalGateway() {
+  Serial.print("Memindai kanal hotspot ["); Serial.print(WIFI_SSID_GATEWAY); Serial.println("]...");
+  int jumlah = WiFi.scanNetworks();
+  int kanal = -1;
+  for (int i = 0; i < jumlah; i++) {
+    if (WiFi.SSID(i) == WIFI_SSID_GATEWAY) {
+      kanal = WiFi.channel(i);
+      break;
+    }
+  }
+  WiFi.scanDelete();
+  if (kanal < 1) {
+    Serial.print("[PERINGATAN] Hotspot tidak ditemukan, memakai kanal cadangan ");
+    Serial.println(WIFI_CHANNEL);
+    return WIFI_CHANNEL;
+  }
+  Serial.print("[OK] Hotspot ditemukan di kanal "); Serial.println(kanal);
+  return kanal;
+}
+
 void setup() {
   Serial.begin(115200);
   delay(1000);
@@ -144,9 +170,12 @@ void setup() {
 
   WiFi.mode(WIFI_STA);
   WiFi.disconnect();
+  kanalEspNow = cariKanalGateway();
   esp_wifi_set_promiscuous(true);
-  esp_wifi_set_channel(WIFI_CHANNEL, WIFI_SECOND_CHAN_NONE);
+  esp_wifi_set_channel(kanalEspNow, WIFI_SECOND_CHAN_NONE);
   esp_wifi_set_promiscuous(false);
+  Serial.print("Kanal ESP-NOW : "); Serial.print(kanalEspNow);
+  Serial.println(" (harus sama dengan 'Kanal WiFi' di Serial Monitor gateway)");
   Serial.print("MAC Address Node 3 : "); Serial.println(WiFi.macAddress());
 
   if (esp_now_init() != ESP_OK) {
@@ -154,7 +183,7 @@ void setup() {
   } else {
     esp_now_peer_info_t peerInfo = {};
     memcpy(peerInfo.peer_addr, broadcastAddress, 6);
-    peerInfo.channel = WIFI_CHANNEL;
+    peerInfo.channel = kanalEspNow;
     peerInfo.encrypt = false;
     if (esp_now_add_peer(&peerInfo) != ESP_OK) {
       Serial.println("[ERROR] Gagal mendaftarkan peer broadcast!");

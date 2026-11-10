@@ -428,6 +428,9 @@ void setup() {
   analogReadResolution(12);
 
   WiFi.mode(WIFI_STA);
+  // Matikan mode hemat daya WiFi: saat radio tidur, paket broadcast ESP-NOW dari relay/leaf
+  // banyak yang tidak terdengar oleh gateway.
+  WiFi.setSleep(false);
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
   Serial.print("Menghubungkan ke WiFi ["); Serial.print(WIFI_SSID); Serial.print("]");
   int percobaan = 0;
@@ -441,7 +444,7 @@ void setup() {
     Serial.print("IP Perangkat : "); Serial.println(WiFi.localIP());
     Serial.print("MAC Address  : "); Serial.println(WiFi.macAddress());
     Serial.print("Kanal WiFi   : "); Serial.print(WiFi.channel());
-    Serial.println(" (samakan WIFI_CHANNEL di sketsa relay dan leaf)");
+    Serial.println(" (relay dan leaf harus menampilkan Kanal ESP-NOW yang sama)");
   } else {
     Serial.println("\n[PERINGATAN] Gagal terhubung ke WiFi, akan dicoba lagi di loop.");
   }

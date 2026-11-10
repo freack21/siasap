@@ -146,7 +146,8 @@ dengan Wireshark, isi `KIRIM_KE_SIMKU = false` bila rekaman hanya boleh berisi l
 | `KIRIM_KE_SIMKU`, `SIMKU_URL` | star, gateway | Data AIR-001 juga dikirim ke `…/api/telemetry` |
 | `API_KEY` | simku_monitor, star, gateway | Opsional, sama dengan `TELEMETRY_API_KEY` di `.env` |
 | `DEVICE_ID` / `NODE_ID` | semua | `simku_monitor`: `DEVICE_ID`. Star dan mesh: `NODE_ID` 1/2/3 → `AIR-001`/`AIR-002`/`AIR-003` |
-| `WIFI_CHANNEL` | relay, leaf | Kanal WiFi AP; lihat baris `Kanal WiFi` di Serial Monitor gateway |
+| `WIFI_SSID_GATEWAY` | relay, leaf | Nama hotspot yang dipakai gateway (sama dengan `WIFI_SSID` gateway). Saat menyala, relay dan leaf memindai kanal hotspot ini otomatis, karena ESP-NOW hanya sampai bila kanalnya sama |
+| `WIFI_CHANNEL` | relay, leaf | Kanal cadangan bila hotspot tidak ditemukan saat pemindaian |
 | `PIN_MQ135`, `PIN_MQ2` | semua | Pin ADC sensor |
 
 ---
