@@ -81,6 +81,24 @@ typedef struct struct_mesh_packet {
   uint32_t umur_ms;  // total lama paket ditahan di relay sebelum dipancarkan ulang
 } struct_mesh_packet;
 
+// ======================== ANTREAN RELAY ========================
+// Callback ESP-NOW berjalan di task WiFi, sehingga paket yang akan di-relay dimasukkan ke
+// antrean dan dipancarkan ulang dari loop() (bukan dari dalam callback).
+#define MAX_RELAY_QUEUE 10
+
+// Paket di antrean beserta waktu diterima (millis) untuk menghitung umur_ms.
+typedef struct paket_relay {
+  struct_mesh_packet paket;
+  unsigned long diterimaMs;
+} paket_relay;
+
+paket_relay relayQueue[MAX_RELAY_QUEUE];
+volatile int relayHead  = 0;
+volatile int relayCount = 0;
+volatile unsigned long relayDropped = 0;  // paket dibuang karena antrean penuh
+unsigned long relayDroppedReported = 0;
+portMUX_TYPE relayMux = portMUX_INITIALIZER_UNLOCKED;
+
 // ======================== FUNGSI SENSOR ========================
 
 /**
@@ -130,24 +148,6 @@ void cetakAdcMentah(const char* nama, int pin, int nilaiAdc, int baseline) {
   Serial.print(" maks="); Serial.print(maksimum);
   Serial.print(" rentang="); Serial.println(maksimum - minimum);
 }
-
-// ======================== ANTREAN RELAY ========================
-// Callback ESP-NOW berjalan di task WiFi, sehingga paket yang akan di-relay dimasukkan ke
-// antrean dan dipancarkan ulang dari loop() (bukan dari dalam callback).
-#define MAX_RELAY_QUEUE 10
-
-// Paket di antrean beserta waktu diterima (millis) untuk menghitung umur_ms.
-typedef struct paket_relay {
-  struct_mesh_packet paket;
-  unsigned long diterimaMs;
-} paket_relay;
-
-paket_relay relayQueue[MAX_RELAY_QUEUE];
-volatile int relayHead  = 0;
-volatile int relayCount = 0;
-volatile unsigned long relayDropped = 0;  // paket dibuang karena antrean penuh
-unsigned long relayDroppedReported = 0;
-portMUX_TYPE relayMux = portMUX_INITIALIZER_UNLOCKED;
 
 // Gabungkan RSSI terukur ke paket: ambil nilai TERLEMAH (minimum) sepanjang jalur.
 // rssi == 0 berarti belum ada link yang terukur.
