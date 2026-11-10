@@ -141,12 +141,38 @@ class TopologyTestApiTest extends TestCase
         $this->assertSame(0, TopologyTestLog::count());
     }
 
-    public function test_invalid_handshake_is_rejected(): void
+    public function test_handshake_rejects_unknown_device_only(): void
     {
-        $this->postJson(self::ENDPOINT.'/handshake', ['device_id' => 'AIR-009', 'ip' => '999.1.1.1', 'mac' => 'xx'])
+        $this->postJson(self::ENDPOINT.'/handshake', ['device_id' => 'AIR-009', 'ip' => '192.168.137.5'])
             ->assertUnprocessable()
-            ->assertJsonValidationErrors(['device_id', 'ip', 'mac']);
+            ->assertJsonValidationErrors(['device_id']);
 
         $this->assertSame(0, TopologyTestDevice::count());
+    }
+
+    public function test_handshake_ignores_malformed_optional_fields_instead_of_failing(): void
+    {
+        $this->postJson(self::ENDPOINT.'/handshake', [
+            'device_id' => 'AIR-001',
+            'ip' => '999.1.1.1',
+            'mac' => 'xx',
+            'topology_type' => 'ring',
+            'rssi' => 'kuat',
+        ])->assertOk();
+
+        $device = TopologyTestDevice::sole();
+        $this->assertSame('127.0.0.1', $device->ip);
+        $this->assertNull($device->mac);
+        $this->assertNull($device->topology);
+        $this->assertNull($device->rssi);
+    }
+
+    public function test_test_endpoints_do_not_use_up_the_telemetry_rate_limit(): void
+    {
+        for ($i = 0; $i < 61; $i++) {
+            $this->postJson(self::ENDPOINT.'/handshake', ['device_id' => 'AIR-001', 'ip' => '192.168.137.23'])->assertOk();
+        }
+
+        $this->postJson('/api/telemetry', [])->assertUnprocessable();
     }
 }

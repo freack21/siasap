@@ -130,34 +130,31 @@ class TopologyTestController extends Controller
             return $unauthorized;
         }
 
+        // Hanya device_id yang wajib. Isian lain bersifat informasi: nilai yang formatnya salah
+        // diabaikan, bukan ditolak, agar handshake tidak gagal lalu diulang terus oleh perangkat.
         $validator = Validator::make($request->all(), [
             'device_id' => ['required', 'string', Rule::in(array_keys(config('topology_test.devices')))],
-            'ip' => 'required|ipv4',
-            'mac' => ['nullable', 'string', 'regex:/^([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$/'],
-            'topology_type' => ['nullable', Rule::in(config('topology_test.topologies'))],
-            'rssi' => 'nullable|integer|between:-127,0',
         ], [
             ...TelemetryApiController::VALIDATION_MESSAGES,
             'device_id.in' => ':attribute bukan perangkat uji topologi.',
-            'in' => ':attribute tidak dikenal.',
-            'ipv4' => ':attribute harus berupa alamat IPv4.',
-            'regex' => ':attribute harus berformat AA:BB:CC:DD:EE:FF.',
-            'integer' => ':attribute harus berupa bilangan bulat.',
-            'between' => ':attribute harus di antara :min dan :max.',
         ]);
 
         if ($validator->fails()) {
             return $this->reject($validator->errors()->toArray());
         }
 
-        $input = $validator->validated();
-        $device = TopologyTestDevice::firstOrNew(['device_id' => $input['device_id']]);
+        $ip = $request->input('ip');
+        $mac = $request->input('mac');
+        $topology = $request->input('topology_type');
+        $rssi = $request->input('rssi');
+
+        $device = TopologyTestDevice::firstOrNew(['device_id' => $request->input('device_id')]);
         $device->fill([
-            'ip' => $input['ip'],
+            'ip' => is_string($ip) && filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) ? $ip : $request->ip(),
             'remote_ip' => $request->ip(),
-            'mac' => isset($input['mac']) ? strtoupper($input['mac']) : null,
-            'topology' => $input['topology_type'] ?? null,
-            'rssi' => $input['rssi'] ?? null,
+            'mac' => is_string($mac) && preg_match('/^([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$/', $mac) ? strtoupper($mac) : null,
+            'topology' => in_array($topology, config('topology_test.topologies'), true) ? $topology : null,
+            'rssi' => is_numeric($rssi) && (int) $rssi >= -127 && (int) $rssi <= 0 ? (int) $rssi : null,
             'handshake_count' => $device->handshake_count + 1,
             'last_handshake_at' => now(),
         ])->save();
