@@ -1,0 +1,202 @@
+{
+ "keterangan": "Revisi v9: ruangan uji dipindahkan ke Laboratorium Dasar Sistem Kendali (Lab. DSK) Jurusan Teknik Elektro Universitas Riau beserta alasan pemilihannya; responden UEQ menjadi mahasiswa Jurusan Teknik Elektro yang belajar di Lab. DSK; tangkapan layar dan pengamatan peramban diambil ulang dengan nama ruangan Lab. DSK.",
+ "revisi": [
+  {
+   "id": "L-1.1",
+   "cari": "beberapa skenario kondisi di ruang kelas RC1TI, serta",
+   "ganti": "beberapa skenario kondisi di Laboratorium Dasar Sistem Kendali (Lab. DSK) Jurusan Teknik Elektro Universitas Riau, serta"
+  },
+  {
+   "id": "L-1.4-a",
+   "cari": "Pengujian sistem dilakukan pada satu ruangan uji, yaitu ruang kelas RC1TI, dengan",
+   "ganti": "Pengujian sistem dilakukan pada satu ruangan uji, yaitu Laboratorium Dasar Sistem Kendali (Lab. DSK) Jurusan Teknik Elektro Universitas Riau, dengan"
+  },
+  {
+   "id": "L-1.4-b",
+   "cari": "Responden evaluasi pengalaman pengguna (UEQ) dibatasi pada mahasiswa yang mengikuti perkuliahan di ruang kelas RC1TI.",
+   "utuh": true,
+   "ganti": "Responden evaluasi pengalaman pengguna (UEQ) dibatasi pada mahasiswa Jurusan Teknik Elektro Universitas Riau yang mengikuti kegiatan belajar mengajar di Lab. DSK."
+  },
+  {
+   "id": "L-3.1",
+   "cari": "Pengujian dilakukan pada satu ruangan uji, yaitu ruang kelas RC1TI.",
+   "ganti": "Pengujian dilakukan pada satu ruangan uji, yaitu Laboratorium Dasar Sistem Kendali (Lab. DSK) Jurusan Teknik Elektro Universitas Riau."
+  },
+  {
+   "id": "L-3.2",
+   "cari": "Ruang lingkup objek penelitian dirangkum pada Tabel 3.1.",
+   "ganti": "Ruang lingkup objek penelitian dirangkum pada Tabel 3.1, sedangkan lokasi uji dan alasan pemilihannya dijelaskan berikut ini.",
+   "sisip_paragraf": [
+    "Pengujian dilakukan di Laboratorium Dasar Sistem Kendali (Lab. DSK) Jurusan Teknik Elektro Universitas Riau. Ruangan ini dipilih karena tiga alasan. Pertama, Lab. DSK merupakan ruangan yang dipakai untuk kegiatan belajar mengajar, khususnya bagi mahasiswa Jurusan Teknik Elektro Universitas Riau, yaitu jurusan yang menaungi Program Studi S1 Teknik Informatika, sehingga terdapat pengguna yang merasakan langsung kondisi udara ruangan dan dapat menjadi responden evaluasi. Kedua, di dalam ruangan terdapat beberapa alat laboratorium, sehingga ruangan ini mewakili ruang praktikum yang dipakai bersama peralatan, bukan hanya ruang kelas biasa. Ketiga, ruangan tersebut belum memiliki pendingin udara (AC), sehingga kondisi udaranya tidak dikendalikan oleh sistem pendingin dan perubahan akibat membuka atau menutup pintu dan jendela dapat diamati."
+   ]
+  },
+  {
+   "id": "L-3.2-T1",
+   "cari": "Satu ruangan uji, yaitu ruang kelas RC1TI, dengan",
+   "ganti": "Satu ruangan uji, yaitu Lab. DSK (Laboratorium Dasar Sistem Kendali) Jurusan Teknik Elektro Universitas Riau, dengan"
+  },
+  {
+   "id": "L-3.3-T2",
+   "cari": "Responden (mahasiswa yang belajar di ruang kelas RC1TI)",
+   "utuh": true,
+   "ganti": "Responden (mahasiswa Jurusan Teknik Elektro Universitas Riau yang belajar di Lab. DSK)"
+  },
+  {
+   "id": "L-3.4",
+   "cari": "Responden adalah mahasiswa yang mengikuti perkuliahan di ruang kelas RC1TI, yaitu ruangan yang dipantau aplikasi pada penelitian ini.",
+   "ganti": "Responden adalah mahasiswa Jurusan Teknik Elektro Universitas Riau yang mengikuti kegiatan belajar mengajar di Lab. DSK, yaitu ruangan yang dipantau aplikasi pada penelitian ini."
+  },
+  {
+   "id": "L-3.12.5",
+   "cari": "pada empat situasi di ruang kelas RC1TI.",
+   "ganti": "pada empat situasi di Lab. DSK."
+  },
+  {
+   "id": "L-3.12.6",
+   "cari": "yang diisi oleh mahasiswa yang mengikuti perkuliahan di ruang kelas RC1TI.",
+   "ganti": "yang diisi oleh mahasiswa Jurusan Teknik Elektro Universitas Riau yang mengikuti kegiatan belajar mengajar di Lab. DSK."
+  },
+  {
+   "id": "L-4.1.2",
+   "cari": "satu ruangan uji (RC1TI) dan satu perangkat (AIR-001)",
+   "ganti": "satu ruangan uji (Lab. DSK) dan satu perangkat (AIR-001)"
+  },
+  {
+   "id": "L-4.1.3",
+   "cari": "ringkasan utama langsung menampilkan ruang kelas RC1TI beserta",
+   "ganti": "ringkasan utama langsung menampilkan Lab. DSK beserta keterangan ruangannya,"
+  },
+  {
+   "id": "L-GBR-4.1",
+   "cari": "Gambar 4.1 Tampilan Halaman Beranda",
+   "utuh": true,
+   "ganti_gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/labdsk/bab4/4-01-beranda.png"
+  },
+  {
+   "id": "L-GBR-4.2",
+   "cari": "Gambar 4.2 Tampilan Halaman Detail Ruangan (Bagian Atas)",
+   "utuh": true,
+   "ganti_gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/labdsk/bab4/4-02-detail-ruangan-atas.png"
+  },
+  {
+   "id": "L-GBR-4.3",
+   "cari": "Gambar 4.3 Tampilan Halaman Detail Ruangan (Bagian Bawah)",
+   "utuh": true,
+   "ganti_gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/labdsk/bab4/4-03-detail-ruangan-bawah.png"
+  },
+  {
+   "id": "L-GBR-4.4",
+   "cari": "Gambar 4.4 Tampilan Halaman Riwayat",
+   "utuh": true,
+   "ganti_gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/labdsk/bab4/4-04-riwayat.png"
+  },
+  {
+   "id": "L-GBR-4.5",
+   "cari": "Gambar 4.5 Tampilan Halaman Rekomendasi Tindakan",
+   "utuh": true,
+   "ganti_gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/labdsk/bab4/4-05-rekomendasi.png"
+  },
+  {
+   "id": "L-GBR-4.6",
+   "cari": "Gambar 4.6 Tampilan Halaman Status Perangkat",
+   "utuh": true,
+   "ganti_gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/labdsk/bab4/4-06-status-perangkat.png"
+  },
+  {
+   "id": "L-GBR-4.11",
+   "cari": "Gambar 4.11 Tampilan Beranda saat Belum Ada Data",
+   "utuh": true,
+   "ganti_gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/labdsk/bab4/4-11-beranda-tanpa-data.png"
+  },
+  {
+   "id": "L-GBR-4.12",
+   "cari": "Gambar 4.12 Beranda Sebelum dan Sesudah Data Baru Diterima",
+   "utuh": true,
+   "ganti_gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/labdsk/bab4/4-beranda-sebelum-sesudah.png"
+  },
+  {
+   "id": "L-GBR-4.13",
+   "cari": "Gambar 4.13 Grafik Detail Ruangan setelah Memilih CO dan Rentang 7 Hari",
+   "utuh": true,
+   "ganti_gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/labdsk/bab4/4-grafik-co-7hari.png"
+  },
+  {
+   "id": "L-GBR-4.14",
+   "cari": "Gambar 4.14 Tampilan Riwayat dengan Filter Kategori Tidak Sehat",
+   "utuh": true,
+   "ganti_gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/labdsk/bab4/4-13-riwayat-filter-tidak-sehat.png"
+  },
+  {
+   "id": "L-GBR-4.15",
+   "cari": "Gambar 4.15 Isi Berkas CSV Hasil Unduhan Riwayat",
+   "utuh": true,
+   "ganti_gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/labdsk/bab4/4-14-isi-csv-riwayat.png"
+  },
+  {
+   "id": "L-GBR-4.16",
+   "cari": "Gambar 4.16 Halaman Kedua Riwayat setelah Tombol Halaman Berikutnya Ditekan",
+   "utuh": true,
+   "ganti_gambar": "/tmp/claude-0/-home-user-siasap/c0f0d03e-0d3c-59a9-91f3-f06d148d76b5/scratchpad/labdsk/bab4/4-riwayat-hal2.png"
+  },
+  {
+   "id": "L-4.2-tgl",
+   "cari": "pengujian otomatis terakhir dijalankan pada 5 November 2026",
+   "ganti": "pengujian otomatis terakhir dijalankan pada 10 November 2026"
+  },
+  {
+   "id": "L-S1",
+   "cari": "dikirim pada 5 November 2026 pukul 19.13.51 WIB.",
+   "ganti": "dikirim pada 10 November 2026 pukul 20.38.35 WIB."
+  },
+  {
+   "id": "L-S5",
+   "cari": "Perpindahan halaman diamati di peramban dengan 192 data pada halaman Riwayat.…dari 192 data menjadi Menampilkan 21 sampai 40 dari 192 data,",
+   "ganti": "Perpindahan halaman diamati di peramban dengan 189 data pada halaman Riwayat. Setelah tombol halaman berikutnya ditekan, keterangan berubah dari Menampilkan 1 sampai 20 dari 189 data menjadi Menampilkan 21 sampai 40 dari 189 data,"
+  },
+  {
+   "id": "L-S7",
+   "cari": "Data dikirim pada 5 November 2026 pukul 19.14.06 WIB…dengan waktu 05 Nov 2026 19:14:06,",
+   "ganti": "Data dikirim pada 10 November 2026 pukul 20.38.50 WIB, dan halaman Status Perangkat menampilkan Data terakhir diterima 0 detik yang lalu dengan waktu 10 Nov 2026 20:38:50,"
+  },
+  {
+   "id": "L-4.2.1-akhir",
+   "cari": "pengamatan pada peramban Chromium 141 tanggal 5 November 2026.",
+   "ganti": "pengamatan pada peramban Chromium 141 tanggal 10 November 2026."
+  },
+  {
+   "id": "L-4.3",
+   "cari": "di satu ruangan uji, yaitu ruang kelas RC1TI yang berukuran",
+   "ganti": "di satu ruangan uji, yaitu Laboratorium Dasar Sistem Kendali (Lab. DSK) Jurusan Teknik Elektro Universitas Riau yang berukuran"
+  },
+  {
+   "id": "L-4.4",
+   "cari": "orang, yaitu mahasiswa yang mengikuti perkuliahan di ruang kelas RC1TI.",
+   "ganti": "orang, yaitu mahasiswa Jurusan Teknik Elektro Universitas Riau yang mengikuti kegiatan belajar mengajar di Lab. DSK."
+  },
+  {
+   "id": "L-4.5-1",
+   "cari": "Pembuktian dengan perangkat IoT nyata di ruang kelas RC1TI diperoleh",
+   "ganti": "Pembuktian dengan perangkat IoT nyata di Lab. DSK diperoleh"
+  },
+  {
+   "id": "L-4.5-batasan",
+   "cari": "dilakukan pada satu ruangan, yaitu ruang kelas RC1TI, dengan satu perangkat, dan evaluasi UEQ hanya melibatkan mahasiswa yang belajar di ruangan tersebut,",
+   "ganti": "dilakukan pada satu ruangan, yaitu Lab. DSK yang belum memiliki pendingin udara, dengan satu perangkat, dan evaluasi UEQ hanya melibatkan mahasiswa Jurusan Teknik Elektro yang belajar di ruangan tersebut,"
+  },
+  {
+   "id": "L-5.1-1",
+   "cari": "Contoh kalimat: Pada pengujian di ruang kelas RC1TI, data diterima",
+   "ganti": "Contoh kalimat: Pada pengujian di Lab. DSK, data diterima"
+  },
+  {
+   "id": "L-5.1-3",
+   "cari": "Evaluasi UEQ terhadap 30 mahasiswa yang belajar di ruang kelas RC1TI menghasilkan",
+   "ganti": "Evaluasi UEQ terhadap 30 mahasiswa yang belajar di Lab. DSK menghasilkan"
+  },
+  {
+   "id": "L-5.2-2",
+   "cari": "Pengujian dilakukan pada satu ruang kelas dengan satu perangkat,",
+   "ganti": "Pengujian dilakukan pada satu ruangan tanpa pendingin udara dengan satu perangkat,"
+  }
+ ]
+}
