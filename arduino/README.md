@@ -129,7 +129,7 @@ Setelah tersambung ke WiFi, node star dan gateway mesh mengirim handshake ke
 
 ### Data Node 1 ke monitoring SIMKU
 
-SIMKU utama (`POST /api/telemetry`, monitoring ruangan RC1TI) hanya menerima **AIR-001**. Dengan
+SIMKU utama (`POST /api/telemetry`, monitoring ruangan Lab. DSK) hanya menerima **AIR-001**. Dengan
 `KIRIM_KE_SIMKU = true` (bawaan), Node 1 star dan gateway mesh juga mengirim data AIR-001 ke
 `SIMKU_URL`, sesudah pengiriman ke endpoint uji agar tidak menambah delay uji. Data AIR-002 dan
 AIR-003 hanya masuk ke halaman uji topologi. `SIMKU_URL` bawaan mengarah ke server online (HTTPS); saat uji lokal
