@@ -62,7 +62,7 @@ Pembagian kasus uji per kelas:
 | 2 | Pengujian Validasi Data | Validasi masukan `POST /api/telemetry` (`device_id`, `timestamp`, `co2_ppm`, `nh3_ppm`, `co_ppm`, `h2_ppm`) dan pencatatan data yang ditolak | Memastikan hanya data lengkap dan berformat benar yang diproses dan disimpan, sedangkan data tidak valid ditolak dan dicatat | Otomatis (*feature test* API) | Tabel 3.24 |
 | 3 | Pengujian Pengolahan Data Sensor (klasifikasi) | Kategori setiap gas berdasarkan ambang batas, nilai tepat di batas, kategori keseluruhan (kategori terburuk), penyebab utama | Memastikan data ppm CO₂, NH₃, CO, dan H₂ diklasifikasikan dengan benar | Otomatis (*unit test* dan *feature test* API) | Tabel 3.25 |
 | 4 | Pengujian Rekomendasi Tindakan Preventif | Pemetaan kategori keseluruhan ke rekomendasi berbasis aturan | Memastikan rekomendasi yang tampil sesuai kategori kualitas udara | Otomatis (*unit test* dan *feature test* halaman) | Tabel 3.26 |
-| 5 | Pengujian pada Beberapa Kondisi Ruangan | Ruangan normal, tertutup, berasap, dan ventilasi berbeda | Memastikan sistem mampu memantau perubahan kondisi kualitas udara dengan perangkat IoT nyata | Manual dengan perangkat IoT (lembar isian) | Tabel 3.27 |
+| 5 | Pengujian pada Beberapa Kondisi Ruangan | Ruangan normal, tertutup, dan berasap | Memastikan sistem mampu memantau perubahan kondisi kualitas udara dengan perangkat IoT nyata | Manual dengan perangkat IoT (lembar isian) | Tabel 3.27 |
 
 ---
 
@@ -234,8 +234,7 @@ Pengujian ini dilakukan manual dengan perangkat IoT nyata (`arduino/simku_monito
 |---|---|---|---|---|---|---|
 | 1 | Ruangan normal | Ventilasi biasa, tanpa sumber polutan tambahan, ± 10 menit | Kategori dan nilai ppm | Kategori cenderung Baik dan rekomendasi sesuai kategori | (diisi saat uji manual) | Belum diuji (manual) |
 | 2 | Ruangan tertutup | Pintu dan jendela ditutup, sirkulasi minim, ± 30 menit | Perubahan nilai ppm, terutama CO₂ | Nilai meningkat bertahap dan kategori berubah sesuai ambang batas | (diisi saat uji manual) | Belum diuji (manual) |
-| 3 | Ruangan berasap | Sumber asap terkontrol (mis. asap dupa) di dekat sensor, ± 5 menit | Perubahan nilai CO dan H₂ | Kategori naik dan rekomendasi berubah sesuai kategori baru | (diisi saat uji manual) | Belum diuji (manual) |
-| 4 | Ventilasi berbeda | Lanjutan skenario 2/3: pintu dan jendela dibuka, ± 15 menit | Penurunan nilai ppm dan kategori | Nilai menurun dan kategori membaik setelah ventilasi dibuka | (diisi saat uji manual) | Belum diuji (manual) |
+| 3 | Ruangan berasap | Sumber asap terkontrol (mis. asap dupa atau asap menyolder) di dekat sensor, ± 5 menit | Perubahan nilai CO dan H₂ | Kategori naik dan rekomendasi berubah sesuai kategori baru | (diisi saat uji manual) | Belum diuji (manual) |
 
 **Lembar isian pengamatan** (isi satu baris per skenario; nilai ppm dibaca dari Beranda atau CSV Riwayat):
 
@@ -244,7 +243,6 @@ Pengujian ini dilakukan manual dengan perangkat IoT nyata (`arduino/simku_monito
 | 1 | Ruangan normal | | | | | | | | | | | | |
 | 2 | Ruangan tertutup | | | | | | | | | | | | |
 | 3 | Ruangan berasap | | | | | | | | | | | | |
-| 4 | Ventilasi berbeda | | | | | | | | | | | | |
 
 Status skenario diubah menjadi **Valid** bila seluruh kolom "Hal yang Diamati" sesuai harapan dan bukti CSV tersedia, atau **Tidak Valid** bila tidak sesuai, disertai catatan penyebabnya.
 

@@ -7,7 +7,7 @@ contoh kalimat hanya ilustrasi: ganti dengan hasil pengujianmu, lalu hapus tanda
 
 Urutan kerjanya:
 
-1. Pengujian pada empat kondisi ruangan, lalu isi subbab 4.3.
+1. Pengujian pada tiga kondisi ruangan (normal, tertutup, berasap), lalu isi subbab 4.3.
 2. Evaluasi UEQ, lalu isi subbab 4.4.
 3. Isi pembahasan (subbab 4.5) dan Bab V dari hasil langkah 1 dan 2.
 
@@ -31,14 +31,13 @@ Urutan kerjanya:
    perangkat di antara skenario, karena nilai ppm dihitung relatif terhadap kondisi saat perangkat
    dinyalakan. Bila perangkat terlanjur menyala ulang, ulangi dari skenario 1.
 2. Buka halaman **Perangkat** dan pastikan statusnya **Terhubung**.
-3. Jalankan keempat skenario berurutan dan catat jam mulai dan selesainya:
+3. Jalankan ketiga skenario berurutan dan catat jam mulai dan selesainya:
 
    | No | Skenario | Yang dilakukan | Durasi |
    |---|---|---|---|
    | 1 | Ruangan normal | Biarkan ruangan seperti biasa | ± 10 menit |
    | 2 | Ruangan tertutup | Tutup pintu dan jendela | ± 30 menit |
    | 3 | Ruangan berasap | Nyalakan sumber asap di dekat sensor (catat jaraknya) | ± 5 menit |
-   | 4 | Ventilasi berbeda | Matikan sumber asap, buka pintu dan jendela | ± 15 menit |
 
 4. Selama pengujian, ambil tangkapan layar Beranda pada setiap skenario bila ingin menambahkan
    gambar (opsional).
@@ -84,7 +83,7 @@ Perubahan kategori keseluruhan:
 | Tabel 4.8 Rekomendasi yang Tampil | Baris **Rekomendasi tampil** |
 | Tabel 4.8 Kesesuaian | **Sesuai** bila perubahan kategori sama dengan hasil yang diharapkan pada Tabel 3.22, selain itu **Tidak sesuai** |
 | Paragraf hasil tiap skenario | Kolom **Awal** dan **Tertinggi**, dan jam pada tabel **Perubahan kategori keseluruhan** |
-| Paragraf kesimpulan 4.3 | Berapa dari 4 skenario yang **Sesuai**, dan penyebab bila ada yang tidak |
+| Paragraf kesimpulan 4.3 | Berapa dari 3 skenario yang **Sesuai**, dan penyebab bila ada yang tidak |
 
 Yang dinilai adalah apakah kategori dan rekomendasi berubah mengikuti kondisi ruangan, bukan apakah
 angka ppm-nya tepat.

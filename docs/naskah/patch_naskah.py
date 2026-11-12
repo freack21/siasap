@@ -18,6 +18,8 @@ Pemakaian:
 
 Opsi lain:
   --langsung        ganti tanpa Track Changes
+  --pertahankan-sitasi  hanya sitasi teks biasa yang dijadikan field Mendeley; field sitasi
+                    dan daftar pustaka yang sudah ada (mis. hasil Refresh Mendeley) tidak diubah
   --tanpa-komentar  abaikan semua "catatan"
   --tanpa-alasan    komentar hanya untuk butir manual (tanpa "ganti")
   --pertama         bila teks ditemukan di beberapa tempat, pakai yang pertama
@@ -4021,8 +4023,13 @@ def rebuild_bibliography(body: etree._Element, works: list[Work], config: dict, 
     return added, removed
 
 
-def mendeley_citations(body: etree._Element, config: dict, styles: StyleBook, session: Session) -> list[str]:
-    """Jadikan setiap sitasi field Mendeley APA 7 dan susun ulang daftar pustakanya dari itemData."""
+def mendeley_citations(body: etree._Element, config: dict, styles: StyleBook, session: Session,
+                       keep_existing: bool = False) -> list[str]:
+    """Jadikan setiap sitasi field Mendeley APA 7 dan susun ulang daftar pustakanya dari itemData.
+
+    keep_existing: hanya sitasi teks biasa yang dijadikan field; field sitasi lama dan daftar pustaka
+    dibiarkan seperti hasil Mendeley di naskah.
+    """
     library = Library(config)
     excluded = excluded_paragraphs(body, {"kecualikan_setelah_judul": config.get("judul_daftar_pustaka", "DAFTAR PUSTAKA")})
     paragraphs = [paragraph for paragraph in body.iter(w("p"))
@@ -4061,6 +4068,8 @@ def mendeley_citations(body: etree._Element, config: dict, styles: StyleBook, se
         by_paragraph.setdefault(id(job.paragraph), []).append(job)
     for paragraph_jobs in by_paragraph.values():
         for job in sorted(paragraph_jobs, key=lambda item: item.start, reverse=True):
+            if keep_existing and not job.converted:
+                continue
             works = sorted({id(work): work for work in job.works}.values(), key=lambda work: rank[id(work)])
             data, visible = build_citation_data(works, job.mode, config, job.data)
             if job.data is not None and data == job.data and pieces_text(visible) == job.old_result:
@@ -4080,6 +4089,9 @@ def mendeley_citations(body: etree._Element, config: dict, styles: StyleBook, se
                 if old_manual is not None and old_manual != data["mendeley"].get("manualFormatting"):
                     counts["manualFormatting diperbaiki"] += 1
     lines = [f"  {name}: {count}" for name, count in counts.items()]
+    if keep_existing:
+        lines.append("  field sitasi lama dan daftar pustaka dipertahankan (--pertahankan-sitasi)")
+        return lines
     result = rebuild_bibliography(body, ordered, config, styles, session)
     if result is None:
         lines.append("  field CSL_BIBLIOGRAPHY tidak ditemukan")
@@ -4665,7 +4677,8 @@ def run(arguments: argparse.Namespace) -> int:
     if config.get("pustaka"):
         library_path = Path(arguments.tata_tulis).resolve().parent / config["pustaka"]
         print("Sitasi Mendeley dan daftar pustaka APA 7:")
-        for line in mendeley_citations(body, json.loads(library_path.read_text(encoding="utf-8")), styles, session):
+        for line in mendeley_citations(body, json.loads(library_path.read_text(encoding="utf-8")), styles, session,
+                                       keep_existing=arguments.pertahankan_sitasi):
             print(line)
     if arguments.tata_tulis:
         counts = apply_layout_rules(body, config, styles, session)
@@ -4893,6 +4906,8 @@ def main() -> int:
     parser.add_argument("--bersih", help="tulis juga salinan bersih .docx (semua perubahan diterima, hanya komentar "
                                          "bertanda komentar_bersih)")
     parser.add_argument("--referensi-baru", help="awalan berkas .ris/.bib untuk karya baru (belum di pustaka Mendeley)")
+    parser.add_argument("--pertahankan-sitasi", action="store_true",
+                        help="hanya sitasi teks biasa yang dijadikan field; field sitasi dan daftar pustaka lama tidak diubah")
     parser.add_argument("--uji", action="store_true", help="cek saja tanpa menulis file")
     return run(parser.parse_args())
 
