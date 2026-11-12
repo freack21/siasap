@@ -21,3 +21,9 @@ Route::get('/kuesioner', SurveyForm::class)->name('survey');
 
 // Halaman uji topologi star/mesh: tidak ditautkan dari menu, alamat diatur TOPOLOGY_TEST_PATH.
 Route::get('/'.config('topology_test.path'), TopologyTest::class)->name('topology-test');
+
+// Latihan sidang skripsi: tidak ditautkan dari menu, alamat diatur LATIHAN_SIDANG_PATH.
+Route::get('/'.config('latihan_sidang.path'), fn () => response()
+    ->view('latihan-sidang')
+    ->header('X-Robots-Tag', 'noindex, nofollow'))
+    ->name('latihan-sidang');
