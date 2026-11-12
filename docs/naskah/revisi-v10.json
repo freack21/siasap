@@ -1,0 +1,235 @@
+{
+ "keterangan": "Revisi v10: gas yang dipantau dikaitkan dengan kondisi Lab. DSK (revisi penguji 2 no. 1); penelitian terdahulu dijelaskan kaitannya dengan metode dan teknik penelitian beserta gap-nya, dan kalimat yang belum utuh diperbaiki (revisi penguji 2 no. 2 dan penguji 3 no. 3); skenario kondisi ruangan menjadi tiga: normal, tertutup, dan berasap.",
+ "revisi": [
+  {
+   "id": "D1-1.1a",
+   "cari": "Keempat gas tersebut juga sesuai dengan studi kasus ruangan tertutup. CO₂ dihasilkan oleh penghuni melalui pernapasan dan konsentrasinya telah lama dipakai untuk menilai ventilasi ruangan",
+   "ganti": "Keempat gas tersebut juga dipilih sesuai dengan kondisi ruangan yang menjadi studi kasus, yaitu Laboratorium Dasar Sistem Kendali (Lab. DSK) Jurusan Teknik Elektro Universitas Riau. Ruangan ini dipakai untuk kegiatan belajar mengajar dan kadang terisi penuh oleh mahasiswa, sedangkan ruangannya belum memiliki pendingin udara (AC), sehingga pertukaran udaranya bergantung pada pintu dan jendela. Pada kondisi tersebut, CO₂ menjadi indikator yang relevan karena dihasilkan oleh penghuni melalui pernapasan dan konsentrasinya telah lama dipakai untuk menilai kecukupan ventilasi ruangan"
+  },
+  {
+   "id": "D1-1.1b",
+   "cari": ", NH₃ dapat berasal dari produk pembersih rumah tangga yang mengandung amonia",
+   "ganti": ". NH₃ dapat berasal dari bahan pembersih yang mengandung amonia"
+  },
+  {
+   "id": "D1-1.1c",
+   "cari": ", CO berasal dari pembakaran yang tidak sempurna, misalnya kompor gas dan asap rokok",
+   "ganti": ", misalnya saat lantai ruangan yang dimasuki dengan alas kaki dibersihkan. Sebagai laboratorium, ruangan ini juga dapat dipakai untuk kegiatan praktikum yang menimbulkan asap, misalnya menyolder komponen elektronik. CO berasal dari pembakaran yang tidak sempurna"
+  },
+  {
+   "id": "D1-1.1d",
+   "cari": "Pemilihan dan kalibrasi sensor merupakan bagian dari penelitian IoT",
+   "ganti": "Karena itu, CO dan H₂ dipakai untuk memantau kemunculan asap atau gas mudah terbakar di dalam ruangan. Debu yang terbawa alas kaki tidak dipantau, karena perangkat hanya memiliki sensor gas MQ-135 dan MQ-2 dan pengukuran partikulat seperti PM2.5 dan PM10 berada di luar lingkup penelitian. Pemilihan dan kalibrasi sensor merupakan bagian dari penelitian IoT"
+  },
+  {
+   "id": "D1-3.3a",
+   "cari": "Keempat gas dipilih karena berkaitan dengan kondisi ruangan tertutup: CO₂ dengan ventilasi dan jumlah penghuni",
+   "ganti": "Keempat gas dipilih sesuai dengan kondisi Lab. DSK sebagai ruangan uji (subbab 3.2): CO₂ dengan jumlah penghuni dan ventilasi, karena ruangan kadang terisi penuh oleh mahasiswa dan belum memiliki AC"
+  },
+  {
+   "id": "D1-3.3b",
+   "cari": ", NH₃ dengan pemakaian bahan pembersih",
+   "ganti": ", NH₃ dengan pemakaian bahan pembersih saat ruangan dibersihkan"
+  },
+  {
+   "id": "D1-3.3c",
+   "cari": ", serta CO dan H₂ dengan asap atau gas mudah terbakar",
+   "ganti": ", serta CO dan H₂ dengan asap atau gas mudah terbakar, misalnya dari kegiatan praktikum seperti menyolder"
+  },
+  {
+   "id": "D1-3.3d",
+   "cari": "Gas tersebut dibaca oleh sensor MQ-135 (CO₂ dan NH₃)",
+   "ganti": "Debu yang terbawa alas kaki tidak dipantau karena perangkat tidak memiliki sensor partikulat. Gas tersebut dibaca oleh sensor MQ-135 (CO₂ dan NH₃)"
+  },
+  {
+   "id": "D1-3.2",
+   "cari": "sehingga kondisi udaranya tidak dikendalikan oleh sistem pendingin dan perubahan akibat membuka atau menutup pintu dan jendela dapat diamati.",
+   "ganti": "sehingga kondisi udaranya tidak dikendalikan oleh sistem pendingin dan perubahan akibat membuka atau menutup pintu dan jendela dapat diamati. Selain itu, ruangan ini kadang terisi penuh oleh mahasiswa saat perkuliahan dan dimasuki dengan alas kaki. Kondisi-kondisi tersebut menjadi dasar pemilihan gas yang dipantau (subbab 3.3)."
+  },
+  {
+   "id": "D1-T3.22",
+   "cari": "Sumber asap terkontrol (misalnya pembakaran kecil atau asap dupa) di dekat sensor",
+   "ganti": "Sumber asap terkontrol di dekat sensor, misalnya asap dupa atau asap dari kegiatan menyolder"
+  },
+  {
+   "id": "D2-candra",
+   "cari": "dan dapat membantu pengguna dalam mengetahui kondisi lingkungan ruangan.",
+   "ganti": "dan dapat membantu pengguna dalam mengetahui kondisi lingkungan ruangan. Penelitian tersebut menjadi acuan penyajian data secara real-time pada penelitian ini, sedangkan penelitian ini menambahkan kategori setiap gas, gas penyebab utama, dan saran tindakan preventif pada tampilan."
+  },
+  {
+   "id": "D2-wahyudi",
+   "cari": "mampu memberikan informasi kualitas udara secara real-time dan mempermudah proses pemantauan kondisi lingkungan.",
+   "ganti": "mampu memberikan informasi kualitas udara secara real-time dan mempermudah proses pemantauan kondisi lingkungan. Alur sensor, server, basis data, dan aplikasi monitoring pada penelitian tersebut sejalan dengan arsitektur yang dipakai pada penelitian ini."
+  },
+  {
+   "id": "D2-lestari",
+   "cari": "Sistem kemudian mengirimkan data kualitas udara pada aplikasi seluler dan memiliki alarm dan lampu indikator.",
+   "ganti": "Sistem tersebut juga dilengkapi alarm dan lampu indikator."
+  },
+  {
+   "id": "D2-lestari-2",
+   "cari": "sehingga mempermudah pengguna dalam memantau kondisi lingkungan ruangan.",
+   "ganti": "sehingga mempermudah pengguna dalam memantau kondisi lingkungan ruangan. Berbeda dengan penelitian tersebut yang memberi peringatan melalui aplikasi seluler dan alarm, penelitian ini menyampaikan kondisi udara melalui aplikasi web dalam bentuk kategori dan saran tindakan yang dapat dibaca pengguna awam."
+  },
+  {
+   "id": "D2-kamran",
+   "cari": "Kamran et al. (2024) menyebutkan dalam mengembangkan sistem pemantauan",
+   "ganti": "Kamran et al. (2024) mengembangkan sistem pemantauan"
+  },
+  {
+   "id": "D2-kamran-2",
+   "cari": "serta memberikan informasi mengenai tingkat polusi udara di lingkungan tertentu.",
+   "ganti": "serta memberikan informasi mengenai tingkat polusi udara di lingkungan tertentu. Pemakaian CO dan CO₂ sebagai parameter pada penelitian tersebut sejalan dengan dua dari empat gas yang dipantau pada penelitian ini."
+  },
+  {
+   "id": "D2-rohim",
+   "cari": "Dalam merancang sistem pemantauan kualitas udara berbasis IoT yang terintegrasi dengan aplikasi berbasis web. Sistem ini menggunakan",
+   "ganti": "Rohim dan Saputro (2025) merancang sistem pemantauan kualitas udara berbasis IoT yang terintegrasi dengan aplikasi berbasis web di lingkungan pabrik kelapa sawit. Sistem tersebut menggunakan"
+  },
+  {
+   "id": "D2-rohim-2",
+   "cari": "Hasil penelitian menunjukkan bahwa sistem yang dikembangkan mampu mempermudah proses monitoring kualitas udara secara real-time (Rohim & Saputro, 2025).",
+   "ganti": "Hasil penelitian menunjukkan bahwa sistem yang dikembangkan mampu mempermudah proses monitoring kualitas udara secara real-time. Penelitian tersebut menjadi acuan penyajian data melalui dashboard web, sedangkan penelitian ini menerapkannya pada ruangan belajar mengajar."
+  },
+  {
+   "id": "D2-haryanto",
+   "cari": "Hasil penelitian menunjukkan bahwa metode rule-based mampu membantu dalam proses analisis kualitas udara secara lebih sistematis.",
+   "ganti": "Hasil penelitian menunjukkan bahwa metode rule-based mampu membantu dalam proses analisis kualitas udara secara lebih sistematis. Penelitian tersebut menjadi acuan teknik yang dipakai pada penelitian ini, yaitu penentuan kategori berdasarkan aturan ambang batas. Penelitian ini memakai aturan yang sama sifatnya untuk dua keperluan, yaitu klasifikasi kategori setiap gas dan pemilihan saran tindakan preventif untuk setiap kategori."
+  },
+  {
+   "id": "D2-prajapati",
+   "cari": "Penelitian yang dilakukan Prajapati et al. (2023) dalam mengembangkan sistem",
+   "ganti": "Prajapati et al. (2023) mengembangkan sistem"
+  },
+  {
+   "id": "D2-prajapati-2",
+   "cari": "dapat digunakan sebagai solusi untuk memantau kondisi kualitas udara secara lebih efektif dan efisien.",
+   "ganti": "dapat digunakan sebagai solusi untuk memantau kondisi kualitas udara secara lebih efektif dan efisien. Hasil tersebut mendukung pemakaian perangkat IoT sebagai sumber data pemantauan pada penelitian ini."
+  },
+  {
+   "id": "D2-sintesis",
+   "cari": "Secara keseluruhan, penelitian terdahulu menunjukkan bahwa sistem monitoring kualitas udara",
+   "ganti": "Secara keseluruhan, penelitian terdahulu menunjukkan bahwa sistem monitoring kualitas udara",
+   "sisip_paragraf": [
+    "Penelitian terdahulu pada Tabel 2.1 dipilih karena berkaitan dengan metode dan teknik yang digunakan pada penelitian ini. Pertama, penelitian tentang sistem monitoring berbasis IoT dan aplikasi web, yaitu penelitian nomor 1, 2, 4 sampai 8, dan 10 pada Tabel 2.1, menjadi acuan alur pengiriman, penyimpanan, dan penyajian data secara real-time. Kedua, Wibowo et al. (2024) menjadi acuan pemakaian sensor MQ-135 dan MQ-2 sebagai indikator relatif kondisi udara. Ketiga, Haryanto et al. (2024) menjadi acuan teknik klasifikasi berbasis aturan, yang pada penelitian ini memakai ambang batas dari Solihat et al. (2026). Keempat, Rivangga et al. (2024) menjadi pembanding: penelitian tersebut memakai data historis untuk prediksi, sedangkan penelitian ini tidak melakukan prediksi dan hanya menyajikan kondisi terkini."
+   ],
+   "sebelum": true
+  },
+  {
+   "id": "S3-1.1",
+   "cari": "dengan metode black-box pada empat skenario kondisi di satu ruangan uji",
+   "ganti": "dengan metode black-box pada tiga skenario kondisi di satu ruangan uji"
+  },
+  {
+   "id": "S3-1.4",
+   "cari": "dengan empat skenario kondisi: ruangan normal, ruangan tertutup, ruangan berasap, dan ventilasi berbeda.",
+   "ganti": "dengan tiga skenario kondisi: ruangan normal, ruangan tertutup, dan ruangan berasap."
+  },
+  {
+   "id": "S3-2.1",
+   "cari": "termasuk pada empat kondisi di satu ruang uji: ruangan normal, ruangan tertutup, ruangan dengan paparan asap, dan ruangan dengan variasi tingkat ventilasi.",
+   "ganti": "termasuk pada tiga kondisi di satu ruangan uji: ruangan normal, ruangan tertutup, dan ruangan dengan paparan asap."
+  },
+  {
+   "id": "S3-2.x",
+   "cari": "dan respons sistem pada empat kondisi di satu ruangan uji.",
+   "ganti": "dan respons sistem pada tiga kondisi di satu ruangan uji."
+  },
+  {
+   "id": "S3-T",
+   "cari": "Empat skenario kondisi pada satu ruangan uji: normal, tertutup, berasap, dan ventilasi berbeda",
+   "ganti": "Tiga skenario kondisi pada satu ruangan uji: normal, tertutup, dan berasap"
+  },
+  {
+   "id": "S3-3.12.5",
+   "cari": "pada empat situasi di Lab. DSK.",
+   "ganti": "pada tiga situasi di Lab. DSK."
+  },
+  {
+   "id": "S3-T3.22",
+   "cari": "Ventilasi berbeda",
+   "utuh": true,
+   "urutan": 1,
+   "hapus": "baris"
+  },
+  {
+   "id": "S3-3.12-akhir",
+   "cari": "pengujian pada empat kondisi ruangan,",
+   "ganti": "pengujian pada tiga kondisi ruangan,"
+  },
+  {
+   "id": "S3-4.3-1",
+   "cari": "Pengujian ini menjalankan empat skenario pada Tabel 3.22",
+   "ganti": "Pengujian ini menjalankan tiga skenario pada Tabel 3.22"
+  },
+  {
+   "id": "S3-4.3-2",
+   "cari": "Keempat skenario dijalankan berurutan dengan durasi rencana sebagai berikut: ruangan normal sekitar 10 menit, ruangan tertutup dengan pintu dan jendela ditutup sekitar 30 menit, ruangan berasap dengan sumber asap terkontrol di dekat sensor sekitar 5 menit, dan ventilasi berbeda, yaitu pintu dan jendela dibuka kembali setelah kondisi tertutup dan berasap, sekitar 15 menit.",
+   "ganti": "Ketiga skenario dijalankan berurutan dengan durasi rencana sebagai berikut: ruangan normal sekitar 10 menit, ruangan tertutup dengan pintu dan jendela ditutup sekitar 30 menit, dan ruangan berasap dengan sumber asap terkontrol di dekat sensor sekitar 5 menit."
+  },
+  {
+   "id": "S3-T4.7",
+   "cari": "Ventilasi berbeda",
+   "utuh": true,
+   "urutan": 2,
+   "hapus": "baris"
+  },
+  {
+   "id": "S3-T4.8",
+   "cari": "Ventilasi berbeda",
+   "utuh": true,
+   "urutan": 3,
+   "hapus": "baris"
+  },
+  {
+   "id": "S3-4.3-3",
+   "cari": "Hasil pengamatan keempat skenario",
+   "ganti": "Hasil pengamatan ketiga skenario"
+  },
+  {
+   "id": "S3-4.3-vent",
+   "cari": "[ISI: hasil skenario ventilasi berbeda.",
+   "hapus": "paragraf"
+  },
+  {
+   "id": "S3-4.3-simpul",
+   "cari": "berapa dari empat skenario",
+   "ganti": "berapa dari tiga skenario"
+  },
+  {
+   "id": "S3-4.3-simpul-2",
+   "cari": "Keempat skenario sesuai dengan hasil yang diharapkan. Kategori dan rekomendasi memburuk saat ruangan ditutup atau diberi asap, lalu membaik kembali setelah ventilasi dibuka.]",
+   "ganti": "Ketiga skenario sesuai dengan hasil yang diharapkan. Kategori dan rekomendasi memburuk saat ruangan ditutup atau diberi asap.]"
+  },
+  {
+   "id": "S3-4.5-1",
+   "cari": "selama keempat skenario.",
+   "ganti": "selama ketiga skenario."
+  },
+  {
+   "id": "S3-4.5-2",
+   "cari": "menjadi Perlu Tindakan saat ruangan berasap, lalu kembali Normal setelah ventilasi dibuka.]",
+   "ganti": "menjadi Perlu Tindakan saat ruangan berasap.]"
+  },
+  {
+   "id": "S3-4.5-3",
+   "cari": "Contoh kalimat: Keempat skenario kondisi ruangan sesuai harapan,",
+   "ganti": "Contoh kalimat: Ketiga skenario kondisi ruangan sesuai harapan,"
+  },
+  {
+   "id": "S3-5.1-2",
+   "cari": "menjadi lebih tegas saat ruangan ditutup atau berasap dan kembali Normal setelah ventilasi dibuka.]",
+   "ganti": "menjadi lebih tegas saat ruangan ditutup atau berasap.]"
+  },
+  {
+   "id": "S3-5.1-3",
+   "cari": "Pengujian pada empat kondisi ruangan menunjukkan 4 dari 4 skenario sesuai harapan.",
+   "ganti": "Pengujian pada tiga kondisi ruangan menunjukkan 3 dari 3 skenario sesuai harapan."
+  },
+  {
+   "id": "S3-4.5-3b",
+   "cari": "Pengujian empat kondisi ruangan dan evaluasi UEQ",
+   "ganti": "Pengujian tiga kondisi ruangan dan evaluasi UEQ"
+  }
+ ]
+}
