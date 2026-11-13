@@ -1867,6 +1867,34 @@
         "volume": "26",
         "page": "1-9"
       }
+    },
+    {
+      "id": "montgomery2014_stat",
+      "keterangan": "Subbab 3.12.6: rumus jumlah sampel untuk interval kepercayaan rata-rata.",
+      "bukti": "Wiley, edisi ke-6 (ISBN 978-1-118-53971-2), Bab 8 Statistical Intervals for a Single Sample; https://www.wileyindia.com/applied-statistics-and-probability-for-engineers-6ed-isv.html",
+      "itemData": {
+        "type": "book",
+        "author": [
+          {
+            "family": "Montgomery",
+            "given": "D. C."
+          },
+          {
+            "family": "Runger",
+            "given": "G. C."
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2014
+            ]
+          ]
+        },
+        "title": "Applied statistics and probability for engineers",
+        "edition": "6",
+        "publisher": "John Wiley & Sons"
+      }
     }
   ]
 }

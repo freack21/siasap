@@ -1,0 +1,249 @@
+{
+ "keterangan": "Revisi v11: hasil pengujian tiga kondisi ruangan pada 13 November 2026 dimasukkan ke subbab 4.3, 4.5, dan Bab V; landasan jumlah responden UEQ (minimal 25) ditambahkan pada subbab 3.12.6.",
+ "revisi": [
+  {
+   "id": "U-3.12.6",
+   "cari": "Data mentah dapat diekspor ke format yang kompatibel dengan UEQ Data Analysis Tool.",
+   "sisip_paragraf": [
+    "Jumlah responden ditentukan dari ketelitian rata-rata skala yang ingin dicapai. Schrepp (2023) menjelaskan bahwa ketelitian rata-rata skala UEQ ditunjukkan oleh interval kepercayaan 95%, yang makin sempit bila jumlah responden makin banyak dan jawaban responden makin seragam, serta mengelompokkan simpangan baku skala UEQ ke dalam tiga tingkat kesepakatan, yaitu tinggi (di bawah 0,83), sedang (0,83 sampai 1,01), dan rendah (di atas 1,01). Jumlah sampel yang diperlukan agar setengah lebar interval kepercayaan 95% rata-rata tidak melebihi E adalah n = (1,96 × s / E)², dengan s simpangan baku (Montgomery & Runger, 2014). Penelitian ini memakai s = 1,01, yaitu batas atas kesepakatan sedang, agar perkiraan tidak terlalu optimistis, dan E = 0,4. Dengan E = 0,4, skala yang rata-ratanya 1,2 atau lebih memiliki batas bawah interval paling sedikit 0,8, sehingga tetap dapat dinyatakan sebagai penilaian positif. Perhitungannya menghasilkan n = (1,96 × 1,01 / 0,4)² ≈ 24,5, dibulatkan menjadi 25. Dengan demikian, evaluasi UEQ memerlukan paling sedikit 25 jawaban yang layak diolah, yaitu setelah jawaban yang mencurigakan dikeluarkan dengan heuristik pada Schrepp (2023)."
+   ],
+   "ganti": "Data mentah dapat diekspor ke format yang kompatibel dengan UEQ Data Analysis Tool."
+  },
+  {
+   "id": "R-4.3-tgl",
+   "cari": "pada [ISI: hari dan tanggal pengujian. Contoh: Sabtu, 7 November 2026]",
+   "ganti": "pada Jumat, 13 November 2026"
+  },
+  {
+   "id": "R-4.3-durasi",
+   "cari": "Ketiga skenario dijalankan berurutan dengan durasi rencana sebagai berikut: ruangan normal sekitar 10 menit, ruangan tertutup dengan pintu dan jendela ditutup sekitar 30 menit, dan ruangan berasap dengan sumber asap terkontrol di dekat sensor sekitar 5 menit.",
+   "ganti": "Ketiga skenario dijalankan berurutan, masing-masing selama 5 menit, yaitu ruangan normal pukul 17.45–17.50 WIB, ruangan tertutup dengan pintu dan jendela ditutup pukul 17.50–17.55 WIB, dan ruangan berasap dengan sumber asap terkontrol di dekat sensor pukul 17.55–18.00 WIB."
+  },
+  {
+   "id": "R-4.3-sumber",
+   "cari": "Sumber data hasil adalah berkas CSV dari tombol Unduh CSV pada halaman Riwayat dengan filter tanggal pengujian, yang memuat",
+   "ganti": "Sumber data hasil adalah data pembacaan yang tersimpan di basis data aplikasi pada rentang waktu setiap skenario, yang diekspor ke berkas CSV. Data yang diterima tepat pada jam pergantian skenario dihitung sebagai bagian dari skenario berikutnya. Berkas tersebut memuat"
+  },
+  {
+   "id": "R-T4.7-1",
+   "cari": "[ISI]",
+   "utuh": true,
+   "urutan": 1,
+   "ganti": "17.45 WIB"
+  },
+  {
+   "id": "R-T4.7-2",
+   "cari": "[ISI]",
+   "utuh": true,
+   "urutan": 2,
+   "ganti": "17.50 WIB"
+  },
+  {
+   "id": "R-T4.7-3",
+   "cari": "[ISI]",
+   "utuh": true,
+   "urutan": 3,
+   "ganti": "60"
+  },
+  {
+   "id": "R-T4.7-4",
+   "cari": "[ISI]",
+   "utuh": true,
+   "urutan": 4,
+   "ganti": "17.50 WIB"
+  },
+  {
+   "id": "R-T4.7-5",
+   "cari": "[ISI]",
+   "utuh": true,
+   "urutan": 5,
+   "ganti": "17.55 WIB"
+  },
+  {
+   "id": "R-T4.7-6",
+   "cari": "[ISI]",
+   "utuh": true,
+   "urutan": 6,
+   "ganti": "60"
+  },
+  {
+   "id": "R-T4.7-7",
+   "cari": "[ISI]",
+   "utuh": true,
+   "urutan": 7,
+   "ganti": "17.55 WIB"
+  },
+  {
+   "id": "R-T4.7-8",
+   "cari": "[ISI]",
+   "utuh": true,
+   "urutan": 8,
+   "ganti": "18.00 WIB"
+  },
+  {
+   "id": "R-T4.7-9",
+   "cari": "[ISI]",
+   "utuh": true,
+   "urutan": 9,
+   "ganti": "60"
+  },
+  {
+   "id": "R-T4.8-10",
+   "cari": "[ISI]",
+   "utuh": true,
+   "urutan": 10,
+   "ganti": "Baik (60 dari 60 data)"
+  },
+  {
+   "id": "R-T4.8-11",
+   "cari": "[ISI]",
+   "utuh": true,
+   "urutan": 11,
+   "ganti": "CO₂ 0,00–3,17; NH₃ 0,00–2,54; CO 0,00–5,25; H₂ 0,00–3,15"
+  },
+  {
+   "id": "R-T4.8-12",
+   "cari": "[ISI]",
+   "utuh": true,
+   "urutan": 12,
+   "ganti": "Normal"
+  },
+  {
+   "id": "R-T4.8-13",
+   "cari": "[ISI]",
+   "utuh": true,
+   "urutan": 13,
+   "ganti": "Sesuai"
+  },
+  {
+   "id": "R-T4.8-14",
+   "cari": "[ISI]",
+   "utuh": true,
+   "urutan": 14,
+   "ganti": "Baik (60 dari 60 data)"
+  },
+  {
+   "id": "R-T4.8-15",
+   "cari": "[ISI]",
+   "utuh": true,
+   "urutan": 15,
+   "ganti": "CO₂ 0,00–13,92; NH₃ 0,00–11,13; CO 0,00–4,27; H₂ 0,00–2,56"
+  },
+  {
+   "id": "R-T4.8-16",
+   "cari": "[ISI]",
+   "utuh": true,
+   "urutan": 16,
+   "ganti": "Normal"
+  },
+  {
+   "id": "R-T4.8-17",
+   "cari": "[ISI]",
+   "utuh": true,
+   "urutan": 17,
+   "ganti": "Sesuai sebagian"
+  },
+  {
+   "id": "R-T4.8-18",
+   "cari": "[ISI]",
+   "utuh": true,
+   "urutan": 18,
+   "ganti": "Tidak Sehat (29 dari 60 data)"
+  },
+  {
+   "id": "R-T4.8-19",
+   "cari": "[ISI]",
+   "utuh": true,
+   "urutan": 19,
+   "ganti": "CO₂ 2,56–223,88; NH₃ 2,05–179,10; CO 29,24–115,48; H₂ 17,54–69,29"
+  },
+  {
+   "id": "R-T4.8-20",
+   "cari": "[ISI]",
+   "utuh": true,
+   "urutan": 20,
+   "ganti": "Waspada, Perlu Tindakan, dan Segera Bertindak"
+  },
+  {
+   "id": "R-T4.8-21",
+   "cari": "[ISI]",
+   "utuh": true,
+   "urutan": 21,
+   "ganti": "Sesuai"
+  },
+  {
+   "id": "R-4.3-normal",
+   "cari": "[ISI: hasil skenario ruangan normal.…sesuai dengan Tabel 3.15.]",
+   "utuh": false,
+   "ganti": "Pada skenario ruangan normal (17.45–17.50 WIB), kategori keseluruhan yang tampil adalah Baik pada seluruh 60 data, dengan nilai awal CO₂ 2,20 ppm, NH₃ 1,76 ppm, CO 5,07 ppm, dan H₂ 3,04 ppm. Nilai keempat gas kemudian turun dan pada akhir skenario bernilai 0,00 ppm, yang berarti tidak ada kenaikan dibanding kondisi udara saat perangkat dinyalakan (subbab 2.5). Nilai tertinggi setiap gas, yaitu CO₂ 3,17 ppm, NH₃ 2,54 ppm, CO 5,25 ppm, dan H₂ 3,15 ppm, berada pada kategori Baik menurut Tabel 2.2, sehingga rekomendasi yang tampil sepanjang skenario adalah tingkat Normal sesuai dengan Tabel 3.15."
+  },
+  {
+   "id": "R-4.3-tertutup",
+   "cari": "[ISI: hasil skenario ruangan tertutup.…rekomendasi berubah menjadi Waspada.]",
+   "ganti": "Selama pintu dan jendela ditutup (17.50–17.55 WIB), kategori keseluruhan tetap Baik pada seluruh 60 data dan rekomendasi tetap tingkat Normal. CO₂ bernilai 0,00 ppm sampai pukul 17.51.54 WIB, lalu naik sesaat beberapa kali, yaitu sampai 13,92 ppm pukul 17.52.04 WIB, 10,74 ppm pukul 17.53.19 WIB, dan 10,74 ppm pukul 17.54.19 WIB, dan setiap kali turun kembali. Pada akhir skenario CO₂ bernilai 1,34 ppm. Nilai tertinggi tersebut masih jauh di bawah ambang Sedang CO₂ sebesar 50 ppm (Tabel 2.2), sehingga kategori Baik yang tampil sesuai dengan ambang. Namun, nilai CO₂ tidak meningkat secara bertahap sebagaimana diharapkan pada Tabel 3.22, dan penutupan ruangan selama 5 menit belum menaikkan CO₂ sampai melewati ambang kategori."
+  },
+  {
+   "id": "R-4.3-berasap",
+   "cari": "[ISI: hasil skenario ruangan berasap.…rekomendasi berubah menjadi Perlu Tindakan.]",
+   "ganti": "Pada skenario ruangan berasap (17.55–18.00 WIB), data pertama pukul 17.55.04 WIB sudah menunjukkan CO 115,48 ppm dan H₂ 69,29 ppm, naik dari 0,00 ppm pada akhir skenario sebelumnya. Kategori keseluruhan langsung menjadi Berbahaya dengan penyebab utama CO dan H₂, dan rekomendasi berubah menjadi Segera Bertindak. Mulai pukul 17.55.39 WIB, nilai CO₂ dan NH₃ yang dibaca sensor MQ-135 juga naik, dengan puncak CO₂ 223,88 ppm dan NH₃ 179,10 ppm pada pukul 17.58.44 WIB, sehingga pada 48 dari 60 data penyebab utamanya mencakup CO₂ dan NH₃. Kenaikan nilai keempat gas oleh satu sumber asap ini sejalan dengan sifat sensor MQ yang tidak selektif terhadap satu jenis gas (subbab 2.5). Selama skenario, kategori keseluruhan berganti antara Sedang (7 data), Tidak Sehat (29 data), dan Berbahaya (24 data) mengikuti naik-turunnya nilai gas, dan setiap data menampilkan rekomendasi yang sesuai dengan kategorinya menurut Tabel 3.15, yaitu Waspada, Perlu Tindakan, atau Segera Bertindak."
+  },
+  {
+   "id": "R-4.3-simpul",
+   "cari": "[ISI: kesimpulan pengujian kondisi ruangan.…saat ruangan ditutup atau diberi asap.]",
+   "ganti": "Pada ketiga skenario, data diterima rata-rata setiap 5 detik (60 data per skenario, selang terlama 7 detik), dan kategori serta rekomendasi yang tampil pada seluruh 180 data sesuai dengan ambang Tabel 2.2 dan aturan Tabel 3.15. Skenario ruangan normal dan ruangan berasap sesuai dengan hasil yang diharapkan pada Tabel 3.22: kategori tetap Baik pada kondisi normal dan naik sampai Berbahaya saat ruangan diberi asap. Skenario ruangan tertutup sesuai sebagian: kategori yang tampil tetap benar menurut ambang, tetapi nilai CO₂ tidak meningkat secara bertahap dan tidak mencapai ambang Sedang dalam 5 menit, sehingga perubahan kategori yang diharapkan tidak teramati. Durasi penutupan yang lebih lama atau jumlah penghuni yang lebih banyak kemungkinan diperlukan agar kenaikan CO₂ melewati ambang kategori."
+  },
+  {
+   "id": "U-4.4",
+   "cari": "Responden berjumlah [ISI: jumlah responden. Contoh: 30] orang",
+   "ganti": "Responden berjumlah [ISI: jumlah jawaban yang terkumpul, paling sedikit 25 jawaban yang layak diolah sesuai subbab 3.12.6. Contoh: 28] orang"
+  },
+  {
+   "id": "P-4.5-1",
+   "cari": "[ISI: ringkas Tabel 4.7, yaitu apakah data diterima sekitar setiap 5 detik selama ketiga skenario.…tidak pernah menjadi Terputus.]",
+   "ganti": "Selama pengujian tiga kondisi ruangan, aplikasi menerima 180 data dalam 15 menit atau rata-rata satu data setiap 5 detik (Tabel 4.7). Selang terlama antardata adalah 7 detik, masih di bawah batas 30 detik yang membuat status perangkat menjadi Terputus."
+  },
+  {
+   "id": "P-4.5-2",
+   "cari": "[ISI: ringkas kolom Rekomendasi yang Tampil dan Kesesuaian pada Tabel 4.8.…menjadi Perlu Tindakan saat ruangan berasap.]",
+   "ganti": "Pada pengujian ruangan, rekomendasi tetap Normal pada kondisi normal dan tertutup karena kategorinya tetap Baik, lalu berubah menjadi Waspada, Perlu Tindakan, atau Segera Bertindak saat ruangan berasap sesuai kategori setiap data (Tabel 4.8)."
+  },
+  {
+   "id": "P-4.5-3a",
+   "cari": "Pengujian tiga kondisi ruangan dan evaluasi UEQ dilaksanakan setelah bab ini disusun.",
+   "ganti": "Pengujian tiga kondisi ruangan dilaksanakan pada 13 November 2026 (subbab 4.3), dengan dua skenario sesuai harapan dan satu skenario, yaitu ruangan tertutup, sesuai sebagian (Tabel 4.8). Evaluasi UEQ dilaksanakan setelah bab ini disusun."
+  },
+  {
+   "id": "P-4.5-3b",
+   "cari": "[ISI: ringkas Tabel 4.8 dan Tabel 4.10, lalu nyatakan apakah tujuan ketiga tercapai. Contoh kalimat: Ketiga skenario kondisi ruangan sesuai harapan, dan kelima skala UEQ dinilai positif, sehingga tujuan ketiga tercapai.]",
+   "ganti": "[ISI: ringkas Tabel 4.10, lalu nyatakan apakah tujuan ketiga tercapai dengan memperhitungkan hasil skenario ruangan tertutup. Contoh kalimat: Kelima skala UEQ dinilai positif, sehingga tujuan ketiga tercapai dengan catatan pada skenario ruangan tertutup.]"
+  },
+  {
+   "id": "K-5.1-1",
+   "cari": "[ISI: tambahkan satu kalimat hasil pengujian dengan perangkat IoT nyata dari subbab 4.3.…tanpa terputus.]",
+   "ganti": "Pada pengujian di Lab. DSK, aplikasi menerima 180 data dalam 15 menit atau rata-rata satu data setiap 5 detik."
+  },
+  {
+   "id": "K-5.1-2",
+   "cari": "[ISI: tambahkan apakah rekomendasi pada pengujian ruangan berubah sesuai perubahan kondisi ruangan (Tabel 4.8).…saat ruangan ditutup atau berasap.]",
+   "ganti": "Pada pengujian ruangan, rekomendasi tetap Normal pada kondisi normal dan tertutup, lalu berubah menjadi Waspada, Perlu Tindakan, atau Segera Bertindak sesuai kategori setiap data saat ruangan berasap."
+  },
+  {
+   "id": "K-5.1-3",
+   "cari": "[ISI: tuliskan hasil pengujian kondisi ruangan dan UEQ.…dibandingkan benchmark.]",
+   "ganti": "Pada pengujian tiga kondisi ruangan, kategori dan rekomendasi pada seluruh 180 data sesuai dengan ambang dan aturan; skenario ruangan normal dan berasap sesuai harapan, sedangkan skenario ruangan tertutup sesuai sebagian karena CO₂ tidak mencapai ambang Sedang dalam 5 menit. [ISI: tuliskan hasil UEQ. Contoh kalimat: Evaluasi UEQ terhadap 28 mahasiswa yang belajar di Lab. DSK menghasilkan penilaian positif pada lima skala, dengan skala Perspicuity termasuk kategori Good dibandingkan benchmark.]"
+  },
+  {
+   "id": "S-5.2-2",
+   "cari": "Pengujian berikutnya dapat dilakukan pada beberapa ruangan dengan ukuran, jumlah penghuni, dan sumber polutan yang berbeda,",
+   "ganti": "Pengujian berikutnya dapat dilakukan pada beberapa ruangan dengan ukuran, jumlah penghuni, dan sumber polutan yang berbeda, dengan durasi ruangan tertutup yang lebih lama,"
+  },
+  {
+   "id": "PUS-montgomery",
+   "cari": "Maukar, A. L., Kesuma, D. A., & Widodo, A. A. (2023).",
+   "sisip_paragraf": [
+    "Montgomery, D. C., & Runger, G. C. (2014). *Applied statistics and probability for engineers* (6th ed.). John Wiley & Sons."
+   ],
+   "ganti": "Maukar, A. L., Kesuma, D. A., & Widodo, A. A. (2023)."
+  }
+ ]
+}
