@@ -232,9 +232,9 @@ Pengujian ini dilakukan manual dengan perangkat IoT nyata (`arduino/simku_monito
 
 | No | Skenario | Kondisi Pengujian | Hal yang Diamati | Hasil yang Diharapkan | Hasil Aktual | Status |
 |---|---|---|---|---|---|---|
-| 1 | Ruangan normal | Ventilasi biasa, tanpa sumber polutan tambahan, ± 10 menit | Kategori dan nilai ppm | Kategori cenderung Baik dan rekomendasi sesuai kategori | (diisi saat uji manual) | Belum diuji (manual) |
-| 2 | Ruangan tertutup | Pintu dan jendela ditutup, sirkulasi minim, ± 30 menit | Perubahan nilai ppm, terutama CO₂ | Nilai meningkat bertahap dan kategori berubah sesuai ambang batas | (diisi saat uji manual) | Belum diuji (manual) |
-| 3 | Ruangan berasap | Sumber asap terkontrol (mis. asap dupa atau asap menyolder) di dekat sensor, ± 5 menit | Perubahan nilai CO dan H₂ | Kategori naik dan rekomendasi berubah sesuai kategori baru | (diisi saat uji manual) | Belum diuji (manual) |
+| 1 | Ruangan normal | Ventilasi biasa, tanpa sumber polutan tambahan, 5 menit | Kategori dan nilai ppm | Kategori cenderung Baik dan rekomendasi sesuai kategori | 17.45–17.50 WIB: 60 data, seluruhnya Baik; ppm tertinggi CO₂ 3,17, NH₃ 2,54, CO 5,25, H₂ 3,15; rekomendasi Normal | Valid |
+| 2 | Ruangan tertutup | Pintu dan jendela ditutup, sirkulasi minim, 5 menit | Perubahan nilai ppm, terutama CO₂ | Nilai meningkat bertahap dan kategori berubah sesuai ambang batas | 17.50–17.55 WIB: 60 data, seluruhnya Baik; CO₂ naik sesaat sampai 13,92 ppm (di bawah ambang 50) lalu turun; rekomendasi Normal. Kategori benar menurut ambang, tetapi CO₂ tidak naik bertahap | Sesuai sebagian |
+| 3 | Ruangan berasap | Sumber asap terkontrol (mis. asap dupa atau asap menyolder) di dekat sensor, 5 menit | Perubahan nilai CO dan H₂ | Kategori naik dan rekomendasi berubah sesuai kategori baru | 17.55–18.00 WIB: 60 data; CO langsung 115,48 dan H₂ 69,29 (Berbahaya), lalu CO₂ sampai 223,88 dan NH₃ 179,10; Sedang 7, Tidak Sehat 29, Berbahaya 24; rekomendasi mengikuti kategori setiap data | Valid |
 
 **Lembar isian pengamatan** (isi satu baris per skenario; nilai ppm dibaca dari Beranda atau CSV Riwayat):
 

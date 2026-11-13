@@ -35,9 +35,9 @@ Urutan kerjanya:
 
    | No | Skenario | Yang dilakukan | Durasi |
    |---|---|---|---|
-   | 1 | Ruangan normal | Biarkan ruangan seperti biasa | ± 10 menit |
-   | 2 | Ruangan tertutup | Tutup pintu dan jendela | ± 30 menit |
-   | 3 | Ruangan berasap | Nyalakan sumber asap di dekat sensor (catat jaraknya) | ± 5 menit |
+   | 1 | Ruangan normal | Biarkan ruangan seperti biasa | 5 menit |
+   | 2 | Ruangan tertutup | Tutup pintu dan jendela | 5 menit |
+   | 3 | Ruangan berasap | Nyalakan sumber asap di dekat sensor (catat jaraknya) | 5 menit |
 
 4. Selama pengujian, ambil tangkapan layar Beranda pada setiap skenario bila ingin menambahkan
    gambar (opsional).
@@ -93,7 +93,7 @@ angka ppm-nya tepat.
 ## 2. Evaluasi UEQ (subbab 4.4)
 
 1. Responden adalah mahasiswa Jurusan Teknik Elektro Universitas Riau yang menggunakan Lab. DSK (*purposive sampling*;
-   kriteria ini sudah tertulis di Bab I, Bab III, dan subbab 4.4). Usahakan paling sedikit 20 orang.
+   kriteria ini sudah tertulis di Bab I, Bab III, dan subbab 4.4). Minimal 25 jawaban yang layak diolah (perhitungan di subbab 3.12.6); bagikan ke sedikit lebih banyak mahasiswa, misalnya 28–30, karena jawaban yang mencurigakan akan dikeluarkan.
    Yang tinggal diisi di naskah hanya jumlah responden dan tanggal pengisian.
 2. Minta setiap responden mencoba aplikasi: melihat Beranda, membuka grafik di Detail Ruangan,
    memfilter dan mengunduh data di Riwayat, membaca Rekomendasi Tindakan, dan membaca Panduan Sistem.
