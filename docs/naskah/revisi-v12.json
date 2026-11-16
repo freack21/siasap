@@ -1,0 +1,415 @@
+{
+ "keterangan": "Revisi v12: hasil evaluasi UEQ (34 jawaban terkumpul pada 10–13 November 2026, 7 dikeluarkan dengan heuristik Schrepp (2023), 27 diolah) dimasukkan ke subbab 4.4, 4.5, dan Bab V.",
+ "revisi": [
+  {
+   "id": "U-4.4-jumlah",
+   "cari": "Responden berjumlah 28 orang, yaitu",
+   "ganti": "Jawaban terkumpul dari 34 responden, yaitu"
+  },
+  {
+   "id": "U-4.4-tgl",
+   "cari": "Pengisian dilakukan pada 11–13 November 2026.",
+   "ganti": "Pengisian dilakukan pada 10–13 November 2026."
+  },
+  {
+   "id": "U-T4.10-12",
+   "cari": "[ISI]",
+   "utuh": true,
+   "urutan": 12,
+   "ganti": "1,64"
+  },
+  {
+   "id": "U-T4.10-13",
+   "cari": "[ISI]",
+   "utuh": true,
+   "urutan": 13,
+   "ganti": "0,59"
+  },
+  {
+   "id": "U-T4.10-14",
+   "cari": "[ISI]",
+   "utuh": true,
+   "urutan": 14,
+   "ganti": "0,12"
+  },
+  {
+   "id": "U-T4.10-15",
+   "cari": "[ISI]",
+   "utuh": true,
+   "urutan": 15,
+   "ganti": "Good"
+  },
+  {
+   "id": "U-T4.10-16",
+   "cari": "[ISI]",
+   "utuh": true,
+   "urutan": 16,
+   "ganti": "1,94"
+  },
+  {
+   "id": "U-T4.10-17",
+   "cari": "[ISI]",
+   "utuh": true,
+   "urutan": 17,
+   "ganti": "0,45"
+  },
+  {
+   "id": "U-T4.10-18",
+   "cari": "[ISI]",
+   "utuh": true,
+   "urutan": 18,
+   "ganti": "−0,62"
+  },
+  {
+   "id": "U-T4.10-19",
+   "cari": "[ISI]",
+   "utuh": true,
+   "urutan": 19,
+   "ganti": "Excellent"
+  },
+  {
+   "id": "U-T4.10-20",
+   "cari": "[ISI]",
+   "utuh": true,
+   "urutan": 20,
+   "ganti": "1,54"
+  },
+  {
+   "id": "U-T4.10-21",
+   "cari": "[ISI]",
+   "utuh": true,
+   "urutan": 21,
+   "ganti": "0,87"
+  },
+  {
+   "id": "U-T4.10-22",
+   "cari": "[ISI]",
+   "utuh": true,
+   "urutan": 22,
+   "ganti": "0,48"
+  },
+  {
+   "id": "U-T4.10-23",
+   "cari": "[ISI]",
+   "utuh": true,
+   "urutan": 23,
+   "ganti": "Good"
+  },
+  {
+   "id": "U-T4.10-24",
+   "cari": "[ISI]",
+   "utuh": true,
+   "urutan": 24,
+   "ganti": "1,61"
+  },
+  {
+   "id": "U-T4.10-25",
+   "cari": "[ISI]",
+   "utuh": true,
+   "urutan": 25,
+   "ganti": "0,64"
+  },
+  {
+   "id": "U-T4.10-26",
+   "cari": "[ISI]",
+   "utuh": true,
+   "urutan": 26,
+   "ganti": "−0,10"
+  },
+  {
+   "id": "U-T4.10-27",
+   "cari": "[ISI]",
+   "utuh": true,
+   "urutan": 27,
+   "ganti": "Good"
+  },
+  {
+   "id": "U-T4.10-28",
+   "cari": "[ISI]",
+   "utuh": true,
+   "urutan": 28,
+   "ganti": "1,46"
+  },
+  {
+   "id": "U-T4.10-29",
+   "cari": "[ISI]",
+   "utuh": true,
+   "urutan": 29,
+   "ganti": "0,60"
+  },
+  {
+   "id": "U-T4.10-30",
+   "cari": "[ISI]",
+   "utuh": true,
+   "urutan": 30,
+   "ganti": "−0,12"
+  },
+  {
+   "id": "U-T4.10-31",
+   "cari": "[ISI]",
+   "utuh": true,
+   "urutan": 31,
+   "ganti": "Good"
+  },
+  {
+   "id": "U-T4.10-32",
+   "cari": "[ISI]",
+   "utuh": true,
+   "urutan": 32,
+   "ganti": "1,46"
+  },
+  {
+   "id": "U-T4.10-33",
+   "cari": "[ISI]",
+   "utuh": true,
+   "urutan": 33,
+   "ganti": "0,79"
+  },
+  {
+   "id": "U-T4.10-34",
+   "cari": "[ISI]",
+   "utuh": true,
+   "urutan": 34,
+   "ganti": "0,30"
+  },
+  {
+   "id": "U-T4.10-35",
+   "cari": "[ISI]",
+   "utuh": true,
+   "urutan": 35,
+   "ganti": "Excellent"
+  },
+  {
+   "id": "U-T4.11-36",
+   "cari": "[ISI]",
+   "utuh": true,
+   "urutan": 36,
+   "ganti": "1,78"
+  },
+  {
+   "id": "U-T4.11-37",
+   "cari": "[ISI]",
+   "utuh": true,
+   "urutan": 37,
+   "ganti": "1,85"
+  },
+  {
+   "id": "U-T4.11-38",
+   "cari": "[ISI]",
+   "utuh": true,
+   "urutan": 38,
+   "ganti": "1,22"
+  },
+  {
+   "id": "U-T4.11-39",
+   "cari": "[ISI]",
+   "utuh": true,
+   "urutan": 39,
+   "ganti": "1,59"
+  },
+  {
+   "id": "U-T4.11-40",
+   "cari": "[ISI]",
+   "utuh": true,
+   "urutan": 40,
+   "ganti": "1,22"
+  },
+  {
+   "id": "U-T4.11-41",
+   "cari": "[ISI]",
+   "utuh": true,
+   "urutan": 41,
+   "ganti": "1,37"
+  },
+  {
+   "id": "U-T4.11-42",
+   "cari": "[ISI]",
+   "utuh": true,
+   "urutan": 42,
+   "ganti": "1,85"
+  },
+  {
+   "id": "U-T4.11-43",
+   "cari": "[ISI]",
+   "utuh": true,
+   "urutan": 43,
+   "ganti": "1,74"
+  },
+  {
+   "id": "U-T4.11-44",
+   "cari": "[ISI]",
+   "utuh": true,
+   "urutan": 44,
+   "ganti": "1,52"
+  },
+  {
+   "id": "U-T4.11-45",
+   "cari": "[ISI]",
+   "utuh": true,
+   "urutan": 45,
+   "ganti": "1,67"
+  },
+  {
+   "id": "U-T4.11-46",
+   "cari": "[ISI]",
+   "utuh": true,
+   "urutan": 46,
+   "ganti": "1,37"
+  },
+  {
+   "id": "U-T4.11-47",
+   "cari": "[ISI]",
+   "utuh": true,
+   "urutan": 47,
+   "ganti": "1,74"
+  },
+  {
+   "id": "U-T4.11-48",
+   "cari": "[ISI]",
+   "utuh": true,
+   "urutan": 48,
+   "ganti": "2,19"
+  },
+  {
+   "id": "U-T4.11-49",
+   "cari": "[ISI]",
+   "utuh": true,
+   "urutan": 49,
+   "ganti": "1,81"
+  },
+  {
+   "id": "U-T4.11-50",
+   "cari": "[ISI]",
+   "utuh": true,
+   "urutan": 50,
+   "ganti": "1,56"
+  },
+  {
+   "id": "U-T4.11-51",
+   "cari": "[ISI]",
+   "utuh": true,
+   "urutan": 51,
+   "ganti": "1,44"
+  },
+  {
+   "id": "U-T4.11-52",
+   "cari": "[ISI]",
+   "utuh": true,
+   "urutan": 52,
+   "ganti": "1,67"
+  },
+  {
+   "id": "U-T4.11-53",
+   "cari": "[ISI]",
+   "utuh": true,
+   "urutan": 53,
+   "ganti": "1,41"
+  },
+  {
+   "id": "U-T4.11-54",
+   "cari": "[ISI]",
+   "utuh": true,
+   "urutan": 54,
+   "ganti": "1,67"
+  },
+  {
+   "id": "U-T4.11-55",
+   "cari": "[ISI]",
+   "utuh": true,
+   "urutan": 55,
+   "ganti": "1,78"
+  },
+  {
+   "id": "U-T4.11-56",
+   "cari": "[ISI]",
+   "utuh": true,
+   "urutan": 56,
+   "ganti": "2,15"
+  },
+  {
+   "id": "U-T4.11-57",
+   "cari": "[ISI]",
+   "utuh": true,
+   "urutan": 57,
+   "ganti": "1,52"
+  },
+  {
+   "id": "U-T4.11-58",
+   "cari": "[ISI]",
+   "utuh": true,
+   "urutan": 58,
+   "ganti": "1,33"
+  },
+  {
+   "id": "U-T4.11-59",
+   "cari": "[ISI]",
+   "utuh": true,
+   "urutan": 59,
+   "ganti": "1,44"
+  },
+  {
+   "id": "U-T4.11-60",
+   "cari": "[ISI]",
+   "utuh": true,
+   "urutan": 60,
+   "ganti": "1,63"
+  },
+  {
+   "id": "U-T4.11-61",
+   "cari": "[ISI]",
+   "utuh": true,
+   "urutan": 61,
+   "ganti": "1,41"
+  },
+  {
+   "id": "U-4.4-olah",
+   "cari": "[ISI: jumlah jawaban yang diolah dan yang dikeluarkan bila ada.…sebutkan jumlah dan alasannya.]",
+   "ganti": "Sebanyak 34 jawaban terkumpul pada 10–13 November 2026. Sebelum diolah, setiap jawaban diperiksa dengan heuristik Schrepp (2023): jawaban dianggap mencurigakan bila selisih nilai terbesar dan terkecil butir-butir dalam satu skala lebih dari 3 pada tiga skala atau lebih, atau bila lebih dari 15 butir dijawab dengan nilai yang sama. Tujuh jawaban memenuhi kriteria pertama dan dikeluarkan, sedangkan tidak ada jawaban yang memenuhi kriteria kedua. Dengan demikian, 27 jawaban diolah, dan jumlah ini memenuhi batas minimal 25 jawaban pada subbab 3.12.6."
+  },
+  {
+   "id": "U-4.4-skala",
+   "cari": "[ISI: skala dengan rata-rata tertinggi dan terendah beserta penilaiannya berdasarkan Tabel 4.10.…Novelty termasuk Below Average.]",
+   "ganti": "Rata-rata tertinggi terdapat pada skala Perspicuity (1,94), sedangkan rata-rata terendah terdapat pada Stimulation dan Novelty (masing-masing 1,46). Keenam skala bernilai di atas 0,8 sehingga seluruhnya menunjukkan penilaian positif. Batas bawah interval kepercayaan 95% setiap skala juga berada di atas 0,8, dengan nilai terendah 1,16 pada Novelty. Dibandingkan benchmark pada Tabel 3.24, Perspicuity dan Novelty termasuk kategori Excellent, sedangkan Attractiveness, Efficiency, Dependability, dan Stimulation termasuk kategori Good."
+  },
+  {
+   "id": "U-4.4-alpha",
+   "cari": "[ISI: konsistensi jawaban setiap skala berdasarkan kolom Cronbach's Alpha Tabel 4.10.…perlu dibaca dengan hati-hati.]",
+   "ganti": "Nilai Cronbach's alpha keenam skala berada di bawah 0,7, yaitu antara −0,62 pada Perspicuity dan 0,48 pada Efficiency, dan bernilai negatif pada Perspicuity, Dependability, dan Stimulation. Artinya, jawaban butir-butir dalam satu skala belum konsisten, sehingga rata-rata setiap skala lebih tepat dibaca sebagai gambaran umum kesan responden daripada ukuran yang andal untuk skala tersebut. Kemungkinan penyebabnya adalah sebagian besar responden memberi nilai positif sehingga variasi antarresponden kecil, misalnya simpangan baku Perspicuity hanya 0,45, atau responden belum memperhatikan bahwa kata positif pada sebagian butir berada di sebelah kiri."
+  },
+  {
+   "id": "U-4.4-butir",
+   "cari": "[ISI: butir dengan rata-rata terendah pada Tabel 4.11 dan halaman atau fitur yang berkaitan.…pada umumnya.]",
+   "ganti": "Butir dengan rata-rata terendah adalah kreatif – monoton dan bermanfaat – kurang bermanfaat (masing-masing 1,22), disusul terorganisasi – berantakan (1,33), dan ketiganya tetap bernilai positif. Butir kreatif – monoton dapat dikaitkan dengan tampilan aplikasi yang sederhana dan mirip aplikasi pemantauan pada umumnya, sedangkan butir bermanfaat – kurang bermanfaat dapat dikaitkan dengan aplikasi yang baru menyampaikan informasi ketika halamannya dibuka. Sebaliknya, rata-rata tertinggi terdapat pada butir rumit – sederhana (2,19) dan jelas – membingungkan (2,15), keduanya pada skala Perspicuity."
+  },
+  {
+   "id": "P-4.5-awal",
+   "cari": "Pembahasan ini menjawab tujuan penelitian pada subbab 1.3 sejauh hasil yang tersedia. Bagian yang bergantung pada pengujian kondisi ruangan dan evaluasi UEQ masih berupa isian dan dilengkapi setelah data diperoleh.",
+   "ganti": "Pembahasan ini menjawab tujuan penelitian pada subbab 1.3 berdasarkan hasil pada subbab 4.1 sampai 4.4."
+  },
+  {
+   "id": "P-4.5-3",
+   "cari": "Evaluasi UEQ dilaksanakan setelah bab ini disusun. [ISI: ringkas Tabel 4.10,…dengan catatan pada skenario ruangan tertutup.]",
+   "ganti": "Evaluasi UEQ terhadap 27 jawaban yang diolah menunjukkan bahwa keenam skala dinilai positif dengan kategori benchmark Good sampai Excellent (Tabel 4.10). Dengan demikian, tujuan ketiga tercapai dengan dua catatan, yaitu skenario ruangan tertutup yang sesuai sebagian dan konsistensi jawaban UEQ yang masih rendah."
+  },
+  {
+   "id": "P-4.5-batasan",
+   "cari": "sehingga hasilnya belum dapat digeneralisasi ke ruangan dengan ukuran, jumlah penghuni, atau sumber polutan yang berbeda.",
+   "ganti": "sehingga hasilnya belum dapat digeneralisasi ke ruangan dengan ukuran, jumlah penghuni, atau sumber polutan yang berbeda. Keempat, nilai Cronbach's alpha keenam skala UEQ berada di bawah 0,7, sehingga hasil UEQ dibaca sebagai gambaran umum kesan responden, bukan ukuran yang andal untuk setiap skala."
+  },
+  {
+   "id": "P-4.5-ueq",
+   "cari": "[ISI: kaitkan dengan hasil UEQ.…saran yang ditampilkan.]",
+   "ganti": "Skala Perspicuity memperoleh rata-rata tertinggi (1,94, kategori Excellent), dan butir rumit – sederhana serta jelas – membingungkan memperoleh rata-rata tertinggi di antara 26 butir. Hasil ini menunjukkan bahwa responden menilai tampilan aplikasi, termasuk kategori dan saran yang disajikan, mudah dipahami, walaupun UEQ tidak mengukur manfaat setiap informasi secara terpisah."
+  },
+  {
+   "id": "K-5.1-3",
+   "cari": "[ISI: tuliskan hasil UEQ.…dibandingkan benchmark.]",
+   "ganti": "Evaluasi UEQ terhadap 27 jawaban mahasiswa yang belajar di Lab. DSK menghasilkan penilaian positif pada keenam skala, dengan Perspicuity dan Novelty termasuk kategori Excellent serta empat skala lainnya termasuk Good dibandingkan benchmark, walaupun konsistensi jawaban dalam setiap skala masih rendah."
+  },
+  {
+   "id": "S-5.2-5",
+   "cari": "5.\t[ISI: saran perbaikan tampilan atau fitur berdasarkan butir UEQ dengan rata-rata terendah pada Tabel 4.11.…ilustrasi kondisi ruangan.]",
+   "ganti": "5.\tButir kreatif – monoton dan bermanfaat – kurang bermanfaat memperoleh rata-rata terendah. Pengembangan berikutnya dapat membuat manfaat informasi lebih terasa, misalnya melalui pemberitahuan pada saran 3, dan membuat tampilan lebih menarik. Evaluasi UEQ berikutnya sebaiknya melibatkan lebih banyak responden dan didahului penjelasan bahwa kata positif pada sebagian butir berada di sebelah kiri, agar konsistensi jawaban meningkat."
+  }
+ ]
+}
